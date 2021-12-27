@@ -1,0 +1,13 @@
+name: backups
+on:
+  repository_dispatch:
+    types: [new_notebook_version]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: backup
+        run: |
+          echo "payload: ${{ toJson(github.event.client_payload) }}"
