@@ -29,9 +29,6 @@ This will open a webcode endpoint UI. Store a Github [access token](https://gith
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 `
 )});
-  main.variable(observer()).define(["getMetadata"], function(getMetadata){return(
-getMetadata("8aac8b2cb06bf434", "113")
-)});
   main.variable(observer()).define(["md"], function(md){return(
 md`### Implementation`
 )});
@@ -96,27 +93,6 @@ enableBackupToGithub({
 })
 )});
   main.variable(observer("backup")).define("backup", ["Generators", "viewof backup"], (G, _) => G.input(_));
-  main.variable(observer()).define(["backup"], function(backup){return(
-backup
-)});
-  main.variable(observer("nonce")).define("nonce", function(){return(
-7
-)});
-  main.variable(observer()).define(["dispatchProxyName"], function(dispatchProxyName)
-{
-  const owner = "endpointservices";
-  const repo = "observable-notebooks";
-  const id = "1d309dbd9697e042";
-  const version = "112";
-  const altDispatchURL = `https://webcode.run/observablehq.com/d/${id};${dispatchProxyName(
-    { owner, repo, event_type: "new_notebook_version" }
-  )}`;
-  fetch(altDispatchURL, {
-    method: "POST",
-    body: JSON.stringify({ id, version })
-  });
-}
-);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
