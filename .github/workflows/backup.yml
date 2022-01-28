@@ -20,7 +20,7 @@ jobs:
           git config --global user.name 'backup-to-github'
           git config --global user.email 'robot@webcode.run'
           git add "${path}"
-          git commit -am 'Automatic backup
+          git commit -am 'Backup ${{github.event.client_payload.id}}@${{github.event.client_payload.version}}
           
           ${{toJson(github.event.client_payload)}}
           '
