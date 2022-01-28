@@ -7,12 +7,16 @@ export default function define(runtime, observer) {
   const fileAttachments = new Map([["image@1.png",new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], function(md){return(
-md`# Automatically Backup Notebooks with *enableBackupToGithub* 
+md`# Backup Notebooks with \`enableBackupToGithub\` 
 
-Using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.`
+Using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.
+
+It is a two step process.
+1. In your notebook you wish to have automatic backups, call \`enableBackupToGithub\`
+2. In a Github repository, setup a workflow to export the code and unpack.`
 )});
   main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
-md`## enableBackupToGithub({ owner, repo })
+md`## Call \`enableBackupToGithub({ owner, repo })\`
 
 In an Observable notebook call \`enableBackupToGithub({ owner, repo })\` with the target Github repository for backups. For example,
 
@@ -93,6 +97,42 @@ enableBackupToGithub({
 })
 )});
   main.variable(observer("backup")).define("backup", ["Generators", "viewof backup"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], function(md){return(
+md`## Setup \`.github/workflows/backup.yml\`
+
+In a Github repository for backups, create a workflow for performing the backups. The following example comes from [endpointservices/observable-notebooks/.github/workflows/backup.yml](https://github.com/endpointservices/observable-notebooks/blob/main/.github/workflows/backup.yml). Note you can send all notebooks to the same repository as they are prefixed by Observable login and slug.
+
+\`\`\`
+name: backups
+on:
+  repository_dispatch:
+    types: [new_notebook_version]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: backup
+        run: |
+          echo 'payload: \${{ toJson(github.event.client_payload) }}'
+          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz
+          URL="\${{github.event.client_payload.url}}"
+          path="\${URL/https:\\/\\/observablehq.com\\//}"
+          rm -rf "\${path}"
+          mkdir -p "\${path}"
+          tar -xf notebook.tgz -C "\${path}"
+          git config --global user.name 'backup-to-github'
+          git config --global user.email 'robot@webcode.run'
+          git add "\${path}"
+          git commit -am 'Backup \${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}
+          
+          \${{toJson(github.event.client_payload)}}
+          '
+          git push
+\`\`\`
+`
+)});
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
