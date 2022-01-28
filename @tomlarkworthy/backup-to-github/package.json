@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/backup-to-github",
+  "main": "1d309dbd9697e042@212.js",
+  "version": "212.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/backup-to-github",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
