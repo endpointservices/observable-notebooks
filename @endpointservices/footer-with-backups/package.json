@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/footer-with-backups",
+  "main": "293899bef371e135@205.js",
+  "version": "205.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/footer-with-backups",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
