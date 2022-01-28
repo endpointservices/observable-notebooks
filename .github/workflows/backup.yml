@@ -11,3 +11,4 @@ jobs:
       - name: backup
         run: |
           echo "payload: ${{ toJson(github.event.client_payload) }}"
+          curl 'https://api.observablehq.com/d/${{github.event.client_payload.id}}@${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz 
