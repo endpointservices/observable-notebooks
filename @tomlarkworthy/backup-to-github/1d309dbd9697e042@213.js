@@ -17,6 +17,7 @@ md`## enableBackupToGithub({ owner, repo })
 In an Observable notebook call \`enableBackupToGithub({ owner, repo })\` with the target Github repository for backups. For example,
 
 ~~~js
+
 enableBackupToGithub({
   owner: "endpointservices",    // Github username/organization
   repo: "observable-notebooks". // Github repo
