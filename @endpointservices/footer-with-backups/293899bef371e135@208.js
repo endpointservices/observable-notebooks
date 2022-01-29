@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@207
+// https://observablehq.com/@endpointservices/footer-with-backups@208
 import define1 from "./c2dae147641e012a@46.js";
 import define2 from "./1d309dbd9697e042@273.js";
 
@@ -13,7 +13,6 @@ md`# Endpoint Services Footer
 Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics and backups.
 
 \`\`\`js
-
 import { footer } from "@endpointservices/endpoint-services-footer"
 ---
 footer
