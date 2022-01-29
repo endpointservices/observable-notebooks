@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/serverless-cells@1709
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./58f3eb7334551ae6@184.js";
+import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

@@ -1,5 +1,5 @@
 import define1 from "./c16efae137e70585@1416.js";
-import define2 from "./58f3eb7334551ae6@184.js";
+import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

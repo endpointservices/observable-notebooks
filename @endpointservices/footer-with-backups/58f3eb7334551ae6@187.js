@@ -7,6 +7,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], function(md){return(
 md`# Endpoint Services Footer
 
+Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics. Footer with backups is https://observablehq.com/@endpointservices/footer-with-backups
+
 \`\`\`js
 import { footer } from "@endpointservices/endpoint-services-footer"
 ---

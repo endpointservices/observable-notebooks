@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/view@1169
 import define1 from "./9bed702f80a3797e@402.js";
-import define2 from "./58f3eb7334551ae6@184.js";
+import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

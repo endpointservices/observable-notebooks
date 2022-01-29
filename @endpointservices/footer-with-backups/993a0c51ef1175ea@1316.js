@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/firebase@1316
 import define1 from "./3df1b33bb2cfcd3c@475.js";
 import define2 from "./c7a3b20cec5d4dd9@659.js";
-import define3 from "./58f3eb7334551ae6@184.js";
+import define3 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

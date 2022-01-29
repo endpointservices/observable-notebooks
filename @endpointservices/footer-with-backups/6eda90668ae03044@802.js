@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/webcode@802
 import define1 from "./cbc2e7f6260d11b1@2455.js";
 import define2 from "./dff1e917c89f5e76@1709.js";
-import define3 from "./58f3eb7334551ae6@184.js";
+import define3 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

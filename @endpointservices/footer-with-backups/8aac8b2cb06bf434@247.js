@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/onversion@247
-import define1 from "./58f3eb7334551ae6@184.js";
+import define1 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

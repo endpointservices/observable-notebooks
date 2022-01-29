@@ -1,7 +1,7 @@
 import define1 from "./8aac8b2cb06bf434@247.js";
 import define2 from "./b09f1f038b1040e3@46.js";
 import define3 from "./55bed46f68a80641@366.js";
-import define4 from "./58f3eb7334551ae6@184.js";
+import define4 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
