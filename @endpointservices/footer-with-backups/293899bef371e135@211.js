@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@210
+// https://observablehq.com/@endpointservices/footer-with-backups@211
 import define1 from "./c2dae147641e012a@46.js";
 import define2 from "./1d309dbd9697e042@280.js";
 
@@ -152,7 +152,7 @@ md`### Backups`
 enableGithubBackups({
   owner: "endpointservices",
   repo: "observable-notebooks",
-  deug: true
+  debug: true
 })
 )});
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
