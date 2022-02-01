@@ -1,5 +1,5 @@
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./b09f1f038b1040e3@46.js";
+import define2 from "./b09f1f038b1040e3@59.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./58f3eb7334551ae6@187.js";
 
@@ -29,7 +29,7 @@ enableGithubBackups({
 })
 ~~~
 
-This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret called \`github_token', and bind it to the endpoint, as shown below. If you add an API key you will be able to backup team notebooks.
+This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token', and bind it to the endpoint, as shown below. If you add an API key you will be able to backup team notebooks.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 `
@@ -38,7 +38,7 @@ ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 md`### Implementation`
 )});
   main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy){return(
-function enableGithubBackups({ owner, repo } = {}) {
+function enableGithubBackups({ owner, repo, debugProxy } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
     // To check if this was called send a request to a honeypot
@@ -76,7 +76,8 @@ function enableGithubBackups({ owner, repo } = {}) {
     owner,
     repo,
     event_type: "new_notebook_version",
-    client_payload: null
+    client_payload: null,
+    debug: debugProxy
   });
 
   return dispatchBackup;

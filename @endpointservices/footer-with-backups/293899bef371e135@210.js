@@ -1,6 +1,6 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@209
+// https://observablehq.com/@endpointservices/footer-with-backups@210
 import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./1d309dbd9697e042@273.js";
+import define2 from "./1d309dbd9697e042@280.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -151,7 +151,8 @@ md`### Backups`
   main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], function(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
-  repo: "observable-notebooks"
+  repo: "observable-notebooks",
+  deug: true
 })
 )});
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));

@@ -24,24 +24,31 @@ async function dispatch(
 )});
   const child1 = runtime.module(define1);
   main.import("endpoint", child1);
+  main.import("subdomain", child1);
   main.variable(observer("dispatchProxyName")).define("dispatchProxyName", function(){return(
 ({ owner, repo, event_type }) =>
   "dispatch_" + owner + "_" + repo + "_" + event_type
 )});
-  main.variable(observer("createDispatchProxy")).define("createDispatchProxy", ["endpoint","dispatchProxyName","dispatch","html"], function(endpoint,dispatchProxyName,dispatch,html){return(
+  main.variable(observer("createDispatchProxy")).define("createDispatchProxy", ["endpoint","dispatchProxyName","dispatch","subdomain","html"], function(endpoint,dispatchProxyName,dispatch,subdomain,html){return(
 function createDispatchProxy({
   owner,
   repo,
   event_type = "event_type",
   client_payload = "NOT USED", // If set to null, the client can set it dynamically when dispatching
   // If set to a value, it is fixed by the server
-  secretName = "github_token" // Name of the secret containing a Github access token
+  secretName = "github_token", // Name of the secret containing a Github access token
+  debug = false
 } = {}) {
   const ep = endpoint(
     dispatchProxyName({ owner, repo, event_type }),
     async (req, res, ctx) => {
+      if (debug) debugger;
       if (req.method !== "POST")
         return res.status(400).send("Use POST to trigger a dispatch");
+      if (!ctx.secrets[secretName])
+        return res
+          .status(500)
+          .send(`Cannot find a secret value under ${secretName}`);
       const payload =
         client_payload === null && req.body
           ? JSON.parse(req.body)
@@ -62,6 +69,9 @@ function createDispatchProxy({
           message: err.message
         });
       }
+    },
+    {
+      secrets: [subdomain() + "_" + secretName]
     }
   );
   const url = ep.href;
