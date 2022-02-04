@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/weblogin-for-firebase",
+  "main": "573e072575f28fb9@454.js",
+  "version": "454.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/weblogin-for-firebase",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
