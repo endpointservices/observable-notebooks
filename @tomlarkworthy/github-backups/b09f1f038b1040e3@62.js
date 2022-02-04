@@ -1,4 +1,4 @@
-import define1 from "./6eda90668ae03044@802.js";
+import define1 from "./6eda90668ae03044@803.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {

@@ -11,7 +11,7 @@ export default function define(runtime, observer) {
 md`# Backup Notebooks with \`enableGithubBackups\` 
 
 Take control of your data and relax. Backup your [Observable](https://observablehq.com) notebooks to a shared Github repository *automatically when published*.
-By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.
+By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup notebook source code to a Github repository every version.
 
 The setup is a two step process.
 1. In the notebooks, import and call \`enableGithubBackups({ owner, repo })\`
