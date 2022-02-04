@@ -102,7 +102,7 @@ md`## Setup \`.github/workflows/backup.yml\`
 
 In a Github repository for backups, create a workflow for performing the backups. The following example comes from [endpointservices/observable-notebooks/.github/workflows/backup.yml](https://github.com/endpointservices/observable-notebooks/blob/main/.github/workflows/backup.yml). Note you can send all notebooks to the same repository as they are prefixed by Observable login and slug.
 
-\`\`\`
+\`\`\`bash
 name: backups
 on:
   repository_dispatch:
