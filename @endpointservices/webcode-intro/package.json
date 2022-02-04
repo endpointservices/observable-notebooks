@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/webcode-intro",
+  "main": "023f248e8ed24afa@78.js",
+  "version": "78.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/webcode-intro",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
