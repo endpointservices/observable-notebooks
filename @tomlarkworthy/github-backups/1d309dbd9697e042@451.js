@@ -96,7 +96,7 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
   main.variable(observer()).define(["md"], function(md){return(
 md`### Backup now button
 
-It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to create a manual button.`
+It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.`
 )});
   main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","getCurrentMetadata"], function(Inputs,getCurrentMetadata){return(
 () =>
