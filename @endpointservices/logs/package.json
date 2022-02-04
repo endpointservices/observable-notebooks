@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/logs",
+  "main": "140a8b8c4bcbfb43@1920.js",
+  "version": "1920.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/logs",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
