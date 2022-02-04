@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/zapier",
+  "main": "4e91ba6c5edba46c@761.js",
+  "version": "761.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/zapier",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
