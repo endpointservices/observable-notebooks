@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/login-wizard",
+  "main": "acd893cbec39f93c@754.js",
+  "version": "754.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/login-wizard",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
