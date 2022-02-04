@@ -1,7 +1,7 @@
-// https://observablehq.com/@endpointservices/realtime-request-log@428
+// https://observablehq.com/@endpointservices/realtime-request-log@433
 import define1 from "./6eda90668ae03044@802.js";
 import define2 from "./bb2055d580bbbab2@106.js";
-import define3 from "./293899bef371e135@212.js";
+import define3 from "./293899bef371e135@216.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -53,6 +53,9 @@ Plot.plot({
   },
   marks: [Plot.barY(headers, Plot.groupX({ y: "count" }, { x: header }))]
 })
+)});
+  main.variable(observer()).define(["md"], function(md){return(
+md`nonce2`
 )});
   main.variable(observer()).define(["Inputs","requests","htl"], function(Inputs,requests,htl){return(
 Inputs.table(requests, {

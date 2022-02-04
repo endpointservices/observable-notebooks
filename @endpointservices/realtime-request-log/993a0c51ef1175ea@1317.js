@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1316
+// https://observablehq.com/@tomlarkworthy/firebase@1317
 import define1 from "./3df1b33bb2cfcd3c@475.js";
 import define2 from "./c7a3b20cec5d4dd9@659.js";
 import define3 from "./58f3eb7334551ae6@187.js";
@@ -88,15 +88,13 @@ You need a config defined in a cell too, which you can obtain from console.fireb
   }
   window._firebase = await window._firebase;
 
-  // Init an app for each apiKey
-  if (!window.firebases[firebaseConfig.apiKey]) {
-    window.firebases[firebaseConfig.apiKey] = window._firebase.initializeApp(
-      firebaseConfig,
-      firebaseConfig.apiKey
-    );
-    window.firebases[firebaseConfig.apiKey].auth().useDeviceLanguage();
+  // Init an app for each firebaseConfig.name || apiKey identifier
+  const id = firebaseConfig.name || firebaseConfig.apiKey;
+  if (!window.firebases[id]) {
+    window.firebases[id] = window._firebase.initializeApp(firebaseConfig, id);
+    window.firebases[id].auth().useDeviceLanguage();
   }
-  return window.firebases[firebaseConfig.apiKey];
+  return window.firebases[id];
 }
 );
   main.variable(observer()).define(["md"], function(md){return(

@@ -17,8 +17,10 @@ async function dispatch(
   return await new Octokit.Octokit({
     auth: token
   }).request("POST /repos/{owner}/{repo}/dispatches", {
-    ...arguments[1],
-    event_type
+    owner,
+    repo,
+    event_type,
+    ...(client_payload && { client_payload })
   });
 }
 )});

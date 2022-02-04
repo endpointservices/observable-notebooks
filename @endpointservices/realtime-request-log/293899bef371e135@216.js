@@ -1,6 +1,6 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@212
+// https://observablehq.com/@endpointservices/footer-with-backups@216
 import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./1d309dbd9697e042@280.js";
+import define2 from "./1d309dbd9697e042@376.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
