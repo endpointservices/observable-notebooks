@@ -98,42 +98,6 @@ Note the actual backup is performed by a Github Action.
 location.hash
 )});
   main.variable(observer()).define(["md"], function(md){return(
-md`## Setup \`.github/workflows/backup.yml\`
-
-In a Github repository for backups, create a workflow for performing the backups. The following example comes from [endpointservices/observable-notebooks/.github/workflows/backup.yml](https://github.com/endpointservices/observable-notebooks/blob/main/.github/workflows/backup.yml). Note you can send all notebooks to the same repository as they are prefixed by Observable login and slug.
-
-\`\`\`
-name: backups
-on:
-  repository_dispatch:
-    types: [new_notebook_version]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: backup
-        run: |
-          echo 'payload: \${{ toJson(github.event.client_payload) }}'
-          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz
-          URL="\${{github.event.client_payload.url}}"
-          path="\${URL/https:\\/\\/observablehq.com\\//}"
-          rm -rf "\${path}"
-          mkdir -p "\${path}"
-          tar -xf notebook.tgz -C "\${path}"
-          git config --global user.name 'backup-to-github'
-          git config --global user.email 'robot@webcode.run'
-          git add "\${path}"
-          git commit -am 'Backup \${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}
-          
-          \${{toJson(github.event.client_payload)}}
-          '
-          git push
-\`\`\`
-`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
 md`## Example
 
 The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github (and the Action Workflow file is in that repository too). Of course, if you are not *tomlarkworthy* you cannot login the the endpoint below, and there is no way to access my personal *github_token* but it is there, enabling the integration.`
