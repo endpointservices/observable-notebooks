@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/saas-tutorial",
+  "main": "88c934edb4ab3a59@953.js",
+  "version": "953.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/saas-tutorial",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
