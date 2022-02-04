@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/servefunction",
+  "main": "9d704ee69c9354ef@182.js",
+  "version": "182.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/servefunction",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
