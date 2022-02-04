@@ -17,15 +17,9 @@ The setup is a two step process.
 1. In the notebooks, import and call \`enableGithubBackups({ owner, repo })\`
 2. In the Github repository, setup an Action Workflow that downloads the \`notebook.tar.gz\` and unpacks it.
 
-[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
-md`## Import the Github backup notebook.
+[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.
 
-
-~~~js
-import {enableGithubBackups, backupNowButton} from \`@tomlarkworthy/github-backups\`
-~~~`
+Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow.`
 )});
   main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
 md`## Call \`enableGithubBackups({ owner, repo })\`
@@ -98,6 +92,9 @@ md`### Backup now button
 
 It's useful to manually trigger the backup. Use the \`backupNowButton()\` function to create a manual button.`
 )});
+  main.variable(observer()).define(function(){return(
+Object.keys(window.deployments).find((n) => n.endsWith("_new_notebook_version"))
+)});
   main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","getCurrentMetadata"], function(Inputs,getCurrentMetadata){return(
 () =>
   Inputs.button("backup now", {
@@ -113,6 +110,9 @@ It's useful to manually trigger the backup. Use the \`backupNowButton()\` functi
       });
     }
   })
+)});
+  main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
+backupNowButton()
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`### What *enableGithubBackups* does
@@ -163,11 +163,6 @@ jobs:
 `
 )});
   main.variable(observer()).define(["md"], function(md){return(
-md`## Daily backup job
-
-Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow to ensure backups converge to the latest.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
 md`## Example
 
 The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github (and the Action Workflow file is in that repository too). Of course, if you are not *tomlarkworthy* you cannot login the the endpoint below, and there is no way to access my personal *github_token* but it is there, enabling the integration.`
@@ -177,9 +172,6 @@ enableGithubBackups({
   owner: "endpointservices",
   repo: "observable-notebooks"
 })
-)});
-  main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
-backupNowButton()
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`## Dependencies`
