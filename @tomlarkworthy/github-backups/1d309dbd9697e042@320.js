@@ -85,7 +85,7 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
   main.variable(observer()).define(["md"], function(md){return(
 md`### Example
 
-The following cell backs up *this* notebook for real!`
+The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github. Of course, if you are not *tomlarkworthy* you cannot login and steal my personal *github_token* but it is there, enabling the integration.`
 )});
   main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
 enableGithubBackups({
