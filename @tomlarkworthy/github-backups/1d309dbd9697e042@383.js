@@ -17,7 +17,9 @@ The setup is a two step process.
 1. In the notebooks, import and call \`enableGithubBackups({ owner, repo })\`
 2. In the Github repository, setup an Action Workflow that downloads the \`notebook.tar.gz\` and unpacks it.
 
-[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.`
+[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.
+
+Because the \`onVersion\` hook is best effort, a daily job will also call the backup workflow.`
 )});
   main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
 md`## Call \`enableGithubBackups({ owner, repo })\`
