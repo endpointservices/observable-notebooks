@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/login",
+  "main": "8253abefced00da1@959.js",
+  "version": "959.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/login",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
