@@ -10,11 +10,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], function(md){return(
 md`# Backup Notebooks with \`enableGithubBackups\` 
 
-Using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.
+Take control of your data and relax. Backup your [Observable](https://observablehq.com) notebooks to a shared Github repository *automatically when published*.
+By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.
 
-It is a two step process.
-1. In your notebook you wish to have automatic backups, call \`enableGithubBackups\`
-2. In a Github repository, setup a workflow to export the code and unpack.`
+The setup is a two step process.
+1. In the notebooks, import and call \`enableGithubBackups({ owner, repo })\`
+2. In the Github repository, setup an Action Workflow that downloads the \`notebook.tar.gz\` and unpacks it.
+
+[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.`
 )});
   main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
 md`## Call \`enableGithubBackups({ owner, repo })\`
