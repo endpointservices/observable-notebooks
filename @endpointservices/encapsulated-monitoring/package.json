@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/encapsulated-monitoring",
+  "main": "fbff56a0efdf2e14@216.js",
+  "version": "216.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/encapsulated-monitoring",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
