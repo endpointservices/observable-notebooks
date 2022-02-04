@@ -20,8 +20,8 @@ jobs:
           tar -xf notebook.tgz -C "${path}"
           git config --global user.name 'backup-to-github'
           git config --global user.email 'robot@webcode.run'
-          git pull
           git add "${path}"
+          git pull
           if ! git diff-index --quiet HEAD; then
             git commit -m 'Backup ${{github.event.client_payload.id}}@${{github.event.client_payload.version}}   
             ${{toJson(github.event.client_payload)}}
