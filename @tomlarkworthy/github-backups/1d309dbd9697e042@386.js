@@ -19,7 +19,7 @@ The setup is a two step process.
 
 [Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.
 
-Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow. This job is actively monitored.`
+Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow.`
 )});
   main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
 md`## Call \`enableGithubBackups({ owner, repo })\`
