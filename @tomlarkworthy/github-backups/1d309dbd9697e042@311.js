@@ -83,7 +83,9 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
 }
 )});
   main.variable(observer()).define(["md"], function(md){return(
-md`### Example`
+md`### Example
+
+The following cell backs up *this* notebook for real!`
 )});
   main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
 enableGithubBackups({
