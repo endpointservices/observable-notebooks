@@ -31,7 +31,7 @@ enableGithubBackups({
 })
 ~~~
 
-This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token', and bind it to the endpoint, as shown below. If you add an API key you will be able to backup team notebooks.
+This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 `
