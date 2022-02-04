@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/twitter-bot",
+  "main": "6fbcc8e36d6a8622@344.js",
+  "version": "344.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/twitter-bot",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
