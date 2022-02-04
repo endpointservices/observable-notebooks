@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/cache-bigquery",
+  "main": "7c6685efd5f49dbd@358.js",
+  "version": "358.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/cache-bigquery",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
