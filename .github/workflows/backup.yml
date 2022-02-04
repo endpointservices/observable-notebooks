@@ -19,6 +19,7 @@ jobs:
           tar -xf notebook.tgz -C "${path}"
           git config --global user.name 'backup-to-github'
           git config --global user.email 'robot@webcode.run'
+          git fetch
           git add "${path}"
           git commit -am 'Backup ${{github.event.client_payload.id}}@${{github.event.client_payload.version}}
           
