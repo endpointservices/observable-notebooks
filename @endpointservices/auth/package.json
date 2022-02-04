@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/auth",
+  "main": "e657c642789a0b68@2022.js",
+  "version": "2022.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/auth",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
