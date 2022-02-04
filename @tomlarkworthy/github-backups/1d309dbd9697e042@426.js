@@ -88,6 +88,33 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
 }
 )});
   main.variable(observer()).define(["md"], function(md){return(
+md`### Backup now button
+
+It's useful to manually trigger the backup. Use the \`backupNowButton()\` function to create a manual button.`
+)});
+  main.variable(observer()).define(function(){return(
+Object.keys(window.deployments).find((n) => n.endsWith("_new_notebook_version"))
+)});
+  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","getCurrentMetadata"], function(Inputs,getCurrentMetadata){return(
+() =>
+  Inputs.button("backup now", {
+    reduce: async () => {
+      const metadata = await getCurrentMetadata();
+      const dispatchName = Object.keys(window.deployments).find((n) =>
+        n.endsWith("_new_notebook_version")
+      );
+      const notebookURL = metadata.url.replace("https://", "");
+      fetch(`https://webcode.run/${notebookURL};${dispatchName}`, {
+        method: "POST",
+        body: JSON.stringify(await getCurrentMetadata())
+      });
+    }
+  })
+)});
+  main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
+backupNowButton()
+)});
+  main.variable(observer()).define(["md"], function(md){return(
 md`### What *enableGithubBackups* does
 
 *enableGithubBackups* setups up an endpoint that receives \`onVersion\` hook that triggers backup repository workflow stored in Github. The endpoint sends the Github repository workflow an event_type of type \`new_notebook_version\` along with a client payload JSON containing the notebook \`id\` and \`version\` and authenticated with the \`github_token\` credentials.
@@ -156,6 +183,7 @@ md`## Dependencies`
   main.import("dispatchProxyName", child2);
   const child3 = runtime.module(define3);
   main.import("getMetadata", child3);
+  main.import("getCurrentMetadata", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
   main.variable(observer()).define(["footer"], function(footer){return(
