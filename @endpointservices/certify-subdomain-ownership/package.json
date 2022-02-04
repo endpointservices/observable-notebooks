@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/certify-subdomain-ownership",
+  "main": "fef74d5c3d310491@1592.js",
+  "version": "1592.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/certify-subdomain-ownership",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
