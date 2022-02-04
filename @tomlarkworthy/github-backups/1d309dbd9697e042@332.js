@@ -83,17 +83,6 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
 }
 )});
   main.variable(observer()).define(["md"], function(md){return(
-md`### Example
-
-The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github. Of course, if you are not *tomlarkworthy* you cannot login and steal my personal *github_token* but it is there, enabling the integration.`
-)});
-  main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
-enableGithubBackups({
-  owner: "endpointservices",
-  repo: "observable-notebooks"
-})
-)});
-  main.variable(observer()).define(["md"], function(md){return(
 md`### What *enableGithubBackups* does
 
 *enableGithubBackups* setups up an endpoint that receives \`onVersion\` hook that triggers backup repository workflow stored in Github. The endpoint sends the Github repository workflow an event_type of type \`new_notebook_version\` along with a client payload JSON containing the notebook \`id\` and \`version\` and authenticated with the \`github_token\` credentials.
@@ -137,6 +126,20 @@ jobs:
           git push
 \`\`\`
 `
+)});
+  main.variable(observer()).define(["md"], function(md){return(
+md`## Example
+
+The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github (and the Action Workflow file is in that repository too). Of course, if you are not *tomlarkworthy* you cannot login the the endpoint below, and there is no way to access my personal *github_token* but it is there, enabling the integration.`
+)});
+  main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
+enableGithubBackups({
+  owner: "endpointservices",
+  repo: "observable-notebooks"
+})
+)});
+  main.variable(observer()).define(["md"], function(md){return(
+md`## Dependencies`
 )});
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
