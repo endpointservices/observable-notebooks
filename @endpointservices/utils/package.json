@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/utils",
+  "main": "52d808b188b8672b@129.js",
+  "version": "129.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/utils",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
