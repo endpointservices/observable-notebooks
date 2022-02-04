@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ink",
+  "main": "ddd64958d65f8771@932.js",
+  "version": "932.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ink",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
