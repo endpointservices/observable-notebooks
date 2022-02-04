@@ -2,7 +2,7 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-
+concurrency: backups
 jobs:
   build:
     runs-on: ubuntu-latest
