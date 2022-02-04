@@ -94,6 +94,9 @@ Note the actual backup is performed by a Github Action.
 
 `
 )});
+  main.variable(observer()).define(["location"], function(location){return(
+location.hash
+)});
   main.variable(observer()).define(["md"], function(md){return(
 md`## Setup \`.github/workflows/backup.yml\`
 
