@@ -144,8 +144,11 @@ jobs:
           set -euxo pipefail
           echo 'payload: \${{ toJson(github.event.client_payload) }}'
           curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz
+          # The URL is the notebook source, e.g. https://observablehq.com/@tomlarkworthy/github-backups 
           URL="\${{github.event.client_payload.url}}"
+          # We convert this to @tomlarkworthy/github-backups by striping the prefix
           path="\${URL/https:\\/\\/observablehq.com\\//}"
+          
           rm -rf "\${path}"
           mkdir -p "\${path}"
           tar -xf notebook.tgz -C "\${path}"
