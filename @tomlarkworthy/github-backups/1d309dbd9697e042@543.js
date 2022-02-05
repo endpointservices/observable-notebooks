@@ -90,7 +90,7 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     debug: debugProxy,
     beforeDispatch: async ({ id, version, client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
-      client_payload.api_key = ctx.api_key;
+      client_payload.api_key = ctx.secrets.api_key;
       // Check the source is permitted
       if (allow) {
         const metadata = await getMetadata(id, version);
@@ -113,9 +113,7 @@ getMetadata("1d309dbd9697e042", "479")
   main.variable(observer()).define(["md"], function(md){return(
 md`### Backup now button
 
-It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.
-
-⚠️ the backupNowButton not work with private APIs at the moment`
+It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.`
 )});
   main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html","getCurrentMetadata"], function(Inputs,html,getCurrentMetadata){return(
 () =>
