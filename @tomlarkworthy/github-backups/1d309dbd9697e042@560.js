@@ -99,6 +99,11 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
         api_key: ctx.secrets.api_key // might be undefined
       });
       client_payload.version = metadata.version; // now it is not undefined
+      // fill in everything while we are here (title is missing from private notebooks too)
+      client_payload.url = metadata.url;
+      client_payload.title = metadata.title;
+      client_payload.author = metadata.author;
+      client_payload.id = metadata.id;
 
       // Check the source is permitted
       if (allow) {
