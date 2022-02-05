@@ -56,6 +56,10 @@ async function getSource(name, { version = null, api_key = undefined } = {}) {
 )});
   main.variable(observer("metadata")).define("metadata", ["getSource"], function(getSource){return(
 async function metadata(name, { version = null, api_key = undefined } = {}) {
+  name = name
+    .replace("https://observablehq.com/", "")
+    .split("#")[0]
+    .split("?")[0];
   if (name.startsWith("d/")) name = name.replace("d/", "");
   const map = {
     URL: "url",

@@ -1,7 +1,7 @@
 import define1 from "./8aac8b2cb06bf434@247.js";
 import define2 from "./b09f1f038b1040e3@69.js";
 import define3 from "./55bed46f68a80641@366.js";
-import define4 from "./e6f8b27a19576fcb@427.js";
+import define4 from "./e6f8b27a19576fcb@428.js";
 import define5 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
@@ -93,8 +93,9 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
 
+      client_payload.url;
       // fill in version if needed
-      const metadata = await getMetadata2(client_payload.id, {
+      const metadata = await getMetadata2(client_payload.url, {
         version: client_payload.version, // might be undefined
         api_key: ctx.secrets.api_key // might be undefined
       });
