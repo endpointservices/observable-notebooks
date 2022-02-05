@@ -133,10 +133,9 @@ It's useful, especially when setting up, to manually trigger the backup. Use the
         .replace("https://", "")
         .replace("?", "");
 
-      // If metadata is null, we are in a private notebook of the form d/<ID>
+      // If metadata is null, we are in a private notebook
       const metadata = (await getCurrentMetadata()) || {
-        url: "https://" + notebookURL,
-        id: /^observablehq.com\/d\/([a-z0-9]*)/.exec(notebookURL)[1]
+        url: "https://" + notebookURL
       };
 
       const dispatchName = Object.keys(window.deployments).find((n) =>
