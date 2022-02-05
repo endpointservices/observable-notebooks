@@ -1,5 +1,5 @@
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./b09f1f038b1040e3@62.js";
+import define2 from "./b09f1f038b1040e3@69.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./58f3eb7334551ae6@187.js";
 
@@ -87,11 +87,28 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     repo,
     event_type: "new_notebook_version",
     client_payload: null,
-    debug: debugProxy
+    debug: debugProxy,
+    beforeDispatch: async ({ id, version, client_payload } = {}, ctx) => {
+      // Mixin the apiKey so Github can access private code exports
+      client_payload.api_key = ctx.api_key;
+      // Check the source is permitted
+      if (allow) {
+        const metadata = await getMetadata(id, version);
+        const author = /\(@(.*)\)/.exec(metadata.author)[1];
+        if (!allow.includes(author)) {
+          const err = new Error(`${author} is not an allowed backup source.`);
+          err.status = 403;
+          throw err;
+        }
+      }
+    }
   });
 
   return dispatchBackup;
 }
+)});
+  main.variable(observer()).define(["getMetadata"], function(getMetadata){return(
+getMetadata("1d309dbd9697e042", "479")
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`### Backup now button
@@ -133,7 +150,7 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-
+concurrency: backups # Prevent parallel commits clashing
 jobs:
   build:
     runs-on: ubuntu-latest
