@@ -34,12 +34,12 @@ In an Observable notebook call \`enableGithubBackups({ owner, repo })\` with the
 
 ~~~js 
 enableGithubBackups({
-  owner: "endpointservices",    // Github username/organization
-  repo: "observable-notebooks"  // Github repo
+  owner: "endpointservices",                   // Target Github username/organization
+  repo: "observable-notebooks",                // Target Github repo
 })
 ~~~
 
-This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks.
+This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks. By specifying an \`allow\` list, you narrow what the endpoint can be triggered by.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 `
@@ -48,7 +48,7 @@ ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 md`### Implementation`
 )});
   main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy){return(
-function enableGithubBackups({ owner, repo, debugProxy } = {}) {
+function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
     // To check if this was called send a request to a honeypot
