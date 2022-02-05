@@ -1,0 +1,14 @@
+{
+  "name": "ce0661710d90c364",
+  "main": "ce0661710d90c364@27.js",
+  "version": "27.0.0",
+  "homepage": "https://observablehq.com/d/ce0661710d90c364",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
