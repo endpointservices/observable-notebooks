@@ -226,7 +226,9 @@ The following cell backs up *this* notebook for real! [Here](https://github.com/
   main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
-  repo: "observable-notebooks"
+  repo: "observable-notebooks",
+  allow: ["tomlarkworthy", "endpointservices"],
+  debugProxy: true
 })
 )});
   main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
