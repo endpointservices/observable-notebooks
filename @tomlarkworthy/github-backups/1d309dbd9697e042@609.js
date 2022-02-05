@@ -9,9 +9,9 @@ export default function define(runtime, observer) {
   const fileAttachments = new Map([["image@1.png",new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], function(md){return(
-md`# Automatic Backups of Public and Team Notebooks to Github with [\`enableGithubBackups\`](https://observablehq.com/@tomlarkworthy/github-backups) 
+md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
 
-<br><br><br>
+<br><br><br><br><br>
 
 Take control of your data and relax. Backup your public and team [Observable](https://observablehq.com) notebooks to a Github repository *automatically when published*.
 By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically export and unpack notebook source code to a Github repository every change.
