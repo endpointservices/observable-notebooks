@@ -20,9 +20,7 @@ jobs:
           set -euxo pipefail          
           
           # Download tar from Observable directly
-          curl 'https://api.observablehq.com/d/${{github.event.client_payload.id}}\
-          @${{github.event.client_payload.version}}.tgz?v=3\
-          &api_key=${{github.event.client_payload.api_key}}' > notebook.tgz
+          curl 'https://api.observablehq.com/d/${{github.event.client_payload.id}}@${{github.event.client_payload.version}}.tgz?v=3&api_key=${{github.event.client_payload.api_key}}' > notebook.tgz
           
           # The URL is the notebook source, e.g. https://observablehq.com/@tomlarkworthy/github-backups 
           URL="${{github.event.client_payload.url}}"
