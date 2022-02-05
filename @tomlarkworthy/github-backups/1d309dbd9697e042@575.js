@@ -37,6 +37,7 @@ In an Observable notebook call \`enableGithubBackups({ owner, repo })\` with the
 enableGithubBackups({
   owner: "endpointservices",                   // Target Github username/organization
   repo: "observable-notebooks",                // Target Github repo
+  allow: ['tomlarkworthy', 'endpointservices'] // [optional] Allowed source observablehq logins
 })
 ~~~
 
