@@ -1,7 +1,8 @@
 import define1 from "./8aac8b2cb06bf434@247.js";
 import define2 from "./b09f1f038b1040e3@69.js";
 import define3 from "./55bed46f68a80641@366.js";
-import define4 from "./58f3eb7334551ae6@187.js";
+import define4 from "./e6f8b27a19576fcb@427.js";
+import define5 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -47,7 +48,7 @@ ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
   main.variable(observer()).define(["md"], function(md){return(
 md`### Implementation`
 )});
-  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy){return(
+  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy","getMetadata2"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy,getMetadata2){return(
 function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
@@ -88,12 +89,19 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     event_type: "new_notebook_version",
     client_payload: null,
     debug: debugProxy,
-    beforeDispatch: async ({ id, version, client_payload } = {}, ctx) => {
+    beforeDispatch: async ({ client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
+
+      // fill in version if needed
+      const metadata = await getMetadata2(client_payload.id, {
+        version: client_payload.version, // might be undefined
+        api_key: ctx.secrets.api_key // might be undefined
+      });
+      client_payload.version = metadata.version; // now it is not undefined
+
       // Check the source is permitted
       if (allow) {
-        const metadata = await getMetadata(id, version);
         const author = /\(@(.*)\)/.exec(metadata.author)[1];
         if (!allow.includes(author)) {
           const err = new Error(`${author} is not an allowed backup source.`);
@@ -106,9 +114,6 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
 
   return dispatchBackup;
 }
-)});
-  main.variable(observer()).define(["getMetadata"], function(getMetadata){return(
-getMetadata("1d309dbd9697e042", "479")
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`### Backup now button
@@ -221,7 +226,9 @@ md`## Dependencies`
   main.import("getMetadata", child3);
   main.import("getCurrentMetadata", child3);
   const child4 = runtime.module(define4);
-  main.import("footer", child4);
+  main.import("metadata", "getMetadata2", child4);
+  const child5 = runtime.module(define5);
+  main.import("footer", child5);
   main.variable(observer()).define(["footer"], function(footer){return(
 footer
 )});
