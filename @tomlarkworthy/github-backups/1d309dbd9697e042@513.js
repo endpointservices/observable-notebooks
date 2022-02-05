@@ -113,17 +113,21 @@ getMetadata("1d309dbd9697e042", "479")
   main.variable(observer()).define(["md"], function(md){return(
 md`### Backup now button
 
-It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.`
+It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.
+
+⚠️ the backupNowButton not work with private APIs at the moment`
 )});
-  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","getCurrentMetadata"], function(Inputs,getCurrentMetadata){return(
+  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html","getCurrentMetadata"], function(Inputs,html,getCurrentMetadata){return(
 () =>
   Inputs.button("backup now", {
     reduce: async () => {
-      const metadata = await getCurrentMetadata();
+      const notebookURL = html`<a href="">`.href.replace("https://", "");
+      const metadata = await getCurrentMetadata() || {
+        url: notebookURL
+      };
       const dispatchName = Object.keys(window.deployments).find((n) =>
         n.endsWith("_new_notebook_version")
       );
-      const notebookURL = metadata.url.replace("https://", "");
       fetch(`https://webcode.run/${notebookURL};${dispatchName}`, {
         method: "POST",
         body: JSON.stringify(await getCurrentMetadata())
