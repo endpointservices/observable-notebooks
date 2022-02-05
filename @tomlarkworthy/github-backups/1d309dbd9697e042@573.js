@@ -92,8 +92,7 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     beforeDispatch: async ({ client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
-
-      client_payload.url;
+      
       // fill in version if needed
       const metadata = await getMetadata2(client_payload.url, {
         version: client_payload.version, // might be undefined
@@ -176,14 +175,23 @@ jobs:
       - uses: actions/checkout@v2
       - name: backup
         run: |
-          set -euxo pipefail
-          echo 'payload: \${{ toJson(github.event.client_payload) }}'
-          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz
+          set -euo pipefail   
+          echo 'url:     \${{github.event.client_payload.url}}'
+          echo 'title:   \${{github.event.client_payload.title}}'
+          echo 'author:  \${{github.event.client_payload.author}}'
+          echo 'id:      \${{github.event.client_payload.id}}'
+          echo 'version: \${{github.event.client_payload.version}}'
+          # NOTE: api_key parameter not printed for security reasons, but it may be present
+          # Download tar from Observable directly (do not echo, may contain API key)
+          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3&api_key=\${{github.event.client_payload.api_key}}' > notebook.tgz
+          
+          # Turn on echo of commands now
+          set -x
+          
           # The URL is the notebook source, e.g. https://observablehq.com/@tomlarkworthy/github-backups 
           URL="\${{github.event.client_payload.url}}"
           # We convert this to @tomlarkworthy/github-backups by striping the prefix
           path="\${URL/https:\\/\\/observablehq.com\\//}"
-          
           rm -rf "\${path}"
           mkdir -p "\${path}"
           tar -xf notebook.tgz -C "\${path}"
@@ -192,8 +200,12 @@ jobs:
           git add "\${path}"
           git pull
           if ! git diff-index --quiet HEAD; then
-            git commit -m 'Backup \${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}   
-            \${{toJson(github.event.client_payload)}}
+            git commit -m 'Backup \${{github.event.client_payload.url}}   
+            url:     \${{github.event.client_payload.url}}
+            title:   \${{github.event.client_payload.title}}
+            author:  \${{github.event.client_payload.author}}
+            id:      \${{github.event.client_payload.id}}
+            version: \${{github.event.client_payload.version}}
             '
             git push
           fi
