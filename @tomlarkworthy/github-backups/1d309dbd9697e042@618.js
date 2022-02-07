@@ -44,6 +44,8 @@ enableGithubBackups({
 This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
+
+⚠️ You notebook must be public *or* you must upload an API key for so the backup process can read it.
 `
 )});
   main.variable(observer()).define(["md"], function(md){return(
