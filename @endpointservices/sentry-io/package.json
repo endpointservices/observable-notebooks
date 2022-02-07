@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/sentry-io",
+  "main": "a81f2a20664080d3@143.js",
+  "version": "143.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/sentry-io",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
