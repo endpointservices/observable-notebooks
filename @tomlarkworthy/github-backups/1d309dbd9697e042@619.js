@@ -1,5 +1,6 @@
+// https://observablehq.com/@tomlarkworthy/github-backups@619
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./b09f1f038b1040e3@69.js";
+import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./e6f8b27a19576fcb@428.js";
 import define5 from "./58f3eb7334551ae6@187.js";
@@ -45,7 +46,7 @@ This will open a webcode endpoint UI. Store a Github [access token](https://gith
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
 
-⚠️ You notebook must be public *or* you must upload an API key for so the backup process can read it.
+⚠️ You notebook must be public *or* you must provide an API key for the backup process to read the source.
 `
 )});
   main.variable(observer()).define(["md"], function(md){return(
