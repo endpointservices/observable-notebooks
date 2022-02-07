@@ -1,8 +1,8 @@
-// https://observablehq.com/@endpointservices/weblogin-for-firebase@453
+// https://observablehq.com/@endpointservices/weblogin-for-firebase@454
 import define1 from "./7a77afd2ce564067@459.js";
 import define2 from "./993a0c51ef1175ea@1317.js";
 import define3 from "./09eaec8e2cf20db7@223.js";
-import define4 from "./58f3eb7334551ae6@187.js";
+import define4 from "./293899bef371e135@216.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();

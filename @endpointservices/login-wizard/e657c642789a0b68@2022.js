@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/auth@2021
+// https://observablehq.com/@endpointservices/auth@2022
 import define1 from "./993a0c51ef1175ea@1317.js";
 import define2 from "./698257e86fae4586@346.js";
 import define3 from "./ef672b935bd480fc@619.js";
@@ -7,7 +7,7 @@ import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
 import define8 from "./1131d8b2f152e8a8@463.js";
-import define9 from "./58f3eb7334551ae6@187.js";
+import define9 from "./293899bef371e135@216.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
