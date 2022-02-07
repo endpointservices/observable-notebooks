@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/word2vec",
+  "main": "d9e3bb2e667beb4d@678.js",
+  "version": "678.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/word2vec",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
