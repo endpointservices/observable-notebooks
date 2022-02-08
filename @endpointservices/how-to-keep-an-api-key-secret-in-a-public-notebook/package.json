@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook",
+  "main": "3eaa33b4d7cfec41@109.js",
+  "version": "109.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
