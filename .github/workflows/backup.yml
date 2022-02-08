@@ -2,7 +2,6 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-concurrency: backups # Prevent parallel commits clashing
 jobs:
   build:
     runs-on: ubuntu-latest
