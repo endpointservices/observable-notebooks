@@ -1,23 +1,25 @@
+// https://observablehq.com/@tomlarkworthy/github-backups@619
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./b09f1f038b1040e3@62.js";
+import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
-import define4 from "./58f3eb7334551ae6@187.js";
+import define4 from "./e6f8b27a19576fcb@428.js";
+import define5 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   const fileAttachments = new Map([["image@1.png",new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], function(md){return(
-md`# Backup Notebooks with \`enableGithubBackups\` 
+md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
 
-Take control of your data and relax. Backup your [Observable](https://observablehq.com) notebooks to a shared Github repository *automatically when published*.
-By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically unpack and backup our notebook source code to a Github repository every version.
+Take control of your data and relax. Backup your public and team [Observable](https://observablehq.com) notebooks to a Github repository *automatically when published*.
+By using a combination of [on version hook](https://observablehq.com/@endpointservices/onversion) which executes after a notebook is published, and [repository dispatch](https://observablehq.com/@tomlarkworthy/repository-dispatch) which starts a Github Action workflow, we can automatically export and unpack notebook source code to a Github repository every change.
 
 The setup is a two step process.
 1. In the notebooks, import and call \`enableGithubBackups({ owner, repo })\`
 2. In the Github repository, setup an Action Workflow that downloads the \`notebook.tar.gz\` and unpacks it.
 
-[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process.`
+[Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process. Take a look for yourself at our Github backups [here](https://github.com/endpointservices/observable-notebooks).`
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`## Import the Github backup notebook.
@@ -34,21 +36,24 @@ In an Observable notebook call \`enableGithubBackups({ owner, repo })\` with the
 
 ~~~js 
 enableGithubBackups({
-  owner: "endpointservices",    // Github username/organization
-  repo: "observable-notebooks"  // Github repo
+  owner: "endpointservices",                   // Target Github username/organization
+  repo: "observable-notebooks",                // Target Github repo
+  allow: ['tomlarkworthy', 'endpointservices'] // [optional] Allowed source observablehq logins
 })
 ~~~
 
 This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
+
+⚠️ You notebook must be public *or* you must provide an API key for the backup process to read the source.
 `
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`### Implementation`
 )});
-  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy){return(
-function enableGithubBackups({ owner, repo, debugProxy } = {}) {
+  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy","getMetadata2"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy,getMetadata2){return(
+function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
     // To check if this was called send a request to a honeypot
@@ -87,7 +92,33 @@ function enableGithubBackups({ owner, repo, debugProxy } = {}) {
     repo,
     event_type: "new_notebook_version",
     client_payload: null,
-    debug: debugProxy
+    debug: debugProxy,
+    beforeDispatch: async ({ client_payload } = {}, ctx) => {
+      // Mixin the apiKey so Github can access private code exports
+      client_payload.api_key = ctx.secrets.api_key;
+      
+      // fill in version if needed
+      const metadata = await getMetadata2(client_payload.url, {
+        version: client_payload.version, // might be undefined
+        api_key: ctx.secrets.api_key // might be undefined
+      });
+      client_payload.version = metadata.version; // now it is not undefined
+      // fill in everything while we are here (title is missing from private notebooks too)
+      client_payload.url = metadata.url;
+      client_payload.title = metadata.title;
+      client_payload.author = metadata.author;
+      client_payload.id = metadata.id;
+
+      // Check the source is permitted
+      if (allow) {
+        const author = /\(@(.*)\)/.exec(metadata.author)[1];
+        if (!allow.includes(author)) {
+          const err = new Error(`${author} is not an allowed backup source.`);
+          err.status = 403;
+          throw err;
+        }
+      }
+    }
   });
 
   return dispatchBackup;
@@ -98,18 +129,25 @@ md`### Backup now button
 
 It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.`
 )});
-  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","getCurrentMetadata"], function(Inputs,getCurrentMetadata){return(
+  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html","getCurrentMetadata"], function(Inputs,html,getCurrentMetadata){return(
 () =>
   Inputs.button("backup now", {
     reduce: async () => {
-      const metadata = await getCurrentMetadata();
+      const notebookURL = html`<a href="?">`.href
+        .replace("https://", "")
+        .replace("?", "");
+
+      // If metadata is null, we are in a private notebook
+      const metadata = (await getCurrentMetadata()) || {
+        url: "https://" + notebookURL
+      };
+
       const dispatchName = Object.keys(window.deployments).find((n) =>
         n.endsWith("_new_notebook_version")
       );
-      const notebookURL = metadata.url.replace("https://", "");
       fetch(`https://webcode.run/${notebookURL};${dispatchName}`, {
         method: "POST",
-        body: JSON.stringify(await getCurrentMetadata())
+        body: JSON.stringify(metadata)
       });
     }
   })
@@ -133,7 +171,7 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-
+concurrency: backups # Prevent parallel commits clashing
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -141,10 +179,22 @@ jobs:
       - uses: actions/checkout@v2
       - name: backup
         run: |
-          set -euxo pipefail
-          echo 'payload: \${{ toJson(github.event.client_payload) }}'
-          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3' > notebook.tgz
+          set -euo pipefail   
+          echo 'url:     \${{github.event.client_payload.url}}'
+          echo 'title:   \${{github.event.client_payload.title}}'
+          echo 'author:  \${{github.event.client_payload.author}}'
+          echo 'id:      \${{github.event.client_payload.id}}'
+          echo 'version: \${{github.event.client_payload.version}}'
+          # NOTE: api_key parameter not printed for security reasons, but it may be present
+          # Download tar from Observable directly (do not echo, may contain API key)
+          curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3&api_key=\${{github.event.client_payload.api_key}}' > notebook.tgz
+          
+          # Turn on echo of commands now
+          set -x
+          
+          # The URL is the notebook source, e.g. https://observablehq.com/@tomlarkworthy/github-backups 
           URL="\${{github.event.client_payload.url}}"
+          # We convert this to @tomlarkworthy/github-backups by striping the prefix
           path="\${URL/https:\\/\\/observablehq.com\\//}"
           rm -rf "\${path}"
           mkdir -p "\${path}"
@@ -154,8 +204,12 @@ jobs:
           git add "\${path}"
           git pull
           if ! git diff-index --quiet HEAD; then
-            git commit -m 'Backup \${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}   
-            \${{toJson(github.event.client_payload)}}
+            git commit -m 'Backup \${{github.event.client_payload.url}}   
+            url:     \${{github.event.client_payload.url}}
+            title:   \${{github.event.client_payload.title}}
+            author:  \${{github.event.client_payload.author}}
+            id:      \${{github.event.client_payload.id}}
+            version: \${{github.event.client_payload.version}}
             '
             git push
           fi
@@ -175,7 +229,9 @@ The following cell backs up *this* notebook for real! [Here](https://github.com/
   main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
-  repo: "observable-notebooks"
+  repo: "observable-notebooks",
+  allow: ["tomlarkworthy", "endpointservices"],
+  debugProxy: true // Places breakpoint inside dispatch proxy (final step before Github)
 })
 )});
   main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
@@ -193,7 +249,9 @@ md`## Dependencies`
   main.import("getMetadata", child3);
   main.import("getCurrentMetadata", child3);
   const child4 = runtime.module(define4);
-  main.import("footer", child4);
+  main.import("metadata", "getMetadata2", child4);
+  const child5 = runtime.module(define5);
+  main.import("footer", child5);
   main.variable(observer()).define(["footer"], function(footer){return(
 footer
 )});
