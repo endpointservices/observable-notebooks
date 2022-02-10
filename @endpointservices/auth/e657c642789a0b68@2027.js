@@ -1,8 +1,8 @@
-// https://observablehq.com/@endpointservices/auth@2026
+// https://observablehq.com/@endpointservices/auth@2027
 import define1 from "./993a0c51ef1175ea@1317.js";
 import define2 from "./698257e86fae4586@346.js";
 import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./dff1e917c89f5e76@1709.js";
+import define4 from "./6eda90668ae03044@803.js";
 import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
