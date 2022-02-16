@@ -1,8 +1,8 @@
-// https://observablehq.com/@endpointservices/auth@2022
+// https://observablehq.com/@endpointservices/auth@2027
 import define1 from "./993a0c51ef1175ea@1317.js";
 import define2 from "./698257e86fae4586@346.js";
 import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./dff1e917c89f5e76@1709.js";
+import define4 from "./6eda90668ae03044@803.js";
 import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
@@ -23,6 +23,8 @@ getContext().serverless ? undefined : toc()
 md`## Introduction
 
 This notebook is an *authentication server* [[okta](https://developer.okta.com/docs/concepts/auth-servers/), [auth0](https://auth0.com/blog/what-is-an-authentication-server/), [wikipedia](https://en.wikipedia.org/wiki/OAuth)]. It implements a generic [Oauth 2.0](https://oauth.net/2/) *authorization_endpoint* and *token_endpoint*. This is a technology that can enable a user to login to a service and execute private operations. **You need one of these to build secure services.** Leading commercial services include [Okta](https://www.okta.com/), [Auth0](https://auth0.com/), [Firebase Auth](https://firebase.google.com/docs/auth), [AWS Cognito](https://aws.amazon.com/identity/). Leading Open Source solutions include [Keycloak](https://www.keycloak.org/).
+
+The server's source code is hosted on [observablehq.com](https://observablehq.com/), but requests are executed on [webcode.run](https://webcode.run) -- a serverless environemnt for Observablehq.
 
 ${htl.html`
 <form action="${authorization_endpoint.href}" method="get">
@@ -171,6 +173,7 @@ Firebase Realtime Database is used to cache user profiles and Oauth 2.0 state ma
 )});
   main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", function(){return(
 {
+  name: "authinfra",
   databaseURL: "https://endpointservice-eu.europe-west1.firebasedatabase.app/",
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
   authDomain: "endpointservice.firebaseapp.com",
@@ -183,6 +186,7 @@ md`The token Firebase is used to verify tokens and must be in same project as TO
 )});
   main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", function(){return(
 {
+  name: "targetfirebase",
   apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
   authDomain: "endpointserviceusers.firebaseapp.com",
   projectId: "endpointserviceusers",
