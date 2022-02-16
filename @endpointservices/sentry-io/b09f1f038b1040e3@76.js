@@ -57,7 +57,7 @@ function createDispatchProxy({
           : client_payload;
       const args = {
         ...arguments[0],
-        client_payload: payload,
+        ...(payload !== "NOT USED" && { client_payload: payload }),
         event_type
       };
       try {
