@@ -81,7 +81,6 @@ region
       res.json(localValue);
     },
     {
-      reusable: true,
       region: region,
       host: "webcode.run"
     }
@@ -245,7 +244,6 @@ deploy(
   },
   {
     secrets: ["endpointservices_example_secret"],
-    reusable: true,
     region: region
   }
 )
@@ -273,7 +271,6 @@ deploy(
     res.send(getContext()); // Use of global getContext() function
   },
   {
-    reusable: true,
     region: region
   }
 )
@@ -299,7 +296,6 @@ deploy(
     res.send(new Date());
   },
   {
-    reusable: true,
     region: region
   }
 )
@@ -318,7 +314,6 @@ ci.test("Reference: res.status('204').end() responds", async () => {
       res.status(204).end();
     },
     {
-      reusable: true,
       cell: "test_end",
       region: region
     }
@@ -339,7 +334,6 @@ deploy(
     res.send("Howdy!");
   },
   {
-    reusable: true,
     region: "europe-west1"
   }
 )
@@ -394,7 +388,6 @@ deploy(
     res.send(arrayBuffer);
   },
   {
-    reusable: true,
     region: region
   }
 )
@@ -463,7 +456,6 @@ deploy(
     }
   },
   {
-    reusable: true,
     region: region,
     modifiers: ["orchestrator"]
   }
@@ -536,7 +528,6 @@ deploy(
     res.end();
   },
   {
-    reusable: true,
     region: region
   }
 )
@@ -553,8 +544,7 @@ deploy(
     res.redirect(302, pngLink.href);
   },
   {
-    region,
-    reusable: true
+    region
   }
 )
 )});
