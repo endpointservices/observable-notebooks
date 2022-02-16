@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/deploy-and-test-latency",
+  "main": "13a525f8b7fff694@180.js",
+  "version": "180.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/deploy-and-test-latency",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
