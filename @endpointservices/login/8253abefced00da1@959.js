@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/login@959
 import define1 from "./698257e86fae4586@346.js";
-import define2 from "./52d808b188b8672b@128.js";
+import define2 from "./52d808b188b8672b@129.js";
 import define3 from "./165e9411d1af7e86@1398.js";
 import define4 from "./11a5ab8b1b3a51db@1160.js";
 import define5 from "./c0de6bf6c2f598ef@62.js";

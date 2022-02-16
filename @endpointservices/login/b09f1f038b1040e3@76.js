@@ -1,4 +1,4 @@
-import define1 from "./6eda90668ae03044@802.js";
+import define1 from "./6eda90668ae03044@803.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
@@ -37,8 +37,8 @@ function createDispatchProxy({
   repo,
   event_type = "event_type",
   client_payload = "NOT USED", // If set to null, the client can set it dynamically when dispatching
-  // If set to a value, it is fixed by the server
   secretName = "github_token", // Name of the secret containing a Github access token
+  beforeDispatch = (args, ctx) => {}, // Custom hook for mutating args before dispatch evaluated serverside
   debug = false
 } = {}) {
   const ep = endpoint(
@@ -57,10 +57,11 @@ function createDispatchProxy({
           : client_payload;
       const args = {
         ...arguments[0],
-        client_payload: payload,
+        ...(payload !== "NOT USED" && { client_payload: payload }),
         event_type
       };
       try {
+        await beforeDispatch(args, ctx);
         const result = await dispatch(ctx.secrets[secretName], args);
         res.json(result);
       } catch (err) {
