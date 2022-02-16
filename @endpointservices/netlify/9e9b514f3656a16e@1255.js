@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/netlify@1255
 import define1 from "./11a5ab8b1b3a51db@1160.js";
-import define2 from "./8253abefced00da1@956.js";
+import define2 from "./8253abefced00da1@959.js";
 import define3 from "./dff1e917c89f5e76@1709.js";
 import define4 from "./c0de6bf6c2f598ef@62.js";
 import define5 from "./ef672b935bd480fc@619.js";
