@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/realtime-request-log@433
-import define1 from "./6eda90668ae03044@802.js";
+import define1 from "./6eda90668ae03044@803.js";
 import define2 from "./bb2055d580bbbab2@106.js";
 import define3 from "./293899bef371e135@216.js";
 

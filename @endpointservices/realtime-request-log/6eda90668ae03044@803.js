@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/webcode@802
+// https://observablehq.com/@endpointservices/webcode@803
 import define1 from "./cbc2e7f6260d11b1@2455.js";
 import define2 from "./dff1e917c89f5e76@1709.js";
 import define3 from "./58f3eb7334551ae6@187.js";
@@ -152,6 +152,7 @@ md`##### Dependencies`
   main.variable(observer()).define(["htl"], function(htl){return(
 htl.html`<style>
   code {
+    white-space: pre-wrap;
     border: solid;
     background-color: lightyellow;
     border-width: 3px;
@@ -159,47 +160,13 @@ htl.html`<style>
     padding: 10px;
     display: block;
   }
-  
-  body {
-    background: #FFF;  /* fallback for old browsers */
-    margin-left: 0px;
-    margin-right: 0px;
-    font-size: 4vw;
-    --contentWidth: 90vw;
-  }
-  @media (min-width: 1200px) {
-    .observablehq {
-      --contentWidth: 1140px;
-    }
-  }
-  @media (min-width: 992px) {
-    body {
-      font-size: 1rem;
-    }
-    .observablehq {
-      --contentWidth: 960px;
-    }
-  }
+
   .observablehq {
-    background: lightcoral;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0.5rem max(2rem, 60vw - var(--contentWidth) / 2);
-    font-family: "Arial";
+    background: #FFFFFF
   }
+  
   .observablehq h1 {
     font-family: "Impact";
-  }
-  .observablehq:nth-child(2n + 1) {
-    background: #ECE9E6;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  }
-  .observablehq:nth-child(2n + 2) {
-    background: #ECE9E6;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #FFFFFF, #ECE9E6);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
   }
 </stlye>`
 )});
