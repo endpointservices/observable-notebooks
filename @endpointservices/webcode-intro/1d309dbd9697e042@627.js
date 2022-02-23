@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/github-backups@619
+// https://observablehq.com/@tomlarkworthy/github-backups@627
 import define1 from "./8aac8b2cb06bf434@247.js";
 import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
@@ -171,7 +171,6 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-concurrency: backups # Prevent parallel commits clashing
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -215,6 +214,9 @@ jobs:
           fi
 \`\`\`
 `
+)});
+  main.variable(observer()).define(["md"], function(md){return(
+md`You can see if your workflow is triggering in the action sections of your repository in Github.`
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`## Daily backup job
