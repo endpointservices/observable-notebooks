@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/nunjucks",
+  "main": "9ffdb3d4df82630f@647.js",
+  "version": "647.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/nunjucks",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
