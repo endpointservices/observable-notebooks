@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/cron",
+  "main": "629be1812462d083@415.js",
+  "version": "415.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/cron",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
