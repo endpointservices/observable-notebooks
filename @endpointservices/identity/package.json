@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/identity",
+  "main": "77f7c3c28a618766@604.js",
+  "version": "604.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/identity",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
