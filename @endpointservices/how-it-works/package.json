@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/how-it-works",
+  "main": "1d1af9b8871cfc62@303.js",
+  "version": "303.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/how-it-works",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
