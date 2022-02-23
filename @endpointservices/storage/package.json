@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/storage",
+  "main": "5460ee246e3aa033@941.js",
+  "version": "941.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/storage",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
