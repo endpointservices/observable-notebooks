@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/public-api-keys",
+  "main": "0aa6b028463825e0@289.js",
+  "version": "289.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/public-api-keys",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
