@@ -11,7 +11,9 @@ This notebook executes other notebooks through an embedded [runtime](https://obs
 
 To use, first fill in the manual trigger fields to get a feel of the events and errors. Then copy and paste the link your endpoint monitoring service of choice.
 
-Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".`
+Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".
+
+This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.`
 )});
   main.variable(observer()).define(["settings","md"], function(settings,md){return(
 md`## Errors of ${settings.target}`
