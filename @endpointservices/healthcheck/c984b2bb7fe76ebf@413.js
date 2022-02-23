@@ -5,11 +5,9 @@ import define3 from "./293899bef371e135@216.js";
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], function(md){return(
-md`# Notebook Health Check
+md`# External Notebook Health Check
 
-This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is used report those errors.
-
-You can the error scan manually, or through a HTTP endpoint. The endpoint responds with code 503 (Service Unavailable) if any errors are detected, so it can be used-as-is with endpoint monitoring services such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/).
+This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. It exposes its functionality as an endpoint, which can be connected to uptime monitors such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/). If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is also used report those errors.
 
 To use, first fill in the manual trigger fields to get a feel of the events and errors. Then copy and paste the link your endpoint monitoring service of choice.
 
