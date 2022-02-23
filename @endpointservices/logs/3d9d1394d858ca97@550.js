@@ -1,4 +1,4 @@
-// https://observablehq.com/@mootari/signature@547
+// https://observablehq.com/@mootari/signature@550
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], function(md){return(
@@ -146,16 +146,34 @@ getPinnedSlug('@mootari/signature')`,
     `// Notebook ID
 getPinnedSlug('3d9d1394d858ca97')`,
   ],
+  tests: {
+    'custom slug': async assert => {
+      assert((await getPinnedSlug('@mootari/signature')).match(/@\d+$/))
+    },
+    'notebook id': async assert => {
+      assert((await getPinnedSlug('3d9d1394d858ca97')).match(/@\d+$/))
+    },
+    'pinned': async assert => {
+      assert((await getPinnedSlug('@mootari/signature@545')).match(/@545$/))
+    },
+    'fallback unpublished': async assert => {
+      assert((await getPinnedSlug('@mootari/signature@544')) === '@mootari/signature')
+    },
+  },
 })
 )});
-  main.variable(observer("getPinnedSlug")).define("getPinnedSlug", function(){return(
-async function getPinnedSlug(name) {
-  const path = name[0] === '@' ? name : `d/${name}`;
-  return fetch(`https://api.observablehq.com/${path}.js?v=3`)
+  main.variable(observer("getPinnedSlug")).define("getPinnedSlug", ["regIdentifier","parseFrontmatter"], function(regIdentifier,parseFrontmatter){return(
+async function getPinnedSlug(identifier) {
+  const {groups} = identifier.match(regIdentifier) || {};
+  if(!groups) return null;
+  const {id, user, slug, version} = groups;
+  const name = id || `@${user}/${slug}`;
+  const path = `${id ? `d/${id}` : name}${version ? `@${version}` : ''}`;
+  return fetch(`https://api.observablehq.com/${path}.js?v=1`)
     .then(r => r.text())
-    .then(t => t.match(/^\/\/ [^\s]+(@\d+)/)[1])
     .catch(e => '')
-    .then(v => name + v);
+    .then(t => parseFrontmatter(t) || {})
+    .then(({version: v}) => name + (v ? `@${v}` : ''));
 }
 )});
   main.variable(observer()).define(["signature"], function(signature){return(
@@ -404,6 +422,17 @@ new RegExp('^'
                      + ')'
                      + '(?:@(?<version>\\d+))?'
                      + '([?#]|$)')
+)});
+  main.variable(observer("parseFrontmatter")).define("parseFrontmatter", function(){return(
+v1Source => {
+  const match = v1Source.match(/^(?:[^\n]+\n){4}/);
+  if(!match) return null;
+  const lines = match[0].slice(0, -1).split(/\n/);
+  return Object.fromEntries(lines.map(s => {
+    const [, key, value] = s.match(/\/\/ ([^:]+):\s+(.+)$/);
+    return [key.toLowerCase(), value];
+  })
+)}
 )});
   main.variable(observer("PINNED_LIB")).define("PINNED_LIB", ["getPinnedSlug"], function(getPinnedSlug){return(
 getPinnedSlug('@mootari/signature')
