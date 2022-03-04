@@ -72,8 +72,8 @@ Inputs.button("Go!", {
 }
 );
   main.variable(observer()).define(["permLink","copy","htl"], function(permLink,copy,htl){return(
-htl.html`Your manual trigger as a <a target="_blank"
-  href=${permLink}>http trigger</a>
+htl.html`Your settings as a <a target="_blank"
+  href=${permLink}>http endpoint</a>
 
 <button onclick=${() => copy(permLink)}>Copy to clipboard</button>`
 )});
@@ -93,6 +93,11 @@ endpoint(
     const target = req.query.target; // Read the target notebook.
     if (!target) return res.send(400);
     const excludes = req.query.excludes || ""; // Read which cells to ignore errors from
+    window.rEPseDFzXFSPYkNz = // Inject location.search for notebooks using https://observablehq.com/@tomlarkworthy/url-query-field-view
+      "?" +
+      Object.entries(req.query)
+        .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+        .join("");
 
     run(target, excludes); // start health checking
 
