@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/view@1169
+// https://observablehq.com/@tomlarkworthy/view@1173
 import define1 from "./9bed702f80a3797e@402.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
@@ -42,6 +42,7 @@ toc()
   main.variable(observer()).define(["md"], function(md){return(
 md`## Change log
 
+- 2021-03-03 *bindOneWay* has *onlyDefined* option added
 - 2021-12-09 Bugfix for *arrayView* not bubbling events.
 - 2021-11-05 *arrayView* refactored out
 - 2021-09-05 [@mootari](/mootari) added lazy loading for testing, thus slimming its footprint significantly in production..
@@ -402,7 +403,7 @@ bindOneWay(Inputs.text({ disabled: true }), $0, {
   main.variable(observer("bindOneWay")).define("bindOneWay", ["MutationObserver","Event"], function(MutationObserver,Event)
 {
   function disposal(element) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       requestAnimationFrame(() => {
         if (!element.closest) return;
 
@@ -420,7 +421,7 @@ bindOneWay(Inputs.text({ disabled: true }), $0, {
   return function bindOneWay(
     target,
     /* primary*/ source,
-    { invalidation, transform = d => d } = {}
+    { invalidation, transform = (d) => d, onlyDefined = false } = {}
   ) {
     const sourceEvent = eventof(source);
     const targetEvent = eventof(target);
@@ -452,6 +453,7 @@ bindOneWay(Inputs.text({ disabled: true }), $0, {
 
     function set(target, source) {
       const value = transform(get(source));
+      if (onlyDefined && !value) return;
       switch (target.type) {
         case "range":
         case "number":

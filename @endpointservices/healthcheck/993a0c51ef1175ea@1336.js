@@ -1,7 +1,6 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1317
+// https://observablehq.com/@tomlarkworthy/firebase@1336
 import define1 from "./3df1b33bb2cfcd3c@475.js";
-import define2 from "./c7a3b20cec5d4dd9@659.js";
-import define3 from "./58f3eb7334551ae6@187.js";
+import define2 from "./58f3eb7334551ae6@187.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -15,7 +14,8 @@ The Firebase SDK and a user signin UI, plus utility classes for the databases.
 Provides a realtime push database (Firestore) and cloud file storage (Firebase storage) protected with granular per user permissions (Firebase auth) behind federated login (Google, Facebook, Twitter, Github, Anonymous, Email and Phone). A reactive login button is provided through FirebaseUI.
 
 ### Change log
-- 2020-09-01: Fixed race condition with SDK loader. Added RT detabase to DocView
+- 2021-03-03: Lazy loaded testing library to reduce dependancies
+- 2020-09-01: Fixed race condition with SDK loader. Added RT database to DocView
 - 2020-04-23: Upgrade to 8.4.1
 - 2020-03-17: Multiple app support and Realtime Database added.
 - 2021-03-02: Prevented embedding to guard against clickjacking. Thanks [@keystroke](https://observablehq.com/@keystroke) in [forum](https://talk.observablehq.com/t/clickjacking-attacks-and-notebook-security)
@@ -222,8 +222,8 @@ listen(firebase.firestore().doc("services/testing/example/empty"), {
   defaultValue: {}
 })
 )});
-  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["createSuite"], function(createSuite){return(
-createSuite()
+  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["testing"], function(testing){return(
+testing.createSuite()
 )});
   main.variable(observer("listenTests")).define("listenTests", ["Generators", "viewof listenTests"], (G, _) => G.input(_));
   main.variable(observer()).define(["listenTests","firebase","expect","listen"], function(listenTests,firebase,expect,listen){return(
@@ -587,8 +587,31 @@ class DocsView extends View {
   }
 }
 )});
-  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["createSuite"], function(createSuite){return(
-createSuite()
+  main.variable(observer()).define(["md"], function(md){return(
+md`### Testing`
+)});
+  main.variable(observer("testing")).define("testing", ["DocsView","firebase","firebaseui"], async function(DocsView,firebase,firebaseui)
+{
+  DocsView, firebase, firebaseui;
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+);
+  main.variable(observer("expect")).define("expect", ["testing"], function(testing){return(
+testing.expect
+)});
+  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["testing"], function(testing){return(
+testing.createSuite()
 )});
   main.variable(observer("docsViewTests")).define("docsViewTests", ["Generators", "viewof docsViewTests"], (G, _) => G.input(_));
   main.variable(observer("viewof testView")).define("viewof testView", ["DocsView","firebase"], function(DocsView,firebase){return(
@@ -601,8 +624,8 @@ testView
   main.variable(observer()).define(["docsViewTests","expect","testView"], function(docsViewTests,expect,testView){return(
 docsViewTests.test("First value is the result", () => {
   // Well this is a pass but the Runtime won't allow a cell to catch the Runtime error
-  console.log("expect?")
-  expect(testView[0].string).toBe("aString")
+  console.log("expect?");
+  expect(testView[0].string).toBe("aString");
 })
 )});
   main.variable(observer("viewof permissionDeniedView")).define("viewof permissionDeniedView", ["DocsView","firebase"], function(DocsView,firebase){return(
@@ -622,10 +645,7 @@ docsViewTests.test("Permission errors bubble up", async (done) => {
   const child1 = runtime.module(define1);
   main.import("View", child1);
   const child2 = runtime.module(define2);
-  main.import("expect", child2);
-  main.import("createSuite", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], function(footer){return(
 footer
 )});
