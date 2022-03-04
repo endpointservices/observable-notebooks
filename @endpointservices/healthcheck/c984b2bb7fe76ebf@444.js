@@ -18,8 +18,12 @@ This notebook pairs well with the unit testing library: [@tomlarkworthy/testing]
   main.variable(observer()).define(["settings","md"], function(settings,md){return(
 md`## Errors of ${settings.target}`
 )});
-  main.variable(observer()).define(["Inputs","errors"], function(Inputs,errors){return(
+  main.variable(observer("viewof errorSelection")).define("viewof errorSelection", ["Inputs","errors"], function(Inputs,errors){return(
 Inputs.table(errors)
+)});
+  main.variable(observer("errorSelection")).define("errorSelection", ["Generators", "viewof errorSelection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["errorSelection"], function(errorSelection){return(
+errorSelection
 )});
   main.variable(observer()).define(["settings","md"], function(settings,md){return(
 md`## Runtime Events of ${settings.target}`
@@ -58,11 +62,20 @@ Inputs.button("Go!", {
   }
 })
 )});
-  main.variable(observer()).define(["manualTarget","manualExcludes","copy","htl"], function(manualTarget,manualExcludes,copy,htl){return(
-htl.html`Your manual trigger as a <a target="_blank"
-  href=${`https://webcode.run/observablehq.com/@endpointservices/healthcheck?target=${manualTarget}&excludes=${encodeURIComponent(manualExcludes)}`}>http trigger</a>
+  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes"], function(URLSearchParams,location,manualTarget,manualExcludes)
+{
+  const params = new URLSearchParams(location.search);
+  params.set("target", manualTarget);
+  params.set("excludes", manualExcludes);
 
-<button onclick=${() => copy(`https://webcode.run/observablehq.com/@endpointservices/healthcheck?target=${manualTarget}&excludes=${encodeURIComponent(manualExcludes)}`)}>Copy to clipboard</button>`
+  return `https://webcode.run/observablehq.com/@endpointservices/healthcheck?${params.toString()}`;
+}
+);
+  main.variable(observer()).define(["permLink","copy","htl"], function(permLink,copy,htl){return(
+htl.html`Your manual trigger as a <a target="_blank"
+  href=${permLink}>http trigger</a>
+
+<button onclick=${() => copy(permLink)}>Copy to clipboard</button>`
 )});
   main.variable(observer()).define(["md"], function(md){return(
 md`### HTTP Trigger
