@@ -62,6 +62,16 @@ Inputs.bind(
 )
 )});
   main.variable(observer("manualExcludes")).define("manualExcludes", ["Generators", "viewof manualExcludes"], (G, _) => G.input(_));
+  main.variable(observer("viewof wait")).define("viewof wait", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.range([1, 100], {
+    step: 1,
+    label: "seconds to wait for a cell to resolve"
+  }),
+  localStorageView("healthcheck_wait")
+)
+)});
+  main.variable(observer("wait")).define("wait", ["Generators", "viewof wait"], (G, _) => G.input(_));
   main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], function(Inputs,run,$0,$1){return(
 Inputs.button("Go!", {
   reduce: () => {
@@ -69,11 +79,12 @@ Inputs.button("Go!", {
   }
 })
 )});
-  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes"], function(URLSearchParams,location,manualTarget,manualExcludes)
+  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes","wait"], function(URLSearchParams,location,manualTarget,manualExcludes,wait)
 {
   const params = new URLSearchParams(location.search);
   params.set("target", manualTarget);
   params.set("excludes", manualExcludes);
+  params.set("wait", wait);
 
   return `https://webcode.run/observablehq.com/@endpointservices/healthcheck?${params.toString()}`;
 }
@@ -98,6 +109,7 @@ endpoint(
   "default", // For a simple URL we use the default name leading to https://webcode.run/observablehq.com/@endpointservices/healthcheck
   async (req, res) => {
     const target = req.query.target; // Read the target notebook.
+    const wait = req.query.wait || 10;
     if (!target) return res.send(400);
     const excludes = req.query.excludes || ""; // Read which cells to ignore errors from
     window.rEPseDFzXFSPYkNz = // Inject location.search for notebooks using https://observablehq.com/@tomlarkworthy/url-query-field-view
@@ -124,7 +136,7 @@ endpoint(
           2
         )
       );
-    }, 10000);
+    }, wait * 1000);
   },
   {
     reusable: false, // This does not support concurrent operations
