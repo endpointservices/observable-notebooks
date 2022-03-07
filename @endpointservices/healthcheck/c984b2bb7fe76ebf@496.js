@@ -123,19 +123,20 @@ endpoint(
     setTimeout(() => {
       // There is no clear stopping point so we just run it for X seconds
       const errors = $0.value; // collect errors
-      res.status(errors.length > 0 ? 503 : 200).send(
-        JSON.stringify(
-          {
-            settings: $1.value,
-            errors: errors.map((e) => ({
-              cell: e.cell,
-              message: e.error.message
-            }))
-          },
-          null,
-          2
-        )
+      const status = errors.length > 0 ? 503 : 200;
+      const payload = JSON.stringify(
+        {
+          settings: $1.value,
+          errors: errors.map((e) => ({
+            cell: e.cell,
+            message: e.error.message
+          }))
+        },
+        null,
+        2
       );
+
+      res.status(status).send(payload);
     }, wait * 1000);
   },
   {
