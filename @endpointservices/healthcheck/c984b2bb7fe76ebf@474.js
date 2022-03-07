@@ -1,6 +1,7 @@
 import define1 from "./ab3e70b29c480e6d@83.js";
 import define2 from "./6eda90668ae03044@803.js";
 import define3 from "./293899bef371e135@216.js";
+import define4 from "./048a17a165be198d@263.js";
 
 export default function define(runtime, observer) {
   const main = runtime.module();
@@ -41,18 +42,24 @@ md`### Manual Trigger
 
 Test a notebook by entering a text input`
 )});
-  main.variable(observer("viewof manualTarget")).define("viewof manualTarget", ["Inputs"], function(Inputs){return(
-Inputs.text({
-  label: "target",
-  placeholder: "@tomlarkworthy/saas-tutorial",
-  minlength: 1
-})
+  main.variable(observer("viewof manualTarget")).define("viewof manualTarget", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.text({
+    label: "target",
+    placeholder: "@tomlarkworthy/saas-tutorial",
+    minlength: 1
+  }),
+  localStorageView("healthcheck_notebook")
+)
 )});
   main.variable(observer("manualTarget")).define("manualTarget", ["Generators", "viewof manualTarget"], (G, _) => G.input(_));
-  main.variable(observer("viewof manualExcludes")).define("viewof manualExcludes", ["Inputs"], function(Inputs){return(
-Inputs.text({
-  label: "cells to exclude (comma seperated)"
-})
+  main.variable(observer("viewof manualExcludes")).define("viewof manualExcludes", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.text({
+    label: "cells to exclude (comma seperated)"
+  }),
+  localStorageView("healthcheck_excludes")
+)
 )});
   main.variable(observer("manualExcludes")).define("manualExcludes", ["Generators", "viewof manualExcludes"], (G, _) => G.input(_));
   main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], function(Inputs,run,$0,$1){return(
@@ -268,6 +275,8 @@ Inputs.input([])
   main.import("endpoint", child2);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
+  const child4 = runtime.module(define4);
+  main.import("localStorageView", child4);
   main.variable(observer()).define(["footer"], function(footer){return(
 footer
 )});
