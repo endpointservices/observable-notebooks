@@ -1108,8 +1108,8 @@ function _112(baseURL){return(
 baseURL
 )}
 
-function _webserver(endpoint,baseURL){return(
-endpoint(
+function _webserver(deploy,baseURL){return(
+deploy(
   "default",
   async (req, res, ctx) => {
     const share = req.query.share;
@@ -1123,7 +1123,7 @@ endpoint(
     res.header("cache-control", "max-age: 3600");
     res.send(`<!DOCTYPE html>
 <meta property="og:title" content="${
-      `Fortune for ${data.name}` || "Tarot Reading"
+      `Tarot Reading for ${data.name}` || "Tarot Reading"
     }">
 <meta property="og:description" content="${data.question || "Tarot Reading"}">
 <meta property="og:type" content="article" />
@@ -1694,7 +1694,7 @@ export default function define(runtime, observer) {
   main.variable(observer("persistResult")).define("persistResult", ["adminFirebase"], _persistResult);
   main.variable(observer()).define(["md"], _111);
   main.variable(observer()).define(["baseURL"], _112);
-  main.variable(observer("webserver")).define("webserver", ["endpoint","baseURL"], _webserver);
+  main.variable(observer("webserver")).define("webserver", ["deploy","baseURL"], _webserver);
   main.variable(observer()).define(["md"], _114);
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer()).define(["md"], _116);
@@ -1751,6 +1751,7 @@ export default function define(runtime, observer) {
   const child13 = runtime.module(define12);
   main.import("toc", child13);
   const child14 = runtime.module(define13);
+  main.import("deploy", child14);
   const child15 = runtime.module(define14);
   main.variable(observer("font")).define("font", ["htl"], _font);
   main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
