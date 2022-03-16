@@ -37,17 +37,22 @@ font,
 view`<div style="height: 800px;padding: 20px; background-image: url('${await FileAttachment(
   "image@9.png"
 ).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
-  <h1 style="display: none">Tarot</h1>
-  <h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1>
-  ${["name", whoInput()]}
-  ${["question", questionInput()]}
-  <div style="position: relative; top:-100px; pointer-events: none">
-    ${["deck", pickCards()]}
+  <div style="max-width: 800px; margin: auto">
+    <h1 style="display: none">Tarot</h1>
+    <h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1>
+    ${["name", whoInput()]}
+    ${["question", questionInput()]}
+    <div style="position: relative; top:-100px; pointer-events: none">
+      ${["deck", pickCards()]}
+    </div>
+    ${["cards", showCards(cards)]}
+    ${["fortune", fortuneOutput()]}
+    ${["restart", restartButton()]}
+    ${["share", shareButton()]}
+    <p style="color: white; position: absolute; bottom: 10px"><small>
+      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a>
+    </small></p>
   </div>
-  ${["cards", showCards(cards)]}
-  ${["fortune", fortuneOutput()]}
-  ${["restart", restartButton()]}
-  ${["share", shareButton()]}
 </div>`
 )}
 
@@ -145,6 +150,7 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
     $0.name.style.display = "none";
     $0.question.style.display = "none";
     $0.deck.style.display = "none";
+    $0.restart.style.display = "inline-block";
     var state = "showCards";
   }
 
