@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/tarot",
+  "main": "aa06fb35352e8d69@160.js",
+  "version": "160.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/tarot",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
