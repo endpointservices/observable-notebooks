@@ -1033,10 +1033,6 @@ await fetch(fortuneImg)
   .then((res) => res.arrayBuffer())
 )}
 
-function _106(config){return(
-JSON.parse(config.ADMIN_SERVICE_ACCOUNT)
-)}
-
 function _access_token(getAccessTokenFromServiceAccount,config){return(
 getAccessTokenFromServiceAccount(config.ADMIN_SERVICE_ACCOUNT)
 )}
@@ -1065,20 +1061,23 @@ async function _uploadFile(id,access_token,fortuneImageData)
     }
   );
   if (response.status !== 200) throw new Error(`${await response.text()}`);
-  else return response.json();
+  else return {
+    upload: await response.json(),
+    id
+  };
 }
 
 
-function _peristImage(adminFirebase,id,uploadFile){return(
+function _peristImage(adminFirebase,uploadFile){return(
 adminFirebase
   .database()
-  .ref(`/@tomlarkworthy/tarot-backend/calls/${id}`)
+  .ref(`/@tomlarkworthy/tarot-backend/calls/${uploadFile.id}`)
   .update({
-    img: uploadFile.mediaLink
+    img: uploadFile.upload.mediaLink
   })
 )}
 
-function _110(md){return(
+function _109(md){return(
 md`### Analytics`
 )}
 
@@ -1099,13 +1098,13 @@ async ({ name, cards, question, reading, settings } = {}) => {
 }
 )}
 
-function _112(md){return(
+function _111(md){return(
 md`## Webserver
 
 The webserver can render the application.`
 )}
 
-function _113(baseURL){return(
+function _112(baseURL){return(
 baseURL
 )}
 
@@ -1153,7 +1152,7 @@ new Runtime().module(notebook, name => {
 )
 )}
 
-function _115(md){return(
+function _114(md){return(
 md`### Client Side User`
 )}
 
@@ -1161,7 +1160,7 @@ async function _user(firebase){return(
 (await firebase.auth().signInAnonymously()).user
 )}
 
-function _117(md){return(
+function _116(md){return(
 md`### Firebase Backends`
 )}
 
@@ -1249,19 +1248,19 @@ function _cardBack(FileAttachment){return(
 FileAttachment("image@4.png").image()
 )}
 
-function _131(md){return(
+function _130(md){return(
 md`## Examples from users`
 )}
 
-function _132(FileAttachment){return(
+function _131(FileAttachment){return(
 FileAttachment("image@8.png").image()
 )}
 
-function _133(FileAttachment){return(
+function _132(FileAttachment){return(
 FileAttachment("image@7.png").image()
 )}
 
-function _134(FileAttachment){return(
+function _133(FileAttachment){return(
 FileAttachment("image@1.png").image()
 )}
 
@@ -1556,7 +1555,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _153(footer){return(
+function _152(footer){return(
 footer
 )}
 
@@ -1688,18 +1687,17 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _103);
   main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id"], _fortuneImg);
   main.variable(observer("fortuneImageData")).define("fortuneImageData", ["fortuneImg"], _fortuneImageData);
-  main.variable(observer()).define(["config"], _106);
   main.variable(observer("access_token")).define("access_token", ["getAccessTokenFromServiceAccount","config"], _access_token);
   main.variable(observer("uploadFile")).define("uploadFile", ["id","access_token","fortuneImageData"], _uploadFile);
-  main.variable(observer("peristImage")).define("peristImage", ["adminFirebase","id","uploadFile"], _peristImage);
-  main.variable(observer()).define(["md"], _110);
+  main.variable(observer("peristImage")).define("peristImage", ["adminFirebase","uploadFile"], _peristImage);
+  main.variable(observer()).define(["md"], _109);
   main.variable(observer("persistResult")).define("persistResult", ["adminFirebase"], _persistResult);
-  main.variable(observer()).define(["md"], _112);
-  main.variable(observer()).define(["baseURL"], _113);
+  main.variable(observer()).define(["md"], _111);
+  main.variable(observer()).define(["baseURL"], _112);
   main.variable(observer("webserver")).define("webserver", ["endpoint","baseURL"], _webserver);
-  main.variable(observer()).define(["md"], _115);
+  main.variable(observer()).define(["md"], _114);
   main.variable(observer("user")).define("user", ["firebase"], _user);
-  main.variable(observer()).define(["md"], _117);
+  main.variable(observer()).define(["md"], _116);
   const child2 = runtime.module(define2).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child2);
   main.import("DocView", child2);
@@ -1722,10 +1720,10 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof cpad")).define("viewof cpad", ["Inputs"], _cpad);
   main.variable(observer("cpad")).define("cpad", ["Generators", "viewof cpad"], (G, _) => G.input(_));
   main.variable(observer("cardBack")).define("cardBack", ["FileAttachment"], _cardBack);
-  main.variable(observer()).define(["md"], _131);
+  main.variable(observer()).define(["md"], _130);
+  main.variable(observer()).define(["FileAttachment"], _131);
   main.variable(observer()).define(["FileAttachment"], _132);
   main.variable(observer()).define(["FileAttachment"], _133);
-  main.variable(observer()).define(["FileAttachment"], _134);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","archive"], _findCardsByName);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
   const child4 = runtime.module(define3);
@@ -1759,6 +1757,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child16 = runtime.module(define15);
   main.import("footer", child16);
-  main.variable(observer()).define(["footer"], _153);
+  main.variable(observer()).define(["footer"], _152);
   return main;
 }
