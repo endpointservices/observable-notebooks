@@ -117,10 +117,6 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
   $0.name.style.display = "block";
   $0.question.style.display = "block";
   $0.deck.style.display = "block";
-  $0.cards.style.display = "block";
-  $0.fortune.style.display = "block";
-  $0.share.style.display = "inline-block";
-  $0.restart.style.display = "inline-block";
 
   if (display.name.length == 0) {
     $0.question.style.display = "none";
@@ -144,6 +140,8 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
     $0.share.style.display = "none";
     $0.restart.style.display = "none";
   } else if (display.deck >= 3) {
+    $0.cards.style.display = "block";
+    $0.fortune.style.display = "block";
     $0.name.style.display = "none";
     $0.question.style.display = "none";
     $0.deck.style.display = "none";
