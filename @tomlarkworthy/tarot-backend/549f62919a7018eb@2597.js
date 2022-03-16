@@ -35,10 +35,10 @@ md`## Application UI`
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
 view`<div style="height: 800px;padding: 20px; background-image: url('${await FileAttachment(
-  "image.png"
-).url()}'); font-family: Montserrat, sans-serif; max-width: auto;">
+  "image@9.png"
+).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <h1 style="display: none">Tarot</h1>
-  <h1 style="color: white; text-align: center; width: 100%;">TAROT READER</h1>
+  <h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1>
   ${["name", whoInput()]}
   ${["question", questionInput()]}
   <div style="position: relative; top:-100px; pointer-events: none">
@@ -544,7 +544,7 @@ function _socialImageInner(svg,boardw,FileAttachment,htl,cpad,coffsetx,coffsety,
 async ({ reading, cards } = {}) => {
   const promises = [];
   const ui = svg`<svg viewBox="0 0 ${boardw} 618" width="100%">
-  <image href=${await FileAttachment("image.png").url()} />
+  <image href=${await FileAttachment("image@9.png").url()} />
   ${cards.map(
     (c, i) => htl.svg`<g transform="translate(${
       cpad * i + coffsetx
@@ -1101,58 +1101,16 @@ async ({ name, cards, question, reading, settings } = {}) => {
 function _111(md){return(
 md`## Webserver
 
-The webserver can render the application.`
+The webserver can render the application.
+
+Moved to "https://observablehq.com/@tomlarkworthy/tarot-webserver" for performance reasons.`
 )}
 
 function _112(baseURL){return(
 baseURL
 )}
 
-function _webserver(deploy,baseURL){return(
-deploy(
-  "default",
-  async (req, res, ctx) => {
-    const share = req.query.share;
-    const data =
-      (await (
-        await fetch(
-          `https://larkworthy-dfb11-default-rtdb.europe-west1.firebasedatabase.app/@tomlarkworthy/tarot-backend/calls/${share}.json`
-        )
-      ).json()) || {};
-
-    res.header("cache-control", "max-age: 3600");
-    res.send(`<!DOCTYPE html>
-<meta property="og:title" content="${
-      `Tarot Reading for ${data.name}` || "Tarot Reading"
-    }">
-<meta property="og:description" content="${data.question || "Tarot Reading"}">
-<meta property="og:type" content="article" />
-<meta property="og:image" content="${data.img}">
-<meta property="og:url" content="${baseURL}?share=${share}">
-<meta name="twitter:card" content="summary_large_image">
-
-<body style="background-color:black;">
-<div id="display"></div>
-<script type="module">
-import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
-import notebook from "https://api.observablehq.com/@tomlarkworthy/tarot-backend.js?v=3";
-new Runtime().module(notebook, name => {
-
-  if (name === "viewof display") {
-    return new Inspector(document.querySelector("#display"));
-  } else if (name === "transitions") {
-    return true;
-  }
-});
-</script>`);
-  },
-  {
-    hostNotebook: "@tomlarkworthy/tarot-backend"
-  }
-)
-)}
-
-function _114(md){return(
+function _113(md){return(
 md`### Client Side User`
 )}
 
@@ -1160,7 +1118,7 @@ async function _user(firebase){return(
 (await firebase.auth().signInAnonymously()).user
 )}
 
-function _116(md){return(
+function _115(md){return(
 md`### Firebase Backends`
 )}
 
@@ -1248,19 +1206,19 @@ function _cardBack(FileAttachment){return(
 FileAttachment("image@4.png").image()
 )}
 
-function _130(md){return(
+function _129(md){return(
 md`## Examples from users`
 )}
 
-function _131(FileAttachment){return(
+function _130(FileAttachment){return(
 FileAttachment("image@8.png").image()
 )}
 
-function _132(FileAttachment){return(
+function _131(FileAttachment){return(
 FileAttachment("image@7.png").image()
 )}
 
-function _133(FileAttachment){return(
+function _132(FileAttachment){return(
 FileAttachment("image@1.png").image()
 )}
 
@@ -1555,13 +1513,13 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _152(footer){return(
+function _151(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/50754529e2a76a3b6c106a73040c811d07763baf7b344912d5bbec7157d9c33e2d0307b3e2436d1297fa1befa6a0e053f480dd19f79839f01c0ea4e1e9f14266",import.meta.url)],["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)]]);
+  const fileAttachments = new Map([["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)],["image@9.png",new URL("./files/6ba7a7adca1d0ddeff0f06dcfd4148a6b8b125d24312b0f23554a7329e2811c73ba73bca36474bed9ac094d9a00c479fc2b032d62038a0152603cbffdd3ace60",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
@@ -1694,10 +1652,9 @@ export default function define(runtime, observer) {
   main.variable(observer("persistResult")).define("persistResult", ["adminFirebase"], _persistResult);
   main.variable(observer()).define(["md"], _111);
   main.variable(observer()).define(["baseURL"], _112);
-  main.variable(observer("webserver")).define("webserver", ["deploy","baseURL"], _webserver);
-  main.variable(observer()).define(["md"], _114);
+  main.variable(observer()).define(["md"], _113);
   main.variable(observer("user")).define("user", ["firebase"], _user);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer()).define(["md"], _115);
   const child2 = runtime.module(define2).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child2);
   main.import("DocView", child2);
@@ -1720,10 +1677,10 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof cpad")).define("viewof cpad", ["Inputs"], _cpad);
   main.variable(observer("cpad")).define("cpad", ["Generators", "viewof cpad"], (G, _) => G.input(_));
   main.variable(observer("cardBack")).define("cardBack", ["FileAttachment"], _cardBack);
-  main.variable(observer()).define(["md"], _130);
+  main.variable(observer()).define(["md"], _129);
+  main.variable(observer()).define(["FileAttachment"], _130);
   main.variable(observer()).define(["FileAttachment"], _131);
   main.variable(observer()).define(["FileAttachment"], _132);
-  main.variable(observer()).define(["FileAttachment"], _133);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","archive"], _findCardsByName);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
   const child4 = runtime.module(define3);
@@ -1758,6 +1715,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child16 = runtime.module(define15);
   main.import("footer", child16);
-  main.variable(observer()).define(["footer"], _152);
+  main.variable(observer()).define(["footer"], _151);
   return main;
 }
