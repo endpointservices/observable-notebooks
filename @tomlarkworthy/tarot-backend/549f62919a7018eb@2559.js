@@ -139,7 +139,6 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
     display.cards.cards = await getCards({ numCards: 3 });
     var state = "askQuestion";
   } else if (display.deck < 3) {
-    $0.deck.style.display = "none";
     $0.cards.style.display = "none";
     $0.fortune.style.display = "none";
     $0.share.style.display = "none";
