@@ -24,14 +24,7 @@ toc("h2,h3,h4")
 
 function _3(md){return(
 md`## TODO
-- Share my fortune button !!! Social preview tags. VERY IMPORTANT VIRAL
-   - https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/summary-card-with-large-image
-- URL with social tags (of the actual fortune)
 - referrer tags on URL (for tracking virality through plausible analytics)
-- vanity domain
-  - Super simple: register Domain through Netlify, then use proxy (also upload static assets)
-- Get Approval from OpenAI
-  - 2 days ETA, relatively painless form https://beta.openai.com/forms/pre-launch-review
 - Font: https://creatypestudio.co/whisholders/`
 )}
 
@@ -145,6 +138,12 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
     $0.restart.style.display = "none";
     display.cards.cards = await getCards({ numCards: 3 });
     var state = "askQuestion";
+  } else if (display.deck < 3) {
+    $0.deck.style.display = "none";
+    $0.cards.style.display = "none";
+    $0.fortune.style.display = "none";
+    $0.share.style.display = "none";
+    $0.restart.style.display = "none";
   } else if (display.deck >= 3) {
     $0.name.style.display = "none";
     $0.question.style.display = "none";
@@ -166,6 +165,8 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
         $0.share.style.display = "inline-block";
         $0.share.value = `${baseURL}?share=${fortune.id}`;
         $0.fortune.value = fortune.reading;
+        // We will also fetch it to preward the cache
+        fetch($0.share.value);
       })
       .catch((err) => {
         $0.fortune.value = err.message;
@@ -177,7 +178,7 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
 
 
 function _baseURL(){return(
-"https://webcode.run/observablehq.com/@tomlarkworthy/tarot-backend"
+"https://thetarot.online"
 )}
 
 function _cards(getCards){return(
@@ -754,7 +755,7 @@ endpoint(
 )}
 
 function _config(flowQueue){return(
-flowQueue({ timeout_ms: 10000 })
+flowQueue({ timeout_ms: 15000 })
 )}
 
 function _83(config){return(
