@@ -37,7 +37,7 @@ font,
 view`<div style="height: 800px;padding: 20px; background-image: url('${await FileAttachment(
   "image@9.png"
 ).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
-  <div style="max-width: 800px; margin: auto">
+  <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
     <h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1>
     ${["name", whoInput()]}
