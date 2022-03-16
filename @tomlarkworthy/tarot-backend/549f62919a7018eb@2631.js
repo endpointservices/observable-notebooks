@@ -53,8 +53,8 @@ view`<div style="height: 800px;padding: 20px; background-image: url('${await Fil
       The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a>
     </small></p>
   </div>
-</div>
-<script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
+  <script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>
+</div>`
 )}
 
 function _6(md){return(
