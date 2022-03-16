@@ -49,11 +49,12 @@ view`<div style="height: 800px;padding: 20px; background-image: url('${await Fil
     ${["fortune", fortuneOutput()]}
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
-    <p style="color: white; position: absolute; bottom: 10px"><small>
+    <p style="color: white; position: absolute; bottom: -10px"><small>
       The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a>
     </small></p>
   </div>
-</div>`
+</div>
+<script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
 )}
 
 function _6(md){return(
@@ -285,7 +286,7 @@ function _shareButton(view,textBackground,borderColor,htl){return(
     <div style="font-size:24px; display: inline-flex;">
       <div style="position: relative;top:1px; padding-right: 10px">🔗</div>${[
         "...",
-        htl.html`<input class="url" style="border: none; color: white" type="text" disabled value="${url}">`
+        htl.html`<input class="url"  style="border: none; color: white; width:300px" type="text" disabled value="${url}">`
       ]}
       <button class="btn" style="border: none;width: 70px; background-color: #28a745" onclick=${() => {
         navigator.clipboard.writeText(ui.querySelector(".url").value);
