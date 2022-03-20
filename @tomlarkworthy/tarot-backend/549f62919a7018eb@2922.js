@@ -454,7 +454,7 @@ function _pickCards(htl,spreadConfig,backUrl,Event){return(
       </g></g>`
       )}
     </g>`;
-  const ui = htl.svg`<svg viewbox="0 0 1000 400" style="margin-top:-100px">${stack()}</svg>`;
+  const ui = htl.svg`<svg viewbox="0 0 1000 400" style="margin-top:-10%">${stack()}</svg>`;
   ui.reset = () => {
     ui.innerHTML = "";
     ui.appendChild(stack());
