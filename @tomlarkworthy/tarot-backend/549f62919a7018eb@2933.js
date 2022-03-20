@@ -72,7 +72,8 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
     <p style="color: white; bottom: -10px"><small>
-      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com/@tomlarkworthy/tarot</a> Photo by <a href="https://unsplash.com/@figmentprints?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Cat Han</a> on <a href="https://unsplash.com/s/photos/velvet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+      The tarot reader is an open source <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a> web notebook.
+      <br>Photo by <a href="https://unsplash.com/@figmentprints?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Cat Han</a> on <a href="https://unsplash.com/s/photos/velvet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   
     </small></p>
   </div>
