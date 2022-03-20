@@ -74,7 +74,7 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
     <p style="color: white; bottom: -10px"><small>
-      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a>
+      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com/@tomlarkworthy/tarot</a>
     </small></p>
   </div>
 </div>`
