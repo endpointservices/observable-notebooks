@@ -235,7 +235,7 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
         $0.share.style.display = "inline-block";
         $0.share.value = `${baseURL}/${fortune.id}`;
         $0.fortune.value = fortune.reading;
-        // We will also fetch it to preward the cache
+        // We will also fetch it to prewarm the cache
         fetch($0.share.value);
       })
       .catch((err) => {
