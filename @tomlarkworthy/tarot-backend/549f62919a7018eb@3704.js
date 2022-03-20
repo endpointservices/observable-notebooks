@@ -578,7 +578,7 @@ function _exampleOutput(Inputs,socialImage){return(
 Inputs.button("Run social Image flowQueue", {
   reduce: () =>
     socialImage({
-      shareId: "-MxuntZHtW_ZU-XFjY78"
+      shareId: "-MydHQ7WsdpMYfOwMUcY"
     })
 })
 )}
@@ -726,9 +726,9 @@ async ({ reading, cards } = {}) => {
 }
 )}
 
-function _fitImage(textFit,image)
+async function _fitImage(textFit,image)
 {
-  textFit(image.querySelector(".fortune"), {
+  await textFit(image.querySelector(".fortune"), {
     alignHoriz: true,
     alignVert: true
   });
