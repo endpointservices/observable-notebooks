@@ -1174,16 +1174,19 @@ md`#### Pre-render fortune page`
 function _page(baseURL){return(
 ({ name, question, imgURL, shareId } = {}) => `<!DOCTYPE html>
 <head>
-  <title>${`Tarot Reading for ${name}` || "Tarot Reader"}</title>
+  <title>${name ? `Tarot Reading for ${name}` : "Tarot Reader"}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no;user-scalable=0;">
   <meta property="og:title" content="${
-    `Tarot Reading for ${name}` || "Tarot Reader"
+    name ? `Tarot Reading for ${name}` : "Tarot Reader"
   }">
   <meta property="og:description" content="${
     question || "Ask a question for the cards"
   }">
   <meta property="og:type" content="article" />
-  <meta property="og:image" content="${imgURL}">
+  <meta property="og:image" content="${
+    imgURL ||
+    "https://storage.googleapis.com/larkworthy-dfb11.appspot.com/%40tomlarkworthy/tarot-backend/images/-MyWC6L4ZE1HtVWM1SRc"
+  }">
   <meta property="og:url" content="${baseURL}/${shareId}">
   <meta name="twitter:card" content="summary_large_image">
 </head>
