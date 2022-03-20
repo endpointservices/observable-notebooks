@@ -64,7 +64,7 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
     <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%; padding: 20px;font-family: Verdana"><i>thetarot.online</i></h1></a>
     ${["name", whoInput()]}
     ${["question", questionInput()]}
-    <div style="position: relative; top:-100px; pointer-events: none">
+    <div style="pointer-events: none">
       ${["deck", pickCards()]}
     </div>
     ${["cards", showCards(cards)]}
