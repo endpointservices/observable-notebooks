@@ -621,7 +621,9 @@ function _socialImageInner(svg,boardw,FileAttachment,htl,cpad,coffsetx,coffsety,
 async ({ reading, cards } = {}) => {
   const promises = [];
   const ui = svg`<svg viewBox="0 0 ${boardw} 618" width="100%">
-  <image href=${await FileAttachment("image@9.png").url()} />
+  <image href=${await FileAttachment(
+    "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
+  ).url()} />
   ${cards.map(
     (c, i) => htl.svg`<g transform="translate(${
       cpad * i + coffsetx
@@ -1688,7 +1690,7 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)],["image@9.png",new URL("./files/6ba7a7adca1d0ddeff0f06dcfd4148a6b8b125d24312b0f23554a7329e2811c73ba73bca36474bed9ac094d9a00c479fc2b032d62038a0152603cbffdd3ace60",import.meta.url)],["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg",new URL("./files/1b8cd6ab9c7df78a279d435fd0eb4bbf4596f94cdacca6ce8b1526083e62285f358d7813d09671307b616d97164268f9ea49099ae9ab0e63eb7ea2af45d7478e",import.meta.url)]]);
+  const fileAttachments = new Map([["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)],["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg",new URL("./files/1b8cd6ab9c7df78a279d435fd0eb4bbf4596f94cdacca6ce8b1526083e62285f358d7813d09671307b616d97164268f9ea49099ae9ab0e63eb7ea2af45d7478e",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
