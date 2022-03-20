@@ -59,6 +59,11 @@ font,
 view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
   "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
 ).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
+  <style>
+    body {
+      margin: 0px;
+    }
+  </style>
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
     <a href="https://thetarot.online/index.html">
