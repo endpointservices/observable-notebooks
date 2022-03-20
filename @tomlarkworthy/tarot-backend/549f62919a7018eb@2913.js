@@ -210,7 +210,6 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
   } else if (display.deck < 3) {
     $0.cards.style.display = "none";
     $0.fortune.style.display = "none";
-    $0.share.style.display = "none";
     $0.restart.style.display = "none";
   } else if (display.deck >= 3) {
     $0.cards.style.display = "block";
