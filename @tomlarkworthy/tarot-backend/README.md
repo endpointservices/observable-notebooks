@@ -1,6 +1,6 @@
 # Tarot Backend
 
-https://observablehq.com/@tomlarkworthy/tarot-backend@2933
+https://observablehq.com/@tomlarkworthy/tarot-backend@2939
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/549f62919a7018eb@2933.tgz?v=3
+npm install https://api.observablehq.com/d/549f62919a7018eb@2939.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
