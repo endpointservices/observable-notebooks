@@ -1317,25 +1317,6 @@ async function _uploads(uploadObject,id,access_token,page,config,cloudImage){ret
 )}
 
 function _135(md){return(
-md`### deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
-)}
-
-function _136(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
-Inputs.button("update index.html", {
-  reduce: async () => {
-    await uploadObject({
-      name: `@tomlarkworthy/tarot-backend/pages/index.html`,
-      content_type: "text/html",
-      access_token: await getAccessTokenFromServiceAccount(
-        ADMIN_SERVICE_ACCOUNT
-      ),
-      content: page({})
-    });
-  }
-})
-)}
-
-function _137(md){return(
 md`### history`
 )}
 
@@ -1354,6 +1335,25 @@ async ({ name, cards, question, reading, settings } = {}) => {
     });
   return snap.key;
 }
+)}
+
+function _137(md){return(
+md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
+)}
+
+function _138(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
+Inputs.button("update index.html", {
+  reduce: async () => {
+    await uploadObject({
+      name: `@tomlarkworthy/tarot-backend/pages/index.html`,
+      content_type: "text/html",
+      access_token: await getAccessTokenFromServiceAccount(
+        ADMIN_SERVICE_ACCOUNT
+      ),
+      content: page({})
+    });
+  }
+})
 )}
 
 function _139(md){return(
@@ -1871,9 +1871,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _133);
   main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
   main.variable(observer()).define(["md"], _135);
-  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _136);
-  main.variable(observer()).define(["md"], _137);
   main.variable(observer("persistResult")).define("persistResult", ["adminFirebase"], _persistResult);
+  main.variable(observer()).define(["md"], _137);
+  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _138);
   main.variable(observer()).define(["md"], _139);
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer()).define(["md"], _141);
