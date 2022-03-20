@@ -1175,12 +1175,13 @@ function _page(baseURL){return(
 ({ name, question, imgURL, shareId } = {}) => `<!DOCTYPE html>
 <head>
   <title>${`Tarot Reading for ${name}` || "Tarot Reader"}</title>
-  <description>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no;user-scalable=0;">
   <meta property="og:title" content="${
-    `Tarot Reading for ${name}` || "Tarot Reading"
+    `Tarot Reading for ${name}` || "Tarot Reader"
   }">
-  <meta property="og:description" content="${question || "Tarot Reader"}">
+  <meta property="og:description" content="${
+    question || "Ask a question for the cards"
+  }">
   <meta property="og:type" content="article" />
   <meta property="og:image" content="${imgURL}">
   <meta property="og:url" content="${baseURL}/${shareId}">
