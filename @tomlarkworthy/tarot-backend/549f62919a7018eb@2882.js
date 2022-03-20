@@ -621,7 +621,7 @@ function _socialImageInner(svg,boardw,FileAttachment,htl,cpad,coffsetx,coffsety,
 async ({ reading, cards } = {}) => {
   const promises = [];
   const ui = svg`<svg viewBox="0 0 ${boardw} 618" width="100%">
-  <image href=${await FileAttachment(
+  <image width="100%" href=${await FileAttachment(
     "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
   ).url()} />
   ${cards.map(
