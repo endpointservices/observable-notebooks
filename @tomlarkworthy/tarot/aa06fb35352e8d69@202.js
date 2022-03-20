@@ -1,4 +1,4 @@
-import define1 from "./549f62919a7018eb@2922.js";
+import define1 from "./549f62919a7018eb@2978.js";
 
 function _app(transitions,footer,$0){return(
 transitions, footer, $0
@@ -9,7 +9,7 @@ md`## About
 
 The result of asking, *"can you build end-to-end applications on Observable?"*. 
 
-Here is a small but representative application coded entirely within Observable. It uses a database and several sensitive APIs. It adheres to industry development requirements like OpenAI's [default safety requirements](https://beta.openai.com/docs/usage-guidelines/default-safety-requirements-for-all-applications), for example, anonymous authentication, rate limiting and AI content filtering. Access is proxied through Netlify from a dedicated domain [thetarot.online](https://thetarot.online), which took 8 lines of external [code in Github](https://github.com/endpointservices/thetarot.online). It is a single cell, which can be embedded.
+Here is a small but representative application coded entirely within Observable. It uses a database and protected APIs. It adheres to OpenAI's [default safety requirements](https://beta.openai.com/docs/usage-guidelines/default-safety-requirements-for-all-applications), including: anonymous authentication, rate limiting and AI content filtering. Web requests are proxied through Netlify to add a vanity domain [thetarot.online](https://thetarot.online) ([code in Github](https://github.com/endpointservices/thetarot.online)). 
 
 The curious folk who wish to peak beneath the curtain can follow an import link below.
 

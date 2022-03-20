@@ -56,12 +56,21 @@ This is the final application, it is a composite of all our separately designed 
 
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
-view`<div style="height: 800px; display: none; padding: 20px; background-image: url('${await FileAttachment(
+view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
   "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
 ).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
-    <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%; padding: 20px;font-family: Verdana"><i>thetarot.online</i></h1></a>
+    <a href="https://thetarot.online/index.html">
+      <div style="width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;background-color:#eef;"><h1 style="color: black; text-align: center; max-width:100%; padding: 30px; margin-bottom: 50px; padding-bottom: 30px; font-family: Verdana; size: 2em;"><i>thetarot.online</i>
+      </h1></div>
+      
+    </a>
     ${["name", whoInput()]}
     ${["question", questionInput()]}
     <div style="pointer-events: none">
@@ -72,7 +81,8 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
     <p style="color: white; bottom: -10px"><small>
-      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com/@tomlarkworthy/tarot</a> Photo by <a href="https://unsplash.com/@figmentprints?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Cat Han</a> on <a href="https://unsplash.com/s/photos/velvet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+      The tarot reader is an open source <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a> web notebook.
+      <br>Photo by <a href="https://unsplash.com/@figmentprints?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Cat Han</a> on <a href="https://unsplash.com/s/photos/velvet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   
     </small></p>
   </div>
@@ -286,7 +296,7 @@ whoInput()
 function _whoInput(DOM,view,textBackground,borderColor,htl,NAME_MAX_LENGTH){return(
 () => {
   const uid = DOM.uid().id;
-  const ui = view`<label for=${uid} style="display:block; color: white; background-color: ${textBackground}; padding: 10px; margin: 5px; border-radius: 10px; border: solid ${borderColor};">Who is this fortune for?
+  const ui = view`<label for=${uid} style="display:block; color: white; background-color: ${textBackground}; padding: 10px; margin: 5px; border-radius: 10px; border: solid ${borderColor};">Who asks the cards?
 ${[
   "...",
   htl.html`<textarea id=${uid} style="width:100%; display:block; box-sizing:border-box; color: white; background-color: ${textBackground}; padding: 10px; border-radius: 10px;" type="text" placeholder="your first name? someone else's name?" maxlength=${NAME_MAX_LENGTH}>`
