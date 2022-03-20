@@ -43,6 +43,7 @@ md`## Ideas
 
 This is a list of ideas for what I should do
 
+- Fix twitter sharing
 - Font: https://creatypestudio.co/whisholders/ ?
 - Literate Backend
 - Intro text on Observable client
@@ -62,7 +63,7 @@ view`<div style="height: 800px;padding: 20px; background-image: url('${await Fil
 ).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
-    <h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1>
+    <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1></a>
     ${["name", whoInput()]}
     ${["question", questionInput()]}
     <div style="position: relative; top:-100px; pointer-events: none">
@@ -72,7 +73,7 @@ view`<div style="height: 800px;padding: 20px; background-image: url('${await Fil
     ${["fortune", fortuneOutput()]}
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
-    <p style="color: white; position: absolute; bottom: -10px"><small>
+    <p style="color: white; bottom: -10px"><small>
       The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com</a>
     </small></p>
   </div>
@@ -811,6 +812,7 @@ Inputs.bind(
 function _apiServer(endpoint,$0){return(
 endpoint(
   "api",
+
   async (req, res, ctx) => {
     // save in a DB, deduplication, rate limit, authentication
     const config = JSON.parse(atob(req.query.config)); // name, cards, questions
@@ -1182,12 +1184,18 @@ function _page(baseURL){return(
   <meta property="og:description" content="${
     question || "Ask a question for the cards"
   }">
+  <meta name="description" content="${
+    question || "Ask a question for the cards"
+  }">
+
   <meta property="og:type" content="article" />
   <meta property="og:image" content="${
     imgURL ||
     "https://storage.googleapis.com/larkworthy-dfb11.appspot.com/%40tomlarkworthy/tarot-backend/images/-MyWC6L4ZE1HtVWM1SRc"
   }">
-  <meta property="og:url" content="${baseURL}/${shareId}">
+  <meta property="og:url" content="${
+    shareId ? `${baseURL}/${shareId}` : "https://thetarot.online"
+  }">
   <meta name="twitter:card" content="summary_large_image">
 </head>
 <body style="background-color:black;">
