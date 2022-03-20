@@ -174,7 +174,7 @@ async function _loadPreviousFortune(previousFortune,$0,findCardsByName,baseURL,s
 
 
 function _16(md){return(
-md`## Application State transitions
+md`### Application State transitions
 
 The core application toggles the UI element visibility, based on their current state (which is modified by the user). `
 )}
