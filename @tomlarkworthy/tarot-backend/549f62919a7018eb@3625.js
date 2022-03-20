@@ -987,6 +987,10 @@ you tell ${config.name} the meaning of the cards and their positions.`,
 })
 )}
 
+function _107(md){return(
+md`#### OpenAI Generation Settings`
+)}
+
 function _settings(){return(
 {
   temperature: 0.8,
@@ -997,16 +1001,24 @@ function _settings(){return(
 }
 )}
 
+function _109(md){return(
+md`#### OpenAI Response`
+)}
+
 async function _result(openapi_reponse,$0){return(
 openapi_reponse.status === 200
   ? openapi_reponse.json()
   : $0.reject(new Error(await openapi_reponse.text()))
 )}
 
-function _id(persistResult,config,settings,result,$0)
+function _111(md){return(
+md`#### Record OpenAI Response in History`
+)}
+
+function _id(persistHistory,config,settings,result,$0)
 {
   try {
-    return persistResult({
+    return persistHistory({
       ...config,
       settings,
       reading: result
@@ -1018,6 +1030,31 @@ function _id(persistResult,config,settings,result,$0)
 }
 
 
+function _113(md){return(
+md`### history`
+)}
+
+function _persistHistory(adminFirebase){return(
+async ({ name, cards, question, reading, settings } = {}) => {
+  const snap = await adminFirebase
+    .database()
+    .ref(`/@tomlarkworthy/tarot-backend/calls/`)
+    .push({
+      name,
+      question,
+      cards,
+      reading,
+      settings,
+      time: { ".sv": "timestamp" }
+    });
+  return snap.key;
+}
+)}
+
+function _115(md){return(
+md`#### OpenAI Text Safety Classification`
+)}
+
 function _classification(contentFilter,result,config){return(
 contentFilter({
   content: result.choices[0].text,
@@ -1025,33 +1062,11 @@ contentFilter({
 })
 )}
 
-function _responder(uploads,classification,$0,id,result)
-{
-  uploads;
-  try {
-    if (classification == 0) {
-      $0.respond({
-        id,
-        reading: result.choices[0].text
-      });
-    } else {
-      const err = new Error(
-        `Response was classified as sensative or unsafe. Try a different question.`
-      );
-      err.status = 400;
-      throw err;
-    }
-  } catch (err) {
-    $0.reject(err);
-  }
-}
-
-
-function _112(md){return(
+function _117(md){return(
 md`### Rate limiting`
 )}
 
-function _113(Inputs,recordMeteredUse,user){return(
+function _118(Inputs,recordMeteredUse,user){return(
 Inputs.button("record use", {
   reduce: () => recordMeteredUse(user.uid)
 })
@@ -1083,7 +1098,7 @@ function _quota(htl,user){return(
 htl.html`<a target="_blank" href="https://console.firebase.google.com/u/0/project/larkworthy-dfb11/database/larkworthy-dfb11-default-rtdb/data/@tomlarkworthy/tarot-backend/users/${user.uid}/history">quota records`
 )}
 
-function _117(md){return(
+function _122(md){return(
 md`### Content Filter
 
 https://beta.openai.com/docs/engines/content-filter
@@ -1168,15 +1183,11 @@ Inputs.button("testContentFilter", {
 })
 )}
 
-function _120(exampleFilter){return(
+function _125(exampleFilter){return(
 exampleFilter
 )}
 
-function _121(md){return(
-md`#### Cloud access_token`
-)}
-
-function _122(md){return(
+function _126(md){return(
 md`#### uploadObject to Cloud Storage`
 )}
 
@@ -1208,7 +1219,7 @@ async ({ name, access_token, content_type, content } = {}) => {
 }
 )}
 
-function _124(md){return(
+function _128(md){return(
 md`### Generate Social Image`
 )}
 
@@ -1228,11 +1239,11 @@ function _access_token(getAccessTokenFromServiceAccount,config){return(
 getAccessTokenFromServiceAccount(config.ADMIN_SERVICE_ACCOUNT)
 )}
 
-function _128(fortuneImageData){return(
+function _132(fortuneImageData){return(
 fortuneImageData
 )}
 
-function _129(md){return(
+function _133(md){return(
 md`#### uploadImageToCloud`
 )}
 
@@ -1248,8 +1259,8 @@ async function _cloudImage(uploadObject,id,access_token,fortuneImageData){return
 }
 )}
 
-function _131(md){return(
-md`#### Pre-render fortune page`
+function _135(md){return(
+md`#### Render page()`
 )}
 
 function _page(baseURL){return(
@@ -1294,7 +1305,7 @@ new Runtime().module(notebook, name => {
 <script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
 )}
 
-function _133(md){return(
+function _137(md){return(
 md`### upload share page`
 )}
 
@@ -1316,32 +1327,37 @@ async function _uploads(uploadObject,id,access_token,page,config,cloudImage){ret
 }
 )}
 
-function _135(md){return(
-md`### history`
+function _139(md){return(
+md`#### End of Pipeline`
 )}
 
-function _persistResult(adminFirebase){return(
-async ({ name, cards, question, reading, settings } = {}) => {
-  const snap = await adminFirebase
-    .database()
-    .ref(`/@tomlarkworthy/tarot-backend/calls/`)
-    .push({
-      name,
-      question,
-      cards,
-      reading,
-      settings,
-      time: { ".sv": "timestamp" }
-    });
-  return snap.key;
+function _responder(uploads,classification,$0,id,result)
+{
+  uploads;
+  try {
+    if (classification == 0) {
+      $0.respond({
+        id,
+        reading: result.choices[0].text
+      });
+    } else {
+      const err = new Error(
+        `Response was classified as sensative or unsafe. Try a different question.`
+      );
+      err.status = 400;
+      throw err;
+    }
+  } catch (err) {
+    $0.reject(err);
+  }
 }
-)}
 
-function _137(md){return(
+
+function _141(md){return(
 md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
 )}
 
-function _138(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
+function _142(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
 Inputs.button("update index.html", {
   reduce: async () => {
     await uploadObject({
@@ -1356,7 +1372,7 @@ Inputs.button("update index.html", {
 })
 )}
 
-function _139(md){return(
+function _143(md){return(
 md`### Anonymous User`
 )}
 
@@ -1364,7 +1380,7 @@ async function _user(firebase){return(
 (await firebase.auth().signInAnonymously()).user
 )}
 
-function _141(md){return(
+function _145(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1396,11 +1412,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _146(md){return(
+function _150(md){return(
 md`## Utilities`
 )}
 
-function _147(md){return(
+function _151(md){return(
 md`### findCardsByName`
 )}
 
@@ -1416,7 +1432,7 @@ async (cardNames) =>
   )
 )}
 
-function _149(md){return(
+function _153(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1443,7 +1459,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _151(md){return(
+function _155(md){return(
 md`## Dependencies`
 )}
 
@@ -1703,7 +1719,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _168(footer){return(
+function _172(footer){return(
 footer
 )}
 
@@ -1841,42 +1857,46 @@ export default function define(runtime, observer) {
   main.variable(observer("currentUsersRequestsInLastDay")).define("currentUsersRequestsInLastDay", ["requestsInLastDay","currentUser"], _currentUsersRequestsInLastDay);
   main.variable(observer("rateLimitOk")).define("rateLimitOk", ["validateOK","currentUsersRequestsInLastDay","viewof config","invalidation"], _rateLimitOk);
   main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","config","settings"], _openapi_reponse);
+  main.variable(observer()).define(["md"], _107);
   main.variable(observer("settings")).define("settings", _settings);
+  main.variable(observer()).define(["md"], _109);
   main.variable(observer("result")).define("result", ["openapi_reponse","viewof config"], _result);
-  main.variable(observer("id")).define("id", ["persistResult","config","settings","result","viewof config"], _id);
+  main.variable(observer()).define(["md"], _111);
+  main.variable(observer("id")).define("id", ["persistHistory","config","settings","result","viewof config"], _id);
+  main.variable(observer()).define(["md"], _113);
+  main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
+  main.variable(observer()).define(["md"], _115);
   main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
-  main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
-  main.variable(observer()).define(["md"], _112);
-  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _113);
+  main.variable(observer()).define(["md"], _117);
+  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _118);
   main.variable(observer("recordMeteredUse")).define("recordMeteredUse", ["firebase"], _recordMeteredUse);
   main.variable(observer("requestsInLastDay")).define("requestsInLastDay", ["adminFirebase"], _requestsInLastDay);
   main.variable(observer("quota")).define("quota", ["htl","user"], _quota);
-  main.variable(observer()).define(["md"], _117);
+  main.variable(observer()).define(["md"], _122);
   main.variable(observer("contentFilter")).define("contentFilter", _contentFilter);
   main.variable(observer("viewof exampleFilter")).define("viewof exampleFilter", ["Inputs","loremIpsum","contentFilter","OPENAI_API_KEY"], _exampleFilter);
   main.variable(observer("exampleFilter")).define("exampleFilter", ["Generators", "viewof exampleFilter"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleFilter"], _120);
-  main.variable(observer()).define(["md"], _121);
-  main.variable(observer()).define(["md"], _122);
+  main.variable(observer()).define(["exampleFilter"], _125);
+  main.variable(observer()).define(["md"], _126);
   main.variable(observer("uploadObject")).define("uploadObject", _uploadObject);
-  main.variable(observer()).define(["md"], _124);
+  main.variable(observer()).define(["md"], _128);
   main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id"], _fortuneImg);
   main.variable(observer("fortuneImageData")).define("fortuneImageData", ["fortuneImg"], _fortuneImageData);
   main.variable(observer("access_token")).define("access_token", ["getAccessTokenFromServiceAccount","config"], _access_token);
-  main.variable(observer()).define(["fortuneImageData"], _128);
-  main.variable(observer()).define(["md"], _129);
-  main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
-  main.variable(observer()).define(["md"], _131);
-  main.variable(observer("page")).define("page", ["baseURL"], _page);
+  main.variable(observer()).define(["fortuneImageData"], _132);
   main.variable(observer()).define(["md"], _133);
-  main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
+  main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
   main.variable(observer()).define(["md"], _135);
-  main.variable(observer("persistResult")).define("persistResult", ["adminFirebase"], _persistResult);
+  main.variable(observer("page")).define("page", ["baseURL"], _page);
   main.variable(observer()).define(["md"], _137);
-  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _138);
+  main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
   main.variable(observer()).define(["md"], _139);
-  main.variable(observer("user")).define("user", ["firebase"], _user);
+  main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
   main.variable(observer()).define(["md"], _141);
+  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _142);
+  main.variable(observer()).define(["md"], _143);
+  main.variable(observer("user")).define("user", ["firebase"], _user);
+  main.variable(observer()).define(["md"], _145);
   const child2 = runtime.module(define2).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child2);
   main.import("DocView", child2);
@@ -1884,12 +1904,12 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child3);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _146);
-  main.variable(observer()).define(["md"], _147);
-  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _149);
-  main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(["md"], _150);
   main.variable(observer()).define(["md"], _151);
+  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
+  main.variable(observer()).define(["md"], _153);
+  main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(["md"], _155);
   const child4 = runtime.module(define3);
   main.import("getCards", child4);
   main.import("images", "cardData", child4);
@@ -1922,6 +1942,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child16 = runtime.module(define15);
   main.import("footer", child16);
-  main.variable(observer()).define(["footer"], _168);
+  main.variable(observer()).define(["footer"], _172);
   return main;
 }
