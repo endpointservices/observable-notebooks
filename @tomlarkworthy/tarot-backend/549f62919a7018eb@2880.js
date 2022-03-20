@@ -63,7 +63,7 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
 ).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
-    <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1></a>
+    <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%; padding: 20px;font-family: Verdana"><i>thetarot.online</i></h1></a>
     ${["name", whoInput()]}
     ${["question", questionInput()]}
     <div style="position: relative; top:-100px; pointer-events: none">
