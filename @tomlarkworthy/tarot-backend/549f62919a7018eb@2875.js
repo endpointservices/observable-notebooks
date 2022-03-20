@@ -59,8 +59,8 @@ This is the final application, it is a composite of all our separately designed 
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
 view`<div style="height: 800px; display: none; padding: 20px; background-image: url('${await FileAttachment(
-  "image@9.png"
-).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
+  "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
+).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
     <a href="https://thetarot.online/index.html"><h1 style="color: white; text-align: center; width: 100%;max-width:100%;">TAROT READER</h1></a>
@@ -74,7 +74,8 @@ view`<div style="height: 800px; display: none; padding: 20px; background-image: 
     ${["restart", restartButton()]}
     ${["share", shareButton()]}
     <p style="color: white; bottom: -10px"><small>
-      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com/@tomlarkworthy/tarot</a>
+      The tarot reader application is open source and hosted on <a href="https://observablehq.com/@tomlarkworthy/tarot">Observablehq.com/@tomlarkworthy/tarot</a> Photo by <a href="https://unsplash.com/@figmentprints?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Cat Han</a> on <a href="https://unsplash.com/s/photos/velvet?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  
     </small></p>
   </div>
 </div>`
@@ -1687,7 +1688,7 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)],["image@9.png",new URL("./files/6ba7a7adca1d0ddeff0f06dcfd4148a6b8b125d24312b0f23554a7329e2811c73ba73bca36474bed9ac094d9a00c479fc2b032d62038a0152603cbffdd3ace60",import.meta.url)]]);
+  const fileAttachments = new Map([["image@1.png",new URL("./files/b0dd95e56bf953b915b9fc424a3e34adf2816e7ba3e3a0ff38fc7cb39fdd18fcc339e0d7acd31a09f0d0509ac6108b7b4dd8cf3d98fe86235ad1beb972ecf766",import.meta.url)],["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["image@7.png",new URL("./files/3561ced6cac97495efcd731ad7b38d12b772cb488d5faf1e99ee9bed833083e99feb1185f542449b046d3a05e102498c0dbcfdf3fcea35b409a423a6b9ea7106",import.meta.url)],["image@8.png",new URL("./files/9991246a526763d7493c377f4a49ddc898cc11e2fa8c63f6741bbdb67ab9a0b20e01de2860e9d15bb1cc29bd8781e6c070a1d3db27c11b59841a54dc29558e93",import.meta.url)],["image@9.png",new URL("./files/6ba7a7adca1d0ddeff0f06dcfd4148a6b8b125d24312b0f23554a7329e2811c73ba73bca36474bed9ac094d9a00c479fc2b032d62038a0152603cbffdd3ace60",import.meta.url)],["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg",new URL("./files/1b8cd6ab9c7df78a279d435fd0eb4bbf4596f94cdacca6ce8b1526083e62285f358d7813d09671307b616d97164268f9ea49099ae9ab0e63eb7ea2af45d7478e",import.meta.url)]]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
