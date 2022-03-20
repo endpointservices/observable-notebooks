@@ -791,25 +791,26 @@ We can pass the cards and question and name parameters to a webcode.run endpoint
 `
 )}
 
-function _89(Inputs,getFortune,user,name,cards,question,$0,Event){return(
+function _clientResponse(Inputs,getFortune,user,cards,$0,Event){return(
 Inputs.button("run remote", {
   reduce: async () => {
     const data = (
       await getFortune({
         token: user.getIdToken(),
-        name,
-        cards,
-        question
+        name: "Tom",
+        cards: cards.map((c) => c.name),
+        question: "Will I be rich?"
       })
     ).reading;
     $0.value = data;
     $0.dispatchEvent(new Event("input", { bubbles: true }));
+    return data;
   }
 })
 )}
 
 function _90(md){return(
-md`### getFortune`
+md`### getFortune API client `
 )}
 
 function _getFortune(apiServer,user){return(
@@ -880,7 +881,7 @@ endpoint(
 )}
 
 function _98(md){return(
-md`### API Request pipeline (flowQueue)`
+md`### API Request pipeline`
 )}
 
 function _config(flowQueue){return(
@@ -889,6 +890,10 @@ flowQueue({ timeout_ms: 15000 })
 
 function _100(config){return(
 config
+)}
+
+function _101(md){return(
+md`#### Validate User Input`
 )}
 
 function _validateOK(config,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH,$0)
@@ -913,6 +918,10 @@ function _validateOK(config,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH,$0)
 }
 
 
+function _103(md){return(
+md`### User token validation`
+)}
+
 function _currentUser(verifyIdToken,adminFirebase,config,$0)
 {
   try {
@@ -922,6 +931,10 @@ function _currentUser(verifyIdToken,adminFirebase,config,$0)
   }
 }
 
+
+function _105(md){return(
+md`#### Rate limit check`
+)}
 
 function _currentUsersRequestsInLastDay(requestsInLastDay,currentUser){return(
 requestsInLastDay(currentUser.uid)
@@ -941,6 +954,10 @@ function _rateLimitOk(validateOK,currentUsersRequestsInLastDay,$0,invalidation)
   }
 }
 
+
+function _108(md){return(
+md`#### Call openAI`
+)}
 
 function _openapi_reponse(rateLimitOk,recordMeteredUse,currentUser,config,settings){return(
 rateLimitOk,
@@ -962,7 +979,7 @@ you tell ${config.name} the meaning of the cards and their positions.`,
 })
 )}
 
-function _106(md){return(
+function _110(md){return(
 md`#### OpenAI Generation Settings`
 )}
 
@@ -976,7 +993,7 @@ function _settings(){return(
 }
 )}
 
-function _108(md){return(
+function _112(md){return(
 md`#### OpenAI Response`
 )}
 
@@ -986,7 +1003,7 @@ openapi_reponse.status === 200
   : $0.reject(new Error(await openapi_reponse.text()))
 )}
 
-function _110(md){return(
+function _114(md){return(
 md`#### Record OpenAI Response in History`
 )}
 
@@ -1005,7 +1022,7 @@ function _id(persistHistory,config,settings,result,$0)
 }
 
 
-function _112(md){return(
+function _116(md){return(
 md`### history`
 )}
 
@@ -1026,7 +1043,7 @@ async ({ name, cards, question, reading, settings } = {}) => {
 }
 )}
 
-function _114(md){return(
+function _118(md){return(
 md`#### OpenAI Text Safety Classification`
 )}
 
@@ -1037,11 +1054,11 @@ contentFilter({
 })
 )}
 
-function _116(md){return(
+function _120(md){return(
 md`### Rate limiting`
 )}
 
-function _117(Inputs,recordMeteredUse,user){return(
+function _121(Inputs,recordMeteredUse,user){return(
 Inputs.button("record use", {
   reduce: () => recordMeteredUse(user.uid)
 })
@@ -1073,7 +1090,7 @@ function _quota(htl,user){return(
 htl.html`<a target="_blank" href="https://console.firebase.google.com/u/0/project/larkworthy-dfb11/database/larkworthy-dfb11-default-rtdb/data/@tomlarkworthy/tarot-backend/users/${user.uid}/history">quota records`
 )}
 
-function _121(md){return(
+function _125(md){return(
 md`### Content Filter
 
 https://beta.openai.com/docs/engines/content-filter
@@ -1158,11 +1175,11 @@ Inputs.button("testContentFilter", {
 })
 )}
 
-function _124(exampleFilter){return(
+function _128(exampleFilter){return(
 exampleFilter
 )}
 
-function _125(md){return(
+function _129(md){return(
 md`#### uploadObject to Cloud Storage`
 )}
 
@@ -1194,7 +1211,7 @@ async ({ name, access_token, content_type, content } = {}) => {
 }
 )}
 
-function _127(md){return(
+function _131(md){return(
 md`### Generate Social Image`
 )}
 
@@ -1214,11 +1231,11 @@ function _access_token(getAccessTokenFromServiceAccount,config){return(
 getAccessTokenFromServiceAccount(config.ADMIN_SERVICE_ACCOUNT)
 )}
 
-function _131(fortuneImageData){return(
+function _135(fortuneImageData){return(
 fortuneImageData
 )}
 
-function _132(md){return(
+function _136(md){return(
 md`#### uploadImageToCloud`
 )}
 
@@ -1234,7 +1251,7 @@ async function _cloudImage(uploadObject,id,access_token,fortuneImageData){return
 }
 )}
 
-function _134(md){return(
+function _138(md){return(
 md`#### Render page()`
 )}
 
@@ -1280,7 +1297,7 @@ new Runtime().module(notebook, name => {
 <script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
 )}
 
-function _136(md){return(
+function _140(md){return(
 md`### upload share page`
 )}
 
@@ -1302,7 +1319,7 @@ async function _uploads(uploadObject,id,access_token,page,config,cloudImage){ret
 }
 )}
 
-function _138(md){return(
+function _142(md){return(
 md`#### End of Pipeline`
 )}
 
@@ -1328,11 +1345,11 @@ function _responder(uploads,classification,$0,id,result)
 }
 
 
-function _140(md){return(
+function _144(md){return(
 md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
 )}
 
-function _141(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
+function _145(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
 Inputs.button("update index.html", {
   reduce: async () => {
     await uploadObject({
@@ -1347,7 +1364,7 @@ Inputs.button("update index.html", {
 })
 )}
 
-function _142(md){return(
+function _146(md){return(
 md`### Anonymous User`
 )}
 
@@ -1355,7 +1372,7 @@ async function _user(firebase){return(
 (await firebase.auth().signInAnonymously()).user
 )}
 
-function _144(md){return(
+function _148(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1387,11 +1404,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _149(md){return(
+function _153(md){return(
 md`## Utilities`
 )}
 
-function _150(md){return(
+function _154(md){return(
 md`### findCardsByName`
 )}
 
@@ -1407,7 +1424,7 @@ async (cardNames) =>
   )
 )}
 
-function _152(md){return(
+function _156(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1434,7 +1451,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _154(md){return(
+function _158(md){return(
 md`## Dependencies`
 )}
 
@@ -1694,7 +1711,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _171(footer){return(
+function _175(footer){return(
 footer
 )}
 
@@ -1810,7 +1827,8 @@ export default function define(runtime, observer) {
   main.variable(observer("readingOrEmpty")).define("readingOrEmpty", ["viewof reading"], _readingOrEmpty);
   main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event"], _87);
   main.variable(observer()).define(["md"], _88);
-  main.variable(observer()).define(["Inputs","getFortune","user","name","cards","question","viewof reading","Event"], _89);
+  main.variable(observer("viewof clientResponse")).define("viewof clientResponse", ["Inputs","getFortune","user","cards","viewof reading","Event"], _clientResponse);
+  main.variable(observer("clientResponse")).define("clientResponse", ["Generators", "viewof clientResponse"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _90);
   main.variable(observer("getFortune")).define("getFortune", ["apiServer","user"], _getFortune);
   main.variable(observer()).define(["md"], _92);
@@ -1825,51 +1843,55 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof config")).define("viewof config", ["flowQueue"], _config);
   main.variable(observer("config")).define("config", ["Generators", "viewof config"], (G, _) => G.input(_));
   main.variable(observer()).define(["config"], _100);
+  main.variable(observer()).define(["md"], _101);
   main.variable(observer("validateOK")).define("validateOK", ["config","QUESTION_MAX_LENGTH","NAME_MAX_LENGTH","viewof config"], _validateOK);
+  main.variable(observer()).define(["md"], _103);
   main.variable(observer("currentUser")).define("currentUser", ["verifyIdToken","adminFirebase","config","viewof config"], _currentUser);
+  main.variable(observer()).define(["md"], _105);
   main.variable(observer("currentUsersRequestsInLastDay")).define("currentUsersRequestsInLastDay", ["requestsInLastDay","currentUser"], _currentUsersRequestsInLastDay);
   main.variable(observer("rateLimitOk")).define("rateLimitOk", ["validateOK","currentUsersRequestsInLastDay","viewof config","invalidation"], _rateLimitOk);
-  main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","config","settings"], _openapi_reponse);
-  main.variable(observer()).define(["md"], _106);
-  main.variable(observer("settings")).define("settings", _settings);
   main.variable(observer()).define(["md"], _108);
-  main.variable(observer("result")).define("result", ["openapi_reponse","viewof config"], _result);
+  main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","config","settings"], _openapi_reponse);
   main.variable(observer()).define(["md"], _110);
-  main.variable(observer("id")).define("id", ["persistHistory","config","settings","result","viewof config"], _id);
+  main.variable(observer("settings")).define("settings", _settings);
   main.variable(observer()).define(["md"], _112);
-  main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
+  main.variable(observer("result")).define("result", ["openapi_reponse","viewof config"], _result);
   main.variable(observer()).define(["md"], _114);
-  main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
+  main.variable(observer("id")).define("id", ["persistHistory","config","settings","result","viewof config"], _id);
   main.variable(observer()).define(["md"], _116);
-  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _117);
+  main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
+  main.variable(observer()).define(["md"], _118);
+  main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
+  main.variable(observer()).define(["md"], _120);
+  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _121);
   main.variable(observer("recordMeteredUse")).define("recordMeteredUse", ["firebase"], _recordMeteredUse);
   main.variable(observer("requestsInLastDay")).define("requestsInLastDay", ["adminFirebase"], _requestsInLastDay);
   main.variable(observer("quota")).define("quota", ["htl","user"], _quota);
-  main.variable(observer()).define(["md"], _121);
+  main.variable(observer()).define(["md"], _125);
   main.variable(observer("contentFilter")).define("contentFilter", _contentFilter);
   main.variable(observer("viewof exampleFilter")).define("viewof exampleFilter", ["Inputs","loremIpsum","contentFilter","OPENAI_API_KEY"], _exampleFilter);
   main.variable(observer("exampleFilter")).define("exampleFilter", ["Generators", "viewof exampleFilter"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleFilter"], _124);
-  main.variable(observer()).define(["md"], _125);
+  main.variable(observer()).define(["exampleFilter"], _128);
+  main.variable(observer()).define(["md"], _129);
   main.variable(observer("uploadObject")).define("uploadObject", _uploadObject);
-  main.variable(observer()).define(["md"], _127);
+  main.variable(observer()).define(["md"], _131);
   main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id"], _fortuneImg);
   main.variable(observer("fortuneImageData")).define("fortuneImageData", ["fortuneImg"], _fortuneImageData);
   main.variable(observer("access_token")).define("access_token", ["getAccessTokenFromServiceAccount","config"], _access_token);
-  main.variable(observer()).define(["fortuneImageData"], _131);
-  main.variable(observer()).define(["md"], _132);
-  main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
-  main.variable(observer()).define(["md"], _134);
-  main.variable(observer("page")).define("page", ["baseURL"], _page);
+  main.variable(observer()).define(["fortuneImageData"], _135);
   main.variable(observer()).define(["md"], _136);
-  main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
+  main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
   main.variable(observer()).define(["md"], _138);
-  main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
+  main.variable(observer("page")).define("page", ["baseURL"], _page);
   main.variable(observer()).define(["md"], _140);
-  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _141);
+  main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
   main.variable(observer()).define(["md"], _142);
-  main.variable(observer("user")).define("user", ["firebase"], _user);
+  main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
   main.variable(observer()).define(["md"], _144);
+  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _145);
+  main.variable(observer()).define(["md"], _146);
+  main.variable(observer("user")).define("user", ["firebase"], _user);
+  main.variable(observer()).define(["md"], _148);
   const child2 = runtime.module(define2).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child2);
   main.import("DocView", child2);
@@ -1877,12 +1899,12 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child3);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _149);
-  main.variable(observer()).define(["md"], _150);
-  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _152);
-  main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(["md"], _153);
   main.variable(observer()).define(["md"], _154);
+  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
+  main.variable(observer()).define(["md"], _156);
+  main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(["md"], _158);
   const child4 = runtime.module(define3);
   main.import("getCards", child4);
   main.import("images", "cardData", child4);
@@ -1915,6 +1937,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child16 = runtime.module(define15);
   main.import("footer", child16);
-  main.variable(observer()).define(["footer"], _171);
+  main.variable(observer()).define(["footer"], _175);
   return main;
 }
