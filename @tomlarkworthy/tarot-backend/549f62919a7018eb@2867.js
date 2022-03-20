@@ -58,7 +58,7 @@ This is the final application, it is a composite of all our separately designed 
 
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
-view`<div style="height: 800px;padding: 20px; background-image: url('${await FileAttachment(
+view`<div style="height: 800px; display: none; padding: 20px; background-image: url('${await FileAttachment(
   "image@9.png"
 ).url()}'); background-repeat: repeat-y; background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <div style="max-width: 740px; margin: auto">
@@ -186,6 +186,7 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
   restartAction; // recompute when display changes
   loadPreviousFortune; // Load history (happens once)
   console.log("transition");
+  $0.style.display = "block";
   $0.name.style.display = "block";
   $0.question.style.display = "block";
   $0.deck.style.display = "block";
