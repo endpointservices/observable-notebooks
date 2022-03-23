@@ -1,15 +1,14 @@
-// https://observablehq.com/@endpointservices/word2vec@678
+// https://observablehq.com/@endpointservices/word2vec@680
 import define1 from "./6eda90668ae03044@803.js";
 import define2 from "./777fe85658e39c55@470.js";
-import define3 from "./b8a500058f806a6b@6.js";
+import define3 from "./b8a500058f806a6b@10.js";
 import define4 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# word2vec`
-)});
-  main.variable(observer()).define(["html","sampleVectors","sample","Plot"], function(html,sampleVectors,sample,Plot){return(
+)}
+
+function _2(html,sampleVectors,sample,Plot){return(
 html`${sampleVectors.slice(10).map((vector, sample_i) => html`<div style="position: relative;">
   <div style="position: absolute; color: white; -webkit-text-stroke: 1px black; font: bold 20px/33px var(--sans-serif); padding: 0 38px;">${sample[sample_i]}</div>${Plot.plot({
   height: 38,
@@ -26,8 +25,9 @@ html`${sampleVectors.slice(10).map((vector, sample_i) => html`<div style="positi
     Plot.cellX({length: 300}, {x: (d, i) => i, fill: (d, i) => (sampleVectors[sample_i]|| [])[i]})
   ]
 })}`)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md` 
 Access Google's seminal 2013 work - [word2vec](https://en.wikipedia.org/wiki/Word2vec) [Mikolov *et al.*]. While language understanding has moved on, it still remains an extremely convenient way of handling and understanding words programatically. I recommend Jay Alammar's [Illustrated word2vec](https://jalammar.github.io/illustrated-word2vec/) for a good introduction (but note: it does push a common misunderstanding that each dimension is an independent feature [[1](https://news.ycombinator.com/item?id=19498863)]). And so one day I found myself wanting a way of converting words to vectors for analysis but to my surprise there are not really any free full-bodied word2vec API services for this.
 
@@ -43,6 +43,7 @@ Even so, this is still very useful for clustering documents or for generating fe
 
 - *[Illustrated word2vec](https://jalammar.github.io/illustrated-word2vec/)* - Jay Alammar
 - *[Word Embedding Analogies: Understanding King - Man + Woman = Queen](https://kawine.github.io/blog/nlp/2019/06/21/word-analogies.html)* - Kawin Ethayarajh
+- *[Understanding Word Vectors](https://observablehq.com/@dhowe/understanding-word-vectors)* - Allison Parrish / Daniel Howe
 
 ### Other APIs
 
@@ -71,11 +72,13 @@ curl 'https://webcode.run/observablehq.com/@endpointservices/word2vec?from=Serva
 
 ~~~
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## Examples`
-)});
-  main.variable(observer("viewof runSamples")).define("viewof runSamples", ["Inputs"], function(Inputs)
+)}
+
+function _runSamples(Inputs)
 {
   let resolve = null;
   const ui = Inputs.button("run examples", {
@@ -84,41 +87,46 @@ md`## Examples`
   ui.value = new Promise(_resolve => (resolve = _resolve));
   return ui;
 }
-);
-  main.variable(observer("runSamples")).define("runSamples", ["Generators", "viewof runSamples"], (G, _) => G.input(_));
-  main.variable(observer()).define(["runSamples"], function(runSamples){return(
-runSamples
-)});
-  main.variable(observer()).define(["runSamples","word2vec"], function(runSamples,word2vec){return(
+
+
+function _6(runSamples,word2vec){return(
 runSamples, word2vec('babalik')
-)});
-  main.variable(observer()).define(["word2vec"], function(word2vec){return(
+)}
+
+function _7(word2vec){return(
 word2vec('babalik')
-)});
-  main.variable(observer()).define(["runSamples","word2vec"], function(runSamples,word2vec){return(
+)}
+
+function _8(runSamples,word2vec){return(
 runSamples, word2vec(['queen', 'king', 'woman', 'man', 'boy', 'girl'])
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`Google News dataset joins common phrases together with an _, and it contains a lot of names`
-)});
-  main.variable(observer()).define(["runSamples","word2vec"], function(runSamples,word2vec){return(
+)}
+
+function _10(runSamples,word2vec){return(
 runSamples, word2vec(["Servando_Gomez", "hysteroscopic_procedures"])
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`### Tokenizing a paragraph
 
 As you can see the full dataset has excellent coverage of phrases taken from the wild. This example text was taken from the welcome post in the Observable [forum](https://talk.observablehq.com/t/welcome-to-the-observable-forum/8).
 `
-)});
-  main.variable(observer("source")).define("source", function(){return(
+)}
+
+function _source(){return(
 "This is a place for everyone to meet, discuss and share their work, and help one another. You will find answers to common questions, examples of techniques, and general discussion about data science, visualization, programming, and more."
   .split(/[\s,.]+/)
   .filter(word => word.length > 0)
-)});
-  main.variable(observer("sourceVectors")).define("sourceVectors", ["runSamples","word2vec","source"], function(runSamples,word2vec,source){return(
+)}
+
+function _sourceVectors(runSamples,word2vec,source){return(
 runSamples, word2vec(source)
-)});
-  main.variable(observer()).define(["html","source","Plot","width","sourceVectors"], function(html,source,Plot,width,sourceVectors){return(
+)}
+
+function _14(html,source,Plot,width,sourceVectors){return(
 html`${source.map((vector, sample_i) => html`<div style="position: absolute; color: white; -webkit-text-stroke: 1px black; font: bold 20px/33px var(--sans-serif); padding: 0 38px;">${source[sample_i]}</div>${Plot.plot({
   height: 33,
   width: width,
@@ -135,28 +143,35 @@ html`${source.map((vector, sample_i) => html`<div style="position: absolute; col
     Plot.cellX({length: 300}, {x: (d, i) => i, fill: (d, i) => (sourceVectors[sample_i]|| [])[i]})
   ]
 })}`)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`### Range query `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`To help orientate inside the dataset you can do a prefix query which returns the next 1000 word2vec matches lexicographically. As you will see the underlying data is fairly messy`
-)});
-  main.variable(observer("sample")).define("sample", ["query"], async function(query){return(
+)}
+
+async function _sample(query){return(
 await query({
   from: "lea"
 })
-)});
-  main.variable(observer("sampleVectors")).define("sampleVectors", ["word2vec","sample"], function(word2vec,sample){return(
+)}
+
+function _sampleVectors(word2vec,sample){return(
 word2vec(sample.slice(0, 20))
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _19(md){return(
 md`Plot is a great tool for visualizing the raw vectors. Note "leach metro philadelphia" jumps out, which I think is because it is referring to "Daylin Leach" a public figure from Philadelphia. `
-)});
-  main.variable(observer()).define(["Plot"], function(Plot){return(
+)}
+
+function _20(Plot){return(
 Plot
-)});
-  main.variable(observer("plot")).define("plot", ["html","sampleVectors","sample","Plot","width"], function(html,sampleVectors,sample,Plot,width){return(
+)}
+
+function _plot(html,sampleVectors,sample,Plot,width){return(
 html`${sampleVectors.map(
   (vector, sample_i) => html`<div style="position: relative;">
   <div style="position: absolute; color: white; -webkit-text-stroke: 1px black; font: bold 20px/33px var(--sans-serif); padding: 0 38px;">${
@@ -181,11 +196,13 @@ html`${sampleVectors.map(
     ]
   })}`
 )}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _22(md){return(
 md`### word2vec client`
-)});
-  main.variable(observer("word2vec")).define("word2vec", ["service"], function(service){return(
+)}
+
+function _word2vec(service){return(
 async (wordOrWords) => {
   const CACHE_BUSTER = "4"
   if (typeof wordOrWords === 'string') {
@@ -203,21 +220,25 @@ async (wordOrWords) => {
     throw new Error(`Unrecognised type: ${typeof wordOrWords}`)
   }
 }
-)});
-  main.variable(observer("query")).define("query", ["service"], function(service){return(
+)}
+
+function _query(service){return(
 async ({from} = {}) => {
   const response = await fetch(`${service.href}?v=3&from=${encodeURIComponent(from)}`)
   if (response.status !== 200) throw new Error(`Status ${response.status} ${await response.text()}`)
   return (await response.json()).map(_ => decodeURIComponent(_));
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`### Service Implementation`
-)});
-  main.variable(observer("CACHE_SECONDS")).define("CACHE_SECONDS", function(){return(
+)}
+
+function _CACHE_SECONDS(){return(
 60 * 60
-)});
-  main.variable(observer("service")).define("service", ["deploy","createGapi","CACHE_SECONDS","promiseRecursive"], function(deploy,createGapi,CACHE_SECONDS,promiseRecursive){return(
+)}
+
+function _service(deploy,createGapi,CACHE_SECONDS,promiseRecursive){return(
 deploy("default", async (req, res, ctx) => {
   const VEC_LENGTH = 300;
   const PREFIX = 'datasets/GoogleNews-vectors-negative300/';
@@ -285,8 +306,9 @@ deploy("default", async (req, res, ctx) => {
     return res.status(400).send("No word(s) specified");
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _28(md){return(
 md`### Service Preparation
 
 These are the steps used to setup this service. Basically,the word2vec model is unpacked and upload to Cloud Storage on word at a time. We give each word vector its own file named after the word, with a space efficient binary encoding for the vector. The result is that we are able to query Cloud storage by key, which is cheaper than using a database. Very little code but it took 24 hours to synchronize 3.7m files totaling 3 GiB.
@@ -294,8 +316,9 @@ These are the steps used to setup this service. Basically,the word2vec model is 
 The access to cloud storage is mediated through a [serverless cell](/@endpointservices/serverless-cells) which is provided a service account as a [secret](/@endpointservices/secrets). While at this time I have not put any protections against abuse, by having notebook code on the serving path I could add some controls later if needed.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _29(md){return(
 md`
 #### Python program to extract pretrained model into a files
 
@@ -319,8 +342,9 @@ for i in range(len(normed)):
 ~~~
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _30(md){return(
 md`### Bash command to upload extracted dataset to GCS
 
 While it is only one line it actually took >48 hours to complete, but it did survive several transient internet outages. Good work \`gsutil\`!
@@ -329,8 +353,9 @@ While it is only one line it actually took >48 hours to complete, but it did sur
 gsutil -m cp -r GoogleNews-vectors-negative300 gs://word2vec_data/datasets/GoogleNews-vectors-negative300
 ~~~
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _31(md){return(
 md`#### Verification
 
 We fetch some example vectors just to test we have our Endianness right.
@@ -482,7 +507,46 @@ array([-0.09727119, -0.00750795, -0.01176025,  0.0988658 , -0.02498222,
       dtype=float32)
 ~~~
 `
-)});
+)}
+
+function _36(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["html","sampleVectors","sample","Plot"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer("viewof runSamples")).define("viewof runSamples", ["Inputs"], _runSamples);
+  main.variable(observer("runSamples")).define("runSamples", ["Generators", "viewof runSamples"], (G, _) => G.input(_));
+  main.variable(observer()).define(["runSamples","word2vec"], _6);
+  main.variable(observer()).define(["word2vec"], _7);
+  main.variable(observer()).define(["runSamples","word2vec"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["runSamples","word2vec"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("source")).define("source", _source);
+  main.variable(observer("sourceVectors")).define("sourceVectors", ["runSamples","word2vec","source"], _sourceVectors);
+  main.variable(observer()).define(["html","source","Plot","width","sourceVectors"], _14);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("sample")).define("sample", ["query"], _sample);
+  main.variable(observer("sampleVectors")).define("sampleVectors", ["word2vec","sample"], _sampleVectors);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["Plot"], _20);
+  main.variable(observer("plot")).define("plot", ["html","sampleVectors","sample","Plot","width"], _plot);
+  main.variable(observer()).define(["md"], _22);
+  main.variable(observer("word2vec")).define("word2vec", ["service"], _word2vec);
+  main.variable(observer("query")).define("query", ["service"], _query);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("CACHE_SECONDS")).define("CACHE_SECONDS", _CACHE_SECONDS);
+  main.variable(observer("service")).define("service", ["deploy","createGapi","CACHE_SECONDS","promiseRecursive"], _service);
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["md"], _29);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _31);
   const child1 = runtime.module(define1);
   main.import("deploy", child1);
   const child2 = runtime.module(define2);
@@ -491,8 +555,6 @@ array([-0.09727119, -0.00750795, -0.01176025,  0.0988658 , -0.02498222,
   main.import("promiseRecursive", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _36);
   return main;
 }
