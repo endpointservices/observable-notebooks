@@ -876,7 +876,6 @@ md`### Remote Endpoint`
 function _apiServer(endpoint,$0){return(
 endpoint(
   "api",
-
   async (req, res, ctx) => {
     // save in a DB, deduplication, rate limit, authentication
     const config = JSON.parse(
