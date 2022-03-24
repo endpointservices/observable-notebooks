@@ -63,6 +63,12 @@ view`<div style="height: 800px; display: none; background-image: url('${await Fi
     body {
       margin: 0px;
     }
+    a[href] {
+      color: #3182bd
+    }
+    a[href]:hover {
+      text-decoration: underline;
+    }
   </style>
   <div style="max-width: 740px; margin: auto">
     <h1 style="display: none">Tarot</h1>
@@ -109,7 +115,7 @@ The restart cell binds to the "ask another question" button. It clears the UI st
 function _restartAction(Generators,$0,invalidation){return(
 Generators.observe((notify) => {
   const onrestart = () => {
-    console.log("restart");
+    console.log("restart ");
     $0.fortune.value = "";
     $0.name.value = "";
     $0.question.value = "";
@@ -770,26 +776,7 @@ function _readingOrEmpty($0){return(
 $0.value || ""
 )}
 
-function _87(Inputs,$0,cards,OPENAI_API_KEY,ADMIN_SERVICE_ACCOUNT,user,$1,Event){return(
-Inputs.button("run example clientside", {
-  required: true,
-  reduce: async () => {
-    const data = await $0.send({
-      name: "Tom",
-      cards: cards.map((c) => c.name),
-      question: "Will I be rich?",
-      OPENAI_API_KEY,
-      ADMIN_SERVICE_ACCOUNT,
-      token: await user.getIdToken()
-    });
-
-    $1.value = data;
-    $1.dispatchEvent(new Event("input", { bubbles: true }));
-  }
-})
-)}
-
-function _88(md){return(
+function _87(md){return(
 md`### Run tarot reading in remote service
 
 We can pass the cards and question and name parameters to a webcode.run endpoint, which runs the core code remotely, and injects the OPENAI_API_KEY secret so you do not need to fill this out.
@@ -814,7 +801,7 @@ Inputs.button("run remote", {
 })
 )}
 
-function _90(md){return(
+function _89(md){return(
 md`### getFortune API client `
 )}
 
@@ -839,12 +826,12 @@ async ({ name, token, cards, question } = {}) => {
 }
 )}
 
-function _92(md){return(
+function _91(md){return(
 md`## API Server`
 )}
 
-function _93(md){return(
-md`### Clientside parameters`
+function _92(md){return(
+md`### [Optional] Local Credentials`
 )}
 
 function _OPENAI_API_KEY(Inputs,localStorageView){return(
@@ -861,6 +848,27 @@ Inputs.bind(
 )
 )}
 
+function _95(Inputs,$0,cards,OPENAI_API_KEY,ADMIN_SERVICE_ACCOUNT,user,$1,Event,md){return(
+md`This button uses the local credentials and bypasses the API by writing straight the the pipeline.
+
+${Inputs.button("trigger API pipeline using local credentials", {
+  required: true,
+  reduce: async () => {
+    const data = await $0.send({
+      name: "Tom",
+      cards: cards.map((c) => c.name),
+      question: "Will I be rich?",
+      OPENAI_API_KEY,
+      ADMIN_SERVICE_ACCOUNT,
+      token: await user.getIdToken()
+    });
+
+    $1.value = data;
+    $1.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+})}`
+)}
+
 function _96(md){return(
 md`### Remote Endpoint`
 )}
@@ -871,8 +879,11 @@ endpoint(
 
   async (req, res, ctx) => {
     // save in a DB, deduplication, rate limit, authentication
-    const config = JSON.parse(atob(req.query.config)); // name, cards, questions
-    config.token = req.headers["authorization"].split(" ")[1];
+    const config = JSON.parse(
+      atob(req.query.config || /* base64('{}') = */ "e30=")
+    ); // name, cards, questions
+    config.health = req.query.health !== undefined;
+    config.token = req.headers["authorization"]?.split(" ")[1];
     config.OPENAI_API_KEY = ctx.secrets.OPENAI_API_KEY; // Mixin API_KEY from secrets
     config.ADMIN_SERVICE_ACCOUNT = ctx.secrets.secretadmin_service_account_key;
     const response = await $0.send(config);
@@ -901,9 +912,14 @@ function _101(md){return(
 md`#### Validate User Input`
 )}
 
-function _validateOK(config,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH,$0)
+function _validateOK(config,$0,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH)
 {
   var msg = "unknown";
+
+  if (config.health) {
+    return $0.respond("ok"); // Check queue health if param is 'health'
+  }
+
   if (config.question.length >= QUESTION_MAX_LENGTH) {
     msg = "Question too long";
   } else if (!config.question || config.question == "") {
@@ -1830,18 +1846,18 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof reading")).define("viewof reading", ["Inputs"], _reading);
   main.variable(observer("reading")).define("reading", ["Generators", "viewof reading"], (G, _) => G.input(_));
   main.variable(observer("readingOrEmpty")).define("readingOrEmpty", ["viewof reading"], _readingOrEmpty);
-  main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event"], _87);
-  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["md"], _87);
   main.variable(observer("viewof clientResponse")).define("viewof clientResponse", ["Inputs","getFortune","user","cards","viewof reading","Event"], _clientResponse);
   main.variable(observer("clientResponse")).define("clientResponse", ["Generators", "viewof clientResponse"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _90);
+  main.variable(observer()).define(["md"], _89);
   main.variable(observer("getFortune")).define("getFortune", ["apiServer","user"], _getFortune);
+  main.variable(observer()).define(["md"], _91);
   main.variable(observer()).define(["md"], _92);
-  main.variable(observer()).define(["md"], _93);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
   main.variable(observer("viewof ADMIN_SERVICE_ACCOUNT")).define("viewof ADMIN_SERVICE_ACCOUNT", ["Inputs","localStorageView"], _ADMIN_SERVICE_ACCOUNT);
   main.variable(observer("ADMIN_SERVICE_ACCOUNT")).define("ADMIN_SERVICE_ACCOUNT", ["Generators", "viewof ADMIN_SERVICE_ACCOUNT"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event","md"], _95);
   main.variable(observer()).define(["md"], _96);
   main.variable(observer("apiServer")).define("apiServer", ["endpoint","viewof config"], _apiServer);
   main.variable(observer()).define(["md"], _98);
@@ -1849,7 +1865,7 @@ export default function define(runtime, observer) {
   main.variable(observer("config")).define("config", ["Generators", "viewof config"], (G, _) => G.input(_));
   main.variable(observer()).define(["config"], _100);
   main.variable(observer()).define(["md"], _101);
-  main.variable(observer("validateOK")).define("validateOK", ["config","QUESTION_MAX_LENGTH","NAME_MAX_LENGTH","viewof config"], _validateOK);
+  main.variable(observer("validateOK")).define("validateOK", ["config","viewof config","QUESTION_MAX_LENGTH","NAME_MAX_LENGTH"], _validateOK);
   main.variable(observer()).define(["md"], _103);
   main.variable(observer("currentUser")).define("currentUser", ["verifyIdToken","adminFirebase","config","viewof config"], _currentUser);
   main.variable(observer()).define(["md"], _105);
