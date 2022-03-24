@@ -945,7 +945,7 @@ md`### User token validation`
 
 function _currentUser(config,invalidation,verifyIdToken,adminFirebase,$0)
 {
-  if (config.health) return invalidation;
+  if (config.health) return invalidation; // Processing stops when doing a health check here.
   try {
     return verifyIdToken(adminFirebase, config.token);
   } catch (err) {
