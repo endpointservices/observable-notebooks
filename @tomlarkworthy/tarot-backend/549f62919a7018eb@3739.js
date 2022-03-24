@@ -943,8 +943,9 @@ function _103(md){return(
 md`### User token validation`
 )}
 
-function _currentUser(verifyIdToken,adminFirebase,config,$0)
+function _currentUser(config,invalidation,verifyIdToken,adminFirebase,$0)
 {
+  if (config.health) return invalidation;
   try {
     return verifyIdToken(adminFirebase, config.token);
   } catch (err) {
@@ -1867,7 +1868,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _101);
   main.variable(observer("validateOK")).define("validateOK", ["config","viewof config","QUESTION_MAX_LENGTH","NAME_MAX_LENGTH"], _validateOK);
   main.variable(observer()).define(["md"], _103);
-  main.variable(observer("currentUser")).define("currentUser", ["verifyIdToken","adminFirebase","config","viewof config"], _currentUser);
+  main.variable(observer("currentUser")).define("currentUser", ["config","invalidation","verifyIdToken","adminFirebase","viewof config"], _currentUser);
   main.variable(observer()).define(["md"], _105);
   main.variable(observer("currentUsersRequestsInLastDay")).define("currentUsersRequestsInLastDay", ["requestsInLastDay","currentUser"], _currentUsersRequestsInLastDay);
   main.variable(observer("rateLimitOk")).define("rateLimitOk", ["validateOK","currentUsersRequestsInLastDay","viewof config","invalidation"], _rateLimitOk);
