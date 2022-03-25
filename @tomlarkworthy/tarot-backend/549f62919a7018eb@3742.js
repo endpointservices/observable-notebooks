@@ -869,10 +869,6 @@ ${Inputs.button("trigger API pipeline using local credentials", {
 })}`
 )}
 
-function _96(md){return(
-md`### Remote Endpoint`
-)}
-
 function _apiServer(endpoint,$0){return(
 endpoint(
   "api",
@@ -893,6 +889,10 @@ endpoint(
     hostNotebook: "@tomlarkworthy/tarot-backend"
   }
 )
+)}
+
+function _97(md){return(
+md`### Remote Endpoint`
 )}
 
 function _98(md){return(
@@ -1858,8 +1858,8 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof ADMIN_SERVICE_ACCOUNT")).define("viewof ADMIN_SERVICE_ACCOUNT", ["Inputs","localStorageView"], _ADMIN_SERVICE_ACCOUNT);
   main.variable(observer("ADMIN_SERVICE_ACCOUNT")).define("ADMIN_SERVICE_ACCOUNT", ["Generators", "viewof ADMIN_SERVICE_ACCOUNT"], (G, _) => G.input(_));
   main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event","md"], _95);
-  main.variable(observer()).define(["md"], _96);
   main.variable(observer("apiServer")).define("apiServer", ["endpoint","viewof config"], _apiServer);
+  main.variable(observer()).define(["md"], _97);
   main.variable(observer()).define(["md"], _98);
   main.variable(observer("viewof config")).define("viewof config", ["flowQueue"], _config);
   main.variable(observer("config")).define("config", ["Generators", "viewof config"], (G, _) => G.input(_));
