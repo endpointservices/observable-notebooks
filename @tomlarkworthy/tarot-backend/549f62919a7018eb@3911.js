@@ -1452,17 +1452,24 @@ md`### Debugging
 We will allow the notebook state to be serialized`
 )}
 
-function _155(endpoint,notebookSnapshot){return(
-endpoint("snapshot", async (req, res) => {
+function _155(modules){return(
+modules
+)}
+
+function _156(endpoint,notebookSnapshot){return(
+endpoint("snapshot2", async (req, res) => {
   res.json(
-    (await notebookSnapshot()).filter(
-      (variable) => variable.state === "rejected"
-    )
+    (await notebookSnapshot()).map((variable) => ({
+      state: variable.state,
+      name: variable.name,
+      // Note these cells might contain personal information, so we only allow errors values to leave the environment
+      ...(variable.state === "rejected" && { value: variable.value })
+    }))
   );
 })
 )}
 
-function _156(md){return(
+function _157(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1494,11 +1501,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _161(md){return(
+function _162(md){return(
 md`## Utilities`
 )}
 
-function _162(md){return(
+function _163(md){return(
 md`### findCardsByName`
 )}
 
@@ -1514,7 +1521,7 @@ async (cardNames) =>
   )
 )}
 
-function _164(md){return(
+function _165(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1541,7 +1548,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _166(md){return(
+function _167(md){return(
 md`## Dependencies`
 )}
 
@@ -1801,7 +1808,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _183(footer){return(
+function _184(footer){return(
 footer
 )}
 
@@ -1992,8 +1999,10 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _153);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _155);
-  main.variable(observer()).define(["md"], _156);
+  main.import("modules", child2);
+  main.variable(observer()).define(["modules"], _155);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _156);
+  main.variable(observer()).define(["md"], _157);
   const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child3);
   main.import("DocView", child3);
@@ -2001,12 +2010,12 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child4);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _161);
   main.variable(observer()).define(["md"], _162);
+  main.variable(observer()).define(["md"], _163);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _164);
+  main.variable(observer()).define(["md"], _165);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(["md"], _166);
+  main.variable(observer()).define(["md"], _167);
   const child5 = runtime.module(define4);
   main.import("getCards", child5);
   main.import("images", "cardData", child5);
@@ -2039,6 +2048,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child17 = runtime.module(define16);
   main.import("footer", child17);
-  main.variable(observer()).define(["footer"], _183);
+  main.variable(observer()).define(["footer"], _184);
   return main;
 }
