@@ -115,7 +115,7 @@ The restart cell binds to the "ask another question" button. It clears the UI st
 function _restartAction(Generators,$0,invalidation){return(
 Generators.observe((notify) => {
   const onrestart = () => {
-    console.log("restart ");
+    console.log("restart");
     $0.fortune.value = "";
     $0.name.value = "";
     $0.question.value = "";
@@ -396,7 +396,7 @@ shareButton()
 )}
 
 function _38($0){return(
-$0.value = "https://cool2.com"
+$0.value = "https://cool2.com "
 )}
 
 function _39(md){return(
