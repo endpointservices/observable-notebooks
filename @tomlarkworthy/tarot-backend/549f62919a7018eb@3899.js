@@ -1,18 +1,19 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./993a0c51ef1175ea@1343.js";
-import define3 from "./6b51d73d81a1b21f@207.js";
-import define4 from "./6eda90668ae03044@803.js";
-import define5 from "./0e0b35a92c819d94@325.js";
-import define6 from "./048a17a165be198d@263.js";
-import define7 from "./0c800138c487d3e1@860.js";
-import define8 from "./698257e86fae4586@350.js";
-import define9 from "./f92778131fd76559@1173.js";
-import define10 from "./92ff66b718c1972f@141.js";
-import define11 from "./653c46ed55693b1f@646.js";
-import define12 from "./9bed702f80a3797e@402.js";
-import define13 from "./dff1e917c89f5e76@1711.js";
-import define14 from "./ef672b935bd480fc@619.js";
-import define15 from "./293899bef371e135@216.js";
+import define2 from "./374124b361974cb3@129.js";
+import define3 from "./993a0c51ef1175ea@1343.js";
+import define4 from "./6b51d73d81a1b21f@207.js";
+import define5 from "./6eda90668ae03044@803.js";
+import define6 from "./0e0b35a92c819d94@325.js";
+import define7 from "./048a17a165be198d@263.js";
+import define8 from "./0c800138c487d3e1@860.js";
+import define9 from "./698257e86fae4586@350.js";
+import define10 from "./f92778131fd76559@1173.js";
+import define11 from "./92ff66b718c1972f@141.js";
+import define12 from "./653c46ed55693b1f@646.js";
+import define13 from "./9bed702f80a3797e@402.js";
+import define14 from "./dff1e917c89f5e76@1711.js";
+import define15 from "./ef672b935bd480fc@619.js";
+import define16 from "./293899bef371e135@216.js";
 
 function _1(md){return(
 md`# Tarot Backend
@@ -1438,7 +1439,7 @@ Inputs.button("update index.html", {
 )}
 
 function _151(md){return(
-md`### Anonymous User`
+md`### Clientside User`
 )}
 
 async function _user(firebase){return(
@@ -1446,6 +1447,22 @@ async function _user(firebase){return(
 )}
 
 function _153(md){return(
+md`### Debugging
+
+We will allow the notebook state to be serialized`
+)}
+
+function _155(endpoint,notebookSnapshot){return(
+endpoint("snapshot", async (req, res) => {
+  res.json(
+    (await notebookSnapshot()).filter(
+      (variable) => variable.state === "rejected"
+    )
+  );
+})
+)}
+
+function _156(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1477,11 +1494,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _158(md){return(
+function _161(md){return(
 md`## Utilities`
 )}
 
-function _159(md){return(
+function _162(md){return(
 md`### findCardsByName`
 )}
 
@@ -1497,7 +1514,7 @@ async (cardNames) =>
   )
 )}
 
-function _161(md){return(
+function _164(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1524,7 +1541,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _163(md){return(
+function _166(md){return(
 md`## Dependencies`
 )}
 
@@ -1784,7 +1801,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _180(footer){return(
+function _183(footer){return(
 footer
 )}
 
@@ -1973,51 +1990,55 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _151);
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer()).define(["md"], _153);
-  const child2 = runtime.module(define2).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
-  main.import("firebase", child2);
-  main.import("DocView", child2);
-  const child3 = runtime.module(define2).derive([{name: "adminConfig", alias: "firebaseConfig"}], main);
-  main.import("firebase", "adminFirebase", child3);
+  const child2 = runtime.module(define2);
+  main.import("notebookSnapshot", child2);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _155);
+  main.variable(observer()).define(["md"], _156);
+  const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
+  main.import("firebase", child3);
+  main.import("DocView", child3);
+  const child4 = runtime.module(define3).derive([{name: "adminConfig", alias: "firebaseConfig"}], main);
+  main.import("firebase", "adminFirebase", child4);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _158);
-  main.variable(observer()).define(["md"], _159);
-  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
   main.variable(observer()).define(["md"], _161);
+  main.variable(observer()).define(["md"], _162);
+  main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
+  main.variable(observer()).define(["md"], _164);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(["md"], _163);
-  const child4 = runtime.module(define3);
-  main.import("getCards", child4);
-  main.import("images", "cardData", child4);
-  main.import("fileAttachments", child4);
+  main.variable(observer()).define(["md"], _166);
   const child5 = runtime.module(define4);
-  main.import("endpoint", child5);
+  main.import("getCards", child5);
+  main.import("images", "cardData", child5);
+  main.import("fileAttachments", child5);
   const child6 = runtime.module(define5);
-  main.import("flowQueue", child6);
+  main.import("endpoint", child6);
   const child7 = runtime.module(define6);
-  main.import("localStorageView", child7);
+  main.import("flowQueue", child7);
   const child8 = runtime.module(define7);
-  main.import("colorPicker", child8);
+  main.import("localStorageView", child8);
   const child9 = runtime.module(define8);
-  main.import("verifyIdToken", child9);
-  main.import("getAccessTokenFromServiceAccount", child9);
+  main.import("colorPicker", child9);
   const child10 = runtime.module(define9);
-  main.import("view", child10);
-  main.import("bindOneWay", child10);
+  main.import("verifyIdToken", child10);
+  main.import("getAccessTokenFromServiceAccount", child10);
   const child11 = runtime.module(define10);
-  main.import("verticalSliders", child11);
+  main.import("view", child11);
+  main.import("bindOneWay", child11);
   const child12 = runtime.module(define11);
-  main.import("juice", child12);
+  main.import("verticalSliders", child12);
   const child13 = runtime.module(define12);
-  main.import("toc", child13);
+  main.import("juice", child13);
   const child14 = runtime.module(define13);
-  main.import("deploy", child14);
+  main.import("toc", child14);
   const child15 = runtime.module(define14);
+  main.import("deploy", child15);
+  const child16 = runtime.module(define15);
   main.variable(observer("font")).define("font", ["htl"], _font);
   main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
-  const child16 = runtime.module(define15);
-  main.import("footer", child16);
-  main.variable(observer()).define(["footer"], _180);
+  const child17 = runtime.module(define16);
+  main.import("footer", child17);
+  main.variable(observer()).define(["footer"], _183);
   return main;
 }
