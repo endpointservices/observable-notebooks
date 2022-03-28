@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@200
-import define1 from "./e1c39d41e8e944b0@361.js";
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@203
+import define1 from "./e1c39d41e8e944b0@365.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
@@ -31,7 +31,7 @@ This notebook operates upon a hacks developed by [@mootari](/@mootari) and [@bry
 function _4(md){return(
 md`### Fixing for edge cases
 
-The trick used to discover which module is the current notebook can break with some modules. You can provide a known variable as the first parameter to aid detection of a particular notebook.`
+The trick used to discover which module is the current notebook can break with some modules. You can provide a known variable as the first parameter to aid detection of a particular notebook, but it's not needed for most usecases`
 )}
 
 function _5(md){return(

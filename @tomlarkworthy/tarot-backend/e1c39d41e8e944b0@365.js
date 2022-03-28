@@ -1,4 +1,4 @@
-// https://observablehq.com/@mootari/access-runtime@361
+// https://observablehq.com/@mootari/access-runtime@365
 import define1 from "./c704620b9f688381@285.js";
 
 function _1(md){return(
@@ -56,8 +56,7 @@ new Promise(resolve => {
     
     if(runtime) {
       Set.prototype.forEach = fn;
-      // Wait for all imported modules to be defined.
-      setTimeout(() => resolve(runtime));
+      resolve(runtime);
     }
     return fn.apply(this, args);
   };
@@ -83,7 +82,8 @@ function _modules(runtime)
   // Imported modules are keyed by their define() functions, which we don't need here.
   const imports = new Set(runtime._modules.values());
   // Find all modules by retrieving them directly from the variables.
-  const modules = new Set(Array.from(runtime._variables, v => v._module));
+  // Derived modules are "anonymous" but keep a reference to their source module.
+  const modules = new Set(Array.from(runtime._variables, ({_module: m}) => m._source || m));
   // When you edit a notebook on observablehq.com, Observable defines the
   // variables dynamically on main instead of creating a separate module.
   // When embedded however the entry notebook also becomes a Runtime module.

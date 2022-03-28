@@ -1,5 +1,5 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./374124b361974cb3@200.js";
+import define2 from "./374124b361974cb3@203.js";
 import define3 from "./993a0c51ef1175ea@1343.js";
 import define4 from "./6b51d73d81a1b21f@207.js";
 import define5 from "./6eda90668ae03044@803.js";
@@ -31,6 +31,7 @@ The UI is designed hierarchically and assembled into a single cell, following th
 We the API request process across several Observable reactive dataflow cells using a [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue). If a step has a bug, we can then fix that individual line and the trace will continue which makes development very ergonomic. Furthermore, by exploiting [webcode.run](https://webcode.run) live coding, production traffic will be traced in the development notebook, and we can develop and debug directly on prod.
 
 I hope you find [webcode.run](https://webcode.run) + [observable](/) application development interesting. This took about 2 weeks of fulltime work to develop.
+
 
 `
 )}
@@ -1446,7 +1447,7 @@ async function _user(firebase){return(
 (await firebase.auth().signInAnonymously()).user
 )}
 
-function _153(md){return(
+function _debuggingSection(md){return(
 md`### Debugging
 
 We will allow the notebook state to be serialized`
@@ -2006,7 +2007,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _150);
   main.variable(observer()).define(["md"], _151);
   main.variable(observer("user")).define("user", ["firebase"], _user);
-  main.variable(observer()).define(["md"], _153);
+  main.variable(observer("debuggingSection")).define("debuggingSection", ["md"], _debuggingSection);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
   main.import("modules", child2);
