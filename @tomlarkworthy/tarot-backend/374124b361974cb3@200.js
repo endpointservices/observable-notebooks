@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@197
-import define1 from "./e1c39d41e8e944b0@360.js";
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@200
+import define1 from "./e1c39d41e8e944b0@361.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*

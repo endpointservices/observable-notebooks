@@ -1,5 +1,5 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./374124b361974cb3@197.js";
+import define2 from "./374124b361974cb3@200.js";
 import define3 from "./993a0c51ef1175ea@1343.js";
 import define4 from "./6b51d73d81a1b21f@207.js";
 import define5 from "./6eda90668ae03044@803.js";
@@ -1460,7 +1460,11 @@ function _exampleSnapshot(notebookSnapshot){return(
 notebookSnapshot()
 )}
 
-function _157(endpoint,notebookSnapshot){return(
+function _trackedSnapshot(notebookSnapshot){return(
+notebookSnapshot("trackingVariable_e3366d24de62")
+)}
+
+function _158(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
     (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
@@ -1475,7 +1479,7 @@ endpoint("variables", async (req, res) => {
 })
 )}
 
-function _158(md){return(
+function _159(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1507,11 +1511,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _163(md){return(
+function _164(md){return(
 md`## Utilities`
 )}
 
-function _164(md){return(
+function _165(md){return(
 md`### findCardsByName`
 )}
 
@@ -1527,7 +1531,7 @@ async (cardNames) =>
   )
 )}
 
-function _166(md){return(
+function _167(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1554,7 +1558,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _168(md){return(
+function _169(md){return(
 md`## Dependencies`
 )}
 
@@ -1814,7 +1818,7 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _185(footer){return(
+function _186(footer){return(
 footer
 )}
 
@@ -2003,13 +2007,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _151);
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer()).define(["md"], _153);
-  main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer("exampleSnapshot")).define("exampleSnapshot", ["notebookSnapshot"], _exampleSnapshot);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
   main.import("modules", child2);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _157);
-  main.variable(observer()).define(["md"], _158);
+  main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
+  main.variable(observer("exampleSnapshot")).define("exampleSnapshot", ["notebookSnapshot"], _exampleSnapshot);
+  main.variable(observer("trackedSnapshot")).define("trackedSnapshot", ["notebookSnapshot"], _trackedSnapshot);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _158);
+  main.variable(observer()).define(["md"], _159);
   const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child3);
   main.import("DocView", child3);
@@ -2017,12 +2022,12 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child4);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _163);
   main.variable(observer()).define(["md"], _164);
+  main.variable(observer()).define(["md"], _165);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _166);
+  main.variable(observer()).define(["md"], _167);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(["md"], _168);
+  main.variable(observer()).define(["md"], _169);
   const child5 = runtime.module(define4);
   main.import("getCards", child5);
   main.import("images", "cardData", child5);
@@ -2055,6 +2060,6 @@ export default function define(runtime, observer) {
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   const child17 = runtime.module(define16);
   main.import("footer", child17);
-  main.variable(observer()).define(["footer"], _185);
+  main.variable(observer()).define(["footer"], _186);
   return main;
 }

@@ -1,4 +1,4 @@
-// https://observablehq.com/@mootari/access-runtime@360
+// https://observablehq.com/@mootari/access-runtime@361
 import define1 from "./c704620b9f688381@285.js";
 
 function _1(md){return(
@@ -33,11 +33,9 @@ The following code applies a temporary [monkey patch](https://en.wikipedia.org/w
 `
 )}
 
-function _captureRuntime()
-{
-  let resolve;
-  const fn = Set.prototype.forEach,
-        p = new Promise(r => resolve = r);
+function _captureRuntime(){return(
+new Promise(resolve => {
+  const fn = Set.prototype.forEach;
   Set.prototype.forEach = function(...args) {
     let o, runtime;
     
@@ -58,14 +56,13 @@ function _captureRuntime()
     
     if(runtime) {
       Set.prototype.forEach = fn;
-      resolve(runtime);
+      // Wait for all imported modules to be defined.
+      setTimeout(() => resolve(runtime));
     }
     return fn.apply(this, args);
   };
-  
-  return p;
-}
-
+})
+)}
 
 function _runtime(captureRuntime){return(
 captureRuntime
