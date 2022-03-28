@@ -1,4 +1,4 @@
-import define1 from "./e1c39d41e8e944b0@345.js";
+import define1 from "./c61faea06f2e00c0@362.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
@@ -17,7 +17,6 @@ This returns an array of the cell states *now*
 Usage:
 \`\`\`js
 import {notebookSnapshot} from '@tomlarkworthy/notebook-snapshot'
-
 \`\`\`
 `
 )}
@@ -29,6 +28,12 @@ This notebook operates upon a hacks developed by [@mootari](/@mootari) and [@bry
 )}
 
 function _4(md){return(
+md`### Fixing for embedded use
+
+The trick used to discover which module is the current notebook breaks when embedded. If you need to snapshot the runtime of an embedded notebook, you need to provide a known variable name from the current notebook. The Demo does this with the cell *"dependsOnThrownError"*. As such, the demo table cell works even when embedded.`
+)}
+
+function _5(md){return(
 md`### Demo
 
 *look* its *this* notebook's snapshot! If you click refresh, the value of *refresh* increments, because of the default reduce action of an *Input.button*. I also added some Errors so you can see the state "rejected".`
@@ -38,9 +43,9 @@ function _refresh(Inputs,md){return(
 Inputs.button(md`refresh *notebookSnapshot()*`)
 )}
 
-async function _6(refresh,Inputs,notebookSnapshot){return(
+async function _exampleResults(refresh,Inputs,notebookSnapshot){return(
 refresh,
-Inputs.table(await notebookSnapshot(), {
+Inputs.table(await notebookSnapshot("dependsOnThrownError"), {
   columns: ["name", "state", "value"]
 })
 )}
@@ -55,22 +60,30 @@ function _dependsOnThrownError(thrownError){return(
 thrownError
 )}
 
-function _9()
+function _10()
 {
   // Anonymous Error
   throw new Error("I was thrown from an anonymous cell");
 }
 
 
-function _10(md){return(
+function _11(md){return(
 md`### Implementation`
 )}
 
-function _notebookSnapshot(runtime,modules,promiseState){return(
-() =>
-  Promise.all(
+function _notebookSnapshot(modules,runtime,promiseState){return(
+(knownVariable) => {
+  const moduleName = knownVariable
+    ? modules.get(
+        [...runtime._variables].find((v) => v._name === knownVariable)._module
+      )
+    : "self";
+
+  console.log(moduleName);
+
+  return Promise.all(
     Array.from(runtime._variables)
-      .filter((v) => modules.get(v._module) === "self")
+      .filter((v) => modules.get(v._module) === moduleName)
       .map((v) => {
         return promiseState(v._promise).then(([state, value]) => ({
           ...(v._name && { name: v._name }),
@@ -78,7 +91,8 @@ function _notebookSnapshot(runtime,modules,promiseState){return(
           state
         }));
       })
-  )
+  );
+}
 )}
 
 function _promiseState(){return(
@@ -113,14 +127,15 @@ export default function define(runtime, observer) {
   main.import("runtime", child1);
   main.import("modules", child1);
   main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
   main.variable(observer("viewof refresh")).define("viewof refresh", ["Inputs","md"], _refresh);
   main.variable(observer("refresh")).define("refresh", ["Generators", "viewof refresh"], (G, _) => G.input(_));
-  main.variable(observer()).define(["refresh","Inputs","notebookSnapshot"], _6);
+  main.variable(observer("exampleResults")).define("exampleResults", ["refresh","Inputs","notebookSnapshot"], _exampleResults);
   main.variable(observer("thrownError")).define("thrownError", _thrownError);
   main.variable(observer("dependsOnThrownError")).define("dependsOnThrownError", ["thrownError"], _dependsOnThrownError);
-  main.variable(observer()).define(_9);
-  main.variable(observer()).define(["md"], _10);
-  main.variable(observer("notebookSnapshot")).define("notebookSnapshot", ["runtime","modules","promiseState"], _notebookSnapshot);
+  main.variable(observer()).define(_10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("notebookSnapshot")).define("notebookSnapshot", ["modules","runtime","promiseState"], _notebookSnapshot);
   main.variable(observer("promiseState")).define("promiseState", _promiseState);
   return main;
 }
