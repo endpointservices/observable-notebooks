@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@203
-import define1 from "./e1c39d41e8e944b0@365.js";
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@206
+import define1 from "./e1c39d41e8e944b0@378.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
@@ -9,7 +9,7 @@ This returns an array of the cell states *now*
 \`\`\`js
 [{
   name: String,  // [Optional] Cell name 
-  state: String. // 'fulfilled', 'pending', 'rejected'
+  state: String, // 'fulfilled', 'pending', 'rejected'
   value: Any     // pending/rejected value/reason
 }, ...]
 \`\`\`
@@ -124,7 +124,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   const child1 = runtime.module(define1);
-  main.import("captureRuntime", child1);
   main.import("runtime", child1);
   main.import("modules", child1);
   main.variable(observer()).define(["md"], _4);

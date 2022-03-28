@@ -1,5 +1,5 @@
-// https://observablehq.com/@mootari/access-runtime@365
-import define1 from "./c704620b9f688381@285.js";
+// https://observablehq.com/@mootari/access-runtime@378
+import define1 from "./8e6e97112bddde8a@306.js";
 
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
@@ -83,7 +83,8 @@ function _modules(runtime)
   const imports = new Set(runtime._modules.values());
   // Find all modules by retrieving them directly from the variables.
   // Derived modules are "anonymous" but keep a reference to their source module.
-  const modules = new Set(Array.from(runtime._variables, ({_module: m}) => m._source || m));
+  const source = m => !m._source ? m : source(m._source);
+  const modules = new Set(Array.from(runtime._variables, v => source(v._module)));
   // When you edit a notebook on observablehq.com, Observable defines the
   // variables dynamically on main instead of creating a separate module.
   // When embedded however the entry notebook also becomes a Runtime module.
@@ -147,6 +148,6 @@ export default function define(runtime, observer) {
   main.variable(observer("defines")).define("defines", ["md","runtime"], _defines);
   main.variable(observer()).define(["md"], _11);
   const child1 = runtime.module(define1);
-  main.import("slug", child1);
+  main.import("slider", child1);
   return main;
 }
