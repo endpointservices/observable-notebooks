@@ -1,5 +1,5 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./374124b361974cb3@188.js";
+import define2 from "./374124b361974cb3@197.js";
 import define3 from "./993a0c51ef1175ea@1343.js";
 import define4 from "./6b51d73d81a1b21f@207.js";
 import define5 from "./6eda90668ae03044@803.js";
@@ -1456,7 +1456,11 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _156(endpoint,notebookSnapshot){return(
+function _exampleSnapshot(notebookSnapshot){return(
+notebookSnapshot()
+)}
+
+function _157(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
     (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
@@ -1467,19 +1471,6 @@ endpoint("variables", async (req, res) => {
         ...(variable.state === "rejected" && { value: variable.value })
       })
     )
-  );
-})
-)}
-
-function _157(endpoint,notebookSnapshot){return(
-endpoint("snapshot2", async (req, res) => {
-  res.json(
-    (await notebookSnapshot()).map((variable) => ({
-      state: variable.state,
-      name: variable.name,
-      // Note these cells might contain personal information, so we only allow errors values to leave the environment
-      ...(variable.state === "rejected" && { value: variable.value })
-    }))
   );
 })
 )}
@@ -2013,10 +2004,10 @@ export default function define(runtime, observer) {
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer()).define(["md"], _153);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
+  main.variable(observer("exampleSnapshot")).define("exampleSnapshot", ["notebookSnapshot"], _exampleSnapshot);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
   main.import("modules", child2);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _156);
   main.variable(observer()).define(["endpoint","notebookSnapshot"], _157);
   main.variable(observer()).define(["md"], _158);
   const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);

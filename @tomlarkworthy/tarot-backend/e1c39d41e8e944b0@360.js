@@ -1,3 +1,4 @@
+// https://observablehq.com/@mootari/access-runtime@360
 import define1 from "./c704620b9f688381@285.js";
 
 function _1(md){return(
@@ -36,37 +37,32 @@ function _captureRuntime()
 {
   let resolve;
   const fn = Set.prototype.forEach,
-    p = new Promise((r) => (resolve = r));
-  Set.prototype.forEach = function (...args) {
+        p = new Promise(r => resolve = r);
+  Set.prototype.forEach = function(...args) {
     let o, runtime;
-
-    if ((o = args[1])) {
-      if (o._modules) {
-        console.debug(
-          "🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/runtime.js#L107"
-        );
+    
+    if(o = args[1]) {
+      if(o._modules) {
+        console.debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/runtime.js#L107');
         runtime = o;
-      } else if (o?._module._runtime) {
-        console.debug(
-          "🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/variable.js#L147"
-        );
+      }
+      else if(o._module) {
+        console.debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/variable.js#L147');
         runtime = o._module._runtime;
       }
-    } else if (
-      (o = this[Symbol.iterator]().next().value) &&
-      o?._module._runtime
-    ) {
-      console.debug("Captured Runtime from ???");
+    }
+    else if((o = this[Symbol.iterator]().next().value) && o._module) {
+      console.debug('Captured Runtime from ???');
       runtime = o._module._runtime;
     }
-
-    if (runtime) {
+    
+    if(runtime) {
       Set.prototype.forEach = fn;
       resolve(runtime);
     }
     return fn.apply(this, args);
   };
-
+  
   return p;
 }
 
@@ -85,21 +81,25 @@ md`## Modules`
 
 function _modules(runtime)
 {
-  const m = new Map([
-    // Builtins are assigned to a separate module.
-    [runtime._builtin, "builtin"],
-    // Additional modules are created for each import (direct or transitive).
-    ...Array.from(runtime._modules, ([, v], i) => [v, `import_${i}`])
-  ]);
-  // Because the first module (i.e., this notebook) is created without a define callback,
-  // the runtime does not store any explicit references to it.
-  // We have to fetch it from the variables, by method of exclusion.
-  // @tomlarkworthy: this trick does not work on embeded pages, so we cannot always determine 'self'
-  const noDefine = Array.from(runtime._variables).find(
-    (v) => !m.has(v._module)
-  );
-  if (noDefine) m.set(noDefine._module, "self");
-  return m;
+  // Builtins are stored in a separate module.
+  const builtin = runtime._builtin;
+  // Imported modules are keyed by their define() functions, which we don't need here.
+  const imports = new Set(runtime._modules.values());
+  // Find all modules by retrieving them directly from the variables.
+  const modules = new Set(Array.from(runtime._variables, v => v._module));
+  // When you edit a notebook on observablehq.com, Observable defines the
+  // variables dynamically on main instead of creating a separate module.
+  // When embedded however the entry notebook also becomes a Runtime module.
+  const main = [...modules].find(m => m !== builtin && !imports.has(m));
+  
+  const _imports = [...imports];
+  const labels = [
+    [builtin, 'builtin'],
+    [main || _imports.shift(), 'main'],
+    ..._imports.map((m, i) => [m, `child${i+1}`]),
+  ];
+  
+  return new Map(labels);
 }
 
 

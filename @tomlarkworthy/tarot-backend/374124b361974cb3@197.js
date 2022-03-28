@@ -1,4 +1,5 @@
-import define1 from "./c61faea06f2e00c0@362.js";
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@197
+import define1 from "./e1c39d41e8e944b0@360.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
@@ -28,9 +29,9 @@ This notebook operates upon a hacks developed by [@mootari](/@mootari) and [@bry
 )}
 
 function _4(md){return(
-md`### Fixing for embedded use
+md`### Fixing for edge cases
 
-The trick used to discover which module is the current notebook breaks when embedded. If you need to snapshot the runtime of an embedded notebook, you need to provide a known variable name from the current notebook. The Demo does this with the cell *"dependsOnThrownError"*. As such, the demo table cell works even when embedded.`
+The trick used to discover which module is the current notebook can break with some modules. You can provide a known variable as the first parameter to aid detection of a particular notebook.`
 )}
 
 function _5(md){return(
@@ -77,7 +78,7 @@ function _notebookSnapshot(modules,runtime,promiseState){return(
     ? modules.get(
         [...runtime._variables].find((v) => v._name === knownVariable)._module
       )
-    : "self";
+    : "main";
 
   console.log(moduleName);
 
