@@ -1,18 +1,16 @@
 // https://observablehq.com/@observablehq/banner@463
 import define1 from "./ee098917a6150f1f@388.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["whm-dvc.png",new URL("./files/d65b10049c554db9c4e8bad81c4183c7d1932217a9750d7cf7efb2b524a8066501de737af6d1d7fc9328ddd60f2fbdbb1f5832a83cd2ba64fe503f7cac367cc4",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["bannerTitle"], function(bannerTitle){return(
+function _1(bannerTitle){return(
 bannerTitle("Reusable banners")
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Why
 These banners thumbnail well and also play nicely with our notebook title extraction, meaning the text in the banner doubles naturally as the notebook title while being text-selectable and screen-readable.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md `## Use
 - Import the banner style you want into your notebook, e.g.:
 ~~~js
@@ -24,14 +22,17 @@ bannerTitle("Presentation", "pink", "white")
 ~~~
 - Long lines of text may be cut off in the notebook's thumbnail image, so check the thumbnail if that's important to you.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md `## Styles`
-)});
-  main.variable(observer()).define(["bannerTitle"], function(bannerTitle){return(
+)}
+
+function _5(bannerTitle){return(
 bannerTitle("A single line banner")
-)});
-  main.variable(observer("bannerTitle")).define("bannerTitle", ["DOM","html","bannerHeight"], function(DOM,html,bannerHeight){return(
+)}
+
+function _bannerTitle(DOM,html,bannerHeight){return(
 (title, backgroundColor = "#c8d9dd", textColor = "#282b2c", pageTitle = title) => {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -47,11 +48,13 @@ bannerTitle("A single line banner")
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["bannerTitleTwoLine"], function(bannerTitleTwoLine){return(
+)}
+
+function _7(bannerTitleTwoLine){return(
 bannerTitleTwoLine("Something that works well over two lines", "can be presented in this way")
-)});
-  main.variable(observer("bannerTitleTwoLine")).define("bannerTitleTwoLine", ["DOM","html","bannerHeight"], function(DOM,html,bannerHeight){return(
+)}
+
+function _bannerTitleTwoLine(DOM,html,bannerHeight){return(
 (title1, title2, backgroundColor = "#c8d9dd", textColor = "#282b2c", pageTitle = title1 + " " + title2) => {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -68,11 +71,13 @@ bannerTitleTwoLine("Something that works well over two lines", "can be presented
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["bannerLogo"], function(bannerLogo){return(
+)}
+
+function _9(bannerLogo){return(
 bannerLogo()
-)});
-  main.variable(observer("bannerLogo")).define("bannerLogo", ["DOM","html","bannerHeight","logoAndWordmark"], function(DOM,html,bannerHeight,logoAndWordmark){return(
+)}
+
+function _bannerLogo(DOM,html,bannerHeight,logoAndWordmark){return(
 (backgroundColor = "#c8d9dd", textColor = "#282b2c") => {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -89,11 +94,13 @@ bannerLogo()
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["bannerLogoTitleSmall"], function(bannerLogoTitleSmall){return(
+)}
+
+function _11(bannerLogoTitleSmall){return(
 bannerLogoTitleSmall("Meetup – April 1, 2021")
-)});
-  main.variable(observer("bannerLogoTitleSmall")).define("bannerLogoTitleSmall", ["DOM","html","bannerHeight","logoAndWordmark"], function(DOM,html,bannerHeight,logoAndWordmark){return(
+)}
+
+function _bannerLogoTitleSmall(DOM,html,bannerHeight,logoAndWordmark){return(
 (title, backgroundColor = "#c8d9dd", textColor = "#282b2c", pageTitle = title) => {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -115,11 +122,13 @@ bannerLogoTitleSmall("Meetup – April 1, 2021")
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["bannerTitleSmallLogo"], function(bannerTitleSmallLogo){return(
+)}
+
+function _13(bannerTitleSmallLogo){return(
 bannerTitleSmallLogo("Hosted by")
-)});
-  main.variable(observer("bannerTitleSmallLogo")).define("bannerTitleSmallLogo", ["DOM","html","bannerHeight","logoAndWordmark"], function(DOM,html,bannerHeight,logoAndWordmark){return(
+)}
+
+function _bannerTitleSmallLogo(DOM,html,bannerHeight,logoAndWordmark){return(
 (title, backgroundColor = "#c8d9dd", textColor = "#282b2c", pageTitle = title) => {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -142,11 +151,13 @@ bannerTitleSmallLogo("Hosted by")
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["bannerImage","FileAttachment"], async function(bannerImage,FileAttachment){return(
+)}
+
+async function _15(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("whm-dvc.png").url(), "Women's History Month DataViz Contest")
-)});
-  main.variable(observer("bannerImage")).define("bannerImage", ["DOM","html"], function(DOM,html){return(
+)}
+
+function _bannerImage(DOM,html){return(
 function (url, title, pageTitle = title) {
   const {id, href} = DOM.uid("banner");
   return html`
@@ -157,35 +168,43 @@ function (url, title, pageTitle = title) {
     </style>
   `;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md `## Popular color combinations for the Observable team`
-)});
-  main.variable(observer()).define(["bannerLogoTitleSmall"], function(bannerLogoTitleSmall){return(
+)}
+
+function _18(bannerLogoTitleSmall){return(
 bannerLogoTitleSmall("Designer", "#F5F5F5")
-)});
-  main.variable(observer()).define(["bannerLogoTitleSmall"], function(bannerLogoTitleSmall){return(
+)}
+
+function _19(bannerLogoTitleSmall){return(
 bannerLogoTitleSmall("Meetup – April 1, 2021", "linear-gradient(rgb(40, 46, 70), rgb(135, 58, 104))", "white")
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _20(md){return(
 md `## Further customization for the Observable team
 
 If you work at Observable and you'd like a banner with different fonts or other customizations not available here, please ask the Design team and we'll put one together for you. Our custom banners can be seen here https://observablehq.com/@observablehq/banner-custom`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md `## Tools
 - Gradient generator: https://cssgradient.io
 - Another gradient generator: https://learnui.design/tools/gradient-generator.html
 - Color wheel: https://www.canva.com/colors/color-wheel/
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _22(md){return(
 md `## Appendix`
-)});
-  main.variable(observer("banner")).define("banner", ["bannerLogoTitleSmall"], function(bannerLogoTitleSmall){return(
+)}
+
+function _banner(bannerLogoTitleSmall){return(
 bannerLogoTitleSmall
-)});
-  main.variable(observer()).define(["width","logoWidth","bannerHeight","logoHeight"], function(width,logoWidth,bannerHeight,logoHeight)
+)}
+
+function _24(width,logoWidth,bannerHeight,logoHeight)
 {
   // calculates the correct % X/Y offset for centering the logo at whatever scale you want
   const logoScale = 0.5;
@@ -193,16 +212,51 @@ bannerLogoTitleSmall
   let logoY = (100 / bannerHeight) * ((bannerHeight - (logoHeight * logoScale)) / 2);
   return ([logoX, logoY]);
 }
-);
-  main.variable(observer("logoWidth")).define("logoWidth", ["logoAndWordmark"], function(logoAndWordmark){return(
+
+
+function _logoWidth(logoAndWordmark){return(
 +logoAndWordmark.getAttribute("width")
-)});
-  main.variable(observer("logoHeight")).define("logoHeight", ["logoAndWordmark"], function(logoAndWordmark){return(
+)}
+
+function _logoHeight(logoAndWordmark){return(
 +logoAndWordmark.getAttribute("height")
-)});
-  main.variable(observer("bannerHeight")).define("bannerHeight", function(){return(
+)}
+
+function _bannerHeight(){return(
 320
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["whm-dvc.png",new URL("./files/d65b10049c554db9c4e8bad81c4183c7d1932217a9750d7cf7efb2b524a8066501de737af6d1d7fc9328ddd60f2fbdbb1f5832a83cd2ba64fe503f7cac367cc4",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["bannerTitle"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["bannerTitle"], _5);
+  main.variable(observer("bannerTitle")).define("bannerTitle", ["DOM","html","bannerHeight"], _bannerTitle);
+  main.variable(observer()).define(["bannerTitleTwoLine"], _7);
+  main.variable(observer("bannerTitleTwoLine")).define("bannerTitleTwoLine", ["DOM","html","bannerHeight"], _bannerTitleTwoLine);
+  main.variable(observer()).define(["bannerLogo"], _9);
+  main.variable(observer("bannerLogo")).define("bannerLogo", ["DOM","html","bannerHeight","logoAndWordmark"], _bannerLogo);
+  main.variable(observer()).define(["bannerLogoTitleSmall"], _11);
+  main.variable(observer("bannerLogoTitleSmall")).define("bannerLogoTitleSmall", ["DOM","html","bannerHeight","logoAndWordmark"], _bannerLogoTitleSmall);
+  main.variable(observer()).define(["bannerTitleSmallLogo"], _13);
+  main.variable(observer("bannerTitleSmallLogo")).define("bannerTitleSmallLogo", ["DOM","html","bannerHeight","logoAndWordmark"], _bannerTitleSmallLogo);
+  main.variable(observer()).define(["bannerImage","FileAttachment"], _15);
+  main.variable(observer("bannerImage")).define("bannerImage", ["DOM","html"], _bannerImage);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["bannerLogoTitleSmall"], _18);
+  main.variable(observer()).define(["bannerLogoTitleSmall"], _19);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _22);
+  main.variable(observer("banner")).define("banner", ["bannerLogoTitleSmall"], _banner);
+  main.variable(observer()).define(["width","logoWidth","bannerHeight","logoHeight"], _24);
+  main.variable(observer("logoWidth")).define("logoWidth", ["logoAndWordmark"], _logoWidth);
+  main.variable(observer("logoHeight")).define("logoHeight", ["logoAndWordmark"], _logoHeight);
+  main.variable(observer("bannerHeight")).define("bannerHeight", _bannerHeight);
   const child1 = runtime.module(define1);
   main.import("logoAndWordmark", child1);
   return main;
