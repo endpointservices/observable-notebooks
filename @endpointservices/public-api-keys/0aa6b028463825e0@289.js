@@ -1,32 +1,29 @@
 // https://observablehq.com/@endpointservices/public-api-keys@289
 import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./f92778131fd76559@1169.js";
+import define2 from "./f92778131fd76559@1173.js";
 import define3 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/5da8ca843c387a17b54a870c67205952093a9d5d724c1da41935faf2c3e6984f8fdde74a50a43e70b2ce2b3d7f3a7d50966ccbbe65ad2386562958574de35664",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Using Secrets for API keys in public notebooks (Airtable Example)
 
 You can keep API keys secret in a public notebook by using [webcode](https://webcode.run)
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Create an server endpoint
 
 Create a server endpoint which will have access to the API KEY, it will do the actual calls, and expose some kind of control API by reading the incoming request.
 
 For our example, we will create an interface to Airtable, allowing people to submit Observable notebooks they like and list all the notebooks so far. Because the endpoint is executed remotely, the source code cannot be tampered with, and it's a secure place to enforce data constraints. For example, if you allow arbitrary URLs to be submitted, people might use the service for spam, so we also check that the submitted links are for Observable notebooks links only.
 `
-)});
-  const child1 = runtime.module(define1);
-  main.import("endpoint", child1);
-  main.variable(observer("Airtable")).define("Airtable", async function(){return(
+)}
+
+async function _Airtable(){return(
 (await import("https://cdn.skypack.dev/airtable@0.11.1?min")).default
-)});
-  main.variable(observer("server")).define("server", ["endpoint","Airtable"], function(endpoint,Airtable){return(
+)}
+
+function _server(endpoint,Airtable){return(
 endpoint("server", async (request, response, ctx) => {
   const API_KEY = ctx.secrets["AIRTABLE_API_KEY"];
   const base = new Airtable({ apiKey: API_KEY }).base("app2lD79fJnGQVTiP");
@@ -78,8 +75,9 @@ endpoint("server", async (request, response, ctx) => {
     response.status(400).send("Unknown method", request.method);
   }
 })
-)});
-  main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
+)}
+
+async function _6(FileAttachment,md){return(
 md`## Upload secret to webcode
 
 The webcode dashboard has a tab called "secrets"
@@ -90,14 +88,16 @@ The webcode dashboard has a tab called "secrets"
 - Highlight the secret and bind it to your endpoint, making it available in the endpoints context.
 
 <img src="${await FileAttachment("image.png").url()}"></a>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Create an client
 
 You can call your server using "fetch", but its good practice to hide those details behind your own client SDK.
 `
-)});
-  main.variable(observer("submitNotebook")).define("submitNotebook", ["server"], function(server){return(
+)}
+
+function _submitNotebook(server){return(
 async (record) => {
   const response = await fetch(server.href, {
     method: "PUT",
@@ -105,8 +105,9 @@ async (record) => {
   });
   if (response.status !== 200) throw new Error(await response.text());
 }
-)});
-  main.variable(observer("listNotebooks")).define("listNotebooks", ["server"], function(server){return(
+)}
+
+function _listNotebooks(server){return(
 async () => {
   const response = await fetch(server.href, {
     method: "GET"
@@ -114,17 +115,20 @@ async () => {
   if (response.status !== 200) throw new Error(await response.text());
   return await response.json();
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`### Create your application`
-)});
-  main.variable(observer()).define(["refresh","Inputs","listNotebooks"], function(refresh,Inputs,listNotebooks){return(
+)}
+
+function _11(refresh,Inputs,listNotebooks){return(
 refresh,
 Inputs.table(listNotebooks(), {
   columns: ["url", "description", "tags"]
 })
-)});
-  main.variable(observer("viewof submitNotebookForm")).define("viewof submitNotebookForm", ["view","error","Inputs"], function(view,error,Inputs){return(
+)}
+
+function _submitNotebookForm(view,error,Inputs){return(
 view`<div>
   <mark>${error}</mark>
   ${["url", Inputs.text({ label: "notebook url", width: "100%" })]}
@@ -137,9 +141,9 @@ view`<div>
     )
   ]}
 `
-)});
-  main.variable(observer("submitNotebookForm")).define("submitNotebookForm", ["Generators", "viewof submitNotebookForm"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","mutable error","submitNotebook","submitNotebookForm","mutable refresh"], function(Inputs,$0,submitNotebook,submitNotebookForm,$1){return(
+)}
+
+function _13(Inputs,$0,submitNotebook,submitNotebookForm,$1){return(
 Inputs.button("submit", {
   reduce: async () => {
     try {
@@ -151,23 +155,49 @@ Inputs.button("submit", {
     }
   }
 })
-)});
-  main.define("initial refresh", function(){return(
+)}
+
+function _refresh(){return(
 0
-)});
+)}
+
+function _error(){return(
+""
+)}
+
+function _18(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/5da8ca843c387a17b54a870c67205952093a9d5d724c1da41935faf2c3e6984f8fdde74a50a43e70b2ce2b3d7f3a7d50966ccbbe65ad2386562958574de35664",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  const child1 = runtime.module(define1);
+  main.import("endpoint", child1);
+  main.variable(observer("Airtable")).define("Airtable", _Airtable);
+  main.variable(observer("server")).define("server", ["endpoint","Airtable"], _server);
+  main.variable(observer()).define(["FileAttachment","md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("submitNotebook")).define("submitNotebook", ["server"], _submitNotebook);
+  main.variable(observer("listNotebooks")).define("listNotebooks", ["server"], _listNotebooks);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["refresh","Inputs","listNotebooks"], _11);
+  main.variable(observer("viewof submitNotebookForm")).define("viewof submitNotebookForm", ["view","error","Inputs"], _submitNotebookForm);
+  main.variable(observer("submitNotebookForm")).define("submitNotebookForm", ["Generators", "viewof submitNotebookForm"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","mutable error","submitNotebook","submitNotebookForm","mutable refresh"], _13);
+  main.define("initial refresh", _refresh);
   main.variable(observer("mutable refresh")).define("mutable refresh", ["Mutable", "initial refresh"], (M, _) => new M(_));
   main.variable(observer("refresh")).define("refresh", ["mutable refresh"], _ => _.generator);
-  main.define("initial error", function(){return(
-""
-)});
+  main.define("initial error", _error);
   main.variable(observer("mutable error")).define("mutable error", ["Mutable", "initial error"], (M, _) => new M(_));
   main.variable(observer("error")).define("error", ["mutable error"], _ => _.generator);
   const child2 = runtime.module(define2);
   main.import("view", child2);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _18);
   return main;
 }

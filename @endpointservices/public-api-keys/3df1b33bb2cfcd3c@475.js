@@ -1,30 +1,31 @@
 // https://observablehq.com/@mbostock/synchronized-views@475
 import define1 from "./4caee69e966109c8@35.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Synchronized Views
 
 <p style="background: #fffced; box-sizing: border-box; padding: 10px 20px;">***Update Feb. 2021:*** *Observable now supports [**synchronized inputs**](/@observablehq/synchronized-inputs)! This notebook will remain for history, but please upgrade to [Observable Inputs](/@observablehq/inputs).*</p>
 
 [A view](/@mbostock/introduction-to-views) conveniently defines an interactive value.`
-)});
-  main.variable(observer("viewof x")).define("viewof x", ["html"], function(html){return(
+)}
+
+function _x(html){return(
 html`<input type=range>`
-)});
-  main.variable(observer("x")).define("x", ["Generators", "viewof x"], (G, _) => G.input(_));
-  main.variable(observer()).define(["x"], function(x){return(
+)}
+
+function _3(x){return(
 x
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`While each interactive value is often independent, other times multiple controls manipulate a shared value. This requires synchronizing views such that interaction with any one view updates both the interactive value and the other views.
 
 One way to synchronize is to treat [views as mutable values](/@mbostock/views-are-mutable-values): make one view the “primary” view, and have the other “secondary” views listen to and mutate the primary view. But sometimes it isn’t obvious which view should be primary.
 
 A more general approach is a *minimal* view: a container for a mutable value that implements the [EventTarget](https://developer.mozilla.org/docs/Web/API/EventTarget) interface, making it compatible with \`viewof\`. This minimal view also exposes a *view*.value property representing its current value; setting the value causes the view to dispatch an *input* event, which in turn causes Observable to [rerun](/@mbostock/how-observable-runs) any referencing cells.`
-)});
-  main.variable(observer("View")).define("View", ["bind"], function(bind){return(
+)}
+
+function _View(bind){return(
 class View {
   constructor(value) {
     Object.defineProperties(this, {
@@ -55,75 +56,93 @@ class View {
     return bind(input, this, invalidation);
   }
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`Now let’s define a minimal view whose initial value is 42:`
-)});
-  main.variable(observer("viewof y")).define("viewof y", ["View"], function(View){return(
+)}
+
+function _y(View){return(
 new View(42)
-)});
-  main.variable(observer("y")).define("y", ["Generators", "viewof y"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`Here’s our view’s value:`
-)});
-  main.variable(observer()).define(["y"], function(y){return(
+)}
+
+function _9(y){return(
 y
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`And now let’s define an input that both listens to the minimal view and assigns a new value on interaction. Notice that dragging the slider changes the value of *y*.`
-)});
-  main.variable(observer()).define(["viewof y","html"], function($0,html){return(
+)}
+
+function _11($0,html){return(
 $0.bind(html`<input type=range min=0 max=100 step=1>`)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`Here are two more inputs (of different types!) bound to the same view. Interacting with either view below updates *y* as well as the other synchronized inputs above.`
-)});
-  main.variable(observer()).define(["viewof y","html"], function($0,html){return(
+)}
+
+function _13($0,html){return(
 $0.bind(html`<input type=range min=0 max=100 step=1>`)
-)});
-  main.variable(observer()).define(["viewof y","html"], function($0,html){return(
+)}
+
+function _14($0,html){return(
 $0.bind(html`<input type=number min=0 max=100 step=1>`)
-)});
-  main.variable(observer()).define(["y"], function(y){return(
+)}
+
+function _15(y){return(
 y
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`It works with text, too.`
-)});
-  main.variable(observer("viewof name")).define("viewof name", ["View"], function(View){return(
+)}
+
+function _name(View){return(
 new View("fred")
-)});
-  main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof name","html"], function($0,html){return(
+)}
+
+function _18($0,html){return(
 $0.bind(html`<input type=text>`)
-)});
-  main.variable(observer()).define(["viewof name","html"], function($0,html){return(
+)}
+
+function _19($0,html){return(
 $0.bind(html`<input type=text>`)
-)});
-  main.variable(observer()).define(["name"], function(name){return(
+)}
+
+function _20(name){return(
 name
-)});
-  main.variable(observer("viewof toggled")).define("viewof toggled", ["View"], function(View){return(
+)}
+
+function _toggled(View){return(
 new View(true)
-)});
-  main.variable(observer("toggled")).define("toggled", ["Generators", "viewof toggled"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof toggled","html"], function($0,html){return(
+)}
+
+function _22($0,html){return(
 $0.bind(html`<input type=checkbox>`)
-)});
-  main.variable(observer()).define(["viewof toggled","html"], function($0,html){return(
+)}
+
+function _23($0,html){return(
 $0.bind(html`<input type=checkbox>`)
-)});
-  main.variable(observer()).define(["toggled"], function(toggled){return(
+)}
+
+function _24(toggled){return(
 toggled
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`---
 
 ## Appendix
 
 This implementation uses my [disposal promise](/@mbostock/disposal) to detach bound inputs, rather than requiring you to pass the [invalidation promise](/@observablehq/invalidation) explicitly. The unification of various input types is based on [Generators.input](https://github.com/observablehq/stdlib/blob/master/README.md#Generators_input) from the Observable standard library.`
-)});
-  main.variable(observer("bind")).define("bind", ["disposal","set","eventof","get"], function(disposal,set,eventof,get){return(
+)}
+
+function _bind(disposal,set,eventof,get){return(
 function bind(input, view, invalidation = disposal(input)) {
   set(input, view.value);
   input[`on${eventof(input)}`] = () => view.value = get(input);
@@ -132,8 +151,9 @@ function bind(input, view, invalidation = disposal(input)) {
   invalidation.then(() => view.removeEventListener("input", update));
   return input;
 }
-)});
-  main.variable(observer("get")).define("get", function(){return(
+)}
+
+function _get(){return(
 function get(input) {
   switch (input.type) {
     case "range":
@@ -144,8 +164,9 @@ function get(input) {
     default: return input.value;
   }
 }
-)});
-  main.variable(observer("set")).define("set", function(){return(
+)}
+
+function _set(){return(
 function set(input, value) {
   switch (input.type) {
     case "range":
@@ -156,8 +177,9 @@ function set(input, value) {
     default: input.value = value;
   }
 }
-)});
-  main.variable(observer("eventof")).define("eventof", function(){return(
+)}
+
+function _eventof(){return(
 function eventof(input) {
   switch (input.type) {
     case "button":
@@ -166,7 +188,43 @@ function eventof(input) {
     default: return "input";
   }
 }
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("viewof x")).define("viewof x", ["html"], _x);
+  main.variable(observer("x")).define("x", ["Generators", "viewof x"], (G, _) => G.input(_));
+  main.variable(observer()).define(["x"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer("View")).define("View", ["bind"], _View);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("viewof y")).define("viewof y", ["View"], _y);
+  main.variable(observer("y")).define("y", ["Generators", "viewof y"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["y"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["viewof y","html"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["viewof y","html"], _13);
+  main.variable(observer()).define(["viewof y","html"], _14);
+  main.variable(observer()).define(["y"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("viewof name")).define("viewof name", ["View"], _name);
+  main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
+  main.variable(observer()).define(["viewof name","html"], _18);
+  main.variable(observer()).define(["viewof name","html"], _19);
+  main.variable(observer()).define(["name"], _20);
+  main.variable(observer("viewof toggled")).define("viewof toggled", ["View"], _toggled);
+  main.variable(observer("toggled")).define("toggled", ["Generators", "viewof toggled"], (G, _) => G.input(_));
+  main.variable(observer()).define(["viewof toggled","html"], _22);
+  main.variable(observer()).define(["viewof toggled","html"], _23);
+  main.variable(observer()).define(["toggled"], _24);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("bind")).define("bind", ["disposal","set","eventof","get"], _bind);
+  main.variable(observer("get")).define("get", _get);
+  main.variable(observer("set")).define("set", _set);
+  main.variable(observer("eventof")).define("eventof", _eventof);
   const child1 = runtime.module(define1);
   main.import("disposal", child1);
   return main;
