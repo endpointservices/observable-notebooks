@@ -1,15 +1,11 @@
 // https://observablehq.com/@endpointservices/zapier@761
-import define1 from "./11a5ab8b1b3a51db@1160.js";
-import define2 from "./dff1e917c89f5e76@1709.js";
-import define3 from "./993a0c51ef1175ea@1317.js";
+import define1 from "./11a5ab8b1b3a51db@1161.js";
+import define2 from "./dff1e917c89f5e76@1711.js";
+import define3 from "./993a0c51ef1175ea@1345.js";
 import define4 from "./ab3e70b29c480e6d@83.js";
 import define5 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["zapier.png",new URL("./files/e489c027a94f63bdf02166d09611dc04f13681617393d806fb9b4fc52cc09aa4a7f8114000355e2c5813a388a547c0d2154e197be1fb7739f1285c26cf721b20",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Zapier Cell Trigger
 
 
@@ -58,8 +54,9 @@ You can generate a public/secret key pairs in this notebook below.
 
 The app that receives data Zapier side is called Endpoint Services and is not public, but you can get access with this [invite link](https://zapier.com/developer/public-invite/123889/486258a91f4b504a0b025cb085077318/). Use a generate secret key to authenticate a connection with a Notebook.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md `## Cell Triggers
 
 Send a JSON payload to Zapier.
@@ -71,8 +68,9 @@ Send a JSON payload to Zapier.
 - Create a zap using a **Observable Notebook Cell Trigger**, and follow the instructions in Zapier.
 - Once setup, calling _createTrigger_ will send the first argument to the Zap. 
 `
-)});
-  main.variable(observer("createTrigger")).define("createTrigger", ["location","deploy","sha256_b64","db","notebookID"], function(location,deploy,sha256_b64,db,notebookID){return(
+)}
+
+function _createTrigger(location,deploy,sha256_b64,db,notebookID){return(
 function createTrigger({
     name =  "default",
     allowOrigin = location.origin,
@@ -179,8 +177,9 @@ function createTrigger({
   }
   return trigger
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## API Key Pair Generator
 
 Private triggers have authorized public keys associated which can only be read with matching secret API keys. Use this form to generate a public/secret key pair. You can use triggers to relay sensitive information as long as you keep your secret key safe (or throw it away after authenticating with Zapier).
@@ -189,8 +188,9 @@ Private triggers have authorized public keys associated which can only be read w
 
 **Use the** *secret_key* ** to authenticate a Zapier connection to Endpoint Service.** You only need to do this once and can then dispose of the key. Our systems never store the secret key.
 `
-)});
-  main.variable(observer()).define(["generateKeyPair","clipboard","html"], function(generateKeyPair,clipboard,html)
+)}
+
+function _5(generateKeyPair,clipboard,html)
 {
   async function generate() {
     const keys = await generateKeyPair()
@@ -221,16 +221,19 @@ Private triggers have authorized public keys associated which can only be read w
     <button onclick=${generate}>Generate</button>
   </div>`
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _6(md){return(
 md`## Demo of writing to a spreadsheet.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### We have created  a trigger`
-)});
-  main.variable(observer("defaultTrigger")).define("defaultTrigger", ["createTrigger"], function(createTrigger){return(
+)}
+
+function _defaultTrigger(createTrigger){return(
 createTrigger({
   name: "default",
   authorized_public_keys: ["RJ5BhyVkkiSAUPUlnhBQioT1a0F238ayYBfpUJb7t6I="],
@@ -239,11 +242,13 @@ createTrigger({
     value: "This message appears in Zapier UI when setting up a new Zap, the sample payload fields populates the autocomplete for output variables"
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`### Write to test [Google spreadsheet](https://docs.google.com/spreadsheets/d/1S-Z66kzXB1_2J_3AUZ_bMBLDoW7zL8_GmFFD9qbPfaU)`
-)});
-  main.variable(observer()).define(["defaultTrigger","html"], function(defaultTrigger,html)
+)}
+
+function _10(defaultTrigger,html)
 {
   function keyup(evt) {
     if (evt.key === "Enter") {
@@ -255,8 +260,9 @@ md`### Write to test [Google spreadsheet](https://docs.google.com/spreadsheets/d
   }
   return html`<input onkeyup=${keyup}>`
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _11(md){return(
 md`### Our Zap writes to a Google sheet, you can check it out
 
 Our test Zap updates a [Google spreadsheet](https://docs.google.com/spreadsheets/d/1S-Z66kzXB1_2J_3AUZ_bMBLDoW7zL8_GmFFD9qbPfaU) with your value within 20 seconds or so. 
@@ -270,16 +276,18 @@ Note about privacy: you are unable to subscribe to other notebook's triggers, as
 
 Note about security: an attacker can, however, use a _HTTP client_ to manually trigger a cell trigger with their own data. This is analogous to a public API endpoint being scripted. So you need to either design your application so that this is not a vunerability, or add an additional layer of security. The _checkPayload_ hook is for integrating custom auth logic (e.g. [Firebase Auth]() checks, [encrypted passwords](https://observablehq.com/@tomlarkworthy/aws-serverless-password)).
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`## Backend Implementation: Instant Trigger Hooks for Zapier
 
 This section is for our integration with Zapier. Users do not need to understand this, but if you would like to make your own integration or understand how we process data it might be an interesting read.
 
 See https://zapier.com/help/create/basics/set-up-your-zap-trigger
 `
-)});
-  main.variable(observer("subscribe_cell_trigger")).define("subscribe_cell_trigger", ["deploy","sha256_b64","db"], function(deploy,sha256_b64,db){return(
+)}
+
+function _subscribe_cell_trigger(deploy,sha256_b64,db){return(
 deploy("subscribe_cell_trigger", async (req, res) => {
   // Anyone can call this URL, but it doesn't send data anywhere *unless* the API key matches. 
   const api_key = req.query.api_key;
@@ -294,8 +302,9 @@ deploy("subscribe_cell_trigger", async (req, res) => {
   ).set({api_key: public_key}, {merge: true});
   res.json({"msg": "subscribe ok"})
 })
-)});
-  main.variable(observer("unsubscribe_cell_trigger")).define("unsubscribe_cell_trigger", ["deploy","db"], function(deploy,db){return(
+)}
+
+function _unsubscribe_cell_trigger(deploy,db){return(
 deploy("unsubscribe_cell_trigger", async (req, res) => {
   // Anyone can call this URL, but unless you know a hookUrl, which is a Zapier-ES secret,
   // it doesn't do anything. 
@@ -309,11 +318,13 @@ deploy("unsubscribe_cell_trigger", async (req, res) => {
   ).delete()
   res.json({"msg": "unsubscribe ok"})
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`## Backend Implementation: API Key Generation`
-)});
-  main.variable(observer("sha256_b64")).define("sha256_b64", function(){return(
+)}
+
+function _sha256_b64(){return(
 async function sha256_b64(message) {
     // encode as UTF-8
     const msgBuffer = new TextEncoder().encode(message);                    
@@ -324,8 +335,9 @@ async function sha256_b64(message) {
     // convert ArrayBuffer to base64
     return btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer)));
 }
-)});
-  main.variable(observer("generateId")).define("generateId", function(){return(
+)}
+
+function _generateId(){return(
 function generateId () {
   // https://stackoverflow.com/questions/1349404/generate-random-string-characters-in-javascript
   function dec2hex (dec) {
@@ -335,8 +347,9 @@ function generateId () {
   window.crypto.getRandomValues(arr)
   return btoa(String.fromCharCode.apply(null, arr));
 }
-)});
-  main.variable(observer("generateKeyPair")).define("generateKeyPair", ["generateId","sha256_b64","db"], function(generateId,sha256_b64,db){return(
+)}
+
+function _generateKeyPair(generateId,sha256_b64,db){return(
 async function generateKeyPair() {
   do {
     var secret = generateId();
@@ -350,8 +363,9 @@ async function generateKeyPair() {
     secret
   }
 }
-)});
-  main.variable(observer("testAPIKey")).define("testAPIKey", ["deploy","sha256_b64","db"], function(deploy,sha256_b64,db){return(
+)}
+
+function _testAPIKey(deploy,sha256_b64,db){return(
 deploy("testAPIKey", async (req, res) => {
   const api_key = req.query.api_key;
   const pub = await sha256_b64(api_key)
@@ -364,16 +378,48 @@ deploy("testAPIKey", async (req, res) => {
     res.status(404).end();
   }
 })
-)});
-  main.variable(observer("db")).define("db", ["firebase"], function(firebase){return(
+)}
+
+function _db(firebase){return(
 firebase.firestore()
-)});
-  main.variable(observer("notebookID")).define("notebookID", ["getContext"], function(getContext){return(
+)}
+
+function _notebookID(getContext){return(
 () => {
   const ctx = getContext(); 
   return `@${ctx.namespace}/${ctx.notebook}`
 }
-)});
+)}
+
+function _27(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["zapier.png",new URL("./files/e489c027a94f63bdf02166d09611dc04f13681617393d806fb9b4fc52cc09aa4a7f8114000355e2c5813a388a547c0d2154e197be1fb7739f1285c26cf721b20",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("createTrigger")).define("createTrigger", ["location","deploy","sha256_b64","db","notebookID"], _createTrigger);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["generateKeyPair","clipboard","html"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("defaultTrigger")).define("defaultTrigger", ["createTrigger"], _defaultTrigger);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["defaultTrigger","html"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("subscribe_cell_trigger")).define("subscribe_cell_trigger", ["deploy","sha256_b64","db"], _subscribe_cell_trigger);
+  main.variable(observer("unsubscribe_cell_trigger")).define("unsubscribe_cell_trigger", ["deploy","db"], _unsubscribe_cell_trigger);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer("sha256_b64")).define("sha256_b64", _sha256_b64);
+  main.variable(observer("generateId")).define("generateId", _generateId);
+  main.variable(observer("generateKeyPair")).define("generateKeyPair", ["generateId","sha256_b64","db"], _generateKeyPair);
+  main.variable(observer("testAPIKey")).define("testAPIKey", ["deploy","sha256_b64","db"], _testAPIKey);
+  main.variable(observer("db")).define("db", ["firebase"], _db);
+  main.variable(observer("notebookID")).define("notebookID", ["getContext"], _notebookID);
   const child1 = runtime.module(define1);
   main.import("html", child1);
   const child2 = runtime.module(define2);
@@ -386,8 +432,6 @@ firebase.firestore()
   main.import("copy", "clipboard", child4);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _27);
   return main;
 }
