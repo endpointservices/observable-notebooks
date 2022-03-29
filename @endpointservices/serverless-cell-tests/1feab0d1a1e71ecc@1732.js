@@ -1,13 +1,9 @@
 import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./11a5ab8b1b3a51db@1160.js";
+import define2 from "./11a5ab8b1b3a51db@1161.js";
 import define3 from "./c7a3b20cec5d4dd9@659.js";
 import define4 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["logo.png",new URL("./files/f66616596d81ff0717d6e08454566d311c636aae5f2383f8599e3767ab5c91f0ee2ceb3e1244872b703708f02177ca74c707e6c422db21ec208e03075855df12",import.meta.url)],["PreviewServerlessCells.png",new URL("./files/0b797b66fdbead75a0a4046e1d201066e13151c42dff566cc70e8045d307a601567bb41aa7a2e35de2948aa02e7d1edea836d049cbfa220e5491f3486ac962ef",import.meta.url)],["ServersideCells.png",new URL("./files/dfb3314f7289de45d0b83cb4455c0a7cdc3aacbf3b79f7b7d608b5b2959ee436931198f212c6a74386e019b616383dec98fe801601c551493686ce482789e433",import.meta.url)],["PreviewServerlessCells@1.png",new URL("./files/60d4ca69fed9f57d135d2784c0afeba63568ab00be1304592966277256857787c9b9dd4dc7049b81be32369d69c4a2a60cc258fb252fc171b72ae298d04a63f7",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`
 # Serverless Cell Tests
 
@@ -17,63 +13,67 @@ md`
 
 Test suite for [Serverless Cells](https://observablehq.com/@endpointservices/serverless-cells). Documents examples of working behaviour.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Automated Tests`
-)});
-  main.variable(observer("viewof region")).define("viewof region", ["Inputs"], function(Inputs){return(
+)}
+
+function _region(Inputs){return(
 Inputs.radio(["europe-west4", "europe-west1", "us-central1"], {
   value: "europe-west1"
 })
-)});
-  main.variable(observer("region")).define("region", ["Generators", "viewof region"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html"], function(html){return(
+)}
+
+function _4(html){return(
 html`${["europe-west4", "europe-west1", "us-central1"].map(
   (region) =>
     html`<a target="_blank" href="https://webcode.run/regions/${region}/.stats">Diagnostics from ${region}</a><br>`
 )}`
-)});
-  const child1 = runtime.module(define1);
-  main.import("deploy", child1);
-  main.import("getContext", child1);
-  main.import("Response", child1);
-  main.variable(observer("viewof ci")).define("viewof ci", ["createSuite"], function(createSuite){return(
+)}
+
+function _ci(createSuite){return(
 createSuite({
   name: "Serverless cell tests",
   timeout_ms: 20000
 })
-)});
-  main.variable(observer("ci")).define("ci", ["Generators", "viewof ci"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md `
 ## Example - referencing cell values
 
 Here is some data we wish to serve an a random cell.
 `
-)});
-  main.variable(observer("localValue")).define("localValue", function(){return(
+)}
+
+function _localValue(){return(
 "hello dsadasda is from another cell yo yo"
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`
 ### Creating a handler
 
 Our handler serves our value as JSON using _res.json(localValue)_. Handlers can reference other cells just like normal.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`### Deploy the handler
 We create a named cell "remote_cell_link" and also hint the deploymentFunction the name of the cell. The function responds with a link you can click on, call with curl _etc_!
 
 NOTE: THE BACKEND READS THE CURRENT **PUBLISHED** (or linked shared) NOTEBOOK. So if you make changes remember to republish the notebook otherwise the notebook will be hitting a previous version.
 
 `
-)});
-  main.variable(observer()).define(["region"], function(region){return(
+)}
+
+function _11(region){return(
 region
-)});
-  main.variable(observer("remote_cell_link")).define("remote_cell_link", ["deploy","localValue","region"], function(deploy,localValue,region)
+)}
+
+function _remote_cell_link(deploy,localValue,region)
 {
   return deploy(
     "remote_cell",
@@ -86,27 +86,32 @@ region
     }
   );
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _13(md){return(
 md` ### Test it
 To prove it works we issue a fetch command. Look! That url is serving the value we set at the beginning!
 `
-)});
-  main.variable(observer("example1_response")).define("example1_response", ["remote_cell_link"], async function(remote_cell_link){return(
+)}
+
+async function _example1_response(remote_cell_link){return(
 (await fetch(remote_cell_link.href)).json()
-)});
-  main.variable(observer()).define(["ci","expect","example1_response","localValue"], function(ci,expect,example1_response,localValue){return(
+)}
+
+function _15(ci,expect,example1_response,localValue){return(
 ci.test("Example 1 reponse matches localValue", () => {
   expect(example1_response).toBe(localValue);
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`## Example - the *default* deployment for small URLs
 
 Sometimes a notebook has a single serverless cell with multiple API routes. We can minimize the size of the URL by calling the deployed function _"default"_
 `
-)});
-  main.variable(observer("default_url_example")).define("default_url_example", ["deploy","region","html"], function(deploy,region,html)
+)}
+
+function _default_url_example(deploy,region,html)
 {
   const link = deploy(
     "default",
@@ -120,14 +125,16 @@ Sometimes a notebook has a single serverless cell with multiple API routes. We c
   );
   return html`<a href=${link.href} target="_blank">${link.href}</a>`;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _18(md){return(
 md`## Example - error propagation
 
 If you throw an error the URL will serve status 500 and the message (of course if you don't like this you can catch your own errors and do your own thing)
 `
-)});
-  main.variable(observer("buggy_remote_cell_link")).define("buggy_remote_cell_link", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _buggy_remote_cell_link(deploy,region){return(
 deploy(
   "buggy_remote_cell",
   async (req, res) => {
@@ -138,11 +145,13 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _20(md){return(
 md`Calling this buggy URL:`
-)});
-  main.variable(observer("example2_response")).define("example2_response", ["buggy_remote_cell_link"], async function(buggy_remote_cell_link)
+)}
+
+async function _example2_response(buggy_remote_cell_link)
 {
   const result = await fetch(buggy_remote_cell_link.href);
   return {
@@ -150,18 +159,21 @@ md`Calling this buggy URL:`
     text: await result.text()
   };
 }
-);
-  main.variable(observer()).define(["ci","expect","example2_response"], function(ci,expect,example2_response){return(
+
+
+function _22(ci,expect,example2_response){return(
 ci.test("Example 2 reponse status is 500", () => {
   expect(example2_response.status).toBe(500);
 })
-)});
-  main.variable(observer()).define(["ci","expect","example2_response"], function(ci,expect,example2_response){return(
+)}
+
+function _23(ci,expect,example2_response){return(
 ci.test("Example 2 reponse includes error message", () => {
   expect(example2_response.text).toEqual(expect.stringContaining("Ooops"))
 })
-)});
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+)}
+
+async function _24(md,FileAttachment){return(
 md`## Example - serving a webpage
 
 Serverside rendering with the wonderful hypertext literal anyone?
@@ -170,10 +182,9 @@ Serverside rendering with the wonderful hypertext literal anyone?
 
 With control over the meta payload we can make a much better social sharing preview, and control all the redirection behaviour.
 `
-)});
-  const child2 = runtime.module(define2);
-  main.import("html", child2);
-  main.variable(observer("webpage")).define("webpage", ["deploy","FileAttachment","html","region"], function(deploy,FileAttachment,html,region){return(
+)}
+
+function _webpage(deploy,FileAttachment,html,region){return(
 deploy(
   "social_link",
   async (req, res) => {
@@ -227,16 +238,18 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer("example_injecting_secrets")).define("example_injecting_secrets", ["md"], function(md){return(
+)}
+
+function _example_injecting_secrets(md){return(
 md`## Example - Injecting Secrets 
 
 Integrating with 3rd party APIs often require storing an OAuth client secret. We are able to inject secrets into the handler. Note, secrets are owned by the author and cannot be accessed by other notebooks. So if you fork this page, this example will fail for you. Note the prefix matches the usercontent subdomain.
 
 You can set secrets with [secret-manager](https://observablehq.com/@tomlarkworthy/secret-manager)
 `
-)});
-  main.variable(observer("example_secrets")).define("example_secrets", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _example_secrets(deploy,region){return(
 deploy(
   "example_secrets",
   (req, res, context) => {
@@ -247,8 +260,9 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["ci","example_secrets","expect"], function(ci,example_secrets,expect){return(
+)}
+
+function _29(ci,example_secrets,expect){return(
 ci.test(
   "Example 4 example secret is 'correct horse battery staple'",
   async () => {
@@ -257,14 +271,16 @@ ci.test(
     expect(await response.text()).toBe("correct horse battery staple");
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _30(md){return(
 md`## Example - Testing execution context
 
 You can tell if you are running serverless or not by checking the context, you can also find out the notebook when availible.
 `
-)});
-  main.variable(observer("example_getContext")).define("example_getContext", ["deploy","getContext","region"], function(deploy,getContext,region){return(
+)}
+
+function _example_getContext(deploy,getContext,region){return(
 deploy(
   "example_getContext",
   (req, res) => {
@@ -274,8 +290,9 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","example_getContext"], function(ci,expect,example_getContext){return(
+)}
+
+function _32(ci,expect,example_getContext){return(
 ci.test("Example 5 getContext()", async () => {
   expect(await (await fetch(example_getContext.href)).json()).toEqual({
     namespace: "endpointservices",
@@ -284,11 +301,13 @@ ci.test("Example 5 getContext()", async () => {
     notebook: "serverless-cell-tests"
   });
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _33(md){return(
 md`## Example of CDN`
-)});
-  main.variable(observer("endpoint_with_CDN")).define("endpoint_with_CDN", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _endpoint_with_CDN(deploy,region){return(
 deploy(
   "endpoint_with_CDN",
   (req, res, context) => {
@@ -299,14 +318,16 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["ci","endpoint_with_CDN","expect"], function(ci,endpoint_with_CDN,expect){return(
+)}
+
+function _35(ci,endpoint_with_CDN,expect){return(
 ci.test("Example 6 Enable cache for insane performance", async () => {
   const response = await fetch(endpoint_with_CDN.href);
   return expect(response.status).toBe(200);
 })
-)});
-  main.variable(observer("test_end")).define("test_end", ["ci","deploy","region","expect"], function(ci,deploy,region,expect){return(
+)}
+
+function _test_end(ci,deploy,region,expect){return(
 ci.test("Reference: res.status('204').end() responds", async () => {
   const link = await deploy(
     "test_end",
@@ -320,14 +341,16 @@ ci.test("Reference: res.status('204').end() responds", async () => {
   );
   return expect(await (await fetch(link.href)).status).toBe(204);
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _37(md){return(
 md`## Regions 
 
 You can elect to run the code in us-central1 (Iowa), europe-west4 (Netherlands), or asia-east1 (Taiwan). The default is "europe-west4". Fastest seems to be "us-central1" (see the [latency monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor))
 `
-)});
-  main.variable(observer("europe_west1")).define("europe_west1", ["deploy"], function(deploy){return(
+)}
+
+function _europe_west1(deploy){return(
 deploy(
   "europe-west1",
   async (req, res) => {
@@ -337,16 +360,19 @@ deploy(
     region: "europe-west1"
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","europe_west1"], function(ci,expect,europe_west1){return(
+)}
+
+function _39(ci,expect,europe_west1){return(
 ci.test("Example 6.1: Regions", async () => {
   await expect((await fetch(europe_west1.href)).status).toBe(200);
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _40(md){return(
 md`## Signed Cookie Support`
-)});
-  main.variable(observer()).define(["ci","Response","expect"], function(ci,Response,expect){return(
+)}
+
+function _41(ci,Response,expect){return(
 ci.test("Example 7: Cookie signing same as nodejs Express (disabled)", () => {
   return;
   /* Test program to be run with node.js
@@ -371,14 +397,16 @@ ci.test("Example 7: Cookie signing same as nodejs Express (disabled)", () => {
   // Test the feature switches work
   expect(headerValue).toMatch("; HttpOnly");
 })
-)});
-  main.variable(observer("binary")).define("binary", ["md"], function(md){return(
+)}
+
+function _binary(md){return(
 md`## Serving Binary data (e.g. images)
 
 the _res.send(<arg>)_ supports using an arrayBuffer as the arg.
 `
-)});
-  main.variable(observer("pngLink")).define("pngLink", ["deploy","FileAttachment","region"], function(deploy,FileAttachment,region){return(
+)}
+
+function _pngLink(deploy,FileAttachment,region){return(
 deploy(
   "png",
   async (req, res) => {
@@ -391,16 +419,18 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer("pngElement")).define("pngElement", ["html","pngLink"], function(html,pngLink){return(
+)}
+
+function _pngElement(html,pngLink){return(
 new Promise((resolve) => {
   let img = html`<img src=${pngLink} onerror=${() => {
     img.err = true;
     resolve(img);
   }} onload=${() => resolve(img)} />`;
 })
-)});
-  main.variable(observer()).define(["ci","expect","pngElement","region"], function(ci,expect,pngElement,region){return(
+)}
+
+function _45(ci,expect,pngElement,region){return(
 ci.test(
   "Example 8: Images can be served as binary data",
   async () => {
@@ -410,14 +440,16 @@ ci.test(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _46(md){return(
 md`### Cell Modifiers and chaining calls
 
 Only "terminal" cells can be called by other cells
 `
-)});
-  main.variable(observer("external_to_terminal")).define("external_to_terminal", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _external_to_terminal(deploy,region){return(
 deploy("external", async (req, res) => {
   try {
     res.send(await (await fetch("https://endpointservice.web.app/notebooks/@endpointservices/serverless-cell-user-agents/deploys/terminal-ua/mods/T")).text());
@@ -428,8 +460,9 @@ deploy("external", async (req, res) => {
   region: region,
   modifiers: ["external"]
 })
-)});
-  main.variable(observer()).define(["ci","expect","external_to_terminal"], function(ci,expect,external_to_terminal){return(
+)}
+
+function _48(ci,expect,external_to_terminal){return(
 ci.test(
   "Example 9: An external can call a cell with modifier terminal",
   async () => {
@@ -438,8 +471,9 @@ ci.test(
     );
   }
 )
-)});
-  main.variable(observer("orchestrator_to_external")).define("orchestrator_to_external", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _orchestrator_to_external(deploy,region){return(
 deploy(
   "orchestrator",
   async (req, res) => {
@@ -460,8 +494,9 @@ deploy(
     modifiers: ["orchestrator"]
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","orchestrator_to_external"], function(ci,expect,orchestrator_to_external){return(
+)}
+
+function _50(ci,expect,orchestrator_to_external){return(
 ci.test(
   "Example 10: An orchestrator can call a cell with modifier external",
   async () => {
@@ -470,8 +505,9 @@ ci.test(
     );
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","deploy"], function(ci,expect,deploy){return(
+)}
+
+function _51(ci,expect,deploy){return(
 ci.test("Conformance: name is URI encoded: foo/bar", async () => {
   throw new Error("Somehow this causes loops!");
   expect(
@@ -480,8 +516,9 @@ ci.test("Conformance: name is URI encoded: foo/bar", async () => {
     ).text()
   ).toBe("OK: foo/bar");
 })
-)});
-  main.variable(observer()).define(["ci","expect","deploy","region"], function(ci,expect,deploy,region){return(
+)}
+
+function _52(ci,expect,deploy,region){return(
 ci.test("Conformance: name is URI encoded: foo", async () => {
   expect(
     await (
@@ -491,8 +528,9 @@ ci.test("Conformance: name is URI encoded: foo", async () => {
     ).text()
   ).toBe("OK: foo");
 })
-)});
-  main.variable(observer("metadata_token")).define("metadata_token", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _metadata_token(deploy,region){return(
 deploy("metadata_token", async (req, res) => {
   try {
     const response = await fetch("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token", {
@@ -505,18 +543,21 @@ deploy("metadata_token", async (req, res) => {
     res.status(500).send(err.message)
   }
 }, {region})
-)});
-  main.variable(observer()).define(["ci","expect","metadata_token"], function(ci,expect,metadata_token){return(
+)}
+
+function _54(ci,expect,metadata_token){return(
 ci.test("Security: Cannot get to metadata server", async () => {
   expect(await (await fetch(metadata_token.href)).text()).toBe(
     "Failed to fetch"
   );
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _55(md){return(
 md`#### Streaming`
-)});
-  main.variable(observer("streamingResponse")).define("streamingResponse", ["deploy","region"], function(deploy,region){return(
+)}
+
+function _streamingResponse(deploy,region){return(
 deploy(
   "streamingResponse",
   async (req, res) => {
@@ -531,13 +572,15 @@ deploy(
     region: region
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","streamingResponse"], function(ci,expect,streamingResponse){return(
+)}
+
+function _57(ci,expect,streamingResponse){return(
 ci.test("Streaming: write works", async () => {
   expect(await (await fetch(streamingResponse.href)).text()).toBe("write");
 })
-)});
-  main.variable(observer()).define(["deploy","pngLink","region"], function(deploy,pngLink,region){return(
+)}
+
+function _58(deploy,pngLink,region){return(
 deploy(
   "redirect",
   (req, res) => {
@@ -547,15 +590,17 @@ deploy(
     region
   }
 )
-)});
-  main.variable(observer()).define(["ci","expect","orchestrator_to_external"], function(ci,expect,orchestrator_to_external){return(
+)}
+
+function _59(ci,expect,orchestrator_to_external){return(
 ci.test("Example 11: Redirects", async () => {
   expect(await (await fetch(orchestrator_to_external.href)).text()).toBe(
     "observablehq.com/@endpointservices/serverless-cells O"
   );
 })
-)});
-  main.variable(observer()).define(["ci","deploy","region","expect"], function(ci,deploy,region,expect){return(
+)}
+
+function _60(ci,deploy,region,expect){return(
 ci.test("Context fields are populated", async () => {
   const payload = await (
     await fetch(
@@ -573,14 +618,87 @@ ci.test("Context fields are populated", async () => {
   expect(payload).toHaveProperty("query");
   expect(payload).toHaveProperty("baseUrl");
 })
-)});
+)}
+
+function _63(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["PreviewServerlessCells@1.png",new URL("./files/60d4ca69fed9f57d135d2784c0afeba63568ab00be1304592966277256857787c9b9dd4dc7049b81be32369d69c4a2a60cc258fb252fc171b72ae298d04a63f7",import.meta.url)],["ServersideCells.png",new URL("./files/dfb3314f7289de45d0b83cb4455c0a7cdc3aacbf3b79f7b7d608b5b2959ee436931198f212c6a74386e019b616383dec98fe801601c551493686ce482789e433",import.meta.url)],["PreviewServerlessCells.png",new URL("./files/0b797b66fdbead75a0a4046e1d201066e13151c42dff566cc70e8045d307a601567bb41aa7a2e35de2948aa02e7d1edea836d049cbfa220e5491f3486ac962ef",import.meta.url)],["logo.png",new URL("./files/f66616596d81ff0717d6e08454566d311c636aae5f2383f8599e3767ab5c91f0ee2ceb3e1244872b703708f02177ca74c707e6c422db21ec208e03075855df12",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("viewof region")).define("viewof region", ["Inputs"], _region);
+  main.variable(observer("region")).define("region", ["Generators", "viewof region"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html"], _4);
+  const child1 = runtime.module(define1);
+  main.import("deploy", child1);
+  main.import("getContext", child1);
+  main.import("Response", child1);
+  main.variable(observer("viewof ci")).define("viewof ci", ["createSuite"], _ci);
+  main.variable(observer("ci")).define("ci", ["Generators", "viewof ci"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("localValue")).define("localValue", _localValue);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["region"], _11);
+  main.variable(observer("remote_cell_link")).define("remote_cell_link", ["deploy","localValue","region"], _remote_cell_link);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("example1_response")).define("example1_response", ["remote_cell_link"], _example1_response);
+  main.variable(observer()).define(["ci","expect","example1_response","localValue"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("default_url_example")).define("default_url_example", ["deploy","region","html"], _default_url_example);
+  main.variable(observer()).define(["md"], _18);
+  main.variable(observer("buggy_remote_cell_link")).define("buggy_remote_cell_link", ["deploy","region"], _buggy_remote_cell_link);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer("example2_response")).define("example2_response", ["buggy_remote_cell_link"], _example2_response);
+  main.variable(observer()).define(["ci","expect","example2_response"], _22);
+  main.variable(observer()).define(["ci","expect","example2_response"], _23);
+  main.variable(observer()).define(["md","FileAttachment"], _24);
+  const child2 = runtime.module(define2);
+  main.import("html", child2);
+  main.variable(observer("webpage")).define("webpage", ["deploy","FileAttachment","html","region"], _webpage);
+  main.variable(observer("example_injecting_secrets")).define("example_injecting_secrets", ["md"], _example_injecting_secrets);
+  main.variable(observer("example_secrets")).define("example_secrets", ["deploy","region"], _example_secrets);
+  main.variable(observer()).define(["ci","example_secrets","expect"], _29);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer("example_getContext")).define("example_getContext", ["deploy","getContext","region"], _example_getContext);
+  main.variable(observer()).define(["ci","expect","example_getContext"], _32);
+  main.variable(observer()).define(["md"], _33);
+  main.variable(observer("endpoint_with_CDN")).define("endpoint_with_CDN", ["deploy","region"], _endpoint_with_CDN);
+  main.variable(observer()).define(["ci","endpoint_with_CDN","expect"], _35);
+  main.variable(observer("test_end")).define("test_end", ["ci","deploy","region","expect"], _test_end);
+  main.variable(observer()).define(["md"], _37);
+  main.variable(observer("europe_west1")).define("europe_west1", ["deploy"], _europe_west1);
+  main.variable(observer()).define(["ci","expect","europe_west1"], _39);
+  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["ci","Response","expect"], _41);
+  main.variable(observer("binary")).define("binary", ["md"], _binary);
+  main.variable(observer("pngLink")).define("pngLink", ["deploy","FileAttachment","region"], _pngLink);
+  main.variable(observer("pngElement")).define("pngElement", ["html","pngLink"], _pngElement);
+  main.variable(observer()).define(["ci","expect","pngElement","region"], _45);
+  main.variable(observer()).define(["md"], _46);
+  main.variable(observer("external_to_terminal")).define("external_to_terminal", ["deploy","region"], _external_to_terminal);
+  main.variable(observer()).define(["ci","expect","external_to_terminal"], _48);
+  main.variable(observer("orchestrator_to_external")).define("orchestrator_to_external", ["deploy","region"], _orchestrator_to_external);
+  main.variable(observer()).define(["ci","expect","orchestrator_to_external"], _50);
+  main.variable(observer()).define(["ci","expect","deploy"], _51);
+  main.variable(observer()).define(["ci","expect","deploy","region"], _52);
+  main.variable(observer("metadata_token")).define("metadata_token", ["deploy","region"], _metadata_token);
+  main.variable(observer()).define(["ci","expect","metadata_token"], _54);
+  main.variable(observer()).define(["md"], _55);
+  main.variable(observer("streamingResponse")).define("streamingResponse", ["deploy","region"], _streamingResponse);
+  main.variable(observer()).define(["ci","expect","streamingResponse"], _57);
+  main.variable(observer()).define(["deploy","pngLink","region"], _58);
+  main.variable(observer()).define(["ci","expect","orchestrator_to_external"], _59);
+  main.variable(observer()).define(["ci","deploy","region","expect"], _60);
   const child3 = runtime.module(define3);
   main.import("createSuite", child3);
   main.import("expect", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _63);
   return main;
 }
