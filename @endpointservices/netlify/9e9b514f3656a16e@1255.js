@@ -1,18 +1,14 @@
 // https://observablehq.com/@endpointservices/netlify@1255
-import define1 from "./11a5ab8b1b3a51db@1160.js";
+import define1 from "./11a5ab8b1b3a51db@1161.js";
 import define2 from "./8253abefced00da1@959.js";
-import define3 from "./dff1e917c89f5e76@1709.js";
+import define3 from "./dff1e917c89f5e76@1711.js";
 import define4 from "./c0de6bf6c2f598ef@62.js";
 import define5 from "./ef672b935bd480fc@619.js";
-import define6 from "./3d9d1394d858ca97@550.js";
-import define7 from "./b8a500058f806a6b@6.js";
+import define6 from "./3d9d1394d858ca97@553.js";
+import define7 from "./b8a500058f806a6b@10.js";
 import define8 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/828a7e731e643b93e2abaf5bd206e1b1b4c9fd0f88526c3714c1dd2f3efba17ed3f403cec8299bc727df64210ebc5077bb57b13d824e7b7848ca19fc9019c9cc",import.meta.url)],["image@2.png",new URL("./files/54e88b3adc3bcfcf2ccaa8f572e87f9466b08254c241ec4ef382f73504a9e7b484e5d71108eef168c8eb53ccea3ef8b30d2fa0134626e71079dbacca51e32897",import.meta.url)],["image@3.png",new URL("./files/43094e670aa7e161a39587fb31042c51d8fef2785a86ee68cb846e678d5a15e476b447502c8b7b5818e9b1e8e828b0eee2cc26d187fa02f9b138b61b79561e00",import.meta.url)],["image@5.png",new URL("./files/9a8c6eb0b661748266a1dd047581f160cedb0e80b165e49299a6c6e443acac6c866fdb8b18cee5d0bcb01cd86c5284586b7754918aefddddc4707ac80a705111",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+async function _1(html,md,FileAttachment){return(
 html`<div class="content">${md`
 # Static Site Generator (Netlify)
 
@@ -60,14 +56,16 @@ I write my personal blog using this tool. Some examples
 The blog is hosted on [tomlarkworthy.endpointservices.net](https://tomlarkworthy.endpointservices.net/). On my blog, the footer of each page links the [Observablehq.com](https://observablehq.com) source code.
 
 `}`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _2(html,md){return(
 html`<div class="content">${md`
 ### One-off Setup
 Login to Endpoint Services and Authorize it with Netlify
 `}`
-)});
-  main.variable(observer("authorizer")).define("authorizer", ["viewof user","html","session","firebase","params","nextNonce","client_id"], async function($0,html,session,firebase,params,nextNonce,client_id)
+)}
+
+async function _authorizer($0,html,session,firebase,params,nextNonce,client_id)
 {
   // Ensure user is logged in
   if (!($0).value.uid) return html`${$0}`;
@@ -121,19 +119,22 @@ Login to Endpoint Services and Authorize it with Netlify
   }
   
 }
-);
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _4(html,md){return(
 html`<div class="content">${md`
 ## Static Site Generator library functions
 `}`
-)});
-  main.variable(observer()).define(["signature","deployStaticFile"], function(signature,deployStaticFile){return(
+)}
+
+function _5(signature,deployStaticFile){return(
 signature(deployStaticFile, {
   description: 'Deploys a file to a path on a Netlify hosted domain.',
   open: true
 })
-)});
-  main.variable(observer("deployStaticFile")).define("deployStaticFile", ["deployStaticFiles"], function(deployStaticFiles){return(
+)}
+
+function _deployStaticFile(deployStaticFiles){return(
 async function deployStaticFile({
     app_id,             // Netlify api_id (typod to app_id)
     target,             // Path on domain to deploy this file to
@@ -154,14 +155,16 @@ async function deployStaticFile({
     }]
   })
 }
-)});
-  main.variable(observer()).define(["signature","deployStaticFiles"], function(signature,deployStaticFiles){return(
+)}
+
+function _7(signature,deployStaticFiles){return(
 signature(deployStaticFiles, {
   description: 'Deploys several files on Netlify hosted domain.',
   open: true
 })
-)});
-  main.variable(observer("deployStaticFiles")).define("deployStaticFiles", ["spinners","html","viewof user","session","nextNonce","firebase","client_id","location","promiseRecursive","message","updateDigest","createDeploy","deployments","uploadContent","md","Inputs"], function(spinners,html,$0,session,nextNonce,firebase,client_id,location,promiseRecursive,message,updateDigest,createDeploy,deployments,uploadContent,md,Inputs){return(
+)}
+
+function _deployStaticFiles(spinners,html,$0,session,nextNonce,firebase,client_id,location,promiseRecursive,message,updateDigest,createDeploy,deployments,uploadContent,md,Inputs){return(
 async function deployStaticFiles({
     app_id,             // Netlify api_id (typod to app_id)
     immediate = false,    // auto-deploy (no button click)
@@ -332,14 +335,16 @@ async function deployStaticFiles({
     `
   }
 }
-)});
-  main.variable(observer()).define(["signature","queryDependants"], function(signature,queryDependants){return(
+)}
+
+function _9(signature,queryDependants){return(
 signature(queryDependants, {
   description: 'Query dependants searches for all content with specific tags, useful for content grouping, sitemaps RSS feeds etc.',
   open: true
 })
-)});
-  main.variable(observer("queryDependants")).define("queryDependants", ["location","listen","firebase"], function(location,listen,firebase){return(
+)}
+
+function _queryDependants(location,listen,firebase){return(
 function queryDependants({
     app_id,
     dependsOnTags,
@@ -354,8 +359,9 @@ function queryDependants({
         .limit(limit)
     );  
 }
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _11(html,md,FileAttachment){return(
 html`<div class=content>${
 md`### Setup up your Netlify
 
@@ -372,50 +378,54 @@ Make a note of its API ID
 ![](${await FileAttachment("image@3.png").url()})
 
 `}`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _12(html,md){return(
 html`<div class="content">${
 md`## Supporting state
 `}`
-)});
-  main.variable(observer("message")).define("message", ["mutable spinners"], function($0){return(
+)}
+
+function _message($0){return(
 function message(id, message) {
   $0.value = ({
     ...$0.value,
     id: message
   })
 }
-)});
-  main.define("initial spinners", function(){return(
+)}
+
+function _spinners(){return(
 {
 
 }
-)});
-  main.variable(observer("mutable spinners")).define("mutable spinners", ["Mutable", "initial spinners"], (M, _) => new M(_));
-  main.variable(observer("spinners")).define("spinners", ["mutable spinners"], _ => _.generator);
-  main.define("initial deployments", function(){return(
+)}
+
+function _deployments(){return(
 {
 
 }
-)});
-  main.variable(observer("mutable deployments")).define("mutable deployments", ["Mutable", "initial deployments"], (M, _) => new M(_));
-  main.variable(observer("deployments")).define("deployments", ["mutable deployments"], _ => _.generator);
-  main.variable(observer("params")).define("params", ["URLSearchParams","location"], function(URLSearchParams,location)
+)}
+
+function _params(URLSearchParams,location)
 {
   const params = Object.fromEntries(new URLSearchParams(location.hash.substring(1)).entries())
   params.state = params.state ? JSON.parse(decodeURIComponent(params.state)): null;
   return params;
 }
-);
-  main.variable(observer("session")).define("session", ["viewof user","listen","firebase"], function($0,listen,firebase){return(
+
+
+function _session($0,listen,firebase){return(
 ($0).value.uid ? listen(firebase.firestore().doc(`/services/netlify-proxy/sessions/${($0).value.uid}`), {
   defaultValue: {}
 }): {}
-)});
-  main.variable(observer("nextNonce")).define("nextNonce", function(){return(
+)}
+
+function _nextNonce(){return(
 Math.random()
-)});
-  main.variable(observer("updateDigest")).define("updateDigest", ["hashes","firebase"], function(hashes,firebase){return(
+)}
+
+function _updateDigest(hashes,firebase){return(
 async function updateDigest({
     subdomain, app_id
   } = {}, unit, cache) {
@@ -433,8 +443,9 @@ async function updateDigest({
     digest: digest,
   };
 }
-)});
-  main.variable(observer("createDeploy")).define("createDeploy", ["fetchp","session"], function(fetchp,session){return(
+)}
+
+function _createDeploy(fetchp,session){return(
 async function createDeploy(app_id, files) {
 
   const deploy_response = await fetchp(`https://api.netlify.com/api/v1/sites/${app_id}/deploys`, {
@@ -456,8 +467,9 @@ async function createDeploy(app_id, files) {
   console.log(deploy)
   return deploy;
 }
-)});
-  main.variable(observer("uploadContent")).define("uploadContent", ["fetchp","session"], function(fetchp,session){return(
+)}
+
+function _uploadContent(fetchp,session){return(
 async function uploadContent(deploy_id, target, content) {
   const netlify = "https://api.netlify.com/api/v1";
   const uploadResponse = await fetchp(`${netlify}/deploys/${deploy_id}/files/${target}`, {
@@ -472,24 +484,72 @@ async function uploadContent(deploy_id, target, content) {
   if (uploadResponse.status >= 400) throw new Error(text)
   return text;
 }
-)});
-  main.variable(observer("version")).define("version", function(){return(
+)}
+
+function _version(){return(
 9
-)});
-  main.variable(observer("hashes")).define("hashes", ["require"], function(require){return(
+)}
+
+function _hashes(require){return(
 require("jshashes")
-)});
-  main.variable(observer("client_id")).define("client_id", function(){return(
+)}
+
+function _client_id(){return(
 "nR-8fzREOHe0-6B2vGY6czBXxxpurQloK0niTCRR4PM"
-)});
-  main.variable(observer()).define(["html"], function(html){return(
+)}
+
+function _25(html){return(
 html`<div class="content"><h4> Credits</h4><p>
 Preview image, <span>Photo by <a href="https://unsplash.com/@andredantan19?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Andre Tan</a> on <a href="https://unsplash.com/s/photos/static?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 `
-)});
-  main.variable(observer()).define(["html"], function(html){return(
+)}
+
+function _26(html){return(
 html`<div class="content"><h4> Imports`
-)});
+)}
+
+function _34(bulma){return(
+bulma
+)}
+
+function _36(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/828a7e731e643b93e2abaf5bd206e1b1b4c9fd0f88526c3714c1dd2f3efba17ed3f403cec8299bc727df64210ebc5077bb57b13d824e7b7848ca19fc9019c9cc",import.meta.url)],["image@2.png",new URL("./files/54e88b3adc3bcfcf2ccaa8f572e87f9466b08254c241ec4ef382f73504a9e7b484e5d71108eef168c8eb53ccea3ef8b30d2fa0134626e71079dbacca51e32897",import.meta.url)],["image@3.png",new URL("./files/43094e670aa7e161a39587fb31042c51d8fef2785a86ee68cb846e678d5a15e476b447502c8b7b5818e9b1e8e828b0eee2cc26d187fa02f9b138b61b79561e00",import.meta.url)],["image@5.png",new URL("./files/9a8c6eb0b661748266a1dd047581f160cedb0e80b165e49299a6c6e443acac6c866fdb8b18cee5d0bcb01cd86c5284586b7754918aefddddc4707ac80a705111",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["html","md","FileAttachment"], _1);
+  main.variable(observer()).define(["html","md"], _2);
+  main.variable(observer("authorizer")).define("authorizer", ["viewof user","html","session","firebase","params","nextNonce","client_id"], _authorizer);
+  main.variable(observer()).define(["html","md"], _4);
+  main.variable(observer()).define(["signature","deployStaticFile"], _5);
+  main.variable(observer("deployStaticFile")).define("deployStaticFile", ["deployStaticFiles"], _deployStaticFile);
+  main.variable(observer()).define(["signature","deployStaticFiles"], _7);
+  main.variable(observer("deployStaticFiles")).define("deployStaticFiles", ["spinners","html","viewof user","session","nextNonce","firebase","client_id","location","promiseRecursive","message","updateDigest","createDeploy","deployments","uploadContent","md","Inputs"], _deployStaticFiles);
+  main.variable(observer()).define(["signature","queryDependants"], _9);
+  main.variable(observer("queryDependants")).define("queryDependants", ["location","listen","firebase"], _queryDependants);
+  main.variable(observer()).define(["html","md","FileAttachment"], _11);
+  main.variable(observer()).define(["html","md"], _12);
+  main.variable(observer("message")).define("message", ["mutable spinners"], _message);
+  main.define("initial spinners", _spinners);
+  main.variable(observer("mutable spinners")).define("mutable spinners", ["Mutable", "initial spinners"], (M, _) => new M(_));
+  main.variable(observer("spinners")).define("spinners", ["mutable spinners"], _ => _.generator);
+  main.define("initial deployments", _deployments);
+  main.variable(observer("mutable deployments")).define("mutable deployments", ["Mutable", "initial deployments"], (M, _) => new M(_));
+  main.variable(observer("deployments")).define("deployments", ["mutable deployments"], _ => _.generator);
+  main.variable(observer("params")).define("params", ["URLSearchParams","location"], _params);
+  main.variable(observer("session")).define("session", ["viewof user","listen","firebase"], _session);
+  main.variable(observer("nextNonce")).define("nextNonce", _nextNonce);
+  main.variable(observer("updateDigest")).define("updateDigest", ["hashes","firebase"], _updateDigest);
+  main.variable(observer("createDeploy")).define("createDeploy", ["fetchp","session"], _createDeploy);
+  main.variable(observer("uploadContent")).define("uploadContent", ["fetchp","session"], _uploadContent);
+  main.variable(observer("version")).define("version", _version);
+  main.variable(observer("hashes")).define("hashes", ["require"], _hashes);
+  main.variable(observer("client_id")).define("client_id", _client_id);
+  main.variable(observer()).define(["html"], _25);
+  main.variable(observer()).define(["html"], _26);
   const child1 = runtime.module(define1);
   main.import("html", child1);
   const child2 = runtime.module(define2);
@@ -507,13 +567,9 @@ html`<div class="content"><h4> Imports`
   main.import("signature", child6);
   const child7 = runtime.module(define7);
   main.import("promiseRecursive", child7);
-  main.variable(observer()).define(["bulma"], function(bulma){return(
-bulma
-)});
+  main.variable(observer()).define(["bulma"], _34);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _36);
   return main;
 }

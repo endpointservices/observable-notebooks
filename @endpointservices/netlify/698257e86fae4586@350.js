@@ -1,9 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/firebase-admin@346
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+// https://observablehq.com/@tomlarkworthy/firebase-admin@350
+function _1(md){return(
 md`# Firebase Admin and Google API helpers in the browser
 
 Some firebase-admin functionality that is not available in the browser, and some helpers for related Google API functionality.
@@ -14,8 +10,9 @@ You need some way of securing the Google Service Account of course. You could ru
 
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## verifyIdToken
 
 Check the validity of a Firebase ID token
@@ -26,8 +23,9 @@ source: https://github.com/firebase/firebase-admin-node/blob/5d72c1b40ef9383060d
 import {verifyIdToken} from '@tomlarkworthy/firebase-admin'
 ~~~
 `
-)});
-  main.variable(observer("verifyIdToken")).define("verifyIdToken", ["tokenValidator"], function(tokenValidator){return(
+)}
+
+function _verifyIdToken(tokenValidator){return(
 function verifyIdToken(firebase, token) {
   if (!token) throw new Error("No token supplied");
   if (!firebase.idTokenValidator) {
@@ -35,8 +33,9 @@ function verifyIdToken(firebase, token) {
   }
   return firebase.idTokenValidator.verifyJWT(token);
 }
-)});
-  main.variable(observer("tokenValidator")).define("tokenValidator", ["jwt"], function(jwt)
+)}
+
+function _tokenValidator(jwt)
 {
 
   // Audience to use for Firebase Auth Custom tokens
@@ -261,8 +260,9 @@ function verifyIdToken(firebase, token) {
     )
   };
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _5(md){return(
 md`## Create Custom Token
 
 [Creating custom tokens Firebase docs](https://firebase.google.com/docs/auth/admin/create-custom-tokens)
@@ -272,8 +272,9 @@ import {createCustomToken} from '@tomlarkworthy/firebase-admin'
 ~~~
 
 `
-)});
-  main.variable(observer("createCustomToken")).define("createCustomToken", ["jsrsasign"], function(jsrsasign){return(
+)}
+
+function _createCustomToken(jsrsasign){return(
 async function createCustomToken({
     private_key,
     client_email
@@ -293,16 +294,18 @@ async function createCustomToken({
   });
   return jsrsasign.KJUR.jws.JWS.sign("RS256", sHeader, sPayload, private_key);
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### Verify Custom Token
 
 ~~~js
 import {verifyCustomToken} from '@tomlarkworthy/firebase-admin'
 ~~~
 `
-)});
-  main.variable(observer("verifyCustomToken")).define("verifyCustomToken", function(){return(
+)}
+
+function _verifyCustomToken(){return(
 async function verifyCustomToken(firebase, token) {
   const API_KEY = firebase.options_.apiKey;
   if (!token) throw new Error("No token specified");
@@ -324,14 +327,16 @@ async function verifyCustomToken(firebase, token) {
     return JSON.parse(atob(token.split('.')[1]));
   }
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Mint access_token from Google Service Account
 
 Combine this with [Google API Client](https://observablehq.com/@tomlarkworthy/gapi) to call Google Services
 `
-)});
-  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], function(jsrsasign){return(
+)}
+
+function _getAccessTokenFromServiceAccount(jsrsasign){return(
 async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   if (typeof serviceAccountKey === 'string') {
     serviceAccountKey = JSON.parse(serviceAccountKey)
@@ -363,8 +368,9 @@ async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   }
   return (await tokenResponse.json()).access_token;
 }
-)});
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+)}
+
+async function _11(md,FileAttachment){return(
 md`## Signin with access_token
 
 You can use an access_token to authenticate as a user to the Firebase API (requires enabled Google Login).
@@ -373,8 +379,9 @@ You can use service account from different project if you whitelist the service 
 
 ![](${await FileAttachment("image.png").url()})
 `
-)});
-  main.variable(observer("signinWithAccessToken")).define("signinWithAccessToken", function(){return(
+)}
+
+function _signinWithAccessToken(){return(
 async function signinWithAccessToken(firebase, access_token) {
   const credential = firebase.firebase_.auth.GoogleAuthProvider.credential(
     null,
@@ -382,15 +389,38 @@ async function signinWithAccessToken(firebase, access_token) {
   );
   return await firebase.auth().signInWithCredential(credential);
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`### Support utilities`
-)});
-  main.variable(observer("jwt")).define("jwt", ["require"], function(require){return(
+)}
+
+function _jwt(require){return(
 require('https://bundle.run/jsonwebtoken@8.5.1')
-)});
-  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], function(require){return(
+)}
+
+function _jsrsasign(require){return(
 require('https://bundle.run/jsrsasign@10.1.4')
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("verifyIdToken")).define("verifyIdToken", ["tokenValidator"], _verifyIdToken);
+  main.variable(observer("tokenValidator")).define("tokenValidator", ["jwt"], _tokenValidator);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("createCustomToken")).define("createCustomToken", ["jsrsasign"], _createCustomToken);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("verifyCustomToken")).define("verifyCustomToken", _verifyCustomToken);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], _getAccessTokenFromServiceAccount);
+  main.variable(observer()).define(["md","FileAttachment"], _11);
+  main.variable(observer("signinWithAccessToken")).define("signinWithAccessToken", _signinWithAccessToken);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("jwt")).define("jwt", ["require"], _jwt);
+  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], _jsrsasign);
   return main;
 }
