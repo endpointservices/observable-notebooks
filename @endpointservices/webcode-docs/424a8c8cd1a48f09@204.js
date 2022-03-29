@@ -1,12 +1,11 @@
 import define1 from "./6eda90668ae03044@803.js";
 import define2 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# [Webcode](https://webcode.run) API Reference`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## deploy(name, httpHandler, options)
 
 Arg | Type | Description
@@ -16,8 +15,9 @@ Arg | Type | Description
 **options** | [**Object**](string.md) | Additional deploy options for controlling endpoint
 
 **returns** an object that includes the field "href" which is the public URL of the deployed endpoint`
-)});
-  main.variable(observer("options")).define("options", ["md"], function(md){return(
+)}
+
+function _options(md){return(
 md`## DeployOptions
 
 Field | Type | Description
@@ -29,8 +29,9 @@ Field | Type | Description
 **modifiers** | [**Array(String)**]() | Loop prevention flags, by default, endpoints can only be invoked by "external" requests. If a endpoint is marked as "terminal" it may be called by other endpoints. "orchestrator" endpoints can call other endpoints except other "orchistrators".
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## HTTPHandler
 
 The handler is the Javascript code that responds with a _response_ to an inbound _request_.
@@ -45,13 +46,15 @@ Arg | Type | Description
 **request** | [**Object**](string.md) | Inbound request parameterization.
 **response** | [**Object**](.md) | Response object containing functions to call in order to respond.
 **context** | [**Object**](string.md) | Execution context for the request`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`## getContext()
 
 _getContext_ returns the current execution context`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`## Context
 
 The execution context can be retrieved with getContext() and is also added as the third argument in a HTTP handler.
@@ -62,8 +65,9 @@ Name | Type | Description
 **notebook** | [**String**](string.md) | Execution notebook (e.g. webcode-docs)
 **secrets** | [**Object**](string.md) | name -> value of injected secrets, includes the api_key if a private endpoint
 **serverless** | [**Boolean**](string.md) | If the current thread is running in a serverless environment`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Request
 
 Name | Type | Description
@@ -74,8 +78,9 @@ Name | Type | Description
 **url** | [**String**](string.md) | url SUFFIX after the deployment URL (direct calls to the endpoint are simply "/")
 **baseUrl** | [**String**](string.md) | &#39; Canonical deployment URL of the endpoint, excludes region prefix and any additional paths that may have been suffixed. E.g. &#x60;/observablehq.com/d/424a8c8cd1a48f09;info&#x60; ads ds &#39;
 **ip** | [**String**](string.md) | IP address of the caller`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`## Response
 
 The response object is how the endpoint returns its result, it is an Object with a number of functions attached.
@@ -90,16 +95,15 @@ Function | Type | Description
 **write(data)** | [**Function**]() | Send a response chunk for response streaming, request IS NOT CLOSED
 **end()** | [**Function**]() | Close a request (usually called in combination with _write_)
 `
-)});
-  const child1 = runtime.module(define1);
-  main.import("deploy", child1);
-  main.import("getContext", child1);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`## Introspecting endpoint
 We can deploy a HTTP endpoint that prints out the webcode API
 `
-)});
-  main.variable(observer()).define(["deploy","getContext"], function(deploy,getContext){return(
+)}
+
+function _11(deploy,getContext){return(
 deploy("info", async (request, response) => {
   response.send(
     `<pre>${JSON.stringify(
@@ -118,11 +122,13 @@ deploy("info", async (request, response) => {
     )}</pre>`
   );
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`### Example Response`
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _13(htl){return(
 htl.html`<pre>
 {
   "request": {
@@ -157,8 +163,9 @@ htl.html`<pre>
   }
 }
 </pre>`
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _14(htl){return(
 htl.html`<style>
   code {
     white-space: pre-wrap;
@@ -178,11 +185,32 @@ htl.html`<style>
     font-family: "Impact";
   }
 </stlye>`
-)});
+)}
+
+function _16(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("options")).define("options", ["md"], _options);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  const child1 = runtime.module(define1);
+  main.import("deploy", child1);
+  main.import("getContext", child1);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["deploy","getContext"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["htl"], _13);
+  main.variable(observer()).define(["htl"], _14);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _16);
   return main;
 }
