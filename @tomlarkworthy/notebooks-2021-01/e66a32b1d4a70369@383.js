@@ -4,14 +4,11 @@ import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@619.js";
 import define4 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv",new URL("./files/9c846183cce847cef674131ad8bec8f590225e27a36af41480e75b4733b879090ea3a95d02bc5c7b99a53c40f95d1a5640e464ed32d1cd40056cf3ff7153015d",import.meta.url)],["fetchedNotebookURL.json",new URL("./files/e7f4e5e0e9549e843c12fffa630b9093207806aa36e985b9eca4b094c4d4bdd5e124345de28857bf032883b952dbd375500d5f0bf4042cc20aff84c1af0980be",import.meta.url)],["fetchedMetadata (1).json",new URL("./files/b8765b3740d5c3d8573adc60b1b2aa3ead50e2ffd625151852e7c4540c5ef599ebf72d024e55eec1bd436c2b02f36e8921d5bb3c4477e7f5c7625e12054e2f43",import.meta.url)],["fetchedMeta (1).json",new URL("./files/c0484f26e0b6c674ab1ee957d62712562b37f0000195b0d9bbc754b31b61aa4ab664999953ceb3ae32096fed574032ffbb5fa6520abd1fc49db6ac30902479b3",import.meta.url)],["fetchedTags (2).json",new URL("./files/c4d11deada8350ad56433f126b42571626b5584de4de9fe731ceff5fa95501e78d9c6b28a13e94f4b1638130a16ce011674bcc56328d74127f9324d5ca076154",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Engaging Notebooks of Jan 2022`
-)});
-  main.variable(observer()).define(["data","htl"], function(data,htl)
+)}
+
+function _2(data,htl)
 {
   const notebooks = data
     .map((value) => ({ value, sort: Math.random() }))
@@ -32,15 +29,18 @@ md`# Engaging Notebooks of Jan 2022`
       })}</tr>`
   )}</table>`;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _3(md){return(
 md`Welcome to the first edition of a monthly summary of what is hot on the [Observable](https://observablehq.com/) Dataviz platform. There is so much activity it is sometimes hard to stay up to date and not miss anything juicy. This newsletter is dedicated to finding the gems. Last month two notebooks tweeted by the [trending bot](https://twitter.com/trendingnotebo2) in particular found some resonance in the broader community.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`### Engagement, Impressions, Likes and Retweets`
-)});
-  main.variable(observer()).define(["Plot","data"], function(Plot,data){return(
+)}
+
+function _5(Plot,data){return(
 Plot.plot({
   x: {
     domain: [0, 500]
@@ -72,24 +72,25 @@ Plot.plot({
     })
   ]
 })
-)});
-  main.variable(observer("viewof scaling")).define("viewof scaling", ["Inputs"], function(Inputs){return(
+)}
+
+function _scaling(Inputs){return(
 Inputs.range([0, 1], { value: 0.21 })
-)});
-  main.variable(observer("scaling")).define("scaling", ["Generators", "viewof scaling"], (G, _) => G.input(_));
-  main.variable(observer("viewof offset")).define("viewof offset", ["Inputs"], function(Inputs){return(
+)}
+
+function _offset(Inputs){return(
 Inputs.range([0, 100], { value: 39 })
-)});
-  main.variable(observer("offset")).define("offset", ["Generators", "viewof offset"], (G, _) => G.input(_));
-  main.variable(observer("viewof cutoff")).define("viewof cutoff", ["Inputs","data"], function(Inputs,data){return(
+)}
+
+function _cutoff(Inputs,data){return(
 Inputs.range([0, data.length], {
   value: 5,
   step: 1,
   label: "cutoff"
 })
-)});
-  main.variable(observer("cutoff")).define("cutoff", ["Generators", "viewof cutoff"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`
 First, the prolific [@fil](https://observablehq.com/@fil) scored a hit with a technical dimension reduction technique for summarizing time-series data called [topological subsampling](https://observablehq.com/@fil/time-series-topological-subsampling). It's pleasing to see technical posts do so well, I think Fil did a fantastic job of explaining the technique very well, and my hypothesis why it did so well is that it ultimately solves a very practical problem of transmitting just the salient information very efficiently. You can use the technique to speed up various parts of Dataviz, including bandwidth minimization or speeding up rendering pipelines. 
 
@@ -97,11 +98,13 @@ The second big hit was [@neocartocnrs](https://observablehq.com/@neocartocnrs) i
 
 Of course, there were many other great notebooks, check the rest of January's trending notebooks below! Also if you have not seen, there is a list of the [100 notebooks in 2021](https://observablehq.com/@tomlarkworthy/notebooks2021).
 `
-)});
-  main.variable(observer()).define(["md","content"], function(md,content){return(
+)}
+
+function _10(md,content){return(
 md`${content}`
-)});
-  main.variable(observer("content")).define("content", ["cutoff","data"], function(cutoff,data)
+)}
+
+function _content(cutoff,data)
 {
   let markdown = "";
   for (let i = 0; i < cutoff; i++) {
@@ -126,11 +129,13 @@ md`${content}`
 
   return markdown;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _12(md){return(
 md`### Data wrangling`
-)});
-  main.variable(observer("data")).define("data", ["tweets","meta","metadata","tags","thumbnailURL","scaling","offset"], function(tweets,meta,metadata,tags,thumbnailURL,scaling,offset){return(
+)}
+
+function _data(tweets,meta,metadata,tags,thumbnailURL,scaling,offset){return(
 tweets
   .map((tweet, i) => ({
     ...tweet,
@@ -141,8 +146,9 @@ tweets
     importance: tweet.impressions * scaling + offset
   }))
   .sort((a, b) => b.impressions - a.impressions)
-)});
-  main.variable(observer("tweets")).define("tweets", ["FileAttachment"], async function(FileAttachment){return(
+)}
+
+async function _tweets(FileAttachment){return(
 (
   await FileAttachment(
     "tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv"
@@ -154,14 +160,15 @@ tweets
   likes: parseFloat(x.likes),
   retweets: parseFloat(x.retweets)
 }))
-)});
-  main.variable(observer("viewof fetchNotebookURL")).define("viewof fetchNotebookURL", ["Inputs"], function(Inputs){return(
+)}
+
+function _fetchNotebookURL(Inputs){return(
 Inputs.toggle({
   label: "fetch notebook URL? (network, slow)"
 })
-)});
-  main.variable(observer("fetchNotebookURL")).define("fetchNotebookURL", ["Generators", "viewof fetchNotebookURL"], (G, _) => G.input(_));
-  main.variable(observer("expandTwitterURL")).define("expandTwitterURL", function(){return(
+)}
+
+function _expandTwitterURL(){return(
 async (shortURL) => {
   const response = await fetch(shortURL);
   if (response.status !== 200)
@@ -169,8 +176,9 @@ async (shortURL) => {
   const body = await response.text();
   return /URL=([^"]*)"/.exec(body)[1];
 }
-)});
-  main.variable(observer("fetchedNotebookURL")).define("fetchedNotebookURL", ["fetchNotebookURL","invalidation","tweets","expandTwitterURL"], function(fetchNotebookURL,invalidation,tweets,expandTwitterURL)
+)}
+
+function _fetchedNotebookURL(fetchNotebookURL,invalidation,tweets,expandTwitterURL)
 {
   if (!fetchNotebookURL) return invalidation;
   const notebooks = new Array(tweets.length);
@@ -182,17 +190,19 @@ async (shortURL) => {
   }
   return Promise.all(notebooks);
 }
-);
-  main.variable(observer("notebookURL")).define("notebookURL", ["FileAttachment"], function(FileAttachment){return(
+
+
+function _notebookURL(FileAttachment){return(
 FileAttachment("fetchedNotebookURL.json").json()
-)});
-  main.variable(observer("viewof fetchMetdata")).define("viewof fetchMetdata", ["Inputs"], function(Inputs){return(
+)}
+
+function _fetchMetdata(Inputs){return(
 Inputs.toggle({
   label: "fetch metadata? (network, slow)"
 })
-)});
-  main.variable(observer("fetchMetdata")).define("fetchMetdata", ["Generators", "viewof fetchMetdata"], (G, _) => G.input(_));
-  main.variable(observer("fetchedMetadata")).define("fetchedMetadata", ["fetchMetdata","invalidation","tweets","getMetadata","notebookURL"], async function(fetchMetdata,invalidation,tweets,getMetadata,notebookURL)
+)}
+
+async function _fetchedMetadata(fetchMetdata,invalidation,tweets,getMetadata,notebookURL)
 {
   if (!fetchMetdata) return invalidation;
 
@@ -204,17 +214,19 @@ Inputs.toggle({
   }
   return metadata;
 }
-);
-  main.variable(observer("metadata")).define("metadata", ["FileAttachment"], function(FileAttachment){return(
+
+
+function _metadata(FileAttachment){return(
 FileAttachment("fetchedMetadata (1).json").json()
-)});
-  main.variable(observer("viewof fetchMeta")).define("viewof fetchMeta", ["Inputs"], function(Inputs){return(
+)}
+
+function _fetchMeta(Inputs){return(
 Inputs.toggle({
   label: "fetch doc meta? (network, slow)"
 })
-)});
-  main.variable(observer("fetchMeta")).define("fetchMeta", ["Generators", "viewof fetchMeta"], (G, _) => G.input(_));
-  main.variable(observer("fetchedMeta")).define("fetchedMeta", ["fetchMeta","invalidation","tweets","metadata","fetchp"], async function(fetchMeta,invalidation,tweets,metadata,fetchp)
+)}
+
+async function _fetchedMeta(fetchMeta,invalidation,tweets,metadata,fetchp)
 {
   if (!fetchMeta) return invalidation;
   const meta = new Array(tweets.length);
@@ -229,25 +241,28 @@ Inputs.toggle({
   }
   return Promise.all(meta);
 }
-);
-  main.variable(observer("meta")).define("meta", ["FileAttachment"], function(FileAttachment){return(
+
+
+function _meta(FileAttachment){return(
 FileAttachment("fetchedMeta (1).json").json()
-)});
-  main.variable(observer("thumbnailURL")).define("thumbnailURL", ["meta"], function(meta){return(
+)}
+
+function _thumbnailURL(meta){return(
 (index) =>
   meta[index]
     ? `https://static.observableusercontent.com/thumbnail/${
         meta[index].custom_thumbnail || meta[index].thumbnail
       }.jpg`
     : undefined
-)});
-  main.variable(observer("viewof fetchTags")).define("viewof fetchTags", ["Inputs"], function(Inputs){return(
+)}
+
+function _fetchTags(Inputs){return(
 Inputs.toggle({
   label: "fetch page meta tags? (network, slow)"
 })
-)});
-  main.variable(observer("fetchTags")).define("fetchTags", ["Generators", "viewof fetchTags"], (G, _) => G.input(_));
-  main.variable(observer("fetchedTags")).define("fetchedTags", ["fetchTags","invalidation","tweets","metadata","fetchp"], async function(fetchTags,invalidation,tweets,metadata,fetchp)
+)}
+
+async function _fetchedTags(fetchTags,invalidation,tweets,metadata,fetchp)
 {
   if (!fetchTags) return invalidation;
   var el = document.createElement("tmp");
@@ -268,8 +283,9 @@ Inputs.toggle({
   }
   return tags;
 }
-);
-  main.variable(observer("tags")).define("tags", ["FileAttachment"], async function(FileAttachment){return(
+
+
+async function _tags(FileAttachment){return(
 (await FileAttachment("fetchedTags (2).json").json()).map((t) => {
   let description = undefined;
   if (t?.description) {
@@ -284,7 +300,51 @@ Inputs.toggle({
     description
   };
 })
-)});
+)}
+
+function _33(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv",new URL("./files/9c846183cce847cef674131ad8bec8f590225e27a36af41480e75b4733b879090ea3a95d02bc5c7b99a53c40f95d1a5640e464ed32d1cd40056cf3ff7153015d",import.meta.url)],["fetchedNotebookURL.json",new URL("./files/e7f4e5e0e9549e843c12fffa630b9093207806aa36e985b9eca4b094c4d4bdd5e124345de28857bf032883b952dbd375500d5f0bf4042cc20aff84c1af0980be",import.meta.url)],["fetchedMetadata (1).json",new URL("./files/b8765b3740d5c3d8573adc60b1b2aa3ead50e2ffd625151852e7c4540c5ef599ebf72d024e55eec1bd436c2b02f36e8921d5bb3c4477e7f5c7625e12054e2f43",import.meta.url)],["fetchedMeta (1).json",new URL("./files/c0484f26e0b6c674ab1ee957d62712562b37f0000195b0d9bbc754b31b61aa4ab664999953ceb3ae32096fed574032ffbb5fa6520abd1fc49db6ac30902479b3",import.meta.url)],["fetchedTags (2).json",new URL("./files/c4d11deada8350ad56433f126b42571626b5584de4de9fe731ceff5fa95501e78d9c6b28a13e94f4b1638130a16ce011674bcc56328d74127f9324d5ca076154",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["data","htl"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["Plot","data"], _5);
+  main.variable(observer("viewof scaling")).define("viewof scaling", ["Inputs"], _scaling);
+  main.variable(observer("scaling")).define("scaling", ["Generators", "viewof scaling"], (G, _) => G.input(_));
+  main.variable(observer("viewof offset")).define("viewof offset", ["Inputs"], _offset);
+  main.variable(observer("offset")).define("offset", ["Generators", "viewof offset"], (G, _) => G.input(_));
+  main.variable(observer("viewof cutoff")).define("viewof cutoff", ["Inputs","data"], _cutoff);
+  main.variable(observer("cutoff")).define("cutoff", ["Generators", "viewof cutoff"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md","content"], _10);
+  main.variable(observer("content")).define("content", ["cutoff","data"], _content);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("data")).define("data", ["tweets","meta","metadata","tags","thumbnailURL","scaling","offset"], _data);
+  main.variable(observer("tweets")).define("tweets", ["FileAttachment"], _tweets);
+  main.variable(observer("viewof fetchNotebookURL")).define("viewof fetchNotebookURL", ["Inputs"], _fetchNotebookURL);
+  main.variable(observer("fetchNotebookURL")).define("fetchNotebookURL", ["Generators", "viewof fetchNotebookURL"], (G, _) => G.input(_));
+  main.variable(observer("expandTwitterURL")).define("expandTwitterURL", _expandTwitterURL);
+  main.variable(observer("fetchedNotebookURL")).define("fetchedNotebookURL", ["fetchNotebookURL","invalidation","tweets","expandTwitterURL"], _fetchedNotebookURL);
+  main.variable(observer("notebookURL")).define("notebookURL", ["FileAttachment"], _notebookURL);
+  main.variable(observer("viewof fetchMetdata")).define("viewof fetchMetdata", ["Inputs"], _fetchMetdata);
+  main.variable(observer("fetchMetdata")).define("fetchMetdata", ["Generators", "viewof fetchMetdata"], (G, _) => G.input(_));
+  main.variable(observer("fetchedMetadata")).define("fetchedMetadata", ["fetchMetdata","invalidation","tweets","getMetadata","notebookURL"], _fetchedMetadata);
+  main.variable(observer("metadata")).define("metadata", ["FileAttachment"], _metadata);
+  main.variable(observer("viewof fetchMeta")).define("viewof fetchMeta", ["Inputs"], _fetchMeta);
+  main.variable(observer("fetchMeta")).define("fetchMeta", ["Generators", "viewof fetchMeta"], (G, _) => G.input(_));
+  main.variable(observer("fetchedMeta")).define("fetchedMeta", ["fetchMeta","invalidation","tweets","metadata","fetchp"], _fetchedMeta);
+  main.variable(observer("meta")).define("meta", ["FileAttachment"], _meta);
+  main.variable(observer("thumbnailURL")).define("thumbnailURL", ["meta"], _thumbnailURL);
+  main.variable(observer("viewof fetchTags")).define("viewof fetchTags", ["Inputs"], _fetchTags);
+  main.variable(observer("fetchTags")).define("fetchTags", ["Generators", "viewof fetchTags"], (G, _) => G.input(_));
+  main.variable(observer("fetchedTags")).define("fetchedTags", ["fetchTags","invalidation","tweets","metadata","fetchp"], _fetchedTags);
+  main.variable(observer("tags")).define("tags", ["FileAttachment"], _tags);
   const child1 = runtime.module(define1);
   main.import("Plot", child1);
   const child2 = runtime.module(define2);
@@ -293,8 +353,6 @@ Inputs.toggle({
   main.import("fetchp", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _33);
   return main;
 }

@@ -1,9 +1,5 @@
 // https://observablehq.com/@jashkenas/inputs@2303
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["capstan.gif",new URL("./files/c051fbc024553912e31968b35e537d4ad3592201b5f8e7bd13fd9d02e38599c5d541a704d0858c676328babb3e5c9c35dd7c6d67240090d094882a1cad8eece4",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Inputs
 <div style="margin-top: -3px; font-size: 1.05em;">*a.k.a “The Grand Native Inputs Bazaar”*</div>
 
@@ -31,8 +27,9 @@ Wares we have on offer:
   * [\`checkbox\`](#checkboxDemo)
   * [\`number\`](#numberDemo)
   * [\`password\`](#passwordDemo)`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`| <h3>Friends & Family:</h3>  |   |
 |---|---|
 | **[@mbostock/form-input](/@mbostock/form-input)**  | Fully custom forms, combining inputs into a single reactive cell. |
@@ -55,20 +52,22 @@ md`| <h3>Friends & Family:</h3>  |   |
 | **[@j-f1/checkbox](/@j-f1/checkbox)** | A simple checkbox input that provides a boolean value. |
 
 <br>*If you have any improvements for the bazaar, [please make your change in a fork and send it to me as a suggestion.](https://observablehq.com/@observablehq/suggestions-and-comments)*`
-)});
-  main.variable(observer("sliderDemo")).define("sliderDemo", ["md"], function(md){return(
+)}
+
+function _sliderDemo(md){return(
 md`---
 ## Sliders
 
 ~~~js
 import {slider} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof a")).define("viewof a", ["slider"], function(slider){return(
+)}
+
+function _a(slider){return(
 slider()
-)});
-  main.variable(observer("a")).define("a", ["Generators", "viewof a"], (G, _) => G.input(_));
-  main.variable(observer("viewof a1")).define("viewof a1", ["slider"], function(slider){return(
+)}
+
+function _a1(slider){return(
 slider({
   min: 0, 
   max: 1, 
@@ -76,9 +75,9 @@ slider({
   format: ".0%",
   description: "Zero to one, formatted as a percentage"
 })
-)});
-  main.variable(observer("a1")).define("a1", ["Generators", "viewof a1"], (G, _) => G.input(_));
-  main.variable(observer("viewof a1_1")).define("viewof a1_1", ["slider"], function(slider){return(
+)}
+
+function _a1_1(slider){return(
 slider({
   min: 0, 
   max: 1, 
@@ -86,9 +85,9 @@ slider({
   format: v => `${Math.round(100 * v)} per cent`,
   description: "Zero to one, formatted with a custom function"
 })
-)});
-  main.variable(observer("a1_1")).define("a1_1", ["Generators", "viewof a1_1"], (G, _) => G.input(_));
-  main.variable(observer("viewof a2")).define("viewof a2", ["slider"], function(slider){return(
+)}
+
+function _a2(slider){return(
 slider({
   min: 0,
   max: 1e9,
@@ -98,9 +97,9 @@ slider({
   description:
     "Zero to one billion, in steps of one thousand, formatted as a (US) number"
 })
-)});
-  main.variable(observer("a2")).define("a2", ["Generators", "viewof a2"], (G, _) => G.input(_));
-  main.variable(observer("viewof a3")).define("viewof a3", ["slider"], function(slider){return(
+)}
+
+function _a3(slider){return(
 slider({
   min: 0, 
   max: 100, 
@@ -109,18 +108,18 @@ slider({
   title: "Integers", 
   description: "Integers from zero through 100"
 })
-)});
-  main.variable(observer("a3")).define("a3", ["Generators", "viewof a3"], (G, _) => G.input(_));
-  main.variable(observer("viewof a4")).define("viewof a4", ["slider"], function(slider){return(
+)}
+
+function _a4(slider){return(
 slider({
   min: 0.9,
   max: 1.1,
   precision: 3,
   description: "A high precision slider example"
 })
-)});
-  main.variable(observer("a4")).define("a4", ["Generators", "viewof a4"], (G, _) => G.input(_));
-  main.variable(observer("viewof a5")).define("viewof a5", ["slider"], function(slider){return(
+)}
+
+function _a5(slider){return(
 slider({
   min: 0.9,
   max: 1.1,
@@ -128,12 +127,13 @@ slider({
   submit: true,
   description: "The same as a4, but only changes value on submit"
 })
-)});
-  main.variable(observer("a5")).define("a5", ["Generators", "viewof a5"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`More [fancy slider techniques](https://observablehq.com/@mootari/prime-numbers-slider).`
-)});
-  main.variable(observer("slider")).define("slider", ["input"], function(input){return(
+)}
+
+function _slider(input){return(
 function slider(config = {}) {
   let {
     min = 0,
@@ -163,36 +163,40 @@ function slider(config = {}) {
     getValue
   });
 }
-)});
-  main.variable(observer("buttonDemo")).define("buttonDemo", ["md"], function(md){return(
+)}
+
+function _buttonDemo(md){return(
 md`---
 ## Buttons
 
 ~~~js
 import {button} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof b")).define("viewof b", ["button"], function(button){return(
+)}
+
+function _b(button){return(
 button()
-)});
-  main.variable(observer("b")).define("b", ["Generators", "viewof b"], (G, _) => G.input(_));
-  main.variable(observer()).define(["b"], function(b)
+)}
+
+function _15(b)
 {
   b
   return !this;
 }
-);
-  main.variable(observer("viewof b1")).define("viewof b1", ["button"], function(button){return(
+
+
+function _b1(button){return(
 button({value: "Click me", description: "We use a reference to the button below to record the time you pressed it."})
-)});
-  main.variable(observer("b1")).define("b1", ["Generators", "viewof b1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["b1"], function(b1)
+)}
+
+function _17(b1)
 {
   b1;
   return new Date(Date.now()).toUTCString()
 }
-);
-  main.variable(observer("button")).define("button", ["input"], function(input){return(
+
+
+function _button(input){return(
 function button(config = {}) {
   const {
     value = "Ok", title, description, disabled
@@ -204,46 +208,51 @@ function button(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("selectDemo")).define("selectDemo", ["md"], function(md){return(
+)}
+
+function _selectDemo(md){return(
 md`---
 ## Dropdown Menus and Multiselects
 
 ~~~js
 import {select} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof dd")).define("viewof dd", ["select"], function(select){return(
+)}
+
+function _dd(select){return(
 select(["Spring", "Summer", "Fall", "Winter"])
-)});
-  main.variable(observer("dd")).define("dd", ["Generators", "viewof dd"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dd"], function(dd){return(
+)}
+
+function _21(dd){return(
 dd
-)});
-  main.variable(observer("viewof dd1")).define("viewof dd1", ["select"], function(select){return(
+)}
+
+function _dd1(select){return(
 select({
   title: "Stooges",
   description: "Please pick your favorite stooge.",
   options: ["Curly", "Larry", "Moe", "Shemp"],
   value: "Moe"
 })
-)});
-  main.variable(observer("dd1")).define("dd1", ["Generators", "viewof dd1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dd1"], function(dd1){return(
+)}
+
+function _23(dd1){return(
 dd1
-)});
-  main.variable(observer("viewof dd2")).define("viewof dd2", ["select"], function(select){return(
+)}
+
+function _dd2(select){return(
 select({
   description: "As a child, which vegetables did you refuse to eat?",
   options: ["Spinach", "Broccoli", "Brussels Sprouts", "Cauliflower", "Kale", "Turnips", "Green Beans", "Asparagus"],
   multiple: true
 })
-)});
-  main.variable(observer("dd2")).define("dd2", ["Generators", "viewof dd2"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dd2"], function(dd2){return(
+)}
+
+function _25(dd2){return(
 dd2
-)});
-  main.variable(observer("viewof dd3")).define("viewof dd3", ["select"], function(select)
+)}
+
+function _dd3(select)
 {
   const dd3 = select({
     title: "How are you feeling today?",
@@ -262,12 +271,13 @@ dd2
   dd3.input.style.marginTop = "8px";
   return dd3;
 }
-);
-  main.variable(observer("dd3")).define("dd3", ["Generators", "viewof dd3"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dd3"], function(dd3){return(
+
+
+function _27(dd3){return(
 dd3
-)});
-  main.variable(observer("select")).define("select", ["input","html"], function(input,html){return(
+)}
+
+function _select(input,html){return(
 function select(config = {}) {
   let {
     value: formValue,
@@ -316,8 +326,9 @@ function select(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("autoSelectDemo")).define("autoSelectDemo", ["md"], function(md){return(
+)}
+
+function _autoSelectDemo(md){return(
 md`---
 ## Autoselects
 *A variant of an option menu, using an autocompleting text input, via HTML’s datalist element.* 
@@ -325,18 +336,20 @@ md`---
 ~~~js
 import {autoSelect} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof as")).define("viewof as", ["autoSelect","usa"], function(autoSelect,usa){return(
+)}
+
+function _as(autoSelect,usa){return(
 autoSelect({
   options: usa.objects.states.geometries.map(d => d.properties.name),
   placeholder: "Search for a US state . . ."
 })
-)});
-  main.variable(observer("as")).define("as", ["Generators", "viewof as"], (G, _) => G.input(_));
-  main.variable(observer()).define(["as"], function(as){return(
+)}
+
+function _31(as){return(
 as
-)});
-  main.variable(observer("autoSelect")).define("autoSelect", ["input","html"], function(input,html){return(
+)}
+
+function _autoSelect(input,html){return(
 function autoSelect(config = {}) {
   const {
     value,
@@ -386,8 +399,9 @@ function autoSelect(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("colorDemo")).define("colorDemo", ["md"], function(md){return(
+)}
+
+function _colorDemo(md){return(
 md`---
 ## Color Pickers
 
@@ -396,20 +410,21 @@ md`---
 ~~~js
 import {color} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof c")).define("viewof c", ["color"], function(color){return(
+)}
+
+function _c(color){return(
 color()
-)});
-  main.variable(observer("c")).define("c", ["Generators", "viewof c"], (G, _) => G.input(_));
-  main.variable(observer("viewof c1")).define("viewof c1", ["color"], function(color){return(
+)}
+
+function _c1(color){return(
 color({
   value: "#0000ff",
   title: "Background Color",
   description: "This color picker starts out blue"
 })
-)});
-  main.variable(observer("c1")).define("c1", ["Generators", "viewof c1"], (G, _) => G.input(_));
-  main.variable(observer("color")).define("color", ["input"], function(input){return(
+)}
+
+function _color(input){return(
 function color(config = {}) {
   const { value = "#000000", title, description, disabled, submit, display } =
     typeof config === "string" ? { value: config } : config;
@@ -427,8 +442,9 @@ function color(config = {}) {
   if (title || description) form.input.style.margin = "5px 0";
   return form;
 }
-)});
-  main.variable(observer("coordinatesDemo")).define("coordinatesDemo", ["md"], function(md){return(
+)}
+
+function _coordinatesDemo(md){return(
 md` ---
 ## Coordinates
 
@@ -437,27 +453,30 @@ md` ---
 ~~~js
 import {coordinates} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof coords1")).define("viewof coords1", ["coordinates"], function(coordinates){return(
+)}
+
+function _coords1(coordinates){return(
 coordinates()
-)});
-  main.variable(observer("coords1")).define("coords1", ["Generators", "viewof coords1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["coords1"], function(coords1){return(
+)}
+
+function _39(coords1){return(
 coords1
-)});
-  main.variable(observer("viewof coords2")).define("viewof coords2", ["coordinates"], function(coordinates){return(
+)}
+
+function _coords2(coordinates){return(
 coordinates({
   title: "Hometown",
   description: "Enter the coordinates of where you were born",
   value: [-122.27, 37.87],
   submit: true
 })
-)});
-  main.variable(observer("coords2")).define("coords2", ["Generators", "viewof coords2"], (G, _) => G.input(_));
-  main.variable(observer()).define(["coords2"], function(coords2){return(
+)}
+
+function _41(coords2){return(
 coords2
-)});
-  main.variable(observer("coordinates")).define("coordinates", ["html","input"], function(html,input){return(
+)}
+
+function _coordinates(html,input){return(
 function coordinates(config = {}) {
   const { value = [], title, description, submit } = Array.isArray(config)
     ? { value: config }
@@ -494,8 +513,9 @@ function coordinates(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("worldMapCoordinatesDemo")).define("worldMapCoordinatesDemo", ["md"], function(md){return(
+)}
+
+function _worldMapCoordinatesDemo(md){return(
 md` ---
 ## World Map Coordinates
 
@@ -504,15 +524,17 @@ md` ---
 ~~~js
 import {worldMapCoordinates} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof worldMap1")).define("viewof worldMap1", ["worldMapCoordinates"], function(worldMapCoordinates){return(
+)}
+
+function _worldMap1(worldMapCoordinates){return(
 worldMapCoordinates([-122.27, 37.87])
-)});
-  main.variable(observer("worldMap1")).define("worldMap1", ["Generators", "viewof worldMap1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["worldMap1"], function(worldMap1){return(
+)}
+
+function _45(worldMap1){return(
 worldMap1
-)});
-  main.variable(observer("worldMapCoordinates")).define("worldMapCoordinates", ["html","DOM","d3geo","graticule","land","countries","input"], function(html,DOM,d3geo,graticule,land,countries,input){return(
+)}
+
+function _worldMapCoordinates(html,DOM,d3geo,graticule,land,countries,input){return(
 function worldMapCoordinates(config = {}) {
   const {
     value = [], title, description, width = 400
@@ -583,8 +605,9 @@ function worldMapCoordinates(config = {}) {
   });
   return form;
 }
-)});
-  main.variable(observer("usaMapCoordinatesDemo")).define("usaMapCoordinatesDemo", ["md"], function(md){return(
+)}
+
+function _usaMapCoordinatesDemo(md){return(
 md` ---
 ## U.S.A. Map Coordinates
 
@@ -593,27 +616,30 @@ md` ---
 ~~~js
 import {usaMapCoordinates} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof usaMap1")).define("viewof usaMap1", ["usaMapCoordinates"], function(usaMapCoordinates){return(
+)}
+
+function _usaMap1(usaMapCoordinates){return(
 usaMapCoordinates([-122.27, 37.87])
-)});
-  main.variable(observer("usaMap1")).define("usaMap1", ["Generators", "viewof usaMap1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["usaMap1"], function(usaMap1){return(
+)}
+
+function _49(usaMap1){return(
 usaMap1
-)});
-  main.variable(observer("viewof usaMap2")).define("viewof usaMap2", ["usaMapCoordinates"], function(usaMapCoordinates){return(
+)}
+
+function _usaMap2(usaMapCoordinates){return(
 usaMapCoordinates({
   title: "A Mini Map",
   description: "Defaults to New York City",
   width: 200,
   value: [-74, 40.71]
 })
-)});
-  main.variable(observer("usaMap2")).define("usaMap2", ["Generators", "viewof usaMap2"], (G, _) => G.input(_));
-  main.variable(observer()).define(["usaMap2"], function(usaMap2){return(
+)}
+
+function _51(usaMap2){return(
 usaMap2
-)});
-  main.variable(observer("usaMapCoordinates")).define("usaMapCoordinates", ["html","DOM","d3geo","nation","states","input"], function(html,DOM,d3geo,nation,states,input){return(
+)}
+
+function _usaMapCoordinates(html,DOM,d3geo,nation,states,input){return(
 function usaMapCoordinates(config = {}) {
   const {
     value = [], title, description, width = 400
@@ -689,8 +715,9 @@ function usaMapCoordinates(config = {}) {
   });
   return form;
 }
-)});
-  main.variable(observer("dateDemo")).define("dateDemo", ["md"], function(md){return(
+)}
+
+function _dateDemo(md){return(
 md` ---
 ## Dates
 
@@ -699,12 +726,13 @@ md` ---
 ~~~js
 import {date} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof d")).define("viewof d", ["date"], function(date){return(
+)}
+
+function _d(date){return(
 date()
-)});
-  main.variable(observer("d")).define("d", ["Generators", "viewof d"], (G, _) => G.input(_));
-  main.variable(observer("viewof d1")).define("viewof d1", ["date"], function(date){return(
+)}
+
+function _d1(date){return(
 date({
   title: "2017", 
   min: "2017-01-01",
@@ -712,9 +740,9 @@ date({
   value: "2017-01-01",
   description: "Only dates within the 2017 calendar year are allowed"
 })
-)});
-  main.variable(observer("d1")).define("d1", ["Generators", "viewof d1"], (G, _) => G.input(_));
-  main.variable(observer("date")).define("date", ["input"], function(input){return(
+)}
+
+function _date(input){return(
 function date(config = {}) {
   const { min, max, value, title, description, disabled, display } =
     typeof config === "string" ? { value: config } : config;
@@ -726,8 +754,9 @@ function date(config = {}) {
     attributes: { min, max, disabled, value }
   });
 }
-)});
-  main.variable(observer("timeDemo")).define("timeDemo", ["md"], function(md){return(
+)}
+
+function _timeDemo(md){return(
 md` ---
 ## Times
 
@@ -737,15 +766,17 @@ md` ---
 ~~~js
 import {time} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof t")).define("viewof t", ["time"], function(time){return(
+)}
+
+function _t(time){return(
 time()
-)});
-  main.variable(observer("t")).define("t", ["Generators", "viewof t"], (G, _) => G.input(_));
-  main.variable(observer()).define(["t"], function(t){return(
+)}
+
+function _59(t){return(
 t
-)});
-  main.variable(observer("viewof t1")).define("viewof t1", ["time"], function(time){return(
+)}
+
+function _t1(time){return(
 time({
   title: "Afternoon",
   min: "12:00:00",
@@ -754,12 +785,13 @@ time({
   step: 1,
   description: "Only times after noon are allowed, and seconds are included"
 })
-)});
-  main.variable(observer("t1")).define("t1", ["Generators", "viewof t1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["t1"], function(t1){return(
+)}
+
+function _61(t1){return(
 t1
-)});
-  main.variable(observer("time")).define("time", ["input"], function(input){return(
+)}
+
+function _time(input){return(
 function time(config = {}) {
   const { min, max, step, value, title, description, disabled, display } =
     typeof config === "string" ? { value: config } : config;
@@ -774,28 +806,30 @@ function time(config = {}) {
   el.output.remove();
   return el;
 }
-)});
-  main.variable(observer("fileDemo")).define("fileDemo", ["md"], function(md){return(
+)}
+
+function _fileDemo(md){return(
 md`---
 ## File Upload
 *Use the JavaScript [File API](https://developer.mozilla.org/en-US/docs/Web/API/File/Using_files_from_web_applications) to work with uploaded file contents.*
 
 \`import {file} from "@jashkenas/inputs"\``
-)});
-  main.variable(observer("viewof e")).define("viewof e", ["file"], function(file){return(
+)}
+
+function _e(file){return(
 file()
-)});
-  main.variable(observer("e")).define("e", ["Generators", "viewof e"], (G, _) => G.input(_));
-  main.variable(observer("viewof e1")).define("viewof e1", ["file"], function(file){return(
+)}
+
+function _e1(file){return(
 file({
   title: "Photographs",
   description: "Only .jpg files are allowed in this example. Choose some images, and they’ll appear in the cell below.",
   accept: ".jpg",
   multiple: true,
 })
-)});
-  main.variable(observer("e1")).define("e1", ["Generators", "viewof e1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","e1","Files"], async function(html,e1,Files)
+)}
+
+async function _66(html,e1,Files)
 {
   const div = html`<div>`;
   for (var j = 0; j < e1.length; j++) {
@@ -806,8 +840,9 @@ file({
   }
   return div;
 }
-);
-  main.variable(observer("file")).define("file", ["input"], function(input){return(
+
+
+function _file(input){return(
 function file(config = {}) {
   const { multiple, accept, title, description, disabled } = config;
   const form = input({
@@ -826,34 +861,38 @@ function file(config = {}) {
   form.input.onchange();
   return form;
 }
-)});
-  main.variable(observer("textDemo")).define("textDemo", ["md"], function(md){return(
+)}
+
+function _textDemo(md){return(
 md`---
 ## Text Inputs
 
 ~~~js
 import {text} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof f")).define("viewof f", ["text"], function(text){return(
+)}
+
+function _f(text){return(
 text()
-)});
-  main.variable(observer("f")).define("f", ["Generators", "viewof f"], (G, _) => G.input(_));
-  main.variable(observer("viewof f1")).define("viewof f1", ["text"], function(text){return(
+)}
+
+function _f1(text){return(
 text({title: "A Text Input", placeholder: "Placeholder text", description: "Note that text inputs don’t show output on the right"})
-)});
-  main.variable(observer("f1")).define("f1", ["Generators", "viewof f1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["f1"], function(f1){return(
+)}
+
+function _71(f1){return(
 f1
-)});
-  main.variable(observer("viewof f2")).define("viewof f2", ["text"], function(text){return(
+)}
+
+function _f2(text){return(
 text({placeholder: "Placeholder text", description: "This input only changes value on submit", submit: "Go"})
-)});
-  main.variable(observer("f2")).define("f2", ["Generators", "viewof f2"], (G, _) => G.input(_));
-  main.variable(observer()).define(["f2"], function(f2){return(
+)}
+
+function _73(f2){return(
 f2
-)});
-  main.variable(observer("text")).define("text", ["input"], function(input){return(
+)}
+
+function _text(input){return(
 function text(config = {}) {
   const {
     value,
@@ -890,23 +929,26 @@ function text(config = {}) {
   form.input.style.fontSize = "1em";
   return form;
 }
-)});
-  main.variable(observer("textareaDemo")).define("textareaDemo", ["md"], function(md){return(
+)}
+
+function _textareaDemo(md){return(
 md`---
 ## Textareas
 
 ~~~js
 import {textarea} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof g")).define("viewof g", ["textarea"], function(textarea){return(
+)}
+
+function _g(textarea){return(
 textarea()
-)});
-  main.variable(observer("g")).define("g", ["Generators", "viewof g"], (G, _) => G.input(_));
-  main.variable(observer()).define(["g"], function(g){return(
+)}
+
+function _77(g){return(
 g
-)});
-  main.variable(observer("viewof g1")).define("viewof g1", ["textarea"], function(textarea){return(
+)}
+
+function _g1(textarea){return(
 textarea({
   title: "Your Great American Novel", 
   placeholder: "Insert story here...", 
@@ -915,12 +957,13 @@ textarea({
   rows: 10,
   submit: "Publish"
 })
-)});
-  main.variable(observer("g1")).define("g1", ["Generators", "viewof g1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["g1"], function(g1){return(
+)}
+
+function _79(g1){return(
 g1
-)});
-  main.variable(observer("textarea")).define("textarea", ["input","html"], function(input,html){return(
+)}
+
+function _textarea(input,html){return(
 function textarea(config = {}) {
   const {
     value = "",
@@ -963,23 +1006,26 @@ function textarea(config = {}) {
   if (title || description) form.input.style.margin = "3px 0";
   return form;
 }
-)});
-  main.variable(observer("radioDemo")).define("radioDemo", ["md"], function(md){return(
+)}
+
+function _radioDemo(md){return(
 md`---
 ## Radio Buttons
 
 ~~~js
 import {radio} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof r")).define("viewof r", ["radio"], function(radio){return(
+)}
+
+function _r(radio){return(
 radio(["Lust", "Gluttony", "Greed", "Sloth", "Wrath", "Envy", "Pride"])
-)});
-  main.variable(observer("r")).define("r", ["Generators", "viewof r"], (G, _) => G.input(_));
-  main.variable(observer()).define(["r"], function(r){return(
+)}
+
+function _83(r){return(
 r
-)});
-  main.variable(observer("viewof r1")).define("viewof r1", ["radio"], function(radio){return(
+)}
+
+function _r1(radio){return(
 radio({
   title: 'Contact Us',
   description: 'Please select your preferred contact method',
@@ -990,12 +1036,13 @@ radio({
   ],
   value: 'pager'
 })
-)});
-  main.variable(observer("r1")).define("r1", ["Generators", "viewof r1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["r1"], function(r1){return(
+)}
+
+function _85(r1){return(
 r1
-)});
-  main.variable(observer("radio")).define("radio", ["input","html"], function(input,html){return(
+)}
+
+function _radio(input,html){return(
 function radio(config = {}) {
   let {
     value: formValue,
@@ -1041,23 +1088,26 @@ function radio(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("checkboxDemo")).define("checkboxDemo", ["md"], function(md){return(
+)}
+
+function _checkboxDemo(md){return(
 md`---
 ## Checkboxes
 
 ~~~js
 import {checkbox} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof ch")).define("viewof ch", ["checkbox"], function(checkbox){return(
+)}
+
+function _ch(checkbox){return(
 checkbox(["Lust", "Gluttony", "Greed", "Sloth", "Wrath", "Envy", "Pride"])
-)});
-  main.variable(observer("ch")).define("ch", ["Generators", "viewof ch"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ch"], function(ch){return(
+)}
+
+function _89(ch){return(
 ch
-)});
-  main.variable(observer("viewof ch1")).define("viewof ch1", ["checkbox"], function(checkbox){return(
+)}
+
+function _ch1(checkbox){return(
 checkbox({
   title: "Colors",
   description: "Please select your favorite colors",
@@ -1073,23 +1123,25 @@ checkbox({
   value: ["r", "g", "b"],
   submit: true
 })
-)});
-  main.variable(observer("ch1")).define("ch1", ["Generators", "viewof ch1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ch1"], function(ch1){return(
+)}
+
+function _91(ch1){return(
 ch1
-)});
-  main.variable(observer("viewof ch3")).define("viewof ch3", ["checkbox"], function(checkbox){return(
+)}
+
+function _ch3(checkbox){return(
 checkbox({
   description: "Just a single checkbox to toggle",
   options: [{ value: "toggle", label: "On" }],
   value: "toggle"
 })
-)});
-  main.variable(observer("ch3")).define("ch3", ["Generators", "viewof ch3"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ch3"], function(ch3){return(
+)}
+
+function _93(ch3){return(
 ch3
-)});
-  main.variable(observer("checkbox")).define("checkbox", ["input","html"], function(input,html){return(
+)}
+
+function _checkbox(input,html){return(
 function checkbox(config = {}) {
   let {
     value: formValue,
@@ -1136,30 +1188,34 @@ function checkbox(config = {}) {
   form.output.remove();
   return form;
 }
-)});
-  main.variable(observer("numberDemo")).define("numberDemo", ["md"], function(md){return(
+)}
+
+function _numberDemo(md){return(
 md`---
 ## Numbers
 
 ~~~js
 import {number} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof h")).define("viewof h", ["number"], function(number){return(
+)}
+
+function _h(number){return(
 number()
-)});
-  main.variable(observer("h")).define("h", ["Generators", "viewof h"], (G, _) => G.input(_));
-  main.variable(observer()).define(["h"], function(h){return(
+)}
+
+function _97(h){return(
 h
-)});
-  main.variable(observer("viewof h1")).define("viewof h1", ["number"], function(number){return(
+)}
+
+function _h1(number){return(
 number({placeholder: "13+", title: "Your Age", submit: true})
-)});
-  main.variable(observer("h1")).define("h1", ["Generators", "viewof h1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["h1"], function(h1){return(
+)}
+
+function _99(h1){return(
 h1
-)});
-  main.variable(observer("number")).define("number", ["input"], function(input){return(
+)}
+
+function _number(input){return(
 function number(config = {}) {
   const {
     value,
@@ -1196,35 +1252,39 @@ function number(config = {}) {
   form.input.style.fontSize = "1em";
   return form;
 }
-)});
-  main.variable(observer("passwordDemo")).define("passwordDemo", ["md"], function(md){return(
+)}
+
+function _passwordDemo(md){return(
 md`---
 ## Passwords
 
 ~~~js
 import {password} from "@jashkenas/inputs"
 ~~~`
-)});
-  main.variable(observer("viewof i")).define("viewof i", ["password"], function(password){return(
+)}
+
+function _i(password){return(
 password({value: "password"})
-)});
-  main.variable(observer("i")).define("i", ["Generators", "viewof i"], (G, _) => G.input(_));
-  main.variable(observer()).define(["i"], function(i){return(
+)}
+
+function _103(i){return(
 i
-)});
-  main.variable(observer("viewof i1")).define("viewof i1", ["password"], function(password){return(
+)}
+
+function _i1(password){return(
 password({
   title: "Your super secret password", 
   description: "Less than 12 characters, please.",
   minlength: 6,
   maxlength: 12
 })
-)});
-  main.variable(observer("i1")).define("i1", ["Generators", "viewof i1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["i1"], function(i1){return(
+)}
+
+function _105(i1){return(
 i1
-)});
-  main.variable(observer("password")).define("password", ["input"], function(input){return(
+)}
+
+function _password(input){return(
 function password(config = {}) {
   const {
     value,
@@ -1259,8 +1319,9 @@ function password(config = {}) {
   form.input.style.fontSize = "1em";
   return form;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _107(md){return(
 md`---
 ## Wishlist (Send suggestions, please!)
 
@@ -1274,8 +1335,9 @@ md`---
 * Other useful formatting options.
 
 ---`
-)});
-  main.variable(observer("input")).define("input", ["html","d3format"], function(html,d3format){return(
+)}
+
+function _input(html,d3format){return(
 function input(config) {
   let {
     form,
@@ -1357,47 +1419,225 @@ function input(config) {
   form.append(wrapper);
   return form;
 }
-)});
-  main.variable(observer("d3geo")).define("d3geo", ["require"], function(require){return(
+)}
+
+function _d3geo(require){return(
 require("d3-geo@1")
-)});
-  main.variable(observer("d3format")).define("d3format", ["require"], function(require){return(
+)}
+
+function _d3format(require){return(
 require("d3-format@1")
-)});
-  main.variable(observer("topojson")).define("topojson", ["require"], function(require){return(
+)}
+
+function _topojson(require){return(
 require("topojson-client@3")
-)});
-  main.variable(observer("world")).define("world", async function(){return(
+)}
+
+async function _world(){return(
 (await fetch("https://cdn.jsdelivr.net/npm/world-atlas@1/world/110m.json")).json()
-)});
-  main.variable(observer("land")).define("land", ["topojson","world"], function(topojson,world){return(
+)}
+
+function _land(topojson,world){return(
 topojson.feature(world, world.objects.land)
-)});
-  main.variable(observer("countries")).define("countries", ["topojson","world"], function(topojson,world){return(
+)}
+
+function _countries(topojson,world){return(
 topojson.feature(world, world.objects.countries)
-)});
-  main.variable(observer("usa")).define("usa", async function(){return(
+)}
+
+async function _usa(){return(
 (await fetch("https://cdn.jsdelivr.net/npm/us-atlas@^2.1/us/states-10m.json")).json()
-)});
-  main.variable(observer("nation")).define("nation", ["topojson","usa"], function(topojson,usa){return(
+)}
+
+function _nation(topojson,usa){return(
 topojson.feature(usa, usa.objects.nation)
-)});
-  main.variable(observer("states")).define("states", ["topojson","usa"], function(topojson,usa){return(
+)}
+
+function _states(topojson,usa){return(
 topojson.feature(usa, usa.objects.states)
-)});
-  main.variable(observer("graticule")).define("graticule", ["d3geo"], function(d3geo){return(
+)}
+
+function _graticule(d3geo){return(
 d3geo.geoGraticule10()
-)});
-  main.variable(observer("viewof license")).define("viewof license", ["md"], function(md)
+)}
+
+function _license(md)
 {
   const license = md`License: [MIT](https://opensource.org/licenses/MIT)`;
   license.value = "MIT";
   return license;
 }
-);
-  main.variable(observer("license")).define("license", ["Generators", "viewof license"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _120(md){return(
 md`*Clip art courtesy [ClipArt ETC](https://etc.usf.edu/clipart/), radio buttons and checkboxes courtesy [Amit Sch](https://observablehq.com/@meetamit/multiple-choice-inputs).*`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["capstan.gif",new URL("./files/c051fbc024553912e31968b35e537d4ad3592201b5f8e7bd13fd9d02e38599c5d541a704d0858c676328babb3e5c9c35dd7c6d67240090d094882a1cad8eece4",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("sliderDemo")).define("sliderDemo", ["md"], _sliderDemo);
+  main.variable(observer("viewof a")).define("viewof a", ["slider"], _a);
+  main.variable(observer("a")).define("a", ["Generators", "viewof a"], (G, _) => G.input(_));
+  main.variable(observer("viewof a1")).define("viewof a1", ["slider"], _a1);
+  main.variable(observer("a1")).define("a1", ["Generators", "viewof a1"], (G, _) => G.input(_));
+  main.variable(observer("viewof a1_1")).define("viewof a1_1", ["slider"], _a1_1);
+  main.variable(observer("a1_1")).define("a1_1", ["Generators", "viewof a1_1"], (G, _) => G.input(_));
+  main.variable(observer("viewof a2")).define("viewof a2", ["slider"], _a2);
+  main.variable(observer("a2")).define("a2", ["Generators", "viewof a2"], (G, _) => G.input(_));
+  main.variable(observer("viewof a3")).define("viewof a3", ["slider"], _a3);
+  main.variable(observer("a3")).define("a3", ["Generators", "viewof a3"], (G, _) => G.input(_));
+  main.variable(observer("viewof a4")).define("viewof a4", ["slider"], _a4);
+  main.variable(observer("a4")).define("a4", ["Generators", "viewof a4"], (G, _) => G.input(_));
+  main.variable(observer("viewof a5")).define("viewof a5", ["slider"], _a5);
+  main.variable(observer("a5")).define("a5", ["Generators", "viewof a5"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("slider")).define("slider", ["input"], _slider);
+  main.variable(observer("buttonDemo")).define("buttonDemo", ["md"], _buttonDemo);
+  main.variable(observer("viewof b")).define("viewof b", ["button"], _b);
+  main.variable(observer("b")).define("b", ["Generators", "viewof b"], (G, _) => G.input(_));
+  main.variable(observer()).define(["b"], _15);
+  main.variable(observer("viewof b1")).define("viewof b1", ["button"], _b1);
+  main.variable(observer("b1")).define("b1", ["Generators", "viewof b1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["b1"], _17);
+  main.variable(observer("button")).define("button", ["input"], _button);
+  main.variable(observer("selectDemo")).define("selectDemo", ["md"], _selectDemo);
+  main.variable(observer("viewof dd")).define("viewof dd", ["select"], _dd);
+  main.variable(observer("dd")).define("dd", ["Generators", "viewof dd"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dd"], _21);
+  main.variable(observer("viewof dd1")).define("viewof dd1", ["select"], _dd1);
+  main.variable(observer("dd1")).define("dd1", ["Generators", "viewof dd1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dd1"], _23);
+  main.variable(observer("viewof dd2")).define("viewof dd2", ["select"], _dd2);
+  main.variable(observer("dd2")).define("dd2", ["Generators", "viewof dd2"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dd2"], _25);
+  main.variable(observer("viewof dd3")).define("viewof dd3", ["select"], _dd3);
+  main.variable(observer("dd3")).define("dd3", ["Generators", "viewof dd3"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dd3"], _27);
+  main.variable(observer("select")).define("select", ["input","html"], _select);
+  main.variable(observer("autoSelectDemo")).define("autoSelectDemo", ["md"], _autoSelectDemo);
+  main.variable(observer("viewof as")).define("viewof as", ["autoSelect","usa"], _as);
+  main.variable(observer("as")).define("as", ["Generators", "viewof as"], (G, _) => G.input(_));
+  main.variable(observer()).define(["as"], _31);
+  main.variable(observer("autoSelect")).define("autoSelect", ["input","html"], _autoSelect);
+  main.variable(observer("colorDemo")).define("colorDemo", ["md"], _colorDemo);
+  main.variable(observer("viewof c")).define("viewof c", ["color"], _c);
+  main.variable(observer("c")).define("c", ["Generators", "viewof c"], (G, _) => G.input(_));
+  main.variable(observer("viewof c1")).define("viewof c1", ["color"], _c1);
+  main.variable(observer("c1")).define("c1", ["Generators", "viewof c1"], (G, _) => G.input(_));
+  main.variable(observer("color")).define("color", ["input"], _color);
+  main.variable(observer("coordinatesDemo")).define("coordinatesDemo", ["md"], _coordinatesDemo);
+  main.variable(observer("viewof coords1")).define("viewof coords1", ["coordinates"], _coords1);
+  main.variable(observer("coords1")).define("coords1", ["Generators", "viewof coords1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["coords1"], _39);
+  main.variable(observer("viewof coords2")).define("viewof coords2", ["coordinates"], _coords2);
+  main.variable(observer("coords2")).define("coords2", ["Generators", "viewof coords2"], (G, _) => G.input(_));
+  main.variable(observer()).define(["coords2"], _41);
+  main.variable(observer("coordinates")).define("coordinates", ["html","input"], _coordinates);
+  main.variable(observer("worldMapCoordinatesDemo")).define("worldMapCoordinatesDemo", ["md"], _worldMapCoordinatesDemo);
+  main.variable(observer("viewof worldMap1")).define("viewof worldMap1", ["worldMapCoordinates"], _worldMap1);
+  main.variable(observer("worldMap1")).define("worldMap1", ["Generators", "viewof worldMap1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["worldMap1"], _45);
+  main.variable(observer("worldMapCoordinates")).define("worldMapCoordinates", ["html","DOM","d3geo","graticule","land","countries","input"], _worldMapCoordinates);
+  main.variable(observer("usaMapCoordinatesDemo")).define("usaMapCoordinatesDemo", ["md"], _usaMapCoordinatesDemo);
+  main.variable(observer("viewof usaMap1")).define("viewof usaMap1", ["usaMapCoordinates"], _usaMap1);
+  main.variable(observer("usaMap1")).define("usaMap1", ["Generators", "viewof usaMap1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["usaMap1"], _49);
+  main.variable(observer("viewof usaMap2")).define("viewof usaMap2", ["usaMapCoordinates"], _usaMap2);
+  main.variable(observer("usaMap2")).define("usaMap2", ["Generators", "viewof usaMap2"], (G, _) => G.input(_));
+  main.variable(observer()).define(["usaMap2"], _51);
+  main.variable(observer("usaMapCoordinates")).define("usaMapCoordinates", ["html","DOM","d3geo","nation","states","input"], _usaMapCoordinates);
+  main.variable(observer("dateDemo")).define("dateDemo", ["md"], _dateDemo);
+  main.variable(observer("viewof d")).define("viewof d", ["date"], _d);
+  main.variable(observer("d")).define("d", ["Generators", "viewof d"], (G, _) => G.input(_));
+  main.variable(observer("viewof d1")).define("viewof d1", ["date"], _d1);
+  main.variable(observer("d1")).define("d1", ["Generators", "viewof d1"], (G, _) => G.input(_));
+  main.variable(observer("date")).define("date", ["input"], _date);
+  main.variable(observer("timeDemo")).define("timeDemo", ["md"], _timeDemo);
+  main.variable(observer("viewof t")).define("viewof t", ["time"], _t);
+  main.variable(observer("t")).define("t", ["Generators", "viewof t"], (G, _) => G.input(_));
+  main.variable(observer()).define(["t"], _59);
+  main.variable(observer("viewof t1")).define("viewof t1", ["time"], _t1);
+  main.variable(observer("t1")).define("t1", ["Generators", "viewof t1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["t1"], _61);
+  main.variable(observer("time")).define("time", ["input"], _time);
+  main.variable(observer("fileDemo")).define("fileDemo", ["md"], _fileDemo);
+  main.variable(observer("viewof e")).define("viewof e", ["file"], _e);
+  main.variable(observer("e")).define("e", ["Generators", "viewof e"], (G, _) => G.input(_));
+  main.variable(observer("viewof e1")).define("viewof e1", ["file"], _e1);
+  main.variable(observer("e1")).define("e1", ["Generators", "viewof e1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","e1","Files"], _66);
+  main.variable(observer("file")).define("file", ["input"], _file);
+  main.variable(observer("textDemo")).define("textDemo", ["md"], _textDemo);
+  main.variable(observer("viewof f")).define("viewof f", ["text"], _f);
+  main.variable(observer("f")).define("f", ["Generators", "viewof f"], (G, _) => G.input(_));
+  main.variable(observer("viewof f1")).define("viewof f1", ["text"], _f1);
+  main.variable(observer("f1")).define("f1", ["Generators", "viewof f1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["f1"], _71);
+  main.variable(observer("viewof f2")).define("viewof f2", ["text"], _f2);
+  main.variable(observer("f2")).define("f2", ["Generators", "viewof f2"], (G, _) => G.input(_));
+  main.variable(observer()).define(["f2"], _73);
+  main.variable(observer("text")).define("text", ["input"], _text);
+  main.variable(observer("textareaDemo")).define("textareaDemo", ["md"], _textareaDemo);
+  main.variable(observer("viewof g")).define("viewof g", ["textarea"], _g);
+  main.variable(observer("g")).define("g", ["Generators", "viewof g"], (G, _) => G.input(_));
+  main.variable(observer()).define(["g"], _77);
+  main.variable(observer("viewof g1")).define("viewof g1", ["textarea"], _g1);
+  main.variable(observer("g1")).define("g1", ["Generators", "viewof g1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["g1"], _79);
+  main.variable(observer("textarea")).define("textarea", ["input","html"], _textarea);
+  main.variable(observer("radioDemo")).define("radioDemo", ["md"], _radioDemo);
+  main.variable(observer("viewof r")).define("viewof r", ["radio"], _r);
+  main.variable(observer("r")).define("r", ["Generators", "viewof r"], (G, _) => G.input(_));
+  main.variable(observer()).define(["r"], _83);
+  main.variable(observer("viewof r1")).define("viewof r1", ["radio"], _r1);
+  main.variable(observer("r1")).define("r1", ["Generators", "viewof r1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["r1"], _85);
+  main.variable(observer("radio")).define("radio", ["input","html"], _radio);
+  main.variable(observer("checkboxDemo")).define("checkboxDemo", ["md"], _checkboxDemo);
+  main.variable(observer("viewof ch")).define("viewof ch", ["checkbox"], _ch);
+  main.variable(observer("ch")).define("ch", ["Generators", "viewof ch"], (G, _) => G.input(_));
+  main.variable(observer()).define(["ch"], _89);
+  main.variable(observer("viewof ch1")).define("viewof ch1", ["checkbox"], _ch1);
+  main.variable(observer("ch1")).define("ch1", ["Generators", "viewof ch1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["ch1"], _91);
+  main.variable(observer("viewof ch3")).define("viewof ch3", ["checkbox"], _ch3);
+  main.variable(observer("ch3")).define("ch3", ["Generators", "viewof ch3"], (G, _) => G.input(_));
+  main.variable(observer()).define(["ch3"], _93);
+  main.variable(observer("checkbox")).define("checkbox", ["input","html"], _checkbox);
+  main.variable(observer("numberDemo")).define("numberDemo", ["md"], _numberDemo);
+  main.variable(observer("viewof h")).define("viewof h", ["number"], _h);
+  main.variable(observer("h")).define("h", ["Generators", "viewof h"], (G, _) => G.input(_));
+  main.variable(observer()).define(["h"], _97);
+  main.variable(observer("viewof h1")).define("viewof h1", ["number"], _h1);
+  main.variable(observer("h1")).define("h1", ["Generators", "viewof h1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["h1"], _99);
+  main.variable(observer("number")).define("number", ["input"], _number);
+  main.variable(observer("passwordDemo")).define("passwordDemo", ["md"], _passwordDemo);
+  main.variable(observer("viewof i")).define("viewof i", ["password"], _i);
+  main.variable(observer("i")).define("i", ["Generators", "viewof i"], (G, _) => G.input(_));
+  main.variable(observer()).define(["i"], _103);
+  main.variable(observer("viewof i1")).define("viewof i1", ["password"], _i1);
+  main.variable(observer("i1")).define("i1", ["Generators", "viewof i1"], (G, _) => G.input(_));
+  main.variable(observer()).define(["i1"], _105);
+  main.variable(observer("password")).define("password", ["input"], _password);
+  main.variable(observer()).define(["md"], _107);
+  main.variable(observer("input")).define("input", ["html","d3format"], _input);
+  main.variable(observer("d3geo")).define("d3geo", ["require"], _d3geo);
+  main.variable(observer("d3format")).define("d3format", ["require"], _d3format);
+  main.variable(observer("topojson")).define("topojson", ["require"], _topojson);
+  main.variable(observer("world")).define("world", _world);
+  main.variable(observer("land")).define("land", ["topojson","world"], _land);
+  main.variable(observer("countries")).define("countries", ["topojson","world"], _countries);
+  main.variable(observer("usa")).define("usa", _usa);
+  main.variable(observer("nation")).define("nation", ["topojson","usa"], _nation);
+  main.variable(observer("states")).define("states", ["topojson","usa"], _states);
+  main.variable(observer("graticule")).define("graticule", ["d3geo"], _graticule);
+  main.variable(observer("viewof license")).define("viewof license", ["md"], _license);
+  main.variable(observer("license")).define("license", ["Generators", "viewof license"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _120);
   return main;
 }

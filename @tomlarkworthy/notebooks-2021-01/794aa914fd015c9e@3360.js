@@ -1,29 +1,31 @@
 import define1 from "./9bed702f80a3797e@402.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["scales-cheatsheet.png",new URL("./files/7b3826caa2162bc4270f870a247bed2b3e38d45fcdd787e27b2ac042b07c163e6305308d7d94b4bb67d4457321cb5fe73b472d1d7c993f4b42d6632d5d54c438",import.meta.url)],["purchase_data.csv",new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34",import.meta.url)],["colors.pdf",new URL("./files/5ce4046508844d70cfbe0bcc43ea00964479331ea32d31afb7128ebdaaed14456c00d8bef290a6c8d14618e4d2e6a15e127414f3133103a7ae2fb35fdc76764b",import.meta.url)],["scales.pdf",new URL("./files/ed4d482ef40f736df5f3f4000880e4de30fd3ea691be654d5178ceb7ef2b966351d87da136cf3ade106453ecef9806c3c275086a4d88394335fd3e9d3804985e",import.meta.url)],["marks.pdf",new URL("./files/a92002416ea5a6594baf95fdd1bb2ec49c84ea3f19aaf6c618f355aca862733be01a73702192db5bdea611a982c6e35e120c748af8dd4e34e75e372f9c02ada7",import.meta.url)],["layouts.pdf",new URL("./files/b3f56c18eed4c9a7f2a774847f02245ddc45ac25e9061b30190f39464bfa15e6266ba280ee22c8be3b8fe50e574fb15254954e1cf4174d291ca2f26840ace4d5",import.meta.url)],["transforms.pdf",new URL("./files/ea0a5c1e1057cb7ccb9511d572708c90067d2857b5b300dd7f6083bf618e50b982942fc7b28106d6e567d1030b20b456a46d2d42e8f546ac041d5693e8a2e62e",import.meta.url)],["scales@2.png",new URL("./files/806e55e663f35b274fd8294c6c49862dc18a4f566197175c48b925e5f0ce82033e8f49b2ffb1622cdb59ba9f49b6ae3586383cd46600ee07132e9803dd817cff",import.meta.url)],["transforms@2.png",new URL("./files/a37fe83c1713cd4b241210b334c89ccf1a1f24dca79b4c161154e2083d97b5458918b06aea2e924ad3a63441c9b29cd4a7a52006d40cfb424c8bac92c0894cdd",import.meta.url)],["marks@3.png",new URL("./files/3faba7b84bf90596b137a54da06195b3daa32fd8a15e1408eb755e41f19ed6e0ea85e2b7ca7f2497d0c99dc4373d612659edad8500837912ee7369cf47a7481a",import.meta.url)],["layouts@2.png",new URL("./files/92bee5cb8c19f0cf8c669032c041add876e2e74fb5aa446fae57dd4e8925f878c348f5cd3bdfac17ab3ef30b62e10978670659841e4295e4a247d1d3fbf58bd0",import.meta.url)],["colors@3.png",new URL("./files/16772f264b849f64f611f9400a9a17213627ceffac2b9a0aae946aae57cdfd278eec6d28d1a69c3dbbc1a006d7aadd4390adeee7cdab471531da029ffa643850",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Plot Cheatsheets - Utilities
 ## A set of utilities for the collection`
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _2(toc){return(
 toc({ headers: "h2", skip: "A set of utilities for the collection" })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Demos`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`Each concept will be demonstrated in the structure below (interactive code | chart)`
-)});
-  main.variable(observer()).define(["createDemo","histConfig"], function(createDemo,histConfig){return(
+)}
+
+function _5(createDemo,histConfig){return(
 createDemo(histConfig)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`Below is the configuration that describes the example:`
-)});
-  main.variable(observer("histConfig")).define("histConfig", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _histConfig(plotWidth){return(
 {
   // Control panel (the code on the left): an array of controls, one for each line (including text)
   controls: [
@@ -74,23 +76,29 @@ md`Below is the configuration that describes the example:`
   width: ${plotWidth}
 })`
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`There are also some utilities for repeated text content and layout, for example:`
-)});
-  main.variable(observer()).define(["welcomeBox"], function(welcomeBox){return(
+)}
+
+function _10(welcomeBox){return(
 welcomeBox()
-)});
-  main.variable(observer()).define(["intro","samplePng","md"], function(intro,samplePng,md){return(
+)}
+
+function _11(intro,samplePng,md){return(
 intro(samplePng, md`<div>Here is a sample introduction callout</div>`)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`## Implementation`
-)});
-  main.variable(observer("createInput")).define("createInput", ["htl","Inputs","_","md","Inputs_const"], function(htl,Inputs,_,md,Inputs_const){return(
+)}
+
+function _createInput(htl,Inputs,_,md,Inputs_const){return(
 ({
   param,
   type,
@@ -145,8 +153,9 @@ md`## Implementation`
       return Inputs_const({ label, ...rest });
   }
 }
-)});
-  main.variable(observer("createForm")).define("createForm", ["id_generator","createInput","d3","Inputs","htl","controlWidth"], function(id_generator,createInput,d3,Inputs,htl,controlWidth){return(
+)}
+
+function _createForm(id_generator,createInput,d3,Inputs,htl,controlWidth){return(
 (config) => {
   // Get inputs
   const inputs = Object.fromEntries(
@@ -182,8 +191,9 @@ ${form.node()}
   }
 `;
 }
-)});
-  main.variable(observer("createDemo")).define("createDemo", ["wrapperStyles","htl","copyButtonStyles","createForm","d3","evalCodeStr","makeCopyIcon"], function(wrapperStyles,htl,copyButtonStyles,createForm,d3,evalCodeStr,makeCopyIcon){return(
+)}
+
+function _createDemo(wrapperStyles,htl,copyButtonStyles,createForm,d3,evalCodeStr,makeCopyIcon){return(
 (config) => {
   const wStyles = Object.assign({}, wrapperStyles, config.wrapper); // additional configuration for the styles
   const wrapper = htl.html`<div class="demo-wrapper" style=${wStyles}></div>`;
@@ -247,40 +257,48 @@ ${form.node()}
   form.dispatch("input");
   return wrapper;
 }
-)});
-  main.variable(observer("controlWidth")).define("controlWidth", function(){return(
+)}
+
+function _controlWidth(){return(
 250
-)});
-  main.variable(observer("plotWidth")).define("plotWidth", ["width","controlWidth"], function(width,controlWidth){return(
+)}
+
+function _plotWidth(width,controlWidth){return(
 (width - controlWidth - 100) < 250 ? 250 : (width - controlWidth - 100)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _18(md){return(
 md`## Helpers`
-)});
-  main.variable(observer("evalCodeStr")).define("evalCodeStr", ["data","Plot","width","d3"], function(data,Plot,width,d3){return(
+)}
+
+function _evalCodeStr(data,Plot,width,d3){return(
 (str) => {
   const func = new Function("data", "Plot", "width",  "d3", `return ${str}`)
   return func(data, Plot, width, d3);
 }
-)});
-  main.variable(observer("Inputs_const")).define("Inputs_const", ["htl","md"], function(htl,md){return(
+)}
+
+function _Inputs_const(htl,md){return(
 ({ label = "some label", value = "output" } = {}) => {
   const form = htl.html`<form><label>${label}:</label>${md`~~~js\n"${value}"~~~`}`
   return Object.assign(form, { value })  
 }
-)});
-  main.variable(observer("id_generator")).define("id_generator", function(){return(
+)}
+
+function _id_generator(){return(
 () => {
   var S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   };
   return "a" + S4() + S4();
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _22(md){return(
 md`## Styles`
-)});
-  main.variable(observer("inputStyles")).define("inputStyles", ["htl","Inputs"], function(htl,Inputs){return(
+)}
+
+function _inputStyles(htl,Inputs){return(
 htl.html`
   <style> 
     .${Inputs.text().classList[0]}-input > input[type="number"] {
@@ -288,8 +306,9 @@ htl.html`
     }
   </style>
 `
-)});
-  main.variable(observer("wrapperStyles")).define("wrapperStyles", ["width"], function(width){return(
+)}
+
+function _wrapperStyles(width){return(
 {
   fontFamily: "monospace",
   display: "flex",
@@ -302,14 +321,17 @@ htl.html`
   position: "relative",
   overflow: "visible"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`## Copy Icon`
-)});
-  main.variable(observer()).define(["makeCopyIcon"], function(makeCopyIcon){return(
+)}
+
+function _26(makeCopyIcon){return(
 makeCopyIcon()
-)});
-  main.variable(observer("makeCopyIcon")).define("makeCopyIcon", ["htl","d3","copyIcon","copyStyle"], function(htl,d3,copyIcon,copyStyle){return(
+)}
+
+function _makeCopyIcon(htl,d3,copyIcon,copyStyle){return(
 (
   text = "Sample Text",
   { instructions = "copy", completed = "Copied" } = {}
@@ -340,8 +362,9 @@ makeCopyIcon()
 
   return wrapper;
 }
-)});
-  main.variable(observer("copyStyle")).define("copyStyle", ["htl"], function(htl){return(
+)}
+
+function _copyStyle(htl){return(
 htl.html`
 <style>
 .arrow_box {
@@ -382,8 +405,9 @@ htl.html`
     opacity:1;
   }
 </style>`
-)});
-  main.variable(observer("copyIcon")).define("copyIcon", ["htl"], function(htl){return(
+)}
+
+function _copyIcon(htl){return(
 () => htl.html`<div class="copy-icon" style="cursor:pointer;"><svg width="65" height="30" viewBox="0 0 73 33" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M0.323242 4.12427C0.323242 1.91513 2.1141 0.124268 4.32324 0.124268H68.3232C70.5324 0.124268 72.3232 1.91513 72.3232 4.12427V28.1243C72.3232 30.3334 70.5324 32.1243 68.3232 32.1243H4.32324C2.11411 32.1243 0.323242 30.3334 0.323242 28.1243V4.12427Z" fill="#E8E8E8"/>
 <path d="M10.3232 17.1243V14.0188C10.3232 13.4665 10.771 13.0188 11.3232 13.0188H18.3232C18.8755 13.0188 19.3232 13.4665 19.3232 14.0188V22.0188C19.3232 22.5711 18.8755 23.0188 18.3232 23.0188H16.3232" stroke="black" stroke-width="2"/>
@@ -394,19 +418,22 @@ htl.html`
 </svg>
 
 </div>`
-)});
-  main.variable(observer("copyButtonStyles")).define("copyButtonStyles", function(){return(
+)}
+
+function _copyButtonStyles(){return(
 {
   position: "absolute",
   top: "0px",
   right: "0px",
   width: "0px"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _31(md){return(
 md`## Text and buttons`
-)});
-  main.variable(observer("intro")).define("intro", ["width","htl","download","notebookLink"], function(width,htl,download,notebookLink){return(
+)}
+
+function _intro(width,htl,download,notebookLink){return(
 async (
   png,
   paragraph,
@@ -438,38 +465,44 @@ async (
   wrapper.append(imgWrapper);
   return wrapper;
 }
-)});
-  main.variable(observer("dataDescription")).define("dataDescription", ["md"], function(md){return(
+)}
+
+function _dataDescription(md){return(
 () => md`
 This notebook uses purchase data from the [Google Merchandise Store](https://shop.googlemerchandisestore.com/). See [this notebook](https://observablehq.com/@observablehq/google-merchandise-sales-data) for more details.`
-)});
-  main.variable(observer("download")).define("download", ["htl","downloadIcon"], function(htl,downloadIcon){return(
+)}
+
+function _download(htl,downloadIcon){return(
 ({
   label = "Download PDF",
   src = "https://github.com/observablehq/plot-cheatsheets/raw/main/plot-cheatsheets.pdf"
 } = {}) => {
   return htl.html`<a href="${src}" style="text-decoration: none;"><div style="cursor: pointer; padding: 6px 10px; display: inline-flex; border-radius: 5px; color: #2d48b2; border: 1px solid #d3d3d3; font-family: sans-serif;font-weight:600; font-size:14px;">${label} &nbsp; ${downloadIcon()}</div></a>`;
 }
-)});
-  main.variable(observer("downloadIcon")).define("downloadIcon", ["svg"], function(svg){return(
+)}
+
+function _downloadIcon(svg){return(
 () => svg`<svg width="18" height="18" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M6 14L3.99999 14C3.44771 14 2.99999 13.5523 2.99999 13L2.99999 3C3 2.44771 3.44771 2 3.99999 2L10 2M10 2L13 5M10 2L10 5L13 5M13 5L13 7.5" stroke="#2d48b2" stroke-width="2"/>
 <path d="M8 12L11 14.5L14 12" stroke="#2d48b2" stroke-width="2"/>
 <line x1="11" y1="9" x2="11" y2="15" stroke="#2d48b2" stroke-width="2"/>
 </svg>`
-)});
-  main.variable(observer("notebookLink")).define("notebookLink", ["htl","rightArrow"], function(htl,rightArrow){return(
+)}
+
+function _notebookLink(htl,rightArrow){return(
 (url) =>
   htl.html`<a href="${url}" target="_blank"><div style="cursor: pointer; padding:7px 10px 7px 15px; display: inline-flex; border-radius: 5px; color: white; background-color:#2d48b2; font-family: sans-serif;font-weight:600; font-size:14px; margin-right: 10px;">Explore interactively${rightArrow()}</div></a>`
-)});
-  main.variable(observer("rightArrow")).define("rightArrow", ["svg"], function(svg){return(
+)}
+
+function _rightArrow(svg){return(
 () => svg`<svg width="20" height="20" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.5 11L11 8L8.5 5" stroke="white" stroke-width="1.6"/>
 <line x1="4" y1="7.99999" x2="11" y2="7.99999" stroke="white" stroke-width="1.6"/>
 </svg>
 `
-)});
-  main.variable(observer("welcomeBox")).define("welcomeBox", ["htl"], function(htl){return(
+)}
+
+function _welcomeBox(htl){return(
 (intro = "This notebooks is part of the") => {
   const boxStyles = {
     background: "#F5F5F5",
@@ -484,14 +517,17 @@ This notebook uses purchase data from the [Google Merchandise Store](https://sho
     <div style=${boxStyles}>${intro} <a href="https://observablehq.com/@observablehq/plot-cheatsheets?collection=@observablehq/plot-cheatsheets">Plot Cheatsheets collection</a>. Each notebook in the collection provides an <em>interactive overview</em> of core Plot techniques, as well as a <em>downloadable PDF</em> for quick reference.</div>
 `;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _39(md){return(
 md`## Cards`
-)});
-  main.variable(observer()).define(["deck"], function(deck){return(
+)}
+
+function _40(deck){return(
 deck()
-)});
-  main.variable(observer("deck")).define("deck", ["cards","html"], function(cards,html){return(
+)}
+
+function _deck(cards,html){return(
 (highlight, { elements = cards } = {}) => {
   const topOffset = [30, 9, 0, 10, 40];
   const single = highlight !== undefined;
@@ -527,8 +563,9 @@ ${order.map((card, i) => {
   </div>`;
 })}</div>`;
 }
-)});
-  main.variable(observer("cards")).define("cards", ["colorsPng","layoutsPng","transformsPng","scalesPng","marksPng"], async function(colorsPng,layoutsPng,transformsPng,scalesPng,marksPng){return(
+)}
+
+async function _cards(colorsPng,layoutsPng,transformsPng,scalesPng,marksPng){return(
 [  
   {
     image: await colorsPng.image(),
@@ -551,53 +588,130 @@ ${order.map((card, i) => {
     url: "https://observablehq.com/@observablehq/plot-cheatsheets-marks?collection=@observablehq/plot-cheatsheets"
   }
 ]
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _43(md){return(
 md`## Appendix`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _44(md){return(
 md`### Imports`
-)});
+)}
+
+function _46(md){return(
+md`### File attachments`
+)}
+
+function _data(FileAttachment){return(
+FileAttachment("purchase_data.csv").csv({ typed: true })
+)}
+
+function _samplePng(FileAttachment){return(
+FileAttachment("scales-cheatsheet.png")
+)}
+
+function _colorsPdf(FileAttachment){return(
+FileAttachment("colors.pdf")
+)}
+
+function _colorsPng(FileAttachment){return(
+FileAttachment("colors@3.png")
+)}
+
+function _layoutsPdf(FileAttachment){return(
+FileAttachment("layouts.pdf")
+)}
+
+function _layoutsPng(FileAttachment){return(
+FileAttachment("layouts@2.png")
+)}
+
+function _marksPdf(FileAttachment){return(
+FileAttachment("marks.pdf")
+)}
+
+function _marksPng(FileAttachment){return(
+FileAttachment("marks@3.png")
+)}
+
+function _scalesPdf(FileAttachment){return(
+FileAttachment("scales.pdf")
+)}
+
+function _scalesPng(FileAttachment){return(
+FileAttachment("scales@2.png")
+)}
+
+function _transformsPdf(FileAttachment){return(
+FileAttachment("transforms.pdf")
+)}
+
+function _transformsPng(FileAttachment){return(
+FileAttachment("transforms@2.png")
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["scales-cheatsheet.png",new URL("./files/7b3826caa2162bc4270f870a247bed2b3e38d45fcdd787e27b2ac042b07c163e6305308d7d94b4bb67d4457321cb5fe73b472d1d7c993f4b42d6632d5d54c438",import.meta.url)],["purchase_data.csv",new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34",import.meta.url)],["colors.pdf",new URL("./files/5ce4046508844d70cfbe0bcc43ea00964479331ea32d31afb7128ebdaaed14456c00d8bef290a6c8d14618e4d2e6a15e127414f3133103a7ae2fb35fdc76764b",import.meta.url)],["scales.pdf",new URL("./files/ed4d482ef40f736df5f3f4000880e4de30fd3ea691be654d5178ceb7ef2b966351d87da136cf3ade106453ecef9806c3c275086a4d88394335fd3e9d3804985e",import.meta.url)],["marks.pdf",new URL("./files/a92002416ea5a6594baf95fdd1bb2ec49c84ea3f19aaf6c618f355aca862733be01a73702192db5bdea611a982c6e35e120c748af8dd4e34e75e372f9c02ada7",import.meta.url)],["layouts.pdf",new URL("./files/b3f56c18eed4c9a7f2a774847f02245ddc45ac25e9061b30190f39464bfa15e6266ba280ee22c8be3b8fe50e574fb15254954e1cf4174d291ca2f26840ace4d5",import.meta.url)],["transforms.pdf",new URL("./files/ea0a5c1e1057cb7ccb9511d572708c90067d2857b5b300dd7f6083bf618e50b982942fc7b28106d6e567d1030b20b456a46d2d42e8f546ac041d5693e8a2e62e",import.meta.url)],["scales@2.png",new URL("./files/806e55e663f35b274fd8294c6c49862dc18a4f566197175c48b925e5f0ce82033e8f49b2ffb1622cdb59ba9f49b6ae3586383cd46600ee07132e9803dd817cff",import.meta.url)],["transforms@2.png",new URL("./files/a37fe83c1713cd4b241210b334c89ccf1a1f24dca79b4c161154e2083d97b5458918b06aea2e924ad3a63441c9b29cd4a7a52006d40cfb424c8bac92c0894cdd",import.meta.url)],["marks@3.png",new URL("./files/3faba7b84bf90596b137a54da06195b3daa32fd8a15e1408eb755e41f19ed6e0ea85e2b7ca7f2497d0c99dc4373d612659edad8500837912ee7369cf47a7481a",import.meta.url)],["layouts@2.png",new URL("./files/92bee5cb8c19f0cf8c669032c041add876e2e74fb5aa446fae57dd4e8925f878c348f5cd3bdfac17ab3ef30b62e10978670659841e4295e4a247d1d3fbf58bd0",import.meta.url)],["colors@3.png",new URL("./files/16772f264b849f64f611f9400a9a17213627ceffac2b9a0aae946aae57cdfd278eec6d28d1a69c3dbbc1a006d7aadd4390adeee7cdab471531da029ffa643850",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["toc"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["createDemo","histConfig"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("histConfig")).define("histConfig", ["plotWidth"], _histConfig);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["welcomeBox"], _10);
+  main.variable(observer()).define(["intro","samplePng","md"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("createInput")).define("createInput", ["htl","Inputs","_","md","Inputs_const"], _createInput);
+  main.variable(observer("createForm")).define("createForm", ["id_generator","createInput","d3","Inputs","htl","controlWidth"], _createForm);
+  main.variable(observer("createDemo")).define("createDemo", ["wrapperStyles","htl","copyButtonStyles","createForm","d3","evalCodeStr","makeCopyIcon"], _createDemo);
+  main.variable(observer("controlWidth")).define("controlWidth", _controlWidth);
+  main.variable(observer("plotWidth")).define("plotWidth", ["width","controlWidth"], _plotWidth);
+  main.variable(observer()).define(["md"], _18);
+  main.variable(observer("evalCodeStr")).define("evalCodeStr", ["data","Plot","width","d3"], _evalCodeStr);
+  main.variable(observer("Inputs_const")).define("Inputs_const", ["htl","md"], _Inputs_const);
+  main.variable(observer("id_generator")).define("id_generator", _id_generator);
+  main.variable(observer()).define(["md"], _22);
+  main.variable(observer("inputStyles")).define("inputStyles", ["htl","Inputs"], _inputStyles);
+  main.variable(observer("wrapperStyles")).define("wrapperStyles", ["width"], _wrapperStyles);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["makeCopyIcon"], _26);
+  main.variable(observer("makeCopyIcon")).define("makeCopyIcon", ["htl","d3","copyIcon","copyStyle"], _makeCopyIcon);
+  main.variable(observer("copyStyle")).define("copyStyle", ["htl"], _copyStyle);
+  main.variable(observer("copyIcon")).define("copyIcon", ["htl"], _copyIcon);
+  main.variable(observer("copyButtonStyles")).define("copyButtonStyles", _copyButtonStyles);
+  main.variable(observer()).define(["md"], _31);
+  main.variable(observer("intro")).define("intro", ["width","htl","download","notebookLink"], _intro);
+  main.variable(observer("dataDescription")).define("dataDescription", ["md"], _dataDescription);
+  main.variable(observer("download")).define("download", ["htl","downloadIcon"], _download);
+  main.variable(observer("downloadIcon")).define("downloadIcon", ["svg"], _downloadIcon);
+  main.variable(observer("notebookLink")).define("notebookLink", ["htl","rightArrow"], _notebookLink);
+  main.variable(observer("rightArrow")).define("rightArrow", ["svg"], _rightArrow);
+  main.variable(observer("welcomeBox")).define("welcomeBox", ["htl"], _welcomeBox);
+  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["deck"], _40);
+  main.variable(observer("deck")).define("deck", ["cards","html"], _deck);
+  main.variable(observer("cards")).define("cards", ["colorsPng","layoutsPng","transformsPng","scalesPng","marksPng"], _cards);
+  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["md"], _44);
   const child1 = runtime.module(define1);
   main.import("toc", child1);
-  main.variable(observer()).define(["md"], function(md){return(
-md`### File attachments`
-)});
-  main.variable(observer("data")).define("data", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("purchase_data.csv").csv({ typed: true })
-)});
-  main.variable(observer("samplePng")).define("samplePng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("scales-cheatsheet.png")
-)});
-  main.variable(observer("colorsPdf")).define("colorsPdf", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("colors.pdf")
-)});
-  main.variable(observer("colorsPng")).define("colorsPng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("colors@3.png")
-)});
-  main.variable(observer("layoutsPdf")).define("layoutsPdf", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("layouts.pdf")
-)});
-  main.variable(observer("layoutsPng")).define("layoutsPng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("layouts@2.png")
-)});
-  main.variable(observer("marksPdf")).define("marksPdf", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("marks.pdf")
-)});
-  main.variable(observer("marksPng")).define("marksPng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("marks@3.png")
-)});
-  main.variable(observer("scalesPdf")).define("scalesPdf", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("scales.pdf")
-)});
-  main.variable(observer("scalesPng")).define("scalesPng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("scales@2.png")
-)});
-  main.variable(observer("transformsPdf")).define("transformsPdf", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("transforms.pdf")
-)});
-  main.variable(observer("transformsPng")).define("transformsPng", ["FileAttachment"], function(FileAttachment){return(
-FileAttachment("transforms@2.png")
-)});
+  main.variable(observer()).define(["md"], _46);
+  main.variable(observer("data")).define("data", ["FileAttachment"], _data);
+  main.variable(observer("samplePng")).define("samplePng", ["FileAttachment"], _samplePng);
+  main.variable(observer("colorsPdf")).define("colorsPdf", ["FileAttachment"], _colorsPdf);
+  main.variable(observer("colorsPng")).define("colorsPng", ["FileAttachment"], _colorsPng);
+  main.variable(observer("layoutsPdf")).define("layoutsPdf", ["FileAttachment"], _layoutsPdf);
+  main.variable(observer("layoutsPng")).define("layoutsPng", ["FileAttachment"], _layoutsPng);
+  main.variable(observer("marksPdf")).define("marksPdf", ["FileAttachment"], _marksPdf);
+  main.variable(observer("marksPng")).define("marksPng", ["FileAttachment"], _marksPng);
+  main.variable(observer("scalesPdf")).define("scalesPdf", ["FileAttachment"], _scalesPdf);
+  main.variable(observer("scalesPng")).define("scalesPng", ["FileAttachment"], _scalesPng);
+  main.variable(observer("transformsPdf")).define("transformsPdf", ["FileAttachment"], _transformsPdf);
+  main.variable(observer("transformsPng")).define("transformsPng", ["FileAttachment"], _transformsPng);
   return main;
 }

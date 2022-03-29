@@ -3,13 +3,12 @@ import define1 from "./d2dffac0e42406e8@3045.js";
 import define2 from "./32eeadb67cb4cbcb@1472.js";
 import define3 from "./8d6618bb2d7befdd@199.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Plot Tooltip
 ## Two approaches for easily adding tooltips to your plots`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Tooltips on all plots
 Want to add tooltips to _all_ of your plots? Import \`plot\` from _this notebook_, then simply set a \`title\` attribute for any mark in your plot call (_note, this approach only works with \`Plot.plot()\` calls, not \`Plot.MARK().plot()\`_)
 
@@ -18,8 +17,9 @@ Want to add tooltips to _all_ of your plots? Import \`plot\` from _this notebook
 import {Plot} from "@mkfreeman/plot-tooltip"
 ~~~
 `
-)});
-  main.variable(observer()).define(["Plot","data"], function(Plot,data){return(
+)}
+
+function _3(Plot,data){return(
 Plot.plot({
   marks: [
     Plot.dot(data, {
@@ -30,11 +30,13 @@ Plot.plot({
     })
   ]
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`To customize the style of the hovered element, specify a \`tooltip\` property with key-value pairs specifying the desired styles in your \`Plot\` call:`
-)});
-  main.variable(observer()).define(["Plot","data"], function(Plot,data){return(
+)}
+
+function _5(Plot,data){return(
 Plot.plot({
   marks: [
     Plot.dot(data, {
@@ -50,14 +52,17 @@ Plot.plot({
     r: 8
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`_(many thanks to [@fil](https://observablehq.com/@fil) for this implementation!_`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Tooltips on a single plot`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`Alternatively, to add tooltips to a _single_ plot, you can import the \`addTooltips\` function and pass your plot to it.
 
 ~~~js
@@ -66,8 +71,9 @@ import {addTooltips} from "@mkfreeman/plot-tooltip"
 ~~~
 
 _(many thanks to [@fil](https://observablehq.com/@fil) for the idea, [prior art](https://observablehq.com/@fil/experimental-plot-tooltip-01), and help debugging!)_`
-)});
-  main.variable(observer()).define(["addTooltips","Plot","data"], function(addTooltips,Plot,data){return(
+)}
+
+function _9(addTooltips,Plot,data){return(
 addTooltips(
   Plot.dot(data, {
     x: "bill_length",
@@ -76,11 +82,13 @@ addTooltips(
       `${d.island} \n bill depth: ${d.bill_depth} \n bill length: ${d.bill_length}` // \n makes a new line
   }).plot()
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`Want to customize what a hovered element looks like? Pass in a \`{hoverStyles}\` object:`
-)});
-  main.variable(observer()).define(["addTooltips","Plot","data"], function(addTooltips,Plot,data){return(
+)}
+
+function _11(addTooltips,Plot,data){return(
 addTooltips(
   Plot.rectY(
     data,
@@ -92,8 +100,9 @@ addTooltips(
   // Set styles for the hovered element
   { fill: "gray", opacity: 0.5, "stroke-width": "3px", stroke: "red" }
 )
-)});
-  main.variable(observer()).define(["addTooltips","Plot","data"], function(addTooltips,Plot,data){return(
+)}
+
+function _12(addTooltips,Plot,data){return(
 addTooltips(
   Plot.dot(
     data,
@@ -105,11 +114,13 @@ addTooltips(
   // Set styles for the hovered element
   { fill: "gray", opacity: 0.5, "stroke-width": "3px", stroke: "red" }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`ProTip 😉! You may want to adjust the \`paddingTop\` of your plot to ensure you can see the tooltip:`
-)});
-  main.variable(observer()).define(["addTooltips","Plot","data","width"], function(addTooltips,Plot,data,width){return(
+)}
+
+function _14(addTooltips,Plot,data,width){return(
 addTooltips(
   Plot.barX(data, {
     x: "body_mass",
@@ -121,8 +132,9 @@ addTooltips(
     width 
   })
 )
-)});
-  main.variable(observer()).define(["addTooltips","Plot","unemployment"], function(addTooltips,Plot,unemployment){return(
+)}
+
+function _15(addTooltips,Plot,unemployment){return(
 addTooltips(
   Plot.plot({
     y: {
@@ -154,8 +166,9 @@ addTooltips(
     }
   })
 )
-)});
-  main.variable(observer()).define(["addTooltips","Plot","unemployment"], function(addTooltips,Plot,unemployment){return(
+)}
+
+function _16(addTooltips,Plot,unemployment){return(
 addTooltips(
   Plot.plot({
     y: {
@@ -173,13 +186,13 @@ addTooltips(
     ]
   }),
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`Works with a legend (now)`
-)});
-  const child1 = runtime.module(define1);
-  main.import("data", "brandData", child1);
-  main.variable(observer()).define(["addTooltips","Plot","brandData"], function(addTooltips,Plot,brandData){return(
+)}
+
+function _19(addTooltips,Plot,brandData){return(
 addTooltips(
   Plot.plot({
     marks: [
@@ -196,11 +209,13 @@ addTooltips(
     width: 578
   })
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _20(md){return(
 md`## Implementation`
-)});
-  main.variable(observer("addTooltips")).define("addTooltips", ["d3","_","id_generator","hover","html"], function(d3,_,id_generator,hover,html){return(
+)}
+
+function _addTooltips(d3,_,id_generator,hover,html){return(
 (chart, hover_styles = { fill: "blue", opacity: 0.5 }) => {
   let styles = hover_styles;
   const line_styles = {
@@ -313,8 +328,9 @@ md`## Implementation`
   chart.appendChild(style);
   return chart;
 }
-)});
-  main.variable(observer("hover")).define("hover", function(){return(
+)}
+
+function _hover(){return(
 (tip, pos, text) => {
   const side_padding = 10;
   const vertical_padding = 5;
@@ -349,25 +365,57 @@ md`## Implementation`
     .style("stroke", "#d3d3d3")
     .lower();
 }
-)});
-  main.variable(observer("id_generator")).define("id_generator", function(){return(
+)}
+
+function _id_generator(){return(
 () => {
   var S4 = function () {
     return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   };
   return "a" + S4() + S4();
 }
-)});
-  main.variable(observer("Plot")).define("Plot", ["tooltipPlugin","require"], async function(tooltipPlugin,require){return(
+)}
+
+async function _Plot(tooltipPlugin,require){return(
 tooltipPlugin(await require("@observablehq/plot"))
-)});
-  main.variable(observer("tooltipPlugin")).define("tooltipPlugin", ["addTooltips"], function(addTooltips){return(
+)}
+
+function _tooltipPlugin(addTooltips){return(
 (Plot) => {
   const { plot } = Plot;
   Plot.plot = ({ tooltip, ...options }) => addTooltips(plot(options), tooltip);
   return Plot;
 }
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["Plot","data"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["Plot","data"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["addTooltips","Plot","data"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["addTooltips","Plot","data"], _11);
+  main.variable(observer()).define(["addTooltips","Plot","data"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["addTooltips","Plot","data","width"], _14);
+  main.variable(observer()).define(["addTooltips","Plot","unemployment"], _15);
+  main.variable(observer()).define(["addTooltips","Plot","unemployment"], _16);
+  main.variable(observer()).define(["md"], _17);
+  const child1 = runtime.module(define1);
+  main.import("data", "brandData", child1);
+  main.variable(observer()).define(["addTooltips","Plot","brandData"], _19);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer("addTooltips")).define("addTooltips", ["d3","_","id_generator","hover","html"], _addTooltips);
+  main.variable(observer("hover")).define("hover", _hover);
+  main.variable(observer("id_generator")).define("id_generator", _id_generator);
+  main.variable(observer("Plot")).define("Plot", ["tooltipPlugin","require"], _Plot);
+  main.variable(observer("tooltipPlugin")).define("tooltipPlugin", ["addTooltips"], _tooltipPlugin);
   const child2 = runtime.module(define2);
   main.import("data", child2);
   const child3 = runtime.module(define3);

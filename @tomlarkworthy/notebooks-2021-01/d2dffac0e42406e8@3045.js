@@ -2,40 +2,44 @@
 import define1 from "./794aa914fd015c9e@3360.js";
 import define2 from "./9bed702f80a3797e@402.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["youtubeIcon.png",new URL("./files/dd9624e7da061d6bcfa3cba4e71981d23cf2945f02b99777c3c66d48cf36c3afc48e375faaf1c18d47ca854d6f13b5c4e16fb4582e228cd16bc13e5fd2be8313",import.meta.url)],["googleImg@1.png",new URL("./files/62896dcc9298fd5a56f63cb77e8a6ca6bc6d9617f26a49e6d458380914d6c81e4ba9a8e56cc9caa4df8a8869ecaba3d0027f94f6ab5f8c1d52f0dd42066072fc",import.meta.url)],["googleCloudImg.png",new URL("./files/3cf2d4d48da9fa4ce0bf772acc6e299ce98d49baf95d3b8319947ef65c01c0d57c5950466e30983c8e917773b13842b16c98b8757a52d41a8efe53327545355e",import.meta.url)],["androidImg.png",new URL("./files/38366b46e64ba8f382a18051e899616c8ad2aa5d35e87470e891a6439221e2945b73366237dfc00b26b8d9ef9aa6637b4957a5d2133d32b803f5851ee262bcaf",import.meta.url)],["purchase_data.csv",new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Plot Cheatsheets - Marks
 ## Geometric symbols that represent your data`
-)});
-  main.variable(observer()).define(["deck"], function(deck){return(
+)}
+
+function _2(deck){return(
 deck("marks")
-)});
-  main.variable(observer()).define(["welcomeBox"], function(welcomeBox){return(
+)}
+
+function _3(welcomeBox){return(
 welcomeBox()
-)});
-  main.variable(observer()).define(["download"], function(download){return(
+)}
+
+function _4(download){return(
 download({label: "Download the cheatsheets PDF"})
-)});
-  main.variable(observer()).define(["introParagraph"], function(introParagraph){return(
+)}
+
+function _5(introParagraph){return(
 introParagraph()
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _6(toc){return(
 toc({
   headers: "h2",
   skip: "Geometric symbols that represent your data", 
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`---
 ## Overview`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`To create a Plot, pass an **array of Marks** to your \`Plot.plot\` function.`
-)});
-  main.variable(observer()).define(["Plot","data"], function(Plot,data){return(
+)}
+
+function _9(Plot,data){return(
 Plot.plot({
   // Pass in an array of desired marks
   marks: [
@@ -62,149 +66,172 @@ Plot.plot({
     legend: true,
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`Explore below to familiarize yourself with the different mark types and associated channels.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`---
 ## [Lines](https://observablehq.com/@observablehq/plot-line?collection=@observablehq/plot) and [Areas](https://observablehq.com/@observablehq/plot-area?collection=@observablehq/plot)`
-)});
-  main.variable(observer()).define(["line","areaY","areaX","createDemo","htl"], function(line,areaY,areaX,createDemo,htl){return(
+)}
+
+function _12(line,areaY,areaX,createDemo,htl){return(
 htl.html`${[line, areaY, areaX].map(createDemo)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`---
 ## [Dots](https://observablehq.com/@observablehq/plot-dot?collection=@observablehq/plot) and [Links](https://observablehq.com/@observablehq/plot-link?collection=@observablehq/plot)`
-)});
-  main.variable(observer()).define(["dot","link","createDemo","htl"], function(dot,link,createDemo,htl){return(
+)}
+
+function _14(dot,link,createDemo,htl){return(
 htl.html`${[dot, link].map(createDemo)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`---
 ## [Bars](https://observablehq.com/@observablehq/plot-bar?collection=@observablehq/plot) and [Rects](https://observablehq.com/@observablehq/plot-rect?collection=@observablehq/plot)`
-)});
-  main.variable(observer()).define(["barY","barX","rectY","rectX","createDemo","htl"], function(barY,barX,rectY,rectX,createDemo,htl){return(
+)}
+
+function _16(barY,barX,rectY,rectX,createDemo,htl){return(
 htl.html`${[barY, barX, rectY, rectX].map(createDemo)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`---
 ## [Ticks](https://observablehq.com/@observablehq/plot-tick?collection=@observablehq/plot) and [Rules](https://observablehq.com/@observablehq/plot-rule?collection=@observablehq/plot)`
-)});
-  main.variable(observer()).define(["tickX","tickY","ruleX","ruleY","createDemo","htl"], function(tickX,tickY,ruleX,ruleY,createDemo,htl){return(
+)}
+
+function _18(tickX,tickY,ruleX,ruleY,createDemo,htl){return(
 htl.html`${[tickX, tickY, ruleX, ruleY].map(createDemo)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _19(md){return(
 md`---
 ## [Cells](https://observablehq.com/@observablehq/plot-cell?collection=@observablehq/plot) and [Text](https://observablehq.com/@observablehq/plot-text?collection=@observablehq/plot)`
-)});
-  main.variable(observer()).define(["cell","text","createDemo","htl"], function(cell,text,createDemo,htl){return(
+)}
+
+function _20(cell,text,createDemo,htl){return(
 htl.html`${[cell, text].map(createDemo)}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md`---
 ## [Images](https://observablehq.com/@observablehq/plot-image)`
-)});
-  main.variable(observer()).define(["createDemo","image"], function(createDemo,image){return(
+)}
+
+function _22(createDemo,image){return(
 createDemo(image)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _23(md){return(
 md`---
 ## [Arrows](https://observablehq.com/@observablehq/plot-arrow)`
-)});
-  main.variable(observer()).define(["createDemo","arrow"], function(createDemo,arrow){return(
+)}
+
+function _24(createDemo,arrow){return(
 createDemo(arrow)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`---
 ## [Vectors](https://observablehq.com/@observablehq/plot-vector)`
-)});
-  main.variable(observer()).define(["createDemo","vector"], function(createDemo,vector){return(
+)}
+
+function _26(createDemo,vector){return(
 createDemo(vector)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _27(md){return(
 md`---
 ## Dataset Used`
-)});
-  main.variable(observer()).define(["dataDescription"], function(dataDescription){return(
+)}
+
+function _28(dataDescription){return(
 dataDescription()
-)});
-  main.variable(observer()).define(["Inputs","data"], function(Inputs,data){return(
+)}
+
+function _29(Inputs,data){return(
 Inputs.table(data)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _30(md){return(
 md`---
 ## Appendix`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _31(md){return(
 md`_Last updated for Plot version 0.4.0_|`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _32(md){return(
 md`### Imports`
-)});
-  main.variable(observer("ss")).define("ss", ["require"], function(require){return(
+)}
+
+function _ss(require){return(
 require("simple-statistics@7.7.3")
-)});
-  const child1 = runtime.module(define1).derive(["data","evalCodeStr"], main);
-  main.import("createDemo", child1);
-  main.import("intro", child1);
-  main.import("getConfig", child1);
-  main.import("plotWidth", child1);
-  main.import("dataDescription", child1);
-  main.import("download", child1);
-  main.import("welcomeBox", child1);
-  main.import("inputStyles", child1);
-  main.import("allCheatsheets", child1);
-  main.import("deck", child1);
-  const child2 = runtime.module(define2);
-  main.import("toc", child2);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _36(md){return(
 md`### File attachments`
-)});
-  main.variable(observer("youtubeImg")).define("youtubeImg", ["FileAttachment"], async function(FileAttachment){return(
+)}
+
+async function _youtubeImg(FileAttachment){return(
 await FileAttachment("youtubeIcon.png").url()
-)});
-  main.variable(observer("googleImg")).define("googleImg", ["FileAttachment"], async function(FileAttachment){return(
+)}
+
+async function _googleImg(FileAttachment){return(
 await FileAttachment("googleImg@1.png").url()
-)});
-  main.variable(observer("androidImg")).define("androidImg", ["FileAttachment"], function(FileAttachment){return(
+)}
+
+function _androidImg(FileAttachment){return(
 FileAttachment("androidImg.png").url()
-)});
-  main.variable(observer("googleCloudImg")).define("googleCloudImg", ["FileAttachment"], function(FileAttachment){return(
+)}
+
+function _googleCloudImg(FileAttachment){return(
 FileAttachment("googleCloudImg.png").url()
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _41(md){return(
 md`Images downloaded from [IconFinder](https://www.iconfinder.com/), specified as free for commercial use.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _42(md){return(
 md`### Data`
-)});
-  main.variable(observer("events")).define("events", ["FileAttachment"], async function(FileAttachment){return(
+)}
+
+async function _events(FileAttachment){return(
 await FileAttachment("purchase_data.csv").csv({typed:true})
-)});
-  main.variable(observer("data")).define("data", ["aq","events","d3"], function(aq,events,d3){return(
+)}
+
+function _data(aq,events,d3){return(
 aq.from(events)
   .derive({date: aq.escape(d => d3.utcDay(d.date))})
   .groupby("date", "brand")
   .rollup({value: d => aq.op.sum(d.price_in_usd), count: aq.op.count()})
   .orderby("date", "brand")
   .objects()
-)});
-  main.variable(observer("images")).define("images", ["youtubeImg","googleImg","googleCloudImg","androidImg"], function(youtubeImg,googleImg,googleCloudImg,androidImg){return(
+)}
+
+function _images(youtubeImg,googleImg,googleCloudImg,androidImg){return(
 [
   {brand: "YouTube", imgUrl: youtubeImg}, 
   {brand: "Google", imgUrl: googleImg},   
   {brand: "Google Cloud", imgUrl: googleCloudImg},   
   {brand: "Android", imgUrl: androidImg},   
 ]
-)});
-  main.variable(observer("imageData")).define("imageData", ["aq","data","images"], function(aq,data,images){return(
+)}
+
+function _imageData(aq,data,images){return(
 aq.from(data)
   .groupby("brand")
   .rollup({value: d => aq.op.sum(d.value)})
   .join_right(aq.from(images))
-)});
-  main.variable(observer("wideData")).define("wideData", ["aq","data"], function(aq,data){return(
+)}
+
+function _wideData(aq,data){return(
 aq
   .from(data)
   .groupby("brand")
@@ -217,31 +244,38 @@ aq
   .select(aq.not("date", "count"))
   .groupby("brand", "startDate", "endDate")
   .pivot("time", "value")
-)});
-  main.variable(observer("diffData")).define("diffData", ["aq","data"], function(aq,data){return(
+)}
+
+function _diffData(aq,data){return(
 aq.from(data)
   .groupby("brand")
   .derive({diff: d => d.value - aq.op.lead(d.value)})
-)});
-  main.variable(observer("changeData")).define("changeData", ["diffData","aq","rotateScale"], function(diffData,aq,rotateScale){return(
+)}
+
+function _changeData(diffData,aq,rotateScale){return(
 diffData.derive({diffRotate: aq.escape(d => rotateScale(d.diff))})
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _50(md){return(
 md`### Helper functions`
-)});
-  main.variable(observer("evalCodeStr")).define("evalCodeStr", ["changeData","wideData","imageData","data","Plot","width","d3"], function(changeData,wideData,imageData,data,Plot,width,d3){return(
+)}
+
+function _evalCodeStr(changeData,wideData,imageData,data,Plot,width,d3){return(
 (str) => {
   const func = new Function("changeData", "wideData", "imageData", "data", "Plot", "width",  "d3", `return ${str}`)
   return func(changeData, wideData, imageData, data, Plot, width, d3);
 }
-)});
-  main.variable(observer("introParagraph")).define("introParagraph", ["htl"], function(htl){return(
+)}
+
+function _introParagraph(htl){return(
 () => htl.html`<p style="margin-top:0px;"><a href ="https://observablehq.com/@observablehq/plot?collection=@observablehq/plot" target="_blank">Observable Plot</a> creates visualizations by combining geometric shapes (e.g., lines, dots, areas) referred to as <a href="https://observablehq.com/@observablehq/plot-marks?collection=@observablehq/plot" target="_blank">marks</a>. This approach enables multiple layered representations of your data in the same chart. Use mark functions to create geometric shapes (e.g., <a href="https://observablehq.com/@observablehq/plot-line?collection=@observablehq/plot" target="_blank"><code>Plot.line</code></a>, <a href="https://observablehq.com/@observablehq/plot-dot?collection=@observablehq/plot" target="_blank"><code>Plot.dot</code></a>, <a href="https://observablehq.com/@observablehq/plot-area?collection=@observablehq/plot" target="_blank"><code>Plot.areaY</code></a>) and pass them to your <code>Plot.plot()</code> function.</p>`
-)});
-  main.variable(observer("marksExample")).define("marksExample", ["createDemo","rectY"], function(createDemo,rectY){return(
+)}
+
+function _marksExample(createDemo,rectY){return(
 () => createDemo(rectY)
-)});
-  main.variable(observer("rotateScale")).define("rotateScale", ["d3","diffData"], function(d3,diffData)
+)}
+
+function _rotateScale(d3,diffData)
 {
   const domainSize = d3.max(d3.extent(diffData, (d) => d.diff))
   return d3
@@ -249,11 +283,13 @@ md`### Helper functions`
     .domain([-domainSize, domainSize])
     .range([0, 180]);
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _55(md){return(
 md`### Settings`
-)});
-  main.variable(observer("line")).define("line", ["curveOptions","plotConfig","legendConfig"], function(curveOptions,plotConfig,legendConfig){return(
+)}
+
+function _line(curveOptions,plotConfig,legendConfig){return(
 {
   controls: [
     { type: "text", value: "// Sales over time \nPlot.line(data, {" },
@@ -285,8 +321,9 @@ md`### Settings`
   ${legendConfig}
 })`
 }
-)});
-  main.variable(observer("arrow")).define("arrow", ["plotConfig","legendConfig"], function(plotConfig,legendConfig){return(
+)}
+
+function _arrow(plotConfig,legendConfig){return(
 {
   controls: [
     { type: "text", value: "// Start/end sales \nPlot.arrow(wideData, {" },
@@ -316,8 +353,9 @@ md`### Settings`
   caption: "Sales on the first and last day of the dataset"
 })`
 }
-)});
-  main.variable(observer("areaY")).define("areaY", ["curveOptions","plotConfig"], function(curveOptions,plotConfig){return(
+)}
+
+function _areaY(curveOptions,plotConfig){return(
 {
   controls: [
     { type: "text", value: "// Sales over time \nPlot.areaY(data, {" },
@@ -350,8 +388,9 @@ md`### Settings`
   ${plotConfig}
 })`
 }
-)});
-  main.variable(observer("areaX")).define("areaX", ["curveOptions","plotWidth"], function(curveOptions,plotWidth){return(
+)}
+
+function _areaX(curveOptions,plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Sales over time \nPlot.areaX(data, {" },
@@ -387,8 +426,9 @@ md`### Settings`
   height: 200
 })`
 }
-)});
-  main.variable(observer("dot")).define("dot", ["plotConfig"], function(plotConfig){return(
+)}
+
+function _dot(plotConfig){return(
 {
     controls: [
       { type: "text", value: "// Sales each day \nPlot.dot(data, {" },
@@ -428,8 +468,9 @@ md`### Settings`
   ${plotConfig}
 })`
   }
-)});
-  main.variable(observer("link")).define("link", ["regressionLine","plotWidth"], function(regressionLine,plotWidth){return(
+)}
+
+function _link(regressionLine,plotWidth){return(
 {
     controls: [
       { type: "text", value: "// Sales v.s. profit\nPlot.link({ length: 1 }, {" },
@@ -467,8 +508,9 @@ md`### Settings`
 })`;
     }
   }
-)});
-  main.variable(observer("barY")).define("barY", ["plotWidth","legendConfig"], function(plotWidth,legendConfig){return(
+)}
+
+function _barY(plotWidth,legendConfig){return(
 {
     controls: [
       {
@@ -509,8 +551,9 @@ md`### Settings`
   ${legendConfig}
 })`
   }
-)});
-  main.variable(observer("barX")).define("barX", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _barX(plotWidth){return(
 {
     controls: [
       {
@@ -550,8 +593,9 @@ md`### Settings`
   y: { domain: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] }
 })`
   }
-)});
-  main.variable(observer("rectY")).define("rectY", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _rectY(plotWidth){return(
 {
     // Control panel (the code on the left): an array of controls, one for each line (including text)
     controls: [
@@ -612,8 +656,9 @@ md`### Settings`
   width: ${plotWidth}
 })`
   }
-)});
-  main.variable(observer("rectX")).define("rectX", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _rectX(plotWidth){return(
 {
     // Control panel (the code on the left): an array of controls, one for each line (including text)
     controls: [
@@ -674,8 +719,9 @@ md`### Settings`
   height: 200
 })`
   }
-)});
-  main.variable(observer("cell")).define("cell", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _cell(plotWidth){return(
 {
   controls: [
     {
@@ -704,8 +750,9 @@ md`### Settings`
   width: ${plotWidth}
 })`
 }
-)});
-  main.variable(observer("tickY")).define("tickY", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _tickY(plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Draw each sale \nPlot.tickY(data, {" },
@@ -737,8 +784,9 @@ md`### Settings`
   y: { reverse: true }
 })`
 }
-)});
-  main.variable(observer("tickX")).define("tickX", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _tickX(plotWidth){return(
 {
     controls: [
       { type: "text", value: "// Draw each sale \nPlot.tickX(data, {" },
@@ -770,8 +818,9 @@ md`### Settings`
   y: { reverse: true }
 })`
   }
-)});
-  main.variable(observer("text")).define("text", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _text(plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Add text lables \nPlot.text(data, " },
@@ -824,8 +873,9 @@ md`### Settings`
   }
 })`
 }
-)});
-  main.variable(observer("ruleY")).define("ruleY", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _ruleY(plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Add horizontal lines \nPlot.ruleY(data, " },
@@ -875,8 +925,9 @@ md`### Settings`
   marginRight: 100
 })`
 }
-)});
-  main.variable(observer("ruleX")).define("ruleX", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _ruleX(plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Add vertical lines \nPlot.ruleX(data, " },
@@ -912,8 +963,9 @@ md`### Settings`
   marginRight: 100
 })`
 }
-)});
-  main.variable(observer("image")).define("image", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _image(plotWidth){return(
 {
   controls: [
     { type: "text", value: "// Display images" },
@@ -940,8 +992,9 @@ md`### Settings`
   width: ${plotWidth}
 })`
 }
-)});
-  main.variable(observer("vector")).define("vector", ["plotConfig","legendConfig"], function(plotConfig,legendConfig){return(
+)}
+
+function _vector(plotConfig,legendConfig){return(
 {
   controls: [
     { type: "text", value: "// Sales slope \nPlot.vector(changeData, {" },
@@ -970,32 +1023,37 @@ md`### Settings`
   height: 300
 })`
 }
-)});
-  main.variable(observer("regressionLine")).define("regressionLine", ["linearRegression"], function(linearRegression){return(
+)}
+
+function _regressionLine(linearRegression){return(
 {
   x1: 0, 
   y1: linearRegression.b, 
   x2: 450, 
   y2: linearRegression.m * 450 + linearRegression.b
 }
-)});
-  main.variable(observer("linearRegression")).define("linearRegression", ["ss","data"], function(ss,data){return(
+)}
+
+function _linearRegression(ss,data){return(
 ss.linearRegression(data.map(d => [d.count, d.value]))
-)});
-  main.variable(observer("plotConfig")).define("plotConfig", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _plotConfig(plotWidth){return(
 `width: ${plotWidth}, 
   height: 130, 
   x: { ticks: 3 }, 
   marginLeft: 50`
-)});
-  main.variable(observer("legendConfig")).define("legendConfig", ["plotWidth"], function(plotWidth){return(
+)}
+
+function _legendConfig(plotWidth){return(
 `color: {
     legend: true,
     width: ${plotWidth},
     columns: "120px"
   }`
-)});
-  main.variable(observer("curveOptions")).define("curveOptions", function(){return(
+)}
+
+function _curveOptions(){return(
 {
   type: "select",
   details: "set curve",
@@ -1013,19 +1071,119 @@ ss.linearRegression(data.map(d => [d.count, d.value]))
   ],
   value: "linear"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _79(md){return(
 md`### Styles`
-)});
-  main.variable(observer()).define(["inputStyles"], function(inputStyles){return(
+)}
+
+function _80(inputStyles){return(
 inputStyles
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _81(htl){return(
 htl.html`<style>
   .demo-wrapper {
     margin-top:8px !important;
   }
 </style>`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["youtubeIcon.png",new URL("./files/dd9624e7da061d6bcfa3cba4e71981d23cf2945f02b99777c3c66d48cf36c3afc48e375faaf1c18d47ca854d6f13b5c4e16fb4582e228cd16bc13e5fd2be8313",import.meta.url)],["googleImg@1.png",new URL("./files/62896dcc9298fd5a56f63cb77e8a6ca6bc6d9617f26a49e6d458380914d6c81e4ba9a8e56cc9caa4df8a8869ecaba3d0027f94f6ab5f8c1d52f0dd42066072fc",import.meta.url)],["googleCloudImg.png",new URL("./files/3cf2d4d48da9fa4ce0bf772acc6e299ce98d49baf95d3b8319947ef65c01c0d57c5950466e30983c8e917773b13842b16c98b8757a52d41a8efe53327545355e",import.meta.url)],["androidImg.png",new URL("./files/38366b46e64ba8f382a18051e899616c8ad2aa5d35e87470e891a6439221e2945b73366237dfc00b26b8d9ef9aa6637b4957a5d2133d32b803f5851ee262bcaf",import.meta.url)],["purchase_data.csv",new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["deck"], _2);
+  main.variable(observer()).define(["welcomeBox"], _3);
+  main.variable(observer()).define(["download"], _4);
+  main.variable(observer()).define(["introParagraph"], _5);
+  main.variable(observer()).define(["toc"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["Plot","data"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["line","areaY","areaX","createDemo","htl"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["dot","link","createDemo","htl"], _14);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["barY","barX","rectY","rectX","createDemo","htl"], _16);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["tickX","tickY","ruleX","ruleY","createDemo","htl"], _18);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["cell","text","createDemo","htl"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["createDemo","image"], _22);
+  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["createDemo","arrow"], _24);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["createDemo","vector"], _26);
+  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["dataDescription"], _28);
+  main.variable(observer()).define(["Inputs","data"], _29);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["md"], _32);
+  main.variable(observer("ss")).define("ss", ["require"], _ss);
+  const child1 = runtime.module(define1).derive(["data","evalCodeStr"], main);
+  main.import("createDemo", child1);
+  main.import("intro", child1);
+  main.import("getConfig", child1);
+  main.import("plotWidth", child1);
+  main.import("dataDescription", child1);
+  main.import("download", child1);
+  main.import("welcomeBox", child1);
+  main.import("inputStyles", child1);
+  main.import("allCheatsheets", child1);
+  main.import("deck", child1);
+  const child2 = runtime.module(define2);
+  main.import("toc", child2);
+  main.variable(observer()).define(["md"], _36);
+  main.variable(observer("youtubeImg")).define("youtubeImg", ["FileAttachment"], _youtubeImg);
+  main.variable(observer("googleImg")).define("googleImg", ["FileAttachment"], _googleImg);
+  main.variable(observer("androidImg")).define("androidImg", ["FileAttachment"], _androidImg);
+  main.variable(observer("googleCloudImg")).define("googleCloudImg", ["FileAttachment"], _googleCloudImg);
+  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["md"], _42);
+  main.variable(observer("events")).define("events", ["FileAttachment"], _events);
+  main.variable(observer("data")).define("data", ["aq","events","d3"], _data);
+  main.variable(observer("images")).define("images", ["youtubeImg","googleImg","googleCloudImg","androidImg"], _images);
+  main.variable(observer("imageData")).define("imageData", ["aq","data","images"], _imageData);
+  main.variable(observer("wideData")).define("wideData", ["aq","data"], _wideData);
+  main.variable(observer("diffData")).define("diffData", ["aq","data"], _diffData);
+  main.variable(observer("changeData")).define("changeData", ["diffData","aq","rotateScale"], _changeData);
+  main.variable(observer()).define(["md"], _50);
+  main.variable(observer("evalCodeStr")).define("evalCodeStr", ["changeData","wideData","imageData","data","Plot","width","d3"], _evalCodeStr);
+  main.variable(observer("introParagraph")).define("introParagraph", ["htl"], _introParagraph);
+  main.variable(observer("marksExample")).define("marksExample", ["createDemo","rectY"], _marksExample);
+  main.variable(observer("rotateScale")).define("rotateScale", ["d3","diffData"], _rotateScale);
+  main.variable(observer()).define(["md"], _55);
+  main.variable(observer("line")).define("line", ["curveOptions","plotConfig","legendConfig"], _line);
+  main.variable(observer("arrow")).define("arrow", ["plotConfig","legendConfig"], _arrow);
+  main.variable(observer("areaY")).define("areaY", ["curveOptions","plotConfig"], _areaY);
+  main.variable(observer("areaX")).define("areaX", ["curveOptions","plotWidth"], _areaX);
+  main.variable(observer("dot")).define("dot", ["plotConfig"], _dot);
+  main.variable(observer("link")).define("link", ["regressionLine","plotWidth"], _link);
+  main.variable(observer("barY")).define("barY", ["plotWidth","legendConfig"], _barY);
+  main.variable(observer("barX")).define("barX", ["plotWidth"], _barX);
+  main.variable(observer("rectY")).define("rectY", ["plotWidth"], _rectY);
+  main.variable(observer("rectX")).define("rectX", ["plotWidth"], _rectX);
+  main.variable(observer("cell")).define("cell", ["plotWidth"], _cell);
+  main.variable(observer("tickY")).define("tickY", ["plotWidth"], _tickY);
+  main.variable(observer("tickX")).define("tickX", ["plotWidth"], _tickX);
+  main.variable(observer("text")).define("text", ["plotWidth"], _text);
+  main.variable(observer("ruleY")).define("ruleY", ["plotWidth"], _ruleY);
+  main.variable(observer("ruleX")).define("ruleX", ["plotWidth"], _ruleX);
+  main.variable(observer("image")).define("image", ["plotWidth"], _image);
+  main.variable(observer("vector")).define("vector", ["plotConfig","legendConfig"], _vector);
+  main.variable(observer("regressionLine")).define("regressionLine", ["linearRegression"], _regressionLine);
+  main.variable(observer("linearRegression")).define("linearRegression", ["ss","data"], _linearRegression);
+  main.variable(observer("plotConfig")).define("plotConfig", ["plotWidth"], _plotConfig);
+  main.variable(observer("legendConfig")).define("legendConfig", ["plotWidth"], _legendConfig);
+  main.variable(observer("curveOptions")).define("curveOptions", _curveOptions);
+  main.variable(observer()).define(["md"], _79);
+  main.variable(observer()).define(["inputStyles"], _80);
+  main.variable(observer()).define(["htl"], _81);
   return main;
 }
