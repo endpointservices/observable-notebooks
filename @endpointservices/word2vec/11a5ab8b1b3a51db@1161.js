@@ -1,4 +1,4 @@
-// https://observablehq.com/@observablehq/htl@1160
+// https://observablehq.com/@observablehq/htl@1161
 function _1(md){return(
 md`# Hypertext Literal
 
@@ -98,7 +98,7 @@ html`Look, Ma, ${"<i>automatic escaping</i>"}!`
 )}
 
 function _23(html){return(
-html`<font color=${"red"}>This text has color.</font>`
+html`<font color=${"green"}>This text has color.</font>`
 )}
 
 function _24(md){return(
