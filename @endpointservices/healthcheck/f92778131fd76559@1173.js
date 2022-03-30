@@ -2,9 +2,7 @@
 import define1 from "./9bed702f80a3797e@402.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Composing viewofs with the _view_ literal
 
 Lets make custom UIs on Observable _easy_ by composing views.
@@ -31,15 +29,18 @@ There is a substantial guide to [scaling UI development](https://observablehq.co
 
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`Known Issues:
 - https://observablehq.com/@tomlarkworthy/dynamic-controls-example cannot bind to arrayView (DocumentFragment does not emit events)`
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _3(toc){return(
 toc()
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## Change log
 
 - 2021-03-03 *bindOneWay* has *onlyDefined* option added
@@ -51,17 +52,20 @@ md`## Change log
 - 2021-06-21, added _singleton_, _array_ and _object_ collection support
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`## About
 
 The original need for a UI composition helper was noted by [@mootari](/@mootari) in a [Github issue](https://github.com/observablehq/inputs/issues/73). [@mbostock](/@mbostock) wrote some very nice composition tactics and greatly clarified desired behavior and, finally, I added the template syntax and passthrough API. It took us several months to get to this!
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`#### Demo`
-)});
-  main.variable(observer("viewof composite")).define("viewof composite", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _composite(view,Inputs){return(
 view`<div style="display: flex; justify-content:space-between; ">
 <div style="display: flex-column;">
   <div>${["r1", Inputs.range([0, 10])]}</div>
@@ -76,15 +80,16 @@ view`<div style="display: flex; justify-content:space-between; ">
 <img width="150"src="https://media.giphy.com/media/2vobTwCkFg88ZUnilt/giphy-downsized.gif"></img>
 </div>
 `
-)});
-  main.variable(observer("composite")).define("composite", ["Generators", "viewof composite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`## Back-writable
 
 You can write the values back into the component by setting 'value'. This works for sub-components too, as long as everything is following [reusability guidlines](https://observablehq.com/@tomlarkworthy/ui-linter).
 `
-)});
-  main.variable(observer()).define(["htl","viewof composite","Event"], function(htl,$0,Event){return(
+)}
+
+function _9(htl,$0,Event){return(
 htl.html`<button onclick=${() => {
   $0.value = {
     r1: Math.random() * 10,
@@ -93,45 +98,52 @@ htl.html`<button onclick=${() => {
   };
   $0.dispatchEvent(new Event('input'));
 }}> randomize composite`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`## Singletons
 
   Sometimes you want to just wrap an existing view with some HTML. Use the spread operators for this
 `
-)});
-  main.variable(observer("viewof singleton")).define("viewof singleton", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _singleton(view,Inputs){return(
 view`<div><h4>My control</h4>${['...', Inputs.range()]}`
-)});
-  main.variable(observer("singleton")).define("singleton", ["Generators", "viewof singleton"], (G, _) => G.input(_));
-  main.variable(observer()).define(["singleton"], function(singleton){return(
+)}
+
+function _12(singleton){return(
 singleton
-)});
-  main.variable(observer()).define(["viewof singleton"], function($0){return(
+)}
+
+function _13($0){return(
 $0
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`## Collections -- Arrays
 
   You can bind an array of views to a single parameter with _\[string, ArrayOfViews]_. 
 
 If you supply a third argument, a build function of _data => view_ the list can be dynamically resized  _\[label, ArrayOfViews, (data) => view]_
 `
-)});
-  main.variable(observer("viewof arrayCollection")).define("viewof arrayCollection", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _arrayCollection(view,Inputs){return(
 view`<div>${[
   "elements",
   Array.from({ length: 5 }, () => Inputs.range())
 ]}`
-)});
-  main.variable(observer("arrayCollection")).define("arrayCollection", ["Generators", "viewof arrayCollection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof arrayCollection"], function($0){return(
+)}
+
+function _16($0){return(
 $0.elements
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`Array bindings are mutable, you can write DOM components to the viewof layer`
-)});
-  main.variable(observer()).define(["Inputs","viewof arrayCollection","Event"], function(Inputs,$0,Event){return(
+)}
+
+function _18(Inputs,$0,Event){return(
 Inputs.button("Add a slider", {
   reduce: () => {
     debugger;
@@ -143,28 +155,32 @@ Inputs.button("Add a slider", {
     $0.dispatchEvent(new Event("input"));
   }
 })
-)});
-  main.variable(observer()).define(["arrayCollection"], function(arrayCollection){return(
+)}
+
+function _19(arrayCollection){return(
 arrayCollection.elements
-)});
-  main.variable(observer()).define(["arrayCollection"], function(arrayCollection){return(
+)}
+
+function _20(arrayCollection){return(
 arrayCollection
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md`### Dynamic Arrays
 
 If you provide a rowBuilder function as the third argument the view will build new UI elements in response to reassignments at the data layer. It's decribed in detail in [@tomlarkworthy/ui-development#dynamic_lists](https://observablehq.com/@tomlarkworthy/ui-development#dynamic_lists)
 `
-)});
-  main.variable(observer("viewof dynamicArrayCollection")).define("viewof dynamicArrayCollection", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _dynamicArrayCollection(view,Inputs){return(
 view`<div>${[
   'elements',
   [],
   val => Inputs.range([0, 1], { value: val }) // rowBuilder
 ]}`
-)});
-  main.variable(observer("dynamicArrayCollection")).define("dynamicArrayCollection", ["Generators", "viewof dynamicArrayCollection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","dynamicArrayCollection","viewof dynamicArrayCollection","Event"], function(Inputs,dynamicArrayCollection,$0,Event){return(
+)}
+
+function _23(Inputs,dynamicArrayCollection,$0,Event){return(
 Inputs.button("Add a slider", {
   reduce: () => {
     dynamicArrayCollection.elements.push(Math.random());
@@ -172,8 +188,9 @@ Inputs.button("Add a slider", {
     $0.elements.dispatchEvent(new Event("input"));
   }
 })
-)});
-  main.variable(observer()).define(["Inputs","dynamicArrayCollection","viewof dynamicArrayCollection","Event"], function(Inputs,dynamicArrayCollection,$0,Event){return(
+)}
+
+function _24(Inputs,dynamicArrayCollection,$0,Event){return(
 Inputs.button("Remove a slider", {
   reduce: () => {
     dynamicArrayCollection.elements.pop();
@@ -181,15 +198,17 @@ Inputs.button("Remove a slider", {
     $0.elements.dispatchEvent(new Event("input"));
   }
 })
-)});
-  main.variable(observer("objects")).define("objects", ["md"], function(md){return(
+)}
+
+function _objects(md){return(
 md`## Collections -- Objects
 
   You can bind an object of [string, view] to many parameters with the special spread key '_..._'
 
 `
-)});
-  main.variable(observer("viewof objectCollection")).define("viewof objectCollection", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _objectCollection(view,Inputs){return(
 view`${[
   '...',
   {
@@ -197,32 +216,36 @@ view`${[
     text: Inputs.text()
   }
 ]}`
-)});
-  main.variable(observer("objectCollection")).define("objectCollection", ["Generators", "viewof objectCollection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["objectCollection"], function(objectCollection){return(
+)}
+
+function _27(objectCollection){return(
 objectCollection
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _28(md){return(
 md`### Dynamic Objects
 
 If you supply a view builder, _(data) => view_ as the third argument, you can dynamically add and remove entries to your view by assigning the a whole new object.
 `
-)});
-  main.variable(observer("viewof dynamicObjectCollection")).define("viewof dynamicObjectCollection", ["view","Inputs"], function(view,Inputs){return(
+)}
+
+function _dynamicObjectCollection(view,Inputs){return(
 view`<div>${[
   '...',
   {},
   txt => Inputs.text({ value: txt })
 ]}`
-)});
-  main.variable(observer("dynamicObjectCollection")).define("dynamicObjectCollection", ["Generators", "viewof dynamicObjectCollection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicObjectCollection"], function(dynamicObjectCollection){return(
+)}
+
+function _30(dynamicObjectCollection){return(
 dynamicObjectCollection
-)});
-  main.variable(observer()).define(["viewof dynamicObjectCollection"], function($0){return(
+)}
+
+function _31($0){return(
 $0
-)});
-  main.variable(observer()).define(["Inputs","viewof dynamicObjectCollection","Event"], function(Inputs,$0,Event){return(
+)}
+
+function _32(Inputs,$0,Event){return(
 Inputs.button("Pick one of three keys and randomize their value", {
   reduce: () => {
     const key = "k" + Math.floor(Math.random() * 3);
@@ -233,8 +256,9 @@ Inputs.button("Pick one of three keys and randomize their value", {
     $0.dispatchEvent(new Event('input', {bubbles: true}))
   }
 })
-)});
-  main.variable(observer()).define(["Inputs","viewof dynamicObjectCollection","Event"], function(Inputs,$0,Event){return(
+)}
+
+function _33(Inputs,$0,Event){return(
 Inputs.button("Delete a random key", {
   reduce: () => {
     const copy = { ...$0.value };
@@ -246,35 +270,40 @@ Inputs.button("Delete a random key", {
     );
   }
 })
-)});
-  main.variable(observer()).define(["viewof dynamicObjectCollection"], function($0){return(
+)}
+
+function _34($0){return(
 $0.value
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _35(md){return(
 md`## Hidden views
 
   If you wish to bind a value to the view but not add it to the DOM, prefix the label with "_". This can be useful for bringing another view's value into the model without pruning its currently location.
 
 known issues: does not work well with singletons.|
 `
-)});
-  main.variable(observer("viewof hiddenView")).define("viewof hiddenView", ["view","viewof singleton"], function(view,$0){return(
+)}
+
+function _hiddenView(view,$0){return(
 view`<div><h4>My hidden control</h4>${[
   '_hidden',
   $0
 ]}`
-)});
-  main.variable(observer("hiddenView")).define("hiddenView", ["Generators", "viewof hiddenView"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof hiddenView","Event"], function($0,Event)
+)}
+
+function _37($0,Event)
 {
   $0.hidden.value = 0.60;
   $0.hidden.dispatchEvent(new Event("input", { bubble: true }));
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _38(md){return(
 md`## Extras`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _39(md){return(
 md`### Cautious Wrapper
 
 You might not want changes to propagate immediately. For this usecase wrap with _cautious_.
@@ -283,8 +312,9 @@ You might not want changes to propagate immediately. For this usecase wrap with 
 
 By default it wraps the inner node with a SPAN. This is usually the safest thing to do but not always, you can turn off this behaviour with the option _nospan: false_. Note: this will use the topmost node to hold the value.
 `
-)});
-  main.variable(observer("cautious")).define("cautious", ["DOM","html"], function(DOM,html){return(
+)}
+
+function _cautious(DOM,html){return(
 function cautious(
   /* (apply, reset) => view */ viewBuilder,
   { nospan = false } = {}
@@ -332,14 +362,17 @@ function cautious(
     })
   );
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _41(md){return(
 md`#### Cautious demo`
-)});
-  main.variable(observer()).define(["cautiousNestedDemo"], function(cautiousNestedDemo){return(
+)}
+
+function _42(cautiousNestedDemo){return(
 cautiousNestedDemo
-)});
-  main.variable(observer("viewof cautiousNestedDemo")).define("viewof cautiousNestedDemo", ["view","cautious","Inputs"], function(view,cautious,Inputs){return(
+)}
+
+function _cautiousNestedDemo(view,cautious,Inputs){return(
 view`
   ${[
     "c1",
@@ -365,9 +398,9 @@ view`
   ]}
 
 `
-)});
-  main.variable(observer("cautiousNestedDemo")).define("cautiousNestedDemo", ["Generators", "viewof cautiousNestedDemo"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _44(md){return(
 md`### bindOneWay
 
 As views become composite heirarchies, its useful to transform their values as you connect their parts unidirectionally.
@@ -379,12 +412,13 @@ Transform allows you to alter the data as it passed between from source to targe
 The signature follows Observables precedence (https://github.com/observablehq/inputs#bind)
 
 `
-)});
-  main.variable(observer("viewof slider")).define("viewof slider", ["Inputs"], function(Inputs){return(
+)}
+
+function _slider(Inputs){return(
 Inputs.range([0, 10], { value: 0, label: "Try increasing me" })
-)});
-  main.variable(observer("slider")).define("slider", ["Generators", "viewof slider"], (G, _) => G.input(_));
-  main.variable(observer("viewof levels")).define("viewof levels", ["bindOneWay","Inputs","viewof slider"], function(bindOneWay,Inputs,$0){return(
+)}
+
+function _levels(bindOneWay,Inputs,$0){return(
 bindOneWay(
   Inputs.radio(["0", "low", "high"], { disabled: true }),
   $0,
@@ -392,15 +426,15 @@ bindOneWay(
     transform: v => (v === 0 ? "0" : v < 5 ? "low" : "high")
   }
 )
-)});
-  main.variable(observer("levels")).define("levels", ["Generators", "viewof levels"], (G, _) => G.input(_));
-  main.variable(observer("viewof levelsText")).define("viewof levelsText", ["bindOneWay","Inputs","viewof levels"], function(bindOneWay,Inputs,$0){return(
+)}
+
+function _levelsText(bindOneWay,Inputs,$0){return(
 bindOneWay(Inputs.text({ disabled: true }), $0, {
   transform: l => `The level is ${l}`
 })
-)});
-  main.variable(observer("levelsText")).define("levelsText", ["Generators", "viewof levelsText"], (G, _) => G.input(_));
-  main.variable(observer("bindOneWay")).define("bindOneWay", ["MutationObserver","Event"], function(MutationObserver,Event)
+)}
+
+function _bindOneWay(MutationObserver,Event)
 {
   function disposal(element) {
     return new Promise((resolve) => {
@@ -487,8 +521,9 @@ bindOneWay(Inputs.text({ disabled: true }), $0, {
     }
   };
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _49(md){return(
 md`### variable
 
 Variables allow you to add additional degrees of freedom to a component as normal views. They have an contained 'value', and they can be bind to.
@@ -499,8 +534,9 @@ The contract of Observable states changes to a view's value should update visual
 The toString of variable is a coercion of the value, so a variable as a view can be placed in attribute nodes etc.
 
 `
-)});
-  main.variable(observer("variable")).define("variable", function(){return(
+)}
+
+function _variable(){return(
 function variable(value, { name = "variable" } = {}) {
   const self = document.createComment(name);
   return Object.defineProperties(self, {
@@ -517,14 +553,17 @@ function variable(value, { name = "variable" } = {}) {
     }
   });
 }
-)});
-  main.variable(observer("exmple_variable")).define("exmple_variable", ["variable"], function(variable){return(
+)}
+
+function _exmple_variable(variable){return(
 variable(5)
-)});
-  main.variable(observer()).define(["exmple_variable"], function(exmple_variable){return(
+)}
+
+function _52(exmple_variable){return(
 exmple_variable.value = 44
-)});
-  main.variable(observer()).define(["exmple_variable"], function*(exmple_variable)
+)}
+
+function* _53(exmple_variable)
 {
   let resolve = null;
   exmple_variable.addEventListener('assign', evt => resolve(evt.detail));
@@ -532,24 +571,28 @@ exmple_variable.value = 44
     yield new Promise(r => (resolve = r));
   }
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _54(md){return(
 md`## Code
 
 Most of the work is done by _htl_, we are simply adding a new _[key, HTML]_ case
 `
-)});
-  main.variable(observer("view")).define("view", ["wrap","htl"], function(wrap,htl){return(
+)}
+
+function _view(wrap,htl){return(
 function view(strings, ...exprs) {
   return wrap(htl.html, strings, ...exprs);
 }
-)});
-  main.variable(observer("viewSvg")).define("viewSvg", ["wrap","htl"], function(wrap,htl){return(
+)}
+
+function _viewSvg(wrap,htl){return(
 function viewSvg(strings, ...exprs) {
   return wrap(htl.svg, strings, ...exprs);
 }
-)});
-  main.variable(observer("wrap")).define("wrap", ["EventTarget","arrayView","Node"], function(EventTarget,arrayView,Node){return(
+)}
+
+function _wrap(EventTarget,arrayView,Node){return(
 function wrap(fn, strings, ...exprs) {
   let singleton = undefined;
   let start = undefined; // To know where to start dynamic objects
@@ -775,8 +818,9 @@ function wrap(fn, strings, ...exprs) {
     )
   });
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _58(md){return(
 md`### arrayView
 
 arrayView is a DocumentFragment whose nodes are subviews organised in an array. It is initialized with a *builder* of which is a function from data to a subview. E.g. \`(str) => Inputs.text({value: str})\`, and it can be initialised with a set of views.
@@ -791,8 +835,9 @@ So assigning a new data array *e.g.* \`view.value = [...]\`, will replace the wh
 todo
 - Its pretty confusing viewof array.splice does not work now
 </mark>`
-)});
-  main.variable(observer("arrayView")).define("arrayView", ["DOM","DocumentFragment","HTMLElement","htl","_"], function(DOM,DocumentFragment,HTMLElement,htl,_){return(
+)}
+
+function _arrayView(DOM,DocumentFragment,HTMLElement,htl,_){return(
 function arrayView({
   name = "arrayNode" + DOM.uid().id,
   value = [],
@@ -996,11 +1041,13 @@ function arrayView({
     }, {})
   });
 }
-)});
-  main.variable(observer()).define(["md","numbers"], function(md,numbers){return(
+)}
+
+function _60(md,numbers){return(
 md`length: ${numbers.length} with elements: ${numbers.join(", ")}`
-)});
-  main.variable(observer()).define(["htl","Inputs","viewof numbers","Event","numbers"], function(htl,Inputs,$0,Event,numbers){return(
+)}
+
+function _61(htl,Inputs,$0,Event,numbers){return(
 htl.html`<div style="display: flex;">
 ${Inputs.button("reset", {
   reduce: () => {
@@ -1049,8 +1096,9 @@ ${Inputs.button("shift", {
   }
 })}
 `
-)});
-  main.variable(observer("viewof numbers")).define("viewof numbers", ["view","arrayView","Inputs"], function(view,arrayView,Inputs){return(
+)}
+
+function _numbers(view,arrayView,Inputs){return(
 view`<table>
   ${[
     "...",
@@ -1061,24 +1109,25 @@ view`<table>
     })
   ]}
 </table>`
-)});
-  main.variable(observer("numbers")).define("numbers", ["Generators", "viewof numbers"], (G, _) => G.input(_));
-  main.variable(observer("viewof arrayViewTests")).define("viewof arrayViewTests", ["testing"], function(testing){return(
+)}
+
+function _arrayViewTests(testing){return(
 testing.createSuite({
   name: "arrayView Tests",
   timeout_ms: 1000
 })
-)});
-  main.variable(observer("arrayViewTests")).define("arrayViewTests", ["Generators", "viewof arrayViewTests"], (G, _) => G.input(_));
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","view","Event"], function(arrayViewTests,arrayView,Inputs,view,Event){return(
+)}
+
+function _64(arrayViewTests,arrayView,Inputs,view,Event){return(
 arrayViewTests.test("arrayView dispatchEvent bubbles to container", (done) => {
   const av = arrayView({ builder: (v) => Inputs.input(v) });
   const container = view`<div>${av}`;
   container.addEventListener("input", () => done());
   av.dispatchEvent(new Event("input", { bubbles: true }));
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","Event"], function(arrayViewTests,arrayView,Inputs,Event){return(
+)}
+
+function _65(arrayViewTests,arrayView,Inputs,Event){return(
 arrayViewTests.test("arrayView subview events bubble to arrayView", (done) => {
   const av = arrayView({
     value: [1],
@@ -1087,8 +1136,9 @@ arrayViewTests.test("arrayView subview events bubble to arrayView", (done) => {
   av.addEventListener("input", () => done());
   av[0].dispatchEvent(new Event("input", { bubbles: true }));
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _66(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView initialization (data + builder)", () => {
   const av = arrayView({
     value: [1],
@@ -1097,15 +1147,17 @@ arrayViewTests.test("arrayView initialization (data + builder)", () => {
   expect(av[0].value).toBe("foo");
   expect(av.value[0]).toBe("foo");
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _67(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView initialization (initial)", () => {
   const av = arrayView({ initial: [Inputs.input("foo")] });
   expect(av[0].value).toBe("foo");
   expect(av.value[0]).toBe("foo");
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _68(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView write element", () => {
   const av = arrayView({
     initial: [Inputs.input("foo")],
@@ -1119,8 +1171,9 @@ arrayViewTests.test("arrayView write element", () => {
   expect(av[0].value).toBe("bar");
   expect(av.value[0]).toBe("bar");
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _69(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView splice (delete)", () => {
   const av = arrayView({ initial: [Inputs.input("foo")] });
   expect(av[0].value).toBe("foo");
@@ -1135,8 +1188,9 @@ arrayViewTests.test("arrayView splice (delete)", () => {
   expect(av.value.length).toBe(0);
   expect(av.length).toBe(0);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _70(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView splice out of bounds (delete)", () => {
   const av = arrayView({ initial: [Inputs.input("foo")] });
   expect(av[0].value).toBe("foo");
@@ -1151,54 +1205,62 @@ arrayViewTests.test("arrayView splice out of bounds (delete)", () => {
   expect(av.length).toBe(1);
   expect(av.value.length).toBe(1);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _71(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView splice (add)", () => {
   const av = arrayView({ builder: (v) => Inputs.input(v) });
   av.value.splice(0, 0, 1);
   expect(av[0].value).toBe(1);
   expect(av.value[0]).toBe(1);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _72(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView unshift", () => {
   const av = arrayView({ builder: (v) => Inputs.input(v) });
   av.value.unshift(1);
   expect(av[0].value).toBe(1);
   expect(av.value[0]).toBe(1);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _73(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView shift", () => {
   const av = arrayView({ value: [1], builder: (v) => Inputs.input(v) });
   av.value.shift(1);
   expect(av[0]).toBe(undefined);
   expect(av.value[0]).toBe(undefined);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _74(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView pop", () => {
   const av = arrayView({ value: [1], builder: (v) => Inputs.input(v) });
   av.value.pop();
   expect(av[0]).toBe(undefined);
   expect(av.value[0]).toBe(undefined);
 })
-)});
-  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], function(arrayViewTests,arrayView,Inputs,expect){return(
+)}
+
+function _75(arrayViewTests,arrayView,Inputs,expect){return(
 arrayViewTests.test("arrayView push", () => {
   const av = arrayView({ builder: (v) => Inputs.input(v) });
   av.value.push(1);
   expect(av[0].value).toBe(1);
   expect(av.value[0]).toBe(1);
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _76(md){return(
 md`## [Optional] Tests`
-)});
-  main.variable(observer("RUN_TESTS")).define("RUN_TESTS", function(){return(
+)}
+
+function _RUN_TESTS(){return(
 true
-)});
-  main.variable(observer("testing")).define("testing", ["RUN_TESTS","invalidation"], async function(RUN_TESTS,invalidation)
+)}
+
+async function _testing(RUN_TESTS,invalidation)
 {
   if (!RUN_TESTS) return invalidation;
   const [{ Runtime }, { default: define }] = await Promise.all([
@@ -1214,32 +1276,36 @@ true
     )
   );
 }
-);
-  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], function(testing){return(
+
+
+function _suite(testing){return(
 testing.createSuite({
   name: "Unit Tests",
   timeout_ms: 1000
 })
-)});
-  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer("expect")).define("expect", ["testing"], function(testing){return(
+)}
+
+function _expect(testing){return(
 testing.expect
-)});
-  main.variable(observer()).define(["suite","view","variable","expect"], function(suite,view,variable,expect){return(
+)}
+
+function _81(suite,view,variable,expect){return(
 suite.test("Singleton spread reads from delagate", async () => {
   const v = view`<div>${["...", variable(1)]}`;
   expect(v.value).toEqual(1);
 })
-)});
-  main.variable(observer()).define(["suite","variable","view","expect"], function(suite,variable,view,expect){return(
+)}
+
+function _82(suite,variable,view,expect){return(
 suite.test("Singleton spread write propagates", async () => {
   const delegate = variable();
   const v = view`<div>${["...", delegate]}`;
   v.value = 4;
   expect(delegate.value).toEqual(4);
 })
-)});
-  main.variable(observer()).define(["suite","variable","view","Event"], function(suite,variable,view,Event){return(
+)}
+
+function _83(suite,variable,view,Event){return(
 suite.test(
   "Singleton events propagate from container to inner singleton",
   async (done) => {
@@ -1251,16 +1317,18 @@ suite.test(
     v.dispatchEvent(new Event("input"));
   }
 )
-)});
-  main.variable(observer()).define(["suite","variable","view","expect"], function(suite,variable,view,expect){return(
+)}
+
+function _84(suite,variable,view,expect){return(
 suite.test("Hidden write propagates upstream", async () => {
   const delegate = variable();
   const v = view`<div>${["_hidden", delegate]}`;
   v.hidden.value = 4;
   expect(delegate.value).toEqual(4);
 })
-)});
-  main.variable(observer()).define(["suite","variable","view","Event"], function(suite,variable,view,Event){return(
+)}
+
+function _85(suite,variable,view,Event){return(
 suite.test("Hidden events propogate to self", async (done) => {
   const delegate = variable();
   const v = view`<div>${["_hidden", delegate]}`;
@@ -1269,8 +1337,9 @@ suite.test("Hidden events propogate to self", async (done) => {
   });
   delegate.dispatchEvent(new Event("input"));
 })
-)});
-  main.variable(observer()).define(["suite","variable","view","Event"], function(suite,variable,view,Event){return(
+)}
+
+function _86(suite,variable,view,Event){return(
 suite.test(
   "Hidden object collection member events propogate to self",
   async (done) => {
@@ -1282,8 +1351,9 @@ suite.test(
     delegate.dispatchEvent(new Event("input"));
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","html","expect"], function(suite,view,html,expect){return(
+)}
+
+function _87(suite,view,html,expect){return(
 suite.test("Nested write on arrayView replaces presentation", async () => {
   const v = view`<div>${["array", [html`<input id=nwoa1 value="foo">`]]}`;
   expect(v.querySelector("#nwoa1")).not.toBe(null);
@@ -1295,8 +1365,9 @@ suite.test("Nested write on arrayView replaces presentation", async () => {
   expect(v.querySelector("#nwoa2")).not.toBe(null);
   expect(v.array.value).toEqual(["fum"]);
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _88(suite,view,Inputs,expect){return(
 suite.test(
   "Composite write spreads to array subproperty (deletion)",
   async () => {
@@ -1306,8 +1377,9 @@ suite.test(
     expect(v.value.array).toEqual([]);
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _89(suite,view,Inputs,expect){return(
 suite.test(
   "Composite write spreads to array subproperty (addition) (via destructuring assignment)",
   async () => {
@@ -1318,8 +1390,9 @@ suite.test(
     expect(v.array).toContainEqual(Inputs.input(2));
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _90(suite,view,Inputs,expect){return(
 suite.test(
   "Composite write spreads to array subproperty (addition) (via view.value assignment)",
   async () => {
@@ -1330,8 +1403,9 @@ suite.test(
     expect(v.array).toContainEqual(Inputs.input(2));
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _91(suite,view,Inputs,expect){return(
 suite.test(
   "Composite write spreads to array subproperty (addition) (via data assignment)",
   async () => {
@@ -1342,16 +1416,18 @@ suite.test(
     expect(v.array).toContainEqual(Inputs.input(2));
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _92(suite,view,Inputs,expect){return(
 suite.test("Array get", async () => {
   const v = view`<div>${["array", [Inputs.input(1)]]}`;
   expect(v.value.array).toEqual([1]);
   expect(v.array[0]).toEqual(Inputs.input(1));
   expect([...v.array]).toEqual([Inputs.input(1)]);
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _93(suite,view,Inputs,expect){return(
 suite.test("Array write with builder creates new elements", async () => {
   const v = view`<div>${["array", [Inputs.input()], (v) => Inputs.input(v)]}`;
   v.value.array = [1, 2];
@@ -1359,23 +1435,26 @@ suite.test("Array write with builder creates new elements", async () => {
   expect(v.array).toContainEqual(Inputs.input(1));
   expect(v.array).toContainEqual(Inputs.input(2));
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _94(suite,view,Inputs,expect){return(
 suite.test("Array write remove elements", async () => {
   const v = view`<div>${["array", [Inputs.input(0), Inputs.input(2)]]}`;
   v.value.array = [1];
   expect(v.value.array).toEqual([1]);
   expect(v.array).toContainEqual(Inputs.input(1));
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _95(suite,view,Inputs,expect){return(
 suite.test("Array in-place splice support (delete), no builder", async () => {
   const v = view`<div>${["array", [Inputs.input(0), Inputs.input(2)]]}`;
   v.value.array.splice(0, 1);
   expect(v.value.array).toEqual([2]);
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _96(suite,view,Inputs,expect){return(
 suite.test("Array in-place splice support (delete), with builder", async () => {
   const v = view`<div>${[
     "array",
@@ -1385,8 +1464,9 @@ suite.test("Array in-place splice support (delete), with builder", async () => {
   v.value.array.splice(0, 1);
   expect(v.value.array).toEqual([2]);
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _97(suite,view,Inputs,expect){return(
 suite.test(
   "Array in-place splice support (addition) with builder",
   async () => {
@@ -1400,24 +1480,27 @@ suite.test(
     expect([...v.array]).toEqual([Inputs.input(0), Inputs.input(1)]);
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _98(suite,view,Inputs,expect){return(
 suite.test("Dynamic Object value property assignment", async () => {
   const v = view`<div>${["field", Inputs.input()]}`;
   v.value = { field: 1 };
   expect(v.field.value).toEqual(1);
   expect(v.value.field).toEqual(1);
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _99(suite,view,Inputs,expect){return(
 suite.test("Dynamic Object view property assignment", async () => {
   const v = view`<div>${["field", Inputs.input()]}`;
   v.field = Inputs.input("2");
   expect(v.field.value).toEqual("2");
   expect(v.value.field).toEqual("2");
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _100(suite,view,Inputs,expect){return(
 suite.test(
   "Dynamic Object write with builder creates new elements",
   async () => {
@@ -1427,8 +1510,9 @@ suite.test(
     expect(v.a).toHaveProperty("name"); // It's a DOM node
   }
 )
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _101(suite,view,Inputs,expect){return(
 suite.test("Dynamic Object write deletes old elements", async () => {
   const v = view`<div>${["...", { a: Inputs.text() }]}`;
   expect(v.value).toEqual({ a: "" });
@@ -1437,8 +1521,9 @@ suite.test("Dynamic Object write deletes old elements", async () => {
   expect(v.value).toEqual({});
   expect(v.a).toBeUndefined();
 })
-)});
-  main.variable(observer()).define(["suite","view","Inputs","expect"], function(suite,view,Inputs,expect){return(
+)}
+
+function _102(suite,view,Inputs,expect){return(
 suite.test("Collection object creates matching keys", async () => {
   const v = view`<div>${[
     "...",
@@ -1448,13 +1533,134 @@ suite.test("Collection object creates matching keys", async () => {
   ]}`;
   expect(v.value).toHaveProperty("a");
 })
-)});
+)}
+
+function _105(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["toc"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("viewof composite")).define("viewof composite", ["view","Inputs"], _composite);
+  main.variable(observer("composite")).define("composite", ["Generators", "viewof composite"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["htl","viewof composite","Event"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("viewof singleton")).define("viewof singleton", ["view","Inputs"], _singleton);
+  main.variable(observer("singleton")).define("singleton", ["Generators", "viewof singleton"], (G, _) => G.input(_));
+  main.variable(observer()).define(["singleton"], _12);
+  main.variable(observer()).define(["viewof singleton"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("viewof arrayCollection")).define("viewof arrayCollection", ["view","Inputs"], _arrayCollection);
+  main.variable(observer("arrayCollection")).define("arrayCollection", ["Generators", "viewof arrayCollection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["viewof arrayCollection"], _16);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["Inputs","viewof arrayCollection","Event"], _18);
+  main.variable(observer()).define(["arrayCollection"], _19);
+  main.variable(observer()).define(["arrayCollection"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer("viewof dynamicArrayCollection")).define("viewof dynamicArrayCollection", ["view","Inputs"], _dynamicArrayCollection);
+  main.variable(observer("dynamicArrayCollection")).define("dynamicArrayCollection", ["Generators", "viewof dynamicArrayCollection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","dynamicArrayCollection","viewof dynamicArrayCollection","Event"], _23);
+  main.variable(observer()).define(["Inputs","dynamicArrayCollection","viewof dynamicArrayCollection","Event"], _24);
+  main.variable(observer("objects")).define("objects", ["md"], _objects);
+  main.variable(observer("viewof objectCollection")).define("viewof objectCollection", ["view","Inputs"], _objectCollection);
+  main.variable(observer("objectCollection")).define("objectCollection", ["Generators", "viewof objectCollection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["objectCollection"], _27);
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer("viewof dynamicObjectCollection")).define("viewof dynamicObjectCollection", ["view","Inputs"], _dynamicObjectCollection);
+  main.variable(observer("dynamicObjectCollection")).define("dynamicObjectCollection", ["Generators", "viewof dynamicObjectCollection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dynamicObjectCollection"], _30);
+  main.variable(observer()).define(["viewof dynamicObjectCollection"], _31);
+  main.variable(observer()).define(["Inputs","viewof dynamicObjectCollection","Event"], _32);
+  main.variable(observer()).define(["Inputs","viewof dynamicObjectCollection","Event"], _33);
+  main.variable(observer()).define(["viewof dynamicObjectCollection"], _34);
+  main.variable(observer()).define(["md"], _35);
+  main.variable(observer("viewof hiddenView")).define("viewof hiddenView", ["view","viewof singleton"], _hiddenView);
+  main.variable(observer("hiddenView")).define("hiddenView", ["Generators", "viewof hiddenView"], (G, _) => G.input(_));
+  main.variable(observer()).define(["viewof hiddenView","Event"], _37);
+  main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["md"], _39);
+  main.variable(observer("cautious")).define("cautious", ["DOM","html"], _cautious);
+  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["cautiousNestedDemo"], _42);
+  main.variable(observer("viewof cautiousNestedDemo")).define("viewof cautiousNestedDemo", ["view","cautious","Inputs"], _cautiousNestedDemo);
+  main.variable(observer("cautiousNestedDemo")).define("cautiousNestedDemo", ["Generators", "viewof cautiousNestedDemo"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _44);
+  main.variable(observer("viewof slider")).define("viewof slider", ["Inputs"], _slider);
+  main.variable(observer("slider")).define("slider", ["Generators", "viewof slider"], (G, _) => G.input(_));
+  main.variable(observer("viewof levels")).define("viewof levels", ["bindOneWay","Inputs","viewof slider"], _levels);
+  main.variable(observer("levels")).define("levels", ["Generators", "viewof levels"], (G, _) => G.input(_));
+  main.variable(observer("viewof levelsText")).define("viewof levelsText", ["bindOneWay","Inputs","viewof levels"], _levelsText);
+  main.variable(observer("levelsText")).define("levelsText", ["Generators", "viewof levelsText"], (G, _) => G.input(_));
+  main.variable(observer("bindOneWay")).define("bindOneWay", ["MutationObserver","Event"], _bindOneWay);
+  main.variable(observer()).define(["md"], _49);
+  main.variable(observer("variable")).define("variable", _variable);
+  main.variable(observer("exmple_variable")).define("exmple_variable", ["variable"], _exmple_variable);
+  main.variable(observer()).define(["exmple_variable"], _52);
+  main.variable(observer()).define(["exmple_variable"], _53);
+  main.variable(observer()).define(["md"], _54);
+  main.variable(observer("view")).define("view", ["wrap","htl"], _view);
+  main.variable(observer("viewSvg")).define("viewSvg", ["wrap","htl"], _viewSvg);
+  main.variable(observer("wrap")).define("wrap", ["EventTarget","arrayView","Node"], _wrap);
+  main.variable(observer()).define(["md"], _58);
+  main.variable(observer("arrayView")).define("arrayView", ["DOM","DocumentFragment","HTMLElement","htl","_"], _arrayView);
+  main.variable(observer()).define(["md","numbers"], _60);
+  main.variable(observer()).define(["htl","Inputs","viewof numbers","Event","numbers"], _61);
+  main.variable(observer("viewof numbers")).define("viewof numbers", ["view","arrayView","Inputs"], _numbers);
+  main.variable(observer("numbers")).define("numbers", ["Generators", "viewof numbers"], (G, _) => G.input(_));
+  main.variable(observer("viewof arrayViewTests")).define("viewof arrayViewTests", ["testing"], _arrayViewTests);
+  main.variable(observer("arrayViewTests")).define("arrayViewTests", ["Generators", "viewof arrayViewTests"], (G, _) => G.input(_));
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","view","Event"], _64);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","Event"], _65);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _66);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _67);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _68);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _69);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _70);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _71);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _72);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _73);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _74);
+  main.variable(observer()).define(["arrayViewTests","arrayView","Inputs","expect"], _75);
+  main.variable(observer()).define(["md"], _76);
+  main.variable(observer("RUN_TESTS")).define("RUN_TESTS", _RUN_TESTS);
+  main.variable(observer("testing")).define("testing", ["RUN_TESTS","invalidation"], _testing);
+  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
+  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer()).define(["suite","view","variable","expect"], _81);
+  main.variable(observer()).define(["suite","variable","view","expect"], _82);
+  main.variable(observer()).define(["suite","variable","view","Event"], _83);
+  main.variable(observer()).define(["suite","variable","view","expect"], _84);
+  main.variable(observer()).define(["suite","variable","view","Event"], _85);
+  main.variable(observer()).define(["suite","variable","view","Event"], _86);
+  main.variable(observer()).define(["suite","view","html","expect"], _87);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _88);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _89);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _90);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _91);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _92);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _93);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _94);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _95);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _96);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _97);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _98);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _99);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _100);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _101);
+  main.variable(observer()).define(["suite","view","Inputs","expect"], _102);
   const child1 = runtime.module(define1);
   main.import("toc", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _105);
   return main;
 }

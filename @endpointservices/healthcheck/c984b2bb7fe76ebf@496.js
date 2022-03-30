@@ -3,9 +3,7 @@ import define2 from "./6eda90668ae03044@803.js";
 import define3 from "./293899bef371e135@216.js";
 import define4 from "./048a17a165be198d@263.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Generic Notebook Health Check
 
 This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. You do not need to modify the original notebook in any way! It exposes its functionality as an endpoint, which can be connected to uptime monitors such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/). If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is also used report those errors (Sentry logs include context and source code line numbers).
@@ -15,34 +13,40 @@ To use, first fill in the manual trigger fields to get a feel of the events and 
 Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".
 
 This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.`
-)});
-  main.variable(observer()).define(["settings","md"], function(settings,md){return(
+)}
+
+function _2(settings,md){return(
 md`## Errors of ${settings.target}`
-)});
-  main.variable(observer("viewof errorSelection")).define("viewof errorSelection", ["Inputs","errors"], function(Inputs,errors){return(
+)}
+
+function _errorSelection(Inputs,errors){return(
 Inputs.table(errors)
-)});
-  main.variable(observer("errorSelection")).define("errorSelection", ["Generators", "viewof errorSelection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["errorSelection"], function(errorSelection){return(
+)}
+
+function _4(errorSelection){return(
 errorSelection
-)});
-  main.variable(observer()).define(["settings","md"], function(settings,md){return(
+)}
+
+function _5(settings,md){return(
 md`## Runtime Events of ${settings.target}`
-)});
-  main.variable(observer()).define(["Inputs","events"], function(Inputs,events){return(
+)}
+
+function _6(Inputs,events){return(
 Inputs.table(events, {
   width: {
     status: "10%",
     ts: "15%"
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### Manual Trigger
 
 Test a notebook by entering a text input`
-)});
-  main.variable(observer("viewof manualTarget")).define("viewof manualTarget", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+)}
+
+function _manualTarget(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.text({
     label: "target",
@@ -51,18 +55,18 @@ Inputs.bind(
   }),
   localStorageView("healthcheck_notebook")
 )
-)});
-  main.variable(observer("manualTarget")).define("manualTarget", ["Generators", "viewof manualTarget"], (G, _) => G.input(_));
-  main.variable(observer("viewof manualExcludes")).define("viewof manualExcludes", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+)}
+
+function _manualExcludes(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.text({
     label: "cells to exclude (comma seperated)"
   }),
   localStorageView("healthcheck_excludes")
 )
-)});
-  main.variable(observer("manualExcludes")).define("manualExcludes", ["Generators", "viewof manualExcludes"], (G, _) => G.input(_));
-  main.variable(observer("viewof wait")).define("viewof wait", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+)}
+
+function _wait(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.range([1, 100], {
     step: 1,
@@ -70,16 +74,17 @@ Inputs.bind(
   }),
   localStorageView("healthcheck_wait")
 )
-)});
-  main.variable(observer("wait")).define("wait", ["Generators", "viewof wait"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], function(Inputs,run,$0,$1){return(
+)}
+
+function _11(Inputs,run,$0,$1){return(
 Inputs.button("Go!", {
   reduce: () => {
     run($0.value, $1.value);
   }
 })
-)});
-  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes","wait"], function(URLSearchParams,location,manualTarget,manualExcludes,wait)
+)}
+
+function _permLink(URLSearchParams,location,manualTarget,manualExcludes,wait)
 {
   const params = new URLSearchParams(location.search);
   params.set("target", manualTarget);
@@ -88,14 +93,16 @@ Inputs.button("Go!", {
 
   return `https://webcode.run/observablehq.com/@endpointservices/healthcheck?${params.toString()}`;
 }
-);
-  main.variable(observer()).define(["permLink","copy","htl"], function(permLink,copy,htl){return(
+
+
+function _13(permLink,copy,htl){return(
 htl.html`Your settings as a <a target="_blank"
   href=${permLink}>http endpoint</a>
 
 <button onclick=${() => copy(permLink)}>Copy to clipboard</button>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`### HTTP Trigger
 
 Test a notebook by sending a HTTP request to
@@ -103,8 +110,9 @@ Test a notebook by sending a HTTP request to
 ~~~
 https://webcode.run/observablehq.com/@endpointservices/notebook-availability?notebook=<notebook path>
 ~~~`
-)});
-  main.variable(observer()).define(["endpoint","run","viewof errors","viewof settings"], function(endpoint,run,$0,$1){return(
+)}
+
+function _15(endpoint,run,$0,$1){return(
 endpoint(
   "default", // For a simple URL we use the default name leading to https://webcode.run/observablehq.com/@endpointservices/healthcheck
   async (req, res) => {
@@ -144,11 +152,13 @@ endpoint(
     modifiers: ["orchistrator"] // This endpoint can call other endpoints
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`## Notebook Runner`
-)});
-  main.variable(observer("run")).define("run", ["viewof excludes","Event","viewof errors","viewof events","viewof settings"], function($0,Event,$1,$2,$3){return(
+)}
+
+function _run($0,Event,$1,$2,$3){return(
 (target, excludes) => {
   console.log("Run", target, excludes);
   $0.value = excludes.split(",").map((_) => _.trim());
@@ -160,30 +170,33 @@ md`## Notebook Runner`
   $3.value = { target, excludes: $0.value };
   $3.dispatchEvent(new Event("input", { bubbles: true }));
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _18(md){return(
 md`### Runner state`
-)});
-  main.variable(observer("viewof settings")).define("viewof settings", ["Inputs"], function(Inputs){return(
+)}
+
+function _settings(Inputs){return(
 Inputs.input()
-)});
-  main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
-  main.variable(observer("viewof errors")).define("viewof errors", ["Inputs"], function(Inputs){return(
+)}
+
+function _errors(Inputs){return(
 Inputs.input([])
-)});
-  main.variable(observer("errors")).define("errors", ["Generators", "viewof errors"], (G, _) => G.input(_));
-  main.variable(observer("viewof events")).define("viewof events", ["Inputs"], function(Inputs){return(
+)}
+
+function _events(Inputs){return(
 Inputs.input([])
-)});
-  main.variable(observer("events")).define("events", ["Generators", "viewof events"], (G, _) => G.input(_));
-  main.variable(observer("viewof excludes")).define("viewof excludes", ["Inputs"], function(Inputs){return(
+)}
+
+function _excludes(Inputs){return(
 Inputs.input([])
-)});
-  main.variable(observer("excludes")).define("excludes", ["Generators", "viewof excludes"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _23(md){return(
 md`### Runner Runtime`
-)});
-  main.variable(observer("module")).define("module", ["settings","viewof events","Event","viewof sentry","viewof excludes","viewof errors"], async function(settings,$0,Event,$1,$2,$3)
+)}
+
+async function _module(settings,$0,Event,$1,$2,$3)
 {
   window["@endpointservices/healthcheck"] = true;
   const [{ Runtime }, { default: targetNotebook }] = await Promise.all([
@@ -249,29 +262,33 @@ md`### Runner Runtime`
     };
   });
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _25(md){return(
 md`### Sentry.io integration
 
 Sentry SDK is sniffed from dataflow execution and used report all errors`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _26(md){return(
 md`### Discovered Sentry SDK (or null)`
-)});
-  main.variable(observer("viewof sentry")).define("viewof sentry", ["Inputs"], function(Inputs){return(
+)}
+
+function _sentry(Inputs){return(
 Inputs.input(undefined)
-)});
-  main.variable(observer("sentry")).define("sentry", ["Generators", "viewof sentry"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _28(md){return(
 md`### Report error log
 
 We grow the reportedErrors array to same length as the error array by reporting errors to the SDK.`
-)});
-  main.variable(observer("viewof reportedErrors")).define("viewof reportedErrors", ["Inputs"], function(Inputs){return(
+)}
+
+function _reportedErrors(Inputs){return(
 Inputs.input([])
-)});
-  main.variable(observer("reportedErrors")).define("reportedErrors", ["Generators", "viewof reportedErrors"], (G, _) => G.input(_));
-  main.variable(observer("reportMissingErrors")).define("reportMissingErrors", ["sentry","reportedErrors","errors"], function(sentry,reportedErrors,errors)
+)}
+
+function _reportMissingErrors(sentry,reportedErrors,errors)
 {
   if (sentry) {
     while (reportedErrors.length < errors.length) {
@@ -281,7 +298,54 @@ Inputs.input([])
     }
   }
 }
-);
+
+
+function _35(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["settings","md"], _2);
+  main.variable(observer("viewof errorSelection")).define("viewof errorSelection", ["Inputs","errors"], _errorSelection);
+  main.variable(observer("errorSelection")).define("errorSelection", ["Generators", "viewof errorSelection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["errorSelection"], _4);
+  main.variable(observer()).define(["settings","md"], _5);
+  main.variable(observer()).define(["Inputs","events"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("viewof manualTarget")).define("viewof manualTarget", ["Inputs","localStorageView"], _manualTarget);
+  main.variable(observer("manualTarget")).define("manualTarget", ["Generators", "viewof manualTarget"], (G, _) => G.input(_));
+  main.variable(observer("viewof manualExcludes")).define("viewof manualExcludes", ["Inputs","localStorageView"], _manualExcludes);
+  main.variable(observer("manualExcludes")).define("manualExcludes", ["Generators", "viewof manualExcludes"], (G, _) => G.input(_));
+  main.variable(observer("viewof wait")).define("viewof wait", ["Inputs","localStorageView"], _wait);
+  main.variable(observer("wait")).define("wait", ["Generators", "viewof wait"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], _11);
+  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes","wait"], _permLink);
+  main.variable(observer()).define(["permLink","copy","htl"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["endpoint","run","viewof errors","viewof settings"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("run")).define("run", ["viewof excludes","Event","viewof errors","viewof events","viewof settings"], _run);
+  main.variable(observer()).define(["md"], _18);
+  main.variable(observer("viewof settings")).define("viewof settings", ["Inputs"], _settings);
+  main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
+  main.variable(observer("viewof errors")).define("viewof errors", ["Inputs"], _errors);
+  main.variable(observer("errors")).define("errors", ["Generators", "viewof errors"], (G, _) => G.input(_));
+  main.variable(observer("viewof events")).define("viewof events", ["Inputs"], _events);
+  main.variable(observer("events")).define("events", ["Generators", "viewof events"], (G, _) => G.input(_));
+  main.variable(observer("viewof excludes")).define("viewof excludes", ["Inputs"], _excludes);
+  main.variable(observer("excludes")).define("excludes", ["Generators", "viewof excludes"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _23);
+  main.variable(observer("module")).define("module", ["settings","viewof events","Event","viewof sentry","viewof excludes","viewof errors"], _module);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["md"], _26);
+  main.variable(observer("viewof sentry")).define("viewof sentry", ["Inputs"], _sentry);
+  main.variable(observer("sentry")).define("sentry", ["Generators", "viewof sentry"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer("viewof reportedErrors")).define("viewof reportedErrors", ["Inputs"], _reportedErrors);
+  main.variable(observer("reportedErrors")).define("reportedErrors", ["Generators", "viewof reportedErrors"], (G, _) => G.input(_));
+  main.variable(observer("reportMissingErrors")).define("reportMissingErrors", ["sentry","reportedErrors","errors"], _reportMissingErrors);
   const child1 = runtime.module(define1);
   main.import("copy", child1);
   const child2 = runtime.module(define2);
@@ -290,8 +354,6 @@ Inputs.input([])
   main.import("footer", child3);
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }
