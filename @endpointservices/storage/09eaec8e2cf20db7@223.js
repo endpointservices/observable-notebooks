@@ -1,25 +1,24 @@
 // https://observablehq.com/@endpointservices/logo@223
-import define1 from "./11a5ab8b1b3a51db@1160.js";
+import define1 from "./11a5ab8b1b3a51db@1161.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Endpoint Services Logo
 
 Its gotta be designed here in SVG of course. A unit cube inside a unit circle, colored orthogonally. 
 
 `
-)});
-  main.variable(observer()).define(["logo"], function(logo){return(
+)}
+
+function _2(logo){return(
 logo("80px")
-)});
-  main.variable(observer()).define(["logo"], function(logo){return(
+)}
+
+function _3(logo){return(
 logo("512px")
-)});
-  main.variable(observer("logo")).define("logo", ["svg","range"], function(svg,range){return(
+)}
+
+function _logo(svg,range){return(
 (size) => {
   const face_letter_fill = ['red','green','blue'];
   
@@ -77,22 +76,37 @@ logo("512px")
     />`)}
   </svg>`
 }
-)});
-  const child1 = runtime.module(define1);
-  main.import("html", child1);
-  main.import("svg", child1);
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+)}
+
+async function _6(md,FileAttachment){return(
 md`
 source: http://www.math.brown.edu/tbanchof/Beyond3d/chapter8/section01.html
 ![Cube coordinates](${await FileAttachment("image.png").url()})`
-)});
-  main.variable(observer("range")).define("range", function(){return(
+)}
+
+function _range(){return(
 (n) => Array(n).fill(0).map((_, i) => i)
-)});
+)}
+
+function _9(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["logo"], _2);
+  main.variable(observer()).define(["logo"], _3);
+  main.variable(observer("logo")).define("logo", ["svg","range"], _logo);
+  const child1 = runtime.module(define1);
+  main.import("html", child1);
+  main.import("svg", child1);
+  main.variable(observer()).define(["md","FileAttachment"], _6);
+  main.variable(observer("range")).define("range", _range);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _9);
   return main;
 }

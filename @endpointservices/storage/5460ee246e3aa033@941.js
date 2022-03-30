@@ -1,20 +1,16 @@
 // https://observablehq.com/@endpointservices/storage@941
 import define1 from "./573e072575f28fb9@454.js";
-import define2 from "./11a5ab8b1b3a51db@1160.js";
-import define3 from "./993a0c51ef1175ea@1317.js";
+import define2 from "./11a5ab8b1b3a51db@1161.js";
+import define3 from "./993a0c51ef1175ea@1345.js";
 import define4 from "./52d808b188b8672b@129.js";
-import define5 from "./dff1e917c89f5e76@1709.js";
-import define6 from "./3d9d1394d858ca97@550.js";
+import define5 from "./dff1e917c89f5e76@1711.js";
+import define6 from "./3d9d1394d858ca97@553.js";
 import define7 from "./777fe85658e39c55@470.js";
 import define8 from "./1956899a56408464@459.js";
 import define9 from "./0905542adbad836e@55.js";
 import define10 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["storage.png",new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`![](${await FileAttachment("storage.png").url()})
 
 # Store Files with Storage
@@ -31,66 +27,77 @@ These are real Google Cloud Storage buckets accessed through Firebase Storage (i
 
 Usage is currently capped to 20Mb per bucket, and one bucket per ObservableHQ profile.
 `
-)});
-  main.variable(observer()).define(["html","width"], function(html,width){return(
+)}
+
+function _2(html,width){return(
 html`<iframe width="${width}" height="${width*0.7}" src="https://www.youtube-nocookie.com/embed/hbIbxkacekg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Provision A Storage Bucket`
-)});
-  main.variable(observer()).define(["signature","bucket"], function(signature,bucket){return(
+)}
+
+function _4(signature,bucket){return(
 signature(bucket, {
   description: "Create a Cloud storage bucket that can store files."
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`### Example`
-)});
-  main.variable(observer("viewof myBucket")).define("viewof myBucket", ["bucket"], async function(bucket){return(
+)}
+
+async function _myBucket(bucket){return(
 await bucket({
   name: "mybucket11",
   location: "europe-west4",
   // status: "deleted",
 })
-)});
-  main.variable(observer("myBucket")).define("myBucket", ["Generators", "viewof myBucket"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Create a storage client`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`Every bucket has a unique \`gs://<bucketname>\` identifier. You can use this to initialize a _storageClient_, even in other notebooks... even from other platforms...`
-)});
-  main.variable(observer("storage_link")).define("storage_link", ["myBucket"], function(myBucket){return(
+)}
+
+function _storage_link(myBucket){return(
 myBucket.link
-)});
-  main.variable(observer("storage")).define("storage", ["storageClient"], function(storageClient){return(
+)}
+
+function _storage(storageClient){return(
 storageClient("gs://o_endpointservices_mybucket11")
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`## Get a URL to public object
 
 The default rules allow unauthenticated read access to /public directory and descendents.
 `
-)});
-  main.variable(observer("developerGif")).define("developerGif", ["storage"], function(storage){return(
+)}
+
+function _developerGif(storage){return(
 storage.ref("/public/developers.gif").getDownloadURL()
-)});
-  main.variable(observer()).define(["html","developerGif"], function(html,developerGif){return(
+)}
+
+function _13(html,developerGif){return(
 html`<img src=${developerGif}>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`## Login for priviledged access
 
 We use IndieAuth to login both users and admins in.
 `
-)});
-  main.variable(observer("storageLogin")).define("storageLogin", ["weblogin"], function(weblogin){return(
+)}
+
+function _storageLogin(weblogin){return(
 weblogin
-)});
-  const child1 = runtime.module(define1).derive([{name: "endpointserviceusers", alias: "firebase"}], main);
-  main.import("weblogin", child1);
-  main.import("user", child1);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`## Admins must be linked to ObservableHQ profile URL
 
 Only owners of the observable profile (e.g. @endpointservices) can list and upload files by default. 
@@ -100,60 +107,68 @@ To show ownership, the identity URL (e.g. http://tomlarkworthy.endpointservices.
 The [wizard](https://observablehq.com/@endpointservices/login-wizard) will guide you through the setup. If you are logged in successfull the next line will print your linked Observable username.
 
 `
-)});
-  main.variable(observer("observableProfiles")).define("observableProfiles", ["user","endpointserviceusers"], function(user,endpointserviceusers)
+)}
+
+function _observableProfiles(user,endpointserviceusers)
 { // Its a bit of work but you can find the claims in an accessToken buried in the firebase auth SDK
   user
   return JSON.parse(atob(endpointserviceusers.auth().currentUser.toJSON().stsTokenManager.accessToken.split('.')[1]))['observablehq.com']
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _19(md){return(
 md`## Upload a file
 
 The storage client is a preconfigured Firebase storage client. So you can use its [API documentation](https://firebase.google.com/docs/reference/js/firebase.storage) to find all the ways you can use it.
 
 For a minimal upload we can do it with a simple file input
 `
-)});
-  main.variable(observer()).define(["html","storage"], function(html,storage){return(
+)}
+
+function _20(html,storage){return(
 html`<input type="file" onchange=${(evt)=> {
   const file = evt.target.files[0];
   return storage.ref(`/public/${file.name}`).put(file);
 }}>`
-)});
-  const child2 = runtime.module(define2);
-  main.import("html", child2);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _22(md){return(
 md`## Download file
 
 Once authenticated as the owner you can download files from anywhere
 `
-)});
-  main.variable(observer()).define(["storage"], function(storage){return(
+)}
+
+function _23(storage){return(
 storage.ref("/foo").getDownloadURL()
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _24(md){return(
 md`## List files in directory
 
 Unathenticated users on the default rules are unable to list files, but the bucket owner can.
 `
-)});
-  main.variable(observer()).define(["storage"], async function(storage){return(
+)}
+
+async function _25(storage){return(
 (await storage.ref("/public").listAll()).items.map(item => item.name)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _26(md){return(
 md`## More
 
 This is a thin wrapper over a Firebase storage client. Check it full documentation [here](https://firebase.google.com/docs/storage/web/start).
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _27(md){return(
 md`## Rules
 
 These are the rules we set by default. You can configure others though. See the Firebase [documentation on storage rules](https://firebase.google.com/docs/storage/security).
 `
-)});
-  main.variable(observer("defaultRules")).define("defaultRules", ["subdomain"], function(subdomain){return(
+)}
+
+function _defaultRules(subdomain){return(
 `rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
@@ -166,11 +181,13 @@ service firebase.storage {
   }
 }
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _29(md){return(
 md`## Implementation`
-)});
-  main.variable(observer("bucket")).define("bucket", ["defaultRules","subdomain","resource","bucket_endpoint"], function(defaultRules,subdomain,resource,bucket_endpoint){return(
+)}
+
+function _bucket(defaultRules,subdomain,resource,bucket_endpoint){return(
 async function bucket({
   name = "default",          // Lowercase, digits, '-' and '_' only.
   state = "active",          // or "deleted"      
@@ -193,8 +210,9 @@ async function bucket({
      name: fullname, state, location, link: `gs://${fullname}`, rules: rules, cors
   })
 }
-)});
-  main.variable(observer("bucket_endpoint")).define("bucket_endpoint", ["resource_endpoint","updateBucket"], function(resource_endpoint,updateBucket){return(
+)}
+
+function _bucket_endpoint(resource_endpoint,updateBucket){return(
 resource_endpoint({
   apply: updateBucket,
   name: "bucket",
@@ -203,8 +221,9 @@ resource_endpoint({
   configPath: (subdomain, notebook, config) =>
       `services/storage/subdomains/${subdomain}/buckets/${config.name}`
 })
-)});
-  main.variable(observer("updateBucket")).define("updateBucket", ["createGapi","_","fingerprint"], function(createGapi,_,fingerprint){return(
+)}
+
+function _updateBucket(createGapi,_,fingerprint){return(
 async function updateBucket(current, {
     name,
     location,
@@ -335,33 +354,86 @@ async function updateBucket(current, {
     throw new Error(`Unrecognised state: ${state}`)
   }
 }
-)});
-  main.variable(observer("storageClient")).define("storageClient", ["endpointserviceusers"], function(endpointserviceusers){return(
+)}
+
+function _storageClient(endpointserviceusers){return(
 function storageClient(link) {
   return endpointserviceusers.storage(link)
 }
-)});
-  main.variable(observer("clientconfig")).define("clientconfig", function(){return(
+)}
+
+function _clientconfig(){return(
 {
   apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
   authDomain: "endpointserviceusers.firebaseapp.com",
   projectId: "endpointserviceusers",
   appId: "1:283622646315:web:baa488124636283783006e"
 }
-)});
-  const child3 = runtime.module(define3).derive([{name: "clientconfig", alias: "firebaseConfig"}], main);
-  main.import("firebase", "endpointserviceusers", child3);
-  main.variable(observer("fingerprint")).define("fingerprint", function(){return(
+)}
+
+function _fingerprint(){return(
 async function fingerprint(str) {
   const encoder = new TextEncoder();
   const data = encoder.encode(str);
   const hashBuffer =  await crypto.subtle.digest("SHA-256", data);
   return btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer)));
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _37(md){return(
 md`### Imports`
-)});
+)}
+
+function _45(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["storage.png",new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["html","width"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["signature","bucket"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("viewof myBucket")).define("viewof myBucket", ["bucket"], _myBucket);
+  main.variable(observer("myBucket")).define("myBucket", ["Generators", "viewof myBucket"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer("storage_link")).define("storage_link", ["myBucket"], _storage_link);
+  main.variable(observer("storage")).define("storage", ["storageClient"], _storage);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("developerGif")).define("developerGif", ["storage"], _developerGif);
+  main.variable(observer()).define(["html","developerGif"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("storageLogin")).define("storageLogin", ["weblogin"], _storageLogin);
+  const child1 = runtime.module(define1).derive([{name: "endpointserviceusers", alias: "firebase"}], main);
+  main.import("weblogin", child1);
+  main.import("user", child1);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer("observableProfiles")).define("observableProfiles", ["user","endpointserviceusers"], _observableProfiles);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["html","storage"], _20);
+  const child2 = runtime.module(define2);
+  main.import("html", child2);
+  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["storage"], _23);
+  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["storage"], _25);
+  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _27);
+  main.variable(observer("defaultRules")).define("defaultRules", ["subdomain"], _defaultRules);
+  main.variable(observer()).define(["md"], _29);
+  main.variable(observer("bucket")).define("bucket", ["defaultRules","subdomain","resource","bucket_endpoint"], _bucket);
+  main.variable(observer("bucket_endpoint")).define("bucket_endpoint", ["resource_endpoint","updateBucket"], _bucket_endpoint);
+  main.variable(observer("updateBucket")).define("updateBucket", ["createGapi","_","fingerprint"], _updateBucket);
+  main.variable(observer("storageClient")).define("storageClient", ["endpointserviceusers"], _storageClient);
+  main.variable(observer("clientconfig")).define("clientconfig", _clientconfig);
+  const child3 = runtime.module(define3).derive([{name: "clientconfig", alias: "firebaseConfig"}], main);
+  main.import("firebase", "endpointserviceusers", child3);
+  main.variable(observer("fingerprint")).define("fingerprint", _fingerprint);
+  main.variable(observer()).define(["md"], _37);
   const child4 = runtime.module(define4);
   main.import("firebase", child4);
   main.import("listen", child4);
@@ -382,8 +454,6 @@ md`### Imports`
   main.import("_", child9);
   const child10 = runtime.module(define10);
   main.import("footer", child10);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _45);
   return main;
 }

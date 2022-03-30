@@ -1,12 +1,10 @@
 // https://observablehq.com/@endpointservices/weblogin-for-firebase@454
 import define1 from "./7a77afd2ce564067@459.js";
-import define2 from "./993a0c51ef1175ea@1317.js";
+import define2 from "./993a0c51ef1175ea@1345.js";
 import define3 from "./09eaec8e2cf20db7@223.js";
 import define4 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# IndieWeb Login For Firebase
 
 #### Or how I used an IndieAuth Server as a Custom Token Provider
@@ -21,42 +19,47 @@ In this notebook is demonstrated how the tokens issued by [@endpointservices/aut
 ~~~
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md` ## Setup Oauth 2.0 client
 
 IndieAuth is an Oauth 2.0 endpoint, so we need to setup an Oauth 2.0 client first`
-)});
-  main.variable(observer("AUTHORIZE_URL")).define("AUTHORIZE_URL", function(){return(
+)}
+
+function _AUTHORIZE_URL(){return(
 "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint"
-)});
-  main.variable(observer("TOKEN_URL")).define("TOKEN_URL", function(){return(
+)}
+
+function _TOKEN_URL(){return(
 "https://webcode.run/observablehq.com/@endpointservices/auth;token_endpoint"
-)});
-  main.variable(observer("CLIENT_ID")).define("CLIENT_ID", ["html"], function(html){return(
+)}
+
+function _CLIENT_ID(html){return(
 html`<a href>`.href.split("?")[0]
-)});
-  main.variable(observer("SCOPE")).define("SCOPE", function(){return(
+)}
+
+function _SCOPE(){return(
 'observablehq.com'
-)});
-  main.variable(observer("TOKEN_PARAMS")).define("TOKEN_PARAMS", function(){return(
+)}
+
+function _TOKEN_PARAMS(){return(
 args => ({
   client_id: args.CLIENT_ID,
   redirect_uri: args.REDIRECT_URI,
   code: args.code,
   state: args.state
 })
-)});
-  const child1 = runtime.module(define1).derive(["CLIENT_ID",{name: "CLIENT_ID", alias: "REDIRECT_URI"},"AUTHORIZE_URL","TOKEN_URL","TOKEN_PARAMS"], main);
-  main.import("authorize_link", child1);
-  main.import("state", child1);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Create a login form
 
 Note state etc are driven by Oauth 2.0 client
 `
-)});
-  main.variable(observer("weblogin")).define("weblogin", ["exchange","htl","logo","userWithNull","state","firebase","authorize_link","CLIENT_ID","SCOPE","invalidation"], function(exchange,htl,logo,userWithNull,state,firebase,authorize_link,CLIENT_ID,SCOPE,invalidation)
+)}
+
+function _weblogin(exchange,htl,logo,userWithNull,state,firebase,authorize_link,CLIENT_ID,SCOPE,invalidation)
 { 
   exchange // Ensure state machine runs
   // Protection against click jacking
@@ -108,24 +111,28 @@ Note state etc are driven by Oauth 2.0 client
   ui.value = userWithNull || invalidation
   return ui;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _11(md){return(
 md`## Listen to Firebase auth state changes`
-)});
-  main.variable(observer("userWithNull")).define("userWithNull", ["Generators","firebase"], function(Generators,firebase){return(
+)}
+
+function _userWithNull(Generators,firebase){return(
 Generators.queue(next => {
   firebase.auth().onAuthStateChanged(auth => {
     console.log("Auth state changed", auth)
     next(auth)
   })
 })
-)});
-  main.variable(observer("user")).define("user", ["userWithNull","invalidation"], function(userWithNull,invalidation)
+)}
+
+function _user(userWithNull,invalidation)
 {
   return userWithNull ? userWithNull : invalidation
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _14(md){return(
 md`## Exchange indie auth token for Firebase session
 
 *When* we have an access token for a different uid, *exchange for firebase identity*
@@ -133,14 +140,17 @@ md`## Exchange indie auth token for Firebase session
 We need to rely on Firebase auth's own caching of token info where possible, as it has its own refresh token etc. with a much longer expiry than IndieAuth tokens. 
 
 `
-)});
-  main.variable(observer()).define(["state"], function(state){return(
+)}
+
+function _15(state){return(
 state
-)});
-  main.variable(observer("decoded")).define("decoded", ["state"], function(state){return(
+)}
+
+function _decoded(state){return(
 state && state.access_token ? JSON.parse(atob(state.access_token.split('.')[1])): undefined
-)});
-  main.variable(observer("exchange")).define("exchange", ["state","decoded","userWithNull","hasNewClaims","currentClaims","firebase"], function(state,decoded,userWithNull,hasNewClaims,currentClaims,firebase)
+)}
+
+function _exchange(state,decoded,userWithNull,hasNewClaims,currentClaims,firebase)
 {
   if (state && state.access_token && (
       decoded.uid !== userWithNull?.uid || hasNewClaims(decoded.claims, currentClaims)
@@ -149,16 +159,18 @@ state && state.access_token ? JSON.parse(atob(state.access_token.split('.')[1]))
     firebase.auth().signInWithCustomToken(state.access_token)
   }
 }
-);
-  main.variable(observer("hasNewClaims")).define("hasNewClaims", ["deepEqual"], function(deepEqual){return(
+
+
+function _hasNewClaims(deepEqual){return(
 function hasNewClaims(newClaims, oldClaims) {
   return Object.keys(newClaims || {}).some(newClaim => {
     if (!oldClaims[newClaim]) return true
     if (!deepEqual(newClaims[newClaim], oldClaims[newClaim])) return true
   })
 }
-)});
-  main.variable(observer("deepEqual")).define("deepEqual", function(){return(
+)}
+
+function _deepEqual(){return(
 function deepEqual(a,b)
 {
   if( (typeof a == 'object' && a != null) &&
@@ -178,30 +190,62 @@ function deepEqual(a,b)
      return a === b;
   }
 }
-)});
-  main.variable(observer("currentClaims")).define("currentClaims", ["userWithNull"], async function(userWithNull){return(
+)}
+
+async function _currentClaims(userWithNull){return(
 userWithNull ? JSON.parse(atob((await userWithNull.getIdToken()).split(".")[1]))
       : {}
-)});
-  main.variable(observer()).define(["user"], function(user){return(
+)}
+
+function _21(user){return(
 user
-)});
-  const child2 = runtime.module(define2).derive(["firebaseConfig"], main);
-  main.import("firebase", child2);
-  main.variable(observer("firebaseConfig")).define("firebaseConfig", function(){return(
+)}
+
+function _firebaseConfig(){return(
 {
   apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
   authDomain: "endpointserviceusers.firebaseapp.com",
   projectId: "endpointserviceusers",
   appId: "1:283622646315:web:baa488124636283783006e"
 }
-)});
+)}
+
+function _26(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("AUTHORIZE_URL")).define("AUTHORIZE_URL", _AUTHORIZE_URL);
+  main.variable(observer("TOKEN_URL")).define("TOKEN_URL", _TOKEN_URL);
+  main.variable(observer("CLIENT_ID")).define("CLIENT_ID", ["html"], _CLIENT_ID);
+  main.variable(observer("SCOPE")).define("SCOPE", _SCOPE);
+  main.variable(observer("TOKEN_PARAMS")).define("TOKEN_PARAMS", _TOKEN_PARAMS);
+  const child1 = runtime.module(define1).derive(["CLIENT_ID",{name: "CLIENT_ID", alias: "REDIRECT_URI"},"AUTHORIZE_URL","TOKEN_URL","TOKEN_PARAMS"], main);
+  main.import("authorize_link", child1);
+  main.import("state", child1);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("weblogin")).define("weblogin", ["exchange","htl","logo","userWithNull","state","firebase","authorize_link","CLIENT_ID","SCOPE","invalidation"], _weblogin);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("userWithNull")).define("userWithNull", ["Generators","firebase"], _userWithNull);
+  main.variable(observer("user")).define("user", ["userWithNull","invalidation"], _user);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["state"], _15);
+  main.variable(observer("decoded")).define("decoded", ["state"], _decoded);
+  main.variable(observer("exchange")).define("exchange", ["state","decoded","userWithNull","hasNewClaims","currentClaims","firebase"], _exchange);
+  main.variable(observer("hasNewClaims")).define("hasNewClaims", ["deepEqual"], _hasNewClaims);
+  main.variable(observer("deepEqual")).define("deepEqual", _deepEqual);
+  main.variable(observer("currentClaims")).define("currentClaims", ["userWithNull"], _currentClaims);
+  main.variable(observer()).define(["user"], _21);
+  const child2 = runtime.module(define2).derive(["firebaseConfig"], main);
+  main.import("firebase", child2);
+  main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
   const child3 = runtime.module(define3);
   main.import("logo", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _26);
   return main;
 }

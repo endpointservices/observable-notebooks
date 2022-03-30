@@ -1,15 +1,13 @@
 import define1 from "./0905542adbad836e@55.js";
 import define2 from "./52d808b188b8672b@129.js";
 import define3 from "./84e66f78139ac354@814.js";
-import define4 from "./dff1e917c89f5e76@1709.js";
-import define5 from "./a2e58f97fd5e8d7c@672.js";
-import define6 from "./11a5ab8b1b3a51db@1160.js";
-import define7 from "./3d9d1394d858ca97@550.js";
+import define4 from "./dff1e917c89f5e76@1711.js";
+import define5 from "./a2e58f97fd5e8d7c@674.js";
+import define6 from "./11a5ab8b1b3a51db@1161.js";
+import define7 from "./3d9d1394d858ca97@553.js";
 import define8 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Declarative Infra-as-code Helpers
 
 Following Kubernetes paradigm, the description of a service is the desired _spec_ and the current state. Current state might change for reasons outside your control. 
@@ -36,14 +34,16 @@ Thus the service develop just needs to worry about how the apply function is imp
 
 
 `
-)});
-  main.variable(observer()).define(["widget"], function(widget){return(
+)}
+
+function _2(widget){return(
 widget({
   name: "bill",
   location: "US"
 })
-)});
-  main.variable(observer("widget")).define("widget", ["resource","resource_endpoint"], function(resource,resource_endpoint){return(
+)}
+
+function _widget(resource,resource_endpoint){return(
 function widget({
     name = "widget_default",
     location = "europe"
@@ -58,8 +58,9 @@ function widget({
     name, location
   })
 }
-)});
-  main.variable(observer("resource")).define("resource", ["notebook","subdomain","deploy","firebase","html","Table","reconcile"], function(notebook,subdomain,deploy,firebase,html,Table,reconcile){return(
+)}
+
+function _resource(notebook,subdomain,deploy,firebase,html,Table,reconcile){return(
 function resource({
     fields = undefined,
     name = "default",
@@ -131,8 +132,9 @@ function resource({
     return ui;
   }
 }
-)});
-  main.variable(observer("resource_endpoint")).define("resource_endpoint", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","fetchWithTimeout","_"], function(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,fetchWithTimeout,_){return(
+)}
+
+function _resource_endpoint(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,fetchWithTimeout,_){return(
 function resource_endpoint({
     name,
     configPath,
@@ -244,8 +246,9 @@ function resource_endpoint({
     href: endpoint.href
   }
 }
-)});
-  main.variable(observer("fetchWithTimeout")).define("fetchWithTimeout", function(){return(
+)}
+
+function _fetchWithTimeout(){return(
 async (url, options, timeout = 10000) => {
     return await Promise.race([
         fetch(url, options),
@@ -254,7 +257,20 @@ async (url, options, timeout = 10000) => {
         )
     ]);
 }
-)});
+)}
+
+function _15(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["widget"], _2);
+  main.variable(observer("widget")).define("widget", ["resource","resource_endpoint"], _widget);
+  main.variable(observer("resource")).define("resource", ["notebook","subdomain","deploy","firebase","html","Table","reconcile"], _resource);
+  main.variable(observer("resource_endpoint")).define("resource_endpoint", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","fetchWithTimeout","_"], _resource_endpoint);
+  main.variable(observer("fetchWithTimeout")).define("fetchWithTimeout", _fetchWithTimeout);
   const child1 = runtime.module(define1);
   main.import("_", child1);
   const child2 = runtime.module(define2);
@@ -276,8 +292,6 @@ async (url, options, timeout = 10000) => {
   main.import("signature", child7);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _15);
   return main;
 }
