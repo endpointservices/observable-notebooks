@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1343
+// https://observablehq.com/@tomlarkworthy/firebase@1345
 import define1 from "./3df1b33bb2cfcd3c@475.js";
 import define2 from "./58f3eb7334551ae6@187.js";
 
@@ -10,6 +10,7 @@ The Firebase SDK and a user signin UI, plus utility classes for the databases.
 Provides a realtime push database (Firestore) and cloud file storage (Firebase storage) protected with granular per user permissions (Firebase auth) behind federated login (Google, Facebook, Twitter, Github, Anonymous, Email and Phone). A reactive login button is provided through FirebaseUI.
 
 ### Change log
+- 2022-03-28: Add ignorePendingWrites option to listen, which defaults to false for backwards compatibility
 - 2021-03-09: BUGFIX: firebase.auth().signout() flows to viewof user
 - 2021-03-03: Lazy loaded testing library to reduce dependancies
 - 2020-09-01: Fixed race condition with SDK loader. Added RT database to DocView
@@ -130,6 +131,7 @@ async function* listen(
   {
     includeRef = false,
     includeId = false,
+    ignorePendingWrites = false,
     defaultValue = undefined // If doc is empty what should be the return value
   } = {}
 ) {
@@ -145,23 +147,25 @@ async function* listen(
     // Firestore
     dispose = ref.onSnapshot(
       snapshot => {
-        const value = snapshot.data
-          ? // Doc listen
-            includeRef || includeId
-            ? {
-                ...snapshot.data(),
-                ...(includeRef && { _ref: snapshot.ref.path }),
-                ...(includeId && { _id: snapshot.id })
-              }
-            : snapshot.data() || defaultValue
-          : // Collection listen
-            snapshot.docs.map(doc => ({
-              ...doc.data(),
-              ...(includeRef && { _ref: doc.ref.path }),
-              ...(includeId && { _id: doc.id })
-            }));
-        queue.push(value);
-        if (resolve) resolve(queue.shift()), (resolve = null);
+        if (!ignorePendingWrites || !snapshot.metadata.hasPendingWrites) {
+          const value = snapshot.data
+            ? // Doc listen
+              includeRef || includeId
+              ? {
+                  ...snapshot.data(),
+                  ...(includeRef && { _ref: snapshot.ref.path }),
+                  ...(includeId && { _id: snapshot.id })
+                }
+              : snapshot.data() || defaultValue
+            : // Collection listen
+              snapshot.docs.map(doc => ({
+                ...doc.data(),
+                ...(includeRef && { _ref: doc.ref.path }),
+                ...(includeId && { _id: doc.id })
+              }));
+          queue.push(value);
+          if (resolve) resolve(queue.shift()), (resolve = null);
+        }
       },
       err => {
         error = err;
