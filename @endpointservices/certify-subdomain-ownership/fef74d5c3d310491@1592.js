@@ -1,20 +1,16 @@
 // https://observablehq.com/@endpointservices/certify-subdomain-ownership@1592
 import define1 from "./65d33fe44849cfde@586.js";
-import define2 from "./698257e86fae4586@346.js";
-import define3 from "./52d808b188b8672b@128.js";
+import define2 from "./698257e86fae4586@350.js";
+import define3 from "./52d808b188b8672b@129.js";
 import define4 from "./87deeb645328fb3b@223.js";
-import define5 from "./dff1e917c89f5e76@1709.js";
-import define6 from "./11a5ab8b1b3a51db@1160.js";
+import define5 from "./dff1e917c89f5e76@1711.js";
+import define6 from "./11a5ab8b1b3a51db@1161.js";
 import define7 from "./c7a3b20cec5d4dd9@659.js";
-import define8 from "./cb60908738c3dabe@107.js";
+import define8 from "./cb60908738c3dabe@152.js";
 import define9 from "./ab3e70b29c480e6d@83.js";
 import define10 from "./293899bef371e135@216.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/cf69b517437593b34a97ecf99c6a0677045fe92bf69bdbeb6a03e1087223074c642396c2b0815e1377da42b0aa022e99bd8f0f64d6c603f1b0cff4540fa2ac11",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`
 # Certify Subdomain Ownership 
 
@@ -26,8 +22,9 @@ Before you can set [serverside secrets](https://observablehq.com/@tomlarkworthy/
 
 We implement a challange based protocol inspired by [DNS-01 verification](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge). You prove control of a subdomain by writing a unique code into it, thus tangibly demonstrating you have write access.
 `
-)});
-  main.variable(observer("certified_domains")).define("certified_domains", ["subdomain_certificates"], function(subdomain_certificates){return(
+)}
+
+function _certified_domains(subdomain_certificates){return(
 JSON.stringify(subdomain_certificates.reduce(
   (acc, cert) => {
     if (!acc.includes(cert.subdomain)) acc.push(cert.subdomain)
@@ -35,21 +32,26 @@ JSON.stringify(subdomain_certificates.reduce(
   },
   []
 ))
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Step 1: Login to Endpointservices
 `
-)});
-  main.variable(observer()).define(["viewof user"], function($0){return(
+)}
+
+function _4($0){return(
 $0
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`After logging in you have a uid, we will generate a secret code for you`
-)});
-  main.variable(observer("endpoint_uid")).define("endpoint_uid", ["user"], function(user){return(
+)}
+
+function _endpoint_uid(user){return(
 user.uid
-)});
-  main.variable(observer("challenge_code")).define("challenge_code", ["challenge_implementation","relation"], async function(challenge_implementation,relation)
+)}
+
+async function _challenge_code(challenge_implementation,relation)
 {
   const response = await fetch(challenge_implementation.href, {
     method: "POST",
@@ -58,21 +60,24 @@ user.uid
   if (response.status !== 200) throw new Error(response.status + ": " + await response.text())
   return await response.text()
 }
-);
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+
+
+async function _8(md,FileAttachment){return(
 md`## Step 2: Create a new notebook
 
 (very top right of page)
 ![](${await FileAttachment("image.png").url()})
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Step 3: Copy this certificate and paste it into a new notebook
 
 Run it and follow its instruction.
 `
-)});
-  main.variable(observer("certificateTemplate")).define("certificateTemplate", ["name"], function(name){return(
+)}
+
+function _certificateTemplate(name){return(
 (uid, code) => `
 viewof endpoint_certificate = {
     const value = {
@@ -180,8 +185,9 @@ viewof endpoint_certificate = {
     yield ui;
   }
 `
-)});
-  main.variable(observer()).define(["copy","certificateTemplate","user","challenge_code","html"], function(copy,certificateTemplate,user,challenge_code,html)
+)}
+
+function _11(copy,certificateTemplate,user,challenge_code,html)
 {
   const click = () => {
     copy(certificateTemplate(user.uid, challenge_code))
@@ -192,8 +198,9 @@ viewof endpoint_certificate = {
 `
   return ui;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _12(md){return(
 md`## Step 4: Trigger validation
 
 The certificate will serve a button in your new notebook. Pressing that button tells out validator to check for the secret challenge code. 
@@ -201,17 +208,20 @@ The certificate will serve a button in your new notebook. Pressing that button t
 ---
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`# Implementation
 Certification is implementated using [serverside cells](https://observablehq.com/@tomlarkworthy/serverside-cells) containing a [secret](https://observablehq.com/@tomlarkworthy/secret-manager) Google Identity. It's plain Observable code you can inspect for transparency.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`#### The challenge generates and records a secret code for a UID `
-)});
-  main.variable(observer("challenge_implementation")).define("challenge_implementation", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","jsrsasign"], function(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,jsrsasign){return(
+)}
+
+function _challenge_implementation(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,jsrsasign){return(
 deploy("challenge_implementation", async (req, res, context) => {
   const access_token = await getAccessTokenFromServiceAccount(context.secrets["endpointservices_secretadmin_service_account_key"])
   
@@ -235,11 +245,13 @@ deploy("challenge_implementation", async (req, res, context) => {
   secrets: ["endpointservices_secretadmin_service_account_key"],
   cell: "challenge_implementation"
 })
-)});
-  main.variable(observer("firestore")).define("firestore", ["firebase"], function(firebase){return(
+)}
+
+function _firestore(firebase){return(
 firebase.firestore()
-)});
-  main.variable(observer("fetchCode")).define("fetchCode", ["regIdentifier","peekFirst"], function(regIdentifier,peekFirst){return(
+)}
+
+function _fetchCode(regIdentifier,peekFirst){return(
 function fetchCode(url) {
   const match = url.match(regIdentifier)
   
@@ -253,8 +265,9 @@ function fetchCode(url) {
     cell: "endpoint_certificate"
   });
 }
-)});
-  main.variable(observer("validation_implementation")).define("validation_implementation", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","fetchCode","fetchMeta"], function(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,fetchCode,fetchMeta){return(
+)}
+
+function _validation_implementation(deploy,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,fetchCode,fetchMeta){return(
 deploy("validation_implementation", async (req, res, context) => {
   // Use a secret Google Service Account Key (JSON)
   const access_token = await getAccessTokenFromServiceAccount(context.secrets["endpointservices_secretadmin_service_account_key"])
@@ -324,15 +337,46 @@ deploy("validation_implementation", async (req, res, context) => {
   secrets: ["endpointservices_secretadmin_service_account_key"],
   cell: "validation_implementation"
 })
-)});
-  main.variable(observer("subdomain_certificates")).define("subdomain_certificates", ["listen","firebase","user"], function(listen,firebase,user){return(
+)}
+
+function _subdomain_certificates(listen,firebase,user){return(
 listen(firebase.firestore().collection("/services/ownership/owners").where("uid", "==", user.uid))
-)});
-  main.variable(observer("relation")).define("relation", ["user"], function(user){return(
+)}
+
+function _relation(user){return(
 {
   "uid": user.uid
 }
-)});
+)}
+
+function _31(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/cf69b517437593b34a97ecf99c6a0677045fe92bf69bdbeb6a03e1087223074c642396c2b0815e1377da42b0aa022e99bd8f0f64d6c603f1b0cff4540fa2ac11",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("certified_domains")).define("certified_domains", ["subdomain_certificates"], _certified_domains);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["viewof user"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("endpoint_uid")).define("endpoint_uid", ["user"], _endpoint_uid);
+  main.variable(observer("challenge_code")).define("challenge_code", ["challenge_implementation","relation"], _challenge_code);
+  main.variable(observer()).define(["md","FileAttachment"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("certificateTemplate")).define("certificateTemplate", ["name"], _certificateTemplate);
+  main.variable(observer()).define(["copy","certificateTemplate","user","challenge_code","html"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("challenge_implementation")).define("challenge_implementation", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","jsrsasign"], _challenge_implementation);
+  main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
+  main.variable(observer("fetchCode")).define("fetchCode", ["regIdentifier","peekFirst"], _fetchCode);
+  main.variable(observer("validation_implementation")).define("validation_implementation", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","fetchCode","fetchMeta"], _validation_implementation);
+  main.variable(observer("subdomain_certificates")).define("subdomain_certificates", ["listen","firebase","user"], _subdomain_certificates);
+  main.variable(observer("relation")).define("relation", ["user"], _relation);
   const child1 = runtime.module(define1);
   main.import("peekFirst", child1);
   const child2 = runtime.module(define2);
@@ -364,8 +408,6 @@ listen(firebase.firestore().collection("/services/ownership/owners").where("uid"
   main.import("copy", child9);
   const child10 = runtime.module(define10);
   main.import("footer", child10);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _31);
   return main;
 }

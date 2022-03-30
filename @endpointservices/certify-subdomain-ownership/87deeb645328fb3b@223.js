@@ -1,30 +1,33 @@
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Notebook Input
 
 An input widget that parses various formats of notebook identifiers and optionally retrieves ID and metadata.
 `
-)});
-  main.variable(observer("viewof data")).define("viewof data", ["notebookInput"], function(notebookInput){return(
+)}
+
+function _data(notebookInput){return(
 notebookInput({
   value: '@mootari/notebook-input',
 })
-)});
-  main.variable(observer("data")).define("data", ["Generators", "viewof data"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","data","DOM"], function(html,data,DOM){return(
+)}
+
+function _3(html,data,DOM){return(
 html`<table>${Object.entries(data).map(([k, v]) => html`<tr><th>${k}</th><td>${DOM.text(v)}`)}`
-)});
-  main.variable(observer()).define(["data"], function(data){return(
+)}
+
+function _4(data){return(
 data
-)});
-  main.variable(observer()).define(["data"], function(data){return(
+)}
+
+function _5(data){return(
 `${data}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`---`
-)});
-  main.variable(observer("notebookInput")).define("notebookInput", ["DOM","html","regIdentifier","fetchMeta","Event"], function(DOM,html,regIdentifier,fetchMeta,Event){return(
+)}
+
+function _notebookInput(DOM,html,regIdentifier,fetchMeta,Event){return(
 function notebookInput(options = {}) {
   const {
     submit: submitLabel = 'Submit',
@@ -94,8 +97,9 @@ function notebookInput(options = {}) {
   
   return $form;
 }
-)});
-  main.variable(observer("regIdentifier")).define("regIdentifier", function(){return(
+)}
+
+function _regIdentifier(){return(
 new RegExp('^'
                      + '(?:(?:https:\/\/observablehq.com)?\/)?'
                      + '(?:'
@@ -105,8 +109,9 @@ new RegExp('^'
                      + ')'
                      + '(?:@(?<version>\\d+))?'
                      + '$')
-)});
-  main.variable(observer("regV1Source")).define("regV1Source", function(){return(
+)}
+
+function _regV1Source(){return(
 new RegExp('^'
                        + '\/\/ URL: (?<url>[^\\n]+)\\n'
                        + '\/\/ Title: (?<title>[^\\n]+)\\n'
@@ -116,8 +121,9 @@ new RegExp('^'
                        + '\\n'
                        + 'const m0 = \\{\\n'
                        + '  id: "(?<id>[a-f0-9]{16})')
-)});
-  main.variable(observer("fetchMeta")).define("fetchMeta", ["regIdentifier","regV1Source"], function(regIdentifier,regV1Source){return(
+)}
+
+function _fetchMeta(regIdentifier,regV1Source){return(
 async function fetchMeta(identifier, fallback = false) {
   const match = identifier.match(regIdentifier);
   if(!match) return null;
@@ -134,8 +140,9 @@ async function fetchMeta(identifier, fallback = false) {
       throw e;
     })
 }
-)});
-  main.variable(observer()).define(["html","regIdentifier","DOM"], function(html,regIdentifier,DOM){return(
+)}
+
+function _11(html,regIdentifier,DOM){return(
 html`<table>${
 [
   'abcdef0123456789',
@@ -147,6 +154,21 @@ html`<table>${
   'https://observablehq.com/@login/123-notebook-slug/123',
   'https://observablehq.com/@login/123-notebook-slug/123@456',
 ].map(s => html`<tr><td>${regIdentifier.test(s) ? '√' : 'x'}</td><td>${DOM.text(s)}</td>`)}`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("viewof data")).define("viewof data", ["notebookInput"], _data);
+  main.variable(observer("data")).define("data", ["Generators", "viewof data"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","data","DOM"], _3);
+  main.variable(observer()).define(["data"], _4);
+  main.variable(observer()).define(["data"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("notebookInput")).define("notebookInput", ["DOM","html","regIdentifier","fetchMeta","Event"], _notebookInput);
+  main.variable(observer("regIdentifier")).define("regIdentifier", _regIdentifier);
+  main.variable(observer("regV1Source")).define("regV1Source", _regV1Source);
+  main.variable(observer("fetchMeta")).define("fetchMeta", ["regIdentifier","regV1Source"], _fetchMeta);
+  main.variable(observer()).define(["html","regIdentifier","DOM"], _11);
   return main;
 }

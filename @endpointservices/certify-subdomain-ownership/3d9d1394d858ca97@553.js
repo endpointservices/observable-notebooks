@@ -1,22 +1,22 @@
-// https://observablehq.com/@mootari/signature@547
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+// https://observablehq.com/@mootari/signature@553
+function _1(md){return(
 md`# Signature - A Documentation Toolkit
 <!-- keywords: javadoc docgen docblock -->
 
 This notebook offers a set of documentation helpers.
 
 `
-)});
-  main.variable(observer()).define(["md","PINNED_LIB"], function(md,PINNED_LIB){return(
+)}
+
+function _2(md,PINNED_LIB){return(
 md`
 ~~~js
 import {signature, getPinnedSlug} from '${PINNED_LIB}'
 ~~~
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`
 Features:
 - automatic formatting of function signatures
@@ -27,11 +27,13 @@ Features:
 
 For more examples in the wild please see [Toolbox](https://observablehq.com/d/691ae3b95f02db79).
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["signature","md"], function(signature,md){return(
+)}
+
+function _5(signature,md){return(
 signature(signature, {
   description: md`
 Documentation template for functions. Extracts the function head from the function passed to **\`fn\`**:
@@ -97,8 +99,9 @@ signature(myTestedFunc, {
     }
   }
 })
-)});
-  main.variable(observer("signature")).define("signature", ["RUN_TESTS","defaultTestRunner","DOM","signature_theme","defaultFormatter","defaultSignatureParser","html","md","code"], function(RUN_TESTS,defaultTestRunner,DOM,signature_theme,defaultFormatter,defaultSignatureParser,html,md,code){return(
+)}
+
+function _signature(RUN_TESTS,defaultTestRunner,DOM,signature_theme,defaultFormatter,defaultSignatureParser,html,md,code){return(
 function signature(fn, options = {}) {
   const {
     name = typeof fn === 'function' && fn.name.length ? fn.name : null,
@@ -136,8 +139,9 @@ function signature(fn, options = {}) {
     testList,
   }, {name, open, css, scope});
 }
-)});
-  main.variable(observer()).define(["signature","getPinnedSlug"], function(signature,getPinnedSlug){return(
+)}
+
+function _7(signature,getPinnedSlug){return(
 signature(getPinnedSlug, {
   description: 'Retrieves the currently shared or published version of the given notebook identifier.',
   example: [
@@ -146,19 +150,39 @@ getPinnedSlug('@mootari/signature')`,
     `// Notebook ID
 getPinnedSlug('3d9d1394d858ca97')`,
   ],
+  tests: {
+    'custom slug': async assert => {
+      assert((await getPinnedSlug('@mootari/signature')).match(/@\d+$/))
+    },
+    'notebook id': async assert => {
+      assert((await getPinnedSlug('3d9d1394d858ca97')).match(/@\d+$/))
+    },
+    'pinned': async assert => {
+      assert((await getPinnedSlug('@mootari/signature@545')).match(/@545$/))
+    },
+    'fallback unpublished': async assert => {
+      assert((await getPinnedSlug('@mootari/signature@544')) === '@mootari/signature')
+    },
+  },
 })
-)});
-  main.variable(observer("getPinnedSlug")).define("getPinnedSlug", function(){return(
-async function getPinnedSlug(name) {
-  const path = name[0] === '@' ? name : `d/${name}`;
-  return fetch(`https://api.observablehq.com/${path}.js?v=3`)
+)}
+
+function _getPinnedSlug(regIdentifier,parseFrontmatter){return(
+async function getPinnedSlug(identifier) {
+  const {groups} = identifier.match(regIdentifier) || {};
+  if(!groups) return null;
+  const {id, user, slug, version} = groups;
+  const name = id || `@${user}/${slug}`;
+  const path = `${id ? `d/${id}` : name}${version ? `@${version}` : ''}`;
+  return fetch(`https://api.observablehq.com/${path}.js?v=1`)
     .then(r => r.text())
-    .then(t => t.match(/^\/\/ [^\s]+(@\d+)/)[1])
     .catch(e => '')
-    .then(v => name + v);
+    .then(t => parseFrontmatter(t) || {})
+    .then(({version: v}) => name + (v ? `@${v}` : ''));
 }
-)});
-  main.variable(observer()).define(["signature"], function(signature){return(
+)}
+
+function _9(signature){return(
 signature('PINNED', {
   name: 'PINNED',
   description: `
@@ -171,16 +195,18 @@ import {foo} from "\${PINNED}"
 ~~~
 `
 })
-)});
-  main.variable(observer("PINNED")).define("PINNED", ["regIdentifier","getPinnedSlug"], function(regIdentifier,getPinnedSlug)
+)}
+
+function _PINNED(regIdentifier,getPinnedSlug)
 {
   const match = document.baseURI.match(regIdentifier);
   if(!match) return '(error: name not detectable)';
   const {id, user, slug} = match.groups;
   return getPinnedSlug(id || `@${user}/${slug}`);
 }
-);
-  main.variable(observer()).define(["signature","code"], function(signature,code){return(
+
+
+function _11(signature,code){return(
 signature(code, {
   description: `Creates syntax-highlighted output.`,
   example: `
@@ -193,15 +219,17 @@ return code(myCss, {
   trim: false
 });`,
 })
-)});
-  main.variable(observer("code")).define("code", ["md"], function(md){return(
+)}
+
+function _code(md){return(
 function code(text, {type = 'javascript', trim = true, className = 'code'} = {}) {
   const out = md`\`\`\`${type}\n${!trim ? text : text.replace(/^\s*\n|\s+?$/g, '')}\n\`\`\``;
   if(className) out.classList.add('code');
   return out;  
 }
-)});
-  main.variable(observer()).define(["signature","PINNED_LIB"], function(signature,PINNED_LIB){return(
+)}
+
+function _13(signature,PINNED_LIB){return(
 signature('RUN_TESTS', {
   name: 'RUN_TESTS',
   description: `Button that triggers all tests that have not run yet.`,
@@ -211,8 +239,9 @@ import {viewof RUN_TESTS} from "${PINNED_LIB}"
 viewof RUN_TESTS
 `
 })
-)});
-  main.variable(observer("viewof RUN_TESTS")).define("viewof RUN_TESTS", ["createStepper","html"], function(createStepper,html)
+)}
+
+function _RUN_TESTS(createStepper,html)
 {
   const s = createStepper();
   const view = html`<div><button>Run all tests`;
@@ -220,14 +249,15 @@ viewof RUN_TESTS
   view.value = s;
   return view;
 }
-);
-  main.variable(observer("RUN_TESTS")).define("RUN_TESTS", ["Generators", "viewof RUN_TESTS"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _15(md){return(
 md`---
 ## Internals
 `
-)});
-  main.variable(observer("signature_theme")).define("signature_theme", function(){return(
+)}
+
+function _signature_theme(){return(
 `
 :scope {
   --line-color: #eee;
@@ -286,8 +316,9 @@ height: 1.3rem;
 :scope .tests tr[data-status="error"]   { background: hsl( 0,90%,90%)}
 :scope .tests tr[data-status="success"] { background: hsl(90,90%,90%)}
 `
-)});
-  main.variable(observer("createStepper")).define("createStepper", function(){return(
+)}
+
+function _createStepper(){return(
 function createStepper() {
   let cb = ()=>{};
   const ret = {
@@ -301,8 +332,9 @@ function createStepper() {
   };
   return ret.next();
 }
-)});
-  main.variable(observer("defaultFormatter")).define("defaultFormatter", ["html","scopedStyle","md"], function(html,scopedStyle,md){return(
+)}
+
+function _defaultFormatter(html,scopedStyle,md){return(
 function defaultFormatter({signature, description, examples, testList}, {name, open, scope, css}) {
   return html`<${open == null ? 'div' : `details ${open ? 'open' : ''}`} class="${scope}">${[
     !css ? '' : scope == null ? css : scopedStyle('.' + scope, css),
@@ -317,8 +349,9 @@ function defaultFormatter({signature, description, examples, testList}, {name, o
     testList || '',
   ]}`;
 }
-)});
-  main.variable(observer("defaultTestRunner")).define("defaultTestRunner", ["html","DOM"], function(html,DOM){return(
+)}
+
+function _defaultTestRunner(html,DOM){return(
 function defaultTestRunner(tests, options = {}) {
   const {
     assert = (cond, msg = 'error') => { if(!cond) throw msg },
@@ -329,28 +362,29 @@ function defaultTestRunner(tests, options = {}) {
       return html`<tr data-status=${state}>
         <td>${DOM.text(name)}</td>
         <td><span title=${state}>${icon}</span> ${msg||''}</td>`;
-    }
+    },
+    run = (fn, name) => fn.call(null, assert),
   } = options;
   
   const runners = Object.entries(tests).map(([name, fn]) => ({
     name,
     node: formatItem(name),
     run: async() => {
-      try { await fn.call(null, assert); }
+      try { await run(fn, name) }
       catch(e) { return e; }
-      return;
     }
   }));
-  const list = formatList(runners.map(r => r.node));
-  
-  const run = () => Promise.all(runners.map(
-    ({name, node, run}) => run().then(msg => node.replaceWith(formatItem(name, msg === undefined, msg)))
-  ));
-  
-  return {list, run};
+
+  return {
+    list: formatList(runners.map(r => r.node)),
+    run: () => Promise.all(runners.map(
+      ({name, node, run}) => run().then(msg => node.replaceWith(formatItem(name, msg === undefined, msg)))
+    ))
+  };
 }
-)});
-  main.variable(observer("defaultSignatureParser")).define("defaultSignatureParser", function(){return(
+)}
+
+function _defaultSignatureParser(){return(
 function defaultSignatureParser(fn, name = null) {
   const src = fn.toString();
   let end = 0, r = 0;
@@ -386,15 +420,17 @@ function defaultSignatureParser(fn, name = null) {
     suffix[0] === '(' ? suffix : `(${suffix})`
   }`;
 }
-)});
-  main.variable(observer("scopedStyle")).define("scopedStyle", ["html"], function(html){return(
+)}
+
+function _scopedStyle(html){return(
 function scopedStyle(scope, css) {
   const style = html`<style>`;
   style.textContent = css.replace(/\:scope\b/g, scope); 
   return style;
 }
-)});
-  main.variable(observer("regIdentifier")).define("regIdentifier", function(){return(
+)}
+
+function _regIdentifier(){return(
 new RegExp('^'
                      + '(?:(?:https:\/\/(next\\.)?observablehq\\.com)?\/)?'
                      + '(?:'
@@ -404,17 +440,32 @@ new RegExp('^'
                      + ')'
                      + '(?:@(?<version>\\d+))?'
                      + '([?#]|$)')
-)});
-  main.variable(observer("PINNED_LIB")).define("PINNED_LIB", ["getPinnedSlug"], function(getPinnedSlug){return(
+)}
+
+function _parseFrontmatter(){return(
+v1Source => {
+  const match = v1Source.match(/^(?:[^\n]+\n){4}/);
+  if(!match) return null;
+  const lines = match[0].slice(0, -1).split(/\n/);
+  return Object.fromEntries(lines.map(s => {
+    const [, key, value] = s.match(/\/\/ ([^:]+):\s+(.+)$/);
+    return [key.toLowerCase(), value];
+  })
+)}
+)}
+
+function _PINNED_LIB(getPinnedSlug){return(
 getPinnedSlug('@mootari/signature')
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`---
 
 ## Old docs - under construction
 `
-)});
-  main.variable(observer("demoFunction")).define("demoFunction", function(){return(
+)}
+
+function _demoFunction(){return(
 function demoFunction(sw, sh, tw = null, th = null) {
   if(tw == null && th == null) return [sw, sh, 1];
   const ar = sw / sh;
@@ -422,8 +473,9 @@ function demoFunction(sw, sh, tw = null, th = null) {
     ? [th * ar, th, th / sh]
     : [tw, tw / ar, tw / sw];
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _27(md){return(
 md`---
 ## Superstylin'
 
@@ -431,13 +483,15 @@ md`---
 
 To extend the base theme, first import it:
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _28(md){return(
 md`
 To override the CSS for a single instance, pass the default CSS along with your custom CSS:
 `
-)});
-  main.variable(observer()).define(["signature","demoFunction","signature_theme"], function(signature,demoFunction,signature_theme){return(
+)}
+
+function _29(signature,demoFunction,signature_theme){return(
 signature(demoFunction, {
   description: `Scales dimensions proportionally to fit into the given width and/or height.`,
   example: `const [width, height, scale] = scaleContain(img.naturalWidth, img.naturalHeight, 500, 500);`,
@@ -457,31 +511,36 @@ ${signature_theme}
 }
   `,
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _30(md){return(
 md`
 If you want to override the CSS globally (and also have shared instead of scoped styles), use the following steps:
 `
-)});
-  main.variable(observer()).define(["scopedStyle","signature_theme"], function(scopedStyle,signature_theme){return(
+)}
+
+function _31(scopedStyle,signature_theme){return(
 scopedStyle('.my-shared-scope', `
 ${signature_theme}
 // Adds 
 :scope { border: 10px solid #888 }
 `)
-)});
-  main.variable(observer("myCustomSig")).define("myCustomSig", ["signature"], function(signature){return(
+)}
+
+function _myCustomSig(signature){return(
 function myCustomSig(fn, options = {}) {
   return signature(fn, {scope: 'my-shared-scope', css: null, ...options});
 }
-)});
-  main.variable(observer()).define(["myCustomSig","demoFunction"], function(myCustomSig,demoFunction){return(
+)}
+
+function _33(myCustomSig,demoFunction){return(
 myCustomSig(demoFunction, {
   description: `Scales dimensions proportionally to fit into the given width and/or height.`,
   example: `const [width, height, scale] = scaleContain(img.naturalWidth, img.naturalHeight, 500, 500);`,
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _34(md){return(
 md`---
 ## Testing
 
@@ -492,16 +551,17 @@ Tests can be incorporated into the documentation and executed
 
 Select how tests should be run for the following example:
 `
-)});
-  main.variable(observer("viewof runType")).define("viewof runType", ["DOM"], function(DOM){return(
+)}
+
+function _runType(DOM){return(
 DOM.select([
   'wait for interaction',
   'run immediately',
   'hide tests',
 ])
-)});
-  main.variable(observer("runType")).define("runType", ["Generators", "viewof runType"], (G, _) => G.input(_));
-  main.variable(observer()).define(["signature","demoFunction","RUN_TESTS","runType","Promises"], function(signature,demoFunction,RUN_TESTS,runType,Promises){return(
+)}
+
+function _36(signature,demoFunction,RUN_TESTS,runType,Promises){return(
 signature(demoFunction, {
   description: `Scales dimensions proportionally to fit into the given width and/or height.`,
   example: `
@@ -545,13 +605,56 @@ img.height = height;
     },
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _37(md){return(
 md`---
 ## Contributions
 
 - Thanks to [Fati Chen](https://observablehq.com/@stardisblue) for discovering badly handled cases in the signature parsing, and for suggesting improvements regarding name overrides.
 `
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md","PINNED_LIB"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["signature","md"], _5);
+  main.variable(observer("signature")).define("signature", ["RUN_TESTS","defaultTestRunner","DOM","signature_theme","defaultFormatter","defaultSignatureParser","html","md","code"], _signature);
+  main.variable(observer()).define(["signature","getPinnedSlug"], _7);
+  main.variable(observer("getPinnedSlug")).define("getPinnedSlug", ["regIdentifier","parseFrontmatter"], _getPinnedSlug);
+  main.variable(observer()).define(["signature"], _9);
+  main.variable(observer("PINNED")).define("PINNED", ["regIdentifier","getPinnedSlug"], _PINNED);
+  main.variable(observer()).define(["signature","code"], _11);
+  main.variable(observer("code")).define("code", ["md"], _code);
+  main.variable(observer()).define(["signature","PINNED_LIB"], _13);
+  main.variable(observer("viewof RUN_TESTS")).define("viewof RUN_TESTS", ["createStepper","html"], _RUN_TESTS);
+  main.variable(observer("RUN_TESTS")).define("RUN_TESTS", ["Generators", "viewof RUN_TESTS"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer("signature_theme")).define("signature_theme", _signature_theme);
+  main.variable(observer("createStepper")).define("createStepper", _createStepper);
+  main.variable(observer("defaultFormatter")).define("defaultFormatter", ["html","scopedStyle","md"], _defaultFormatter);
+  main.variable(observer("defaultTestRunner")).define("defaultTestRunner", ["html","DOM"], _defaultTestRunner);
+  main.variable(observer("defaultSignatureParser")).define("defaultSignatureParser", _defaultSignatureParser);
+  main.variable(observer("scopedStyle")).define("scopedStyle", ["html"], _scopedStyle);
+  main.variable(observer("regIdentifier")).define("regIdentifier", _regIdentifier);
+  main.variable(observer("parseFrontmatter")).define("parseFrontmatter", _parseFrontmatter);
+  main.variable(observer("PINNED_LIB")).define("PINNED_LIB", ["getPinnedSlug"], _PINNED_LIB);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("demoFunction")).define("demoFunction", _demoFunction);
+  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["signature","demoFunction","signature_theme"], _29);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["scopedStyle","signature_theme"], _31);
+  main.variable(observer("myCustomSig")).define("myCustomSig", ["signature"], _myCustomSig);
+  main.variable(observer()).define(["myCustomSig","demoFunction"], _33);
+  main.variable(observer()).define(["md"], _34);
+  main.variable(observer("viewof runType")).define("viewof runType", ["DOM"], _runType);
+  main.variable(observer("runType")).define("runType", ["Generators", "viewof runType"], (G, _) => G.input(_));
+  main.variable(observer()).define(["signature","demoFunction","RUN_TESTS","runType","Promises"], _36);
+  main.variable(observer()).define(["md"], _37);
   return main;
 }
