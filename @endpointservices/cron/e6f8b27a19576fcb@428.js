@@ -1,44 +1,50 @@
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Notebook Metadata
 
 Fork of [@mootari](/@mootari)'s wonderful [notebook-data](/@mootari/notebook-data). Mainly added the ability to supply an \`api_key\` option, but also stripped the version pinning stuff as thats not relevant to our use cases.`
-)});
-  main.variable(observer()).define(["metadata"], function(metadata){return(
+)}
+
+function _2(metadata){return(
 metadata("@endpointservices/metadata")
-)});
-  main.variable(observer("formatLocalPath")).define("formatLocalPath", function(){return(
+)}
+
+function _formatLocalPath(){return(
 function formatLocalPath(name, version = null) {
   return '/' + (name.match(/^@/) ? name : 'd/' + name) + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatPath")).define("formatPath", ["domain","formatLocalPath"], function(domain,formatLocalPath){return(
+)}
+
+function _formatPath(domain,formatLocalPath){return(
 function formatPath(name, version = null) {
   return `https://${domain}${formatLocalPath(name, version)}`;
 }
-)});
-  main.variable(observer("formatSourcePath")).define("formatSourcePath", ["apiDomain","formatLocalPath"], function(apiDomain,formatLocalPath){return(
+)}
+
+function _formatSourcePath(apiDomain,formatLocalPath){return(
 function formatSourcePath(name, version = null) {
   return `https://${apiDomain}${formatLocalPath(name, version)}.js`;
 }
-)});
-  main.variable(observer("formatName")).define("formatName", function(){return(
+)}
+
+function _formatName(){return(
 function formatName(name, version = null) {
   return name + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatId")).define("formatId", function(){return(
+)}
+
+function _formatId(){return(
 function formatId(id, version = null) {
   return id + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatComparePath")).define("formatComparePath", ["domain","formatId"], function(domain,formatId){return(
+)}
+
+function _formatComparePath(domain,formatId){return(
 function formatComparePath(id1, version1, id2, version2) {
   return `https://${domain}/compare/${formatId(id1, version1)}...${formatId(id2, version2)}`;
 }
-)});
-  main.variable(observer("getSource")).define("getSource", ["formatSourcePath"], function(formatSourcePath){return(
+)}
+
+function _getSource(formatSourcePath){return(
 async function getSource(name, { version = null, api_key = undefined } = {}) {
   const path = formatSourcePath(name, version);
   try {
@@ -53,8 +59,9 @@ async function getSource(name, { version = null, api_key = undefined } = {}) {
     return null;
   }
 }
-)});
-  main.variable(observer("metadata")).define("metadata", ["getSource"], function(getSource){return(
+)}
+
+function _metadata(getSource){return(
 async function metadata(name, { version = null, api_key = undefined } = {}) {
   name = name
     .replace("https://observablehq.com/", "")
@@ -84,15 +91,34 @@ async function metadata(name, { version = null, api_key = undefined } = {}) {
     { id: id[1] }
   );
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`---`
-)});
-  main.variable(observer("domain")).define("domain", function(){return(
+)}
+
+function _domain(){return(
 'observablehq.com'
-)});
-  main.variable(observer("apiDomain")).define("apiDomain", function(){return(
+)}
+
+function _apiDomain(){return(
 'api.observablehq.com'
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["metadata"], _2);
+  main.variable(observer("formatLocalPath")).define("formatLocalPath", _formatLocalPath);
+  main.variable(observer("formatPath")).define("formatPath", ["domain","formatLocalPath"], _formatPath);
+  main.variable(observer("formatSourcePath")).define("formatSourcePath", ["apiDomain","formatLocalPath"], _formatSourcePath);
+  main.variable(observer("formatName")).define("formatName", _formatName);
+  main.variable(observer("formatId")).define("formatId", _formatId);
+  main.variable(observer("formatComparePath")).define("formatComparePath", ["domain","formatId"], _formatComparePath);
+  main.variable(observer("getSource")).define("getSource", ["formatSourcePath"], _getSource);
+  main.variable(observer("metadata")).define("metadata", ["getSource"], _metadata);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("domain")).define("domain", _domain);
+  main.variable(observer("apiDomain")).define("apiDomain", _apiDomain);
   return main;
 }
