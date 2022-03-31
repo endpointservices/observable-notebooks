@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@224
+// https://observablehq.com/@endpointservices/footer-with-backups@225
 import define1 from "./a81f2a20664080d3@211.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@627.js";
@@ -27,8 +27,12 @@ function _footer(backups,plausible_analytics,sentry,graphic)
 {
   backups;
   plausible_analytics;
-  sentry;
-  graphic.sentry = sentry;
+  const Sentry = sentry({
+    DSN:
+      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
+    namespaces: ["endpointservices", "tomlarkworthy"]
+  });
+  graphic.sentry = Sentry;
   return graphic;
 }
 
