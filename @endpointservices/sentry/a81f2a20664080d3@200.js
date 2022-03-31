@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/sentry@198
+// https://observablehq.com/@endpointservices/sentry@200
 import define1 from "./fa1f6059e44da1d5@388.js";
 import define2 from "./293899bef371e135@216.js";
 
@@ -19,6 +19,14 @@ Best thing? For low traffic single developer use cases.... its FREE
 
 \`\`\`js
 import {sentry} from '@endpointservices/sentry'
+\`\`\`
+
+Usage
+\`\`\`js
+  sentry({
+    DSN: "..." // find in the Client Keys section of Sentry,
+    namespaces: ['tomlarkworthy', 'endpointservices'] // Change to your namespace(s)
+  })
 \`\`\``
 )}
 
