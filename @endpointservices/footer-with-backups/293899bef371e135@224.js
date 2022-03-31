@@ -1,9 +1,13 @@
-import define1 from "./c2dae147641e012a@46.js";
+// https://observablehq.com/@endpointservices/footer-with-backups@224
+import define1 from "./a81f2a20664080d3@211.js";
+import define2 from "./c2dae147641e012a@46.js";
+import define3 from "./1d309dbd9697e042@627.js";
 
 function _1(md){return(
 md`# Endpoint Services Footer
 
-Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics. Footer with backups is https://observablehq.com/@endpointservices/footer-with-backups
+
+Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics and backups.
 
 \`\`\`js
 import { footer } from "@endpointservices/endpoint-services-footer"
@@ -19,8 +23,9 @@ md`<small>
 *Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>`
 )}
 
-function _footer(plausible_analytics,sentry,graphic)
+function _footer(backups,plausible_analytics,sentry,graphic)
 {
+  backups;
   plausible_analytics;
   sentry;
   graphic.sentry = sentry;
@@ -32,10 +37,6 @@ function _4(md){return(
 md`### Usage: Plausible Analytics
 
 Note, data domain auto set so it will only be able to track properties I own. And the use of plausible analytics is for usage stats, no personal information.`
-)}
-
-function _5(localStorage){return(
-localStorage
 )}
 
 function _plausible_analytics(html,localStorage,XMLHttpRequest)
@@ -108,61 +109,40 @@ function _plausible_analytics(html,localStorage,XMLHttpRequest)
 }
 
 
-function _8(md){return(
+function _6(md){return(
 md`### Error Monitoring: Sentry
 
 Sentry alerts me to errors in notebooks`
 )}
 
-function _sentry(html,location,Sentry,Tracing)
-{
-  const selfUrl = html`<a href="?">`.href;
-  if (
-    !(
-      selfUrl.includes("@endpointservices") ||
-      selfUrl.includes("@tomlarkworthy") ||
-      location.origin.includes("https://endpointservices") ||
-      location.origin.includes("https://tomlarkworthy")
-    )
-  )
-    return;
-  Sentry.init({
-    dsn:
-      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
-    beforeSend: (event) => {
-      event.request.url = selfUrl.split("?")[0];
-      return event;
-    },
-    integrations: [new Tracing.Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0
-  });
-  return Sentry;
-}
-
-
-async function _Sentry(require,FileAttachment){return(
-require(await FileAttachment("browser-6.1.0").url())
+function _9(md){return(
+md`### Backups`
 )}
 
-async function _Tracing(require,FileAttachment){return(
-require(await FileAttachment("tracing-6.1.0").url())
+function _backups(enableGithubBackups){return(
+enableGithubBackups({
+  owner: "endpointservices",
+  repo: "observable-notebooks",
+  debugProxy: true
+})
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["browser-6.1.0",new URL("./files/f701739c6a6dc1a26c4350b5d8048c3d80cc87b23587bf98f80059018aa10f0273a9afb1927a6b848c20fc786284232a8128bc3d1d0b7b9e3602e8be52fecccd",import.meta.url)],["tracing-6.1.0",new URL("./files/5bebc5e1862c57759a646def0fc5a77a6d4b8d0f87cd9a515d70b85f88ccbe46dcbaa35911b1a32087af7a297d762feb679d95ceccdfdd6477b30a2e9aa75b60",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
-  main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","graphic"], _footer);
+  main.variable(observer("footer")).define("footer", ["backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["localStorage"], _5);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer("sentry")).define("sentry", ["html","location","Sentry","Tracing"], _sentry);
-  main.variable(observer("Sentry")).define("Sentry", ["require","FileAttachment"], _Sentry);
-  main.variable(observer("Tracing")).define("Tracing", ["require","FileAttachment"], _Tracing);
+  main.variable(observer()).define(["md"], _6);
   const child1 = runtime.module(define1);
-  main.import("localStorage", child1);
+  main.import("sentry", child1);
+  const child2 = runtime.module(define2);
+  main.import("localStorage", child2);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], _backups);
+  main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
+  const child3 = runtime.module(define3);
+  main.import("enableGithubBackups", child3);
   return main;
 }
