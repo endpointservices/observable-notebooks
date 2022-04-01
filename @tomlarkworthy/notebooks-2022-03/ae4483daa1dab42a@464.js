@@ -98,7 +98,7 @@ The next outstanding notebook in March was *[Hello, Ruffle!](https://observableh
 
 Our third winner of March was [Shape interpolations with flubber](https://observablehq.com/@neocartocnrs/shape-interpolations-with-flubber) by [@neocartocnrs](https://observablehq.com/@neocartocnrs). Flubber is an animation library that lets you interpolate between arbitrary SVG shapes. I think this notebook did well because it has some great interactive demos that both wow and and reveal the limitations of [Flubber](https://github.com/veltman/flubber). It is tactile, honest and informative which are great ingredients for a successful computational notebook! If you like that one you will probably also like [https://observablehq.com/@tophtucker/recreating-ostlings-regression-visualizations](https://observablehq.com/@tophtucker/recreating-ostlings-regression-visualizations) by [@tophtucker](https://observablehq.com/@tophtucker) which is a very informative set of demonstrations of linear interpolation gotchas.
 
-Talk to you next month! Here are all the trending notebooks of March in their own words.
+Talk to you next month! Here are all the [trending](https://twitter.com/trendingnotebo2) notebooks of March in their own words.
 `
 )}
 
