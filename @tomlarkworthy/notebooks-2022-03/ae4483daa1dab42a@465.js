@@ -1,3 +1,4 @@
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-03@465
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@619.js";
@@ -92,7 +93,7 @@ Inputs.range([0, data.length], {
 
 function _9(md){return(
 md`
-Top dog by a hair's breadth was *["Example Custom Embed"](https://observablehq.com/@endpointservices/example-custom-embed)* created by none other than me under my team account ([@endpointservices](https://observablehq.com/@endpointservices))! That notebook demonstrates how you can completely control the markup of a custom micro websites yet define logic using an [Observable](https://observablehq.com/) notebook. It's a problem people have and it was motivated by answering a question on the [Observable forum](https://talk.observablehq.com/t/how-can-i-remove-the-observable-logo/6362/6). I highly recommend using the forum as a source of inspiration, I also recommend using Observable as a website builder-lite.
+Top dog by a hair's breadth was *["Example Custom Embed"](https://observablehq.com/@endpointservices/example-custom-embed)* created by none other than me under my team account ([@endpointservices](https://observablehq.com/@endpointservices))! That notebook demonstrates how you can completely control the markup of a custom micro websites yet define logic using an [Observable](https://observablehq.com/) notebook. It's a problem people have and it was motivated by answering a question on the [Observable forum](https://talk.observablehq.com/t/how-can-i-remove-the-observable-logo/6362/6). I highly recommend raiding the forum as a source of inspiration, I also recommend using Observable as a website builder-lite.
 
 The next outstanding notebook in March was *[Hello, Ruffle!](https://observablehq.com/@mootari/ruffle-js)* by [@mootari](https://observablehq.com/@mootari). The Observablehq community has a tradition of bringing in new technologies onto the platform via an introductory notebook called *hello X*, so this notebook was about getting [Ruffle](https://ruffle.rs/) running. Ruffle is a *Rust* implementation of Adobe Flash compiled to WASM for use on the WEB, so now you can start playing your favourite Flash experiences on Observable!
 
