@@ -1,15 +1,15 @@
 import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Starting [Github Action](https://docs.github.com/en/actions) Workflows From [Observable](https://observablehq.com/)`
-)});
-  main.variable(observer("Octokit")).define("Octokit", async function(){return(
+)}
+
+async function _Octokit(){return(
 await import("https://cdn.skypack.dev/@octokit/core")
-)});
-  main.variable(observer("dispatch")).define("dispatch", ["Octokit"], function(Octokit){return(
+)}
+
+function _dispatch(Octokit){return(
 async function dispatch(
   token,
   { owner, repo, event_type = "event_type", client_payload = undefined } = {}
@@ -23,15 +23,14 @@ async function dispatch(
     ...(client_payload && { client_payload })
   });
 }
-)});
-  const child1 = runtime.module(define1);
-  main.import("endpoint", child1);
-  main.import("subdomain", child1);
-  main.variable(observer("dispatchProxyName")).define("dispatchProxyName", function(){return(
+)}
+
+function _dispatchProxyName(){return(
 ({ owner, repo, event_type }) =>
   "dispatch_" + owner + "_" + repo + "_" + event_type
-)});
-  main.variable(observer("createDispatchProxy")).define("createDispatchProxy", ["endpoint","dispatchProxyName","dispatch","subdomain","html"], function(endpoint,dispatchProxyName,dispatch,subdomain,html){return(
+)}
+
+function _createDispatchProxy(endpoint,dispatchProxyName,dispatch,subdomain,html){return(
 function createDispatchProxy({
   owner,
   repo,
@@ -101,11 +100,24 @@ function createDispatchProxy({
   };
   return view;
 }
-)});
+)}
+
+function _8(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("Octokit")).define("Octokit", _Octokit);
+  main.variable(observer("dispatch")).define("dispatch", ["Octokit"], _dispatch);
+  const child1 = runtime.module(define1);
+  main.import("endpoint", child1);
+  main.import("subdomain", child1);
+  main.variable(observer("dispatchProxyName")).define("dispatchProxyName", _dispatchProxyName);
+  main.variable(observer("createDispatchProxy")).define("createDispatchProxy", ["endpoint","dispatchProxyName","dispatch","subdomain","html"], _createDispatchProxy);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _8);
   return main;
 }
