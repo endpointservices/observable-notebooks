@@ -1,14 +1,12 @@
 // https://observablehq.com/@endpointservices/login@959
-import define1 from "./698257e86fae4586@346.js";
+import define1 from "./698257e86fae4586@367.js";
 import define2 from "./52d808b188b8672b@129.js";
 import define3 from "./165e9411d1af7e86@1398.js";
-import define4 from "./11a5ab8b1b3a51db@1160.js";
+import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./c0de6bf6c2f598ef@62.js";
-import define6 from "./293899bef371e135@216.js";
+import define6 from "./293899bef371e135@225.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+function _1(html,md){return(
 html`<div class="content"> ${md`# Federated Login (⚠️ not in use)
 
 The controls below create a federated login session that will allow you to login to Endpoint services from your own personal domains.
@@ -19,8 +17,9 @@ Works by creating an encrypted _SameSite=None_ cookie that is sent to shared URL
 (Works with Chrome, Firefox but not Safari)
 
 `}`
-)});
-  main.variable(observer("viewof user")).define("viewof user", ["notify","federatedLoginState","URLSearchParams","location","html","lib","firebase","subdomain","viewof firebaseUser","checkToken","baseURL","mutable notify"], async function(notify,federatedLoginState,URLSearchParams,location,html,lib,firebase,subdomain,$0,checkToken,baseURL,$1)
+)}
+
+async function _user(notify,federatedLoginState,URLSearchParams,location,html,lib,firebase,subdomain,$0,checkToken,baseURL,$1)
 {
   notify
   let ui;
@@ -86,9 +85,9 @@ Works by creating an encrypted _SameSite=None_ cookie that is sent to shared URL
                                                  : new Promise(() => {})
   return ui
 }
-);
-  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _3(html,md){return(
 html`<div class="content"> ${
 md`
 
@@ -108,8 +107,9 @@ We use the tricks described in [John Carrol's excellent guide to federating Fire
 
 The technique for login federation is interesting in its own right. All production code is in this notebook using [serverless cells](https://observablehq.com/@tomlarkworthy/serverless-cells). So you can see how this one works to make your own.
 `}`
-)});
-  main.variable(observer("federatedLoginState")).define("federatedLoginState", ["notify","firebase","baseURL","mutable notify"], async function(notify,firebase,baseURL,$0)
+)}
+
+async function _federatedLoginState(notify,firebase,baseURL,$0)
 {
   // firebase.auth().currentUser is always null on first page reload, will be notified 
   // by first state change
@@ -142,15 +142,15 @@ The technique for login federation is interesting in its own right. All producti
     throw new Error("Unexpected: " + check.status)
   }
 }
-);
-  main.define("initial notify", function()
+
+
+function _notify()
 { // Triggers a reevaluation of the auth state
   return 0
 }
-);
-  main.variable(observer("mutable notify")).define("mutable notify", ["Mutable", "initial notify"], (M, _) => new M(_));
-  main.variable(observer("notify")).define("notify", ["mutable notify"], _ => _.generator);
-  main.variable(observer("lib")).define("lib", ["firebase","mutable notify","baseURL"], function(firebase,$0,baseURL)
+
+
+function _lib(firebase,$0,baseURL)
 {
   firebase.auth().onAuthStateChanged(function(user) {$0.value++});
   return ({
@@ -165,25 +165,29 @@ The technique for login federation is interesting in its own right. All producti
     }
   })
 }
-);
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _7(html,md){return(
 html`<div class="content"> ${
 md`### Endpoint
 
 We serve a single 'default' serverless cells as the API endpoint connected to an Express router so can use multiple routes.
 `}`
-)});
-  main.variable(observer("baseURL")).define("baseURL", function(){return(
+)}
+
+function _baseURL(){return(
 "https://endpointservice.web.app/notebooks/@endpointservices/login/secrets/endpointservices_secretadmin_service_account_key"
-)});
-  main.variable(observer()).define(["deploy","handleWithExpress","api"], function(deploy,handleWithExpress,api){return(
+)}
+
+function _9(deploy,handleWithExpress,api){return(
 deploy("default", handleWithExpress(api), {
   // Admin account can mint custom login tokens and encrypt cookies
   secrets: ['endpointservices_secretadmin_service_account_key'],
   modifiers: ["terminal"]
 })
-)});
-  main.variable(observer("api")).define("api", ["Router","cookieParser","signinHandler","checkHandler","signoutHandler"], function(Router,cookieParser,signinHandler,checkHandler,signoutHandler)
+)}
+
+function _api(Router,cookieParser,signinHandler,checkHandler,signoutHandler)
 {
   const api = Router();
   api.use((req, res, next) => {
@@ -195,8 +199,9 @@ deploy("default", handleWithExpress(api), {
   api.post('/signout', signoutHandler);
   return api
 }
-);
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _11(html,md){return(
 html`<div class="content"> ${
 md`## /signin
 
@@ -204,8 +209,9 @@ Exchanges a Firebase auth ID token for a encrypted cookie containing the user's 
 
 Can only be called from Endpoint Service notebooks. If the token is suitable, the server sets a cookie that will be submitted to other login endpoints regardless what origin the call is made from.
 `}`
-)});
-  main.variable(observer("checkToken")).define("checkToken", ["verifyIdToken","firebase","firebaseConfig"], function(verifyIdToken,firebase,firebaseConfig){return(
+)}
+
+function _checkToken(verifyIdToken,firebase,firebaseConfig){return(
 async function checkToken(idToken) {
   const jwt = await verifyIdToken(firebase, idToken);
   const secondsSinceIssued = (Date.now() - new Date(jwt.iat * 1000)) / 1000;
@@ -215,8 +221,9 @@ async function checkToken(idToken) {
     throw new Error("Not approved signin provider: " + jwt.firebase.sign_in_provider);
   return jwt;
 }
-)});
-  main.variable(observer("signinHandler")).define("signinHandler", ["checkToken"], function(checkToken){return(
+)}
+
+function _signinHandler(checkToken){return(
 async (req, res) => {
   res.header('Access-Control-Allow-Origin', 'https://endpointservices.static.observableusercontent.com')
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -239,8 +246,9 @@ async (req, res) => {
     res.status(403).send(msg);
   }
 }
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _14(html,md){return(
 html`<div class="content"> ${
 md`## /check
 
@@ -248,8 +256,9 @@ Use /check to retrieve a custom auth token for cross domain use.
 
 If a signed cookie is present federated credentials will be sent, otherwise the user should use /signin first.
 `}`
-)});
-  main.variable(observer("checkHandler")).define("checkHandler", ["getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","isOwner","subdomain","createCustomToken"], function(getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,isOwner,subdomain,createCustomToken){return(
+)}
+
+function _checkHandler(getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,isOwner,subdomain,createCustomToken){return(
 async (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -270,14 +279,16 @@ async (req, res) => {
     res.status(401).end() // No signin token present
   }
 }
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _16(html,md){return(
 html`<div class="content"> ${
 md`## /signout
 Clears cookie
 `}`
-)});
-  main.variable(observer("signoutHandler")).define("signoutHandler", function(){return(
+)}
+
+function _signoutHandler(){return(
 async (req, res) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin)
   res.header('Access-Control-Allow-Credentials', 'true')
@@ -297,20 +308,53 @@ async (req, res) => {
     res.status(500).send(msg);
   }
 }
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _18(html,md){return(
 html`<div class="content"> ${
 md`
 ---
 ## Imports
 `}`
-)});
-  main.variable(observer("cookieParser")).define("cookieParser", ["require"], function(require){return(
+)}
+
+function _cookieParser(require){return(
 require('cookie-parser-browserify@1.4.8')
-)});
-  main.variable(observer()).define(["bulma"], function(bulma){return(
+)}
+
+function _20(bulma){return(
 bulma
-)});
+)}
+
+function _27(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["html","md"], _1);
+  main.variable(observer("viewof user")).define("viewof user", ["notify","federatedLoginState","URLSearchParams","location","html","lib","firebase","subdomain","viewof firebaseUser","checkToken","baseURL","mutable notify"], _user);
+  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","md"], _3);
+  main.variable(observer("federatedLoginState")).define("federatedLoginState", ["notify","firebase","baseURL","mutable notify"], _federatedLoginState);
+  main.define("initial notify", _notify);
+  main.variable(observer("mutable notify")).define("mutable notify", ["Mutable", "initial notify"], (M, _) => new M(_));
+  main.variable(observer("notify")).define("notify", ["mutable notify"], _ => _.generator);
+  main.variable(observer("lib")).define("lib", ["firebase","mutable notify","baseURL"], _lib);
+  main.variable(observer()).define(["html","md"], _7);
+  main.variable(observer("baseURL")).define("baseURL", _baseURL);
+  main.variable(observer()).define(["deploy","handleWithExpress","api"], _9);
+  main.variable(observer("api")).define("api", ["Router","cookieParser","signinHandler","checkHandler","signoutHandler"], _api);
+  main.variable(observer()).define(["html","md"], _11);
+  main.variable(observer("checkToken")).define("checkToken", ["verifyIdToken","firebase","firebaseConfig"], _checkToken);
+  main.variable(observer("signinHandler")).define("signinHandler", ["checkToken"], _signinHandler);
+  main.variable(observer()).define(["html","md"], _14);
+  main.variable(observer("checkHandler")).define("checkHandler", ["getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","isOwner","subdomain","createCustomToken"], _checkHandler);
+  main.variable(observer()).define(["html","md"], _16);
+  main.variable(observer("signoutHandler")).define("signoutHandler", _signoutHandler);
+  main.variable(observer()).define(["html","md"], _18);
+  main.variable(observer("cookieParser")).define("cookieParser", ["require"], _cookieParser);
+  main.variable(observer()).define(["bulma"], _20);
   const child1 = runtime.module(define1);
   main.import("createCustomToken", child1);
   main.import("verifyIdToken", child1);
@@ -334,8 +378,6 @@ bulma
   main.import("bulma", child5);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _27);
   return main;
 }
