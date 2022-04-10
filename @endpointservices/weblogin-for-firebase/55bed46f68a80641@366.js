@@ -1,18 +1,18 @@
 // https://observablehq.com/@mootari/notebook-data@366
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Version Pinning for Notebooks
 Observable supports version pinning by appending the version number to the notebook name or path.
 
 These functions make it easier to look up the most recent version of notebooks, and to use pinned versions in your own documentation. Example:`
-)});
-  main.variable(observer()).define(["md","getCurrentPinnedName"], async function(md,getCurrentPinnedName){return(
+)}
+
+async function _2(md,getCurrentPinnedName){return(
 md`\`\`\`js
 import {getCurrentPinnedName} from '${await getCurrentPinnedName()}'
 \`\`\``
-)});
-  main.variable(observer()).define(["md","dataTable","getCurrentLocalPath","getCurrentPath","getCurrentName","getCurrentPinnedName","getCurrentMetadata","getCurrentComparePath"], async function(md,dataTable,getCurrentLocalPath,getCurrentPath,getCurrentName,getCurrentPinnedName,getCurrentMetadata,getCurrentComparePath){return(
+)}
+
+async function _3(md,dataTable,getCurrentLocalPath,getCurrentPath,getCurrentName,getCurrentPinnedName,getCurrentMetadata,getCurrentComparePath){return(
 md`---
 ## Current Notebook
 Functions that can be used to obtain information about the currently viewed notebook. Metadata and the pinned name will be available once you have shared or published your notebook. Reload the page after publishing to see the updated version number.
@@ -27,30 +27,35 @@ ${dataTable([
 ])}
 
 `
-)});
-  main.variable(observer("getCurrentLocalPath")).define("getCurrentLocalPath", ["html"], function(html){return(
+)}
+
+function _getCurrentLocalPath(html){return(
 function getCurrentLocalPath() {
   return html`<a href="#">`.pathname;
 }
-)});
-  main.variable(observer("getCurrentPath")).define("getCurrentPath", ["formatPath","getCurrentName"], function(formatPath,getCurrentName){return(
+)}
+
+function _getCurrentPath(formatPath,getCurrentName){return(
 function getCurrentPath() {
   return formatPath(getCurrentName());
 }
-)});
-  main.variable(observer("getCurrentName")).define("getCurrentName", ["getCurrentLocalPath"], function(getCurrentLocalPath){return(
+)}
+
+function _getCurrentName(getCurrentLocalPath){return(
 function getCurrentName() {
   return getCurrentLocalPath().replace(/^\/(d\/)?/, '');
 }
-)});
-  main.variable(observer("getCurrentPinnedName")).define("getCurrentPinnedName", ["getCurrentMetadata","formatName","getCurrentName"], function(getCurrentMetadata,formatName,getCurrentName){return(
+)}
+
+function _getCurrentPinnedName(getCurrentMetadata,formatName,getCurrentName){return(
 async function getCurrentPinnedName() {
   const data = await getCurrentMetadata();
   if(data && data.version) return formatName(getCurrentName(), data.version);
   return null;
 }
-)});
-  main.variable(observer("getCurrentMetadata")).define("getCurrentMetadata", ["getMetadata","getCurrentName"], function(getMetadata,getCurrentName)
+)}
+
+function _getCurrentMetadata(getMetadata,getCurrentName)
 {
   let data;
   return async function getCurrentMetadata(refetch = false) {
@@ -58,21 +63,24 @@ async function getCurrentPinnedName() {
     return data;
   }
 }
-);
-  main.variable(observer("getCurrentComparePath")).define("getCurrentComparePath", ["getMetadata","getCurrentName","formatComparePath"], function(getMetadata,getCurrentName,formatComparePath){return(
+
+
+function _getCurrentComparePath(getMetadata,getCurrentName,formatComparePath){return(
 async function getCurrentComparePath(version1 = null, version2 = null) {
   const data = await getMetadata(getCurrentName());
   if(data) return formatComparePath(data.id, version1, data.id, version2);
   return null;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`---
 ## Other Notebooks
 Functions for retrieving information about any notebooks.
 `
-)});
-  main.variable(observer("viewof preview_name")).define("viewof preview_name", ["html","Event"], function(html,Event)
+)}
+
+function _preview_name(html,Event)
 {
   const submit = html`<input type="button" value="Submit">`;
   const input = html`<input type="text" value="@jashkenas/inputs">`;
@@ -82,9 +90,9 @@ Functions for retrieving information about any notebooks.
   view.value = input.value;
   return view;
 }
-);
-  main.variable(observer("preview_name")).define("preview_name", ["Generators", "viewof preview_name"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dataTable","formatLocalPath","preview_name","formatPath","formatSourcePath","getPinnedName","getPinnedPath","getSource","getMetadata"], async function(dataTable,formatLocalPath,preview_name,formatPath,formatSourcePath,getPinnedName,getPinnedPath,getSource,getMetadata){return(
+
+
+async function _12(dataTable,formatLocalPath,preview_name,formatPath,formatSourcePath,getPinnedName,getPinnedPath,getSource,getMetadata){return(
 dataTable([
   ['formatLocalPath', formatLocalPath(preview_name)],
   ['formatPath', formatPath(preview_name)],
@@ -94,59 +102,69 @@ dataTable([
   ['getSource', await getSource(preview_name)],
   ['getMetadata', await getMetadata(preview_name)],
 ])
-)});
-  main.variable(observer("formatLocalPath")).define("formatLocalPath", function(){return(
+)}
+
+function _formatLocalPath(){return(
 function formatLocalPath(name, version = null) {
   return '/' + (name.match(/^@/) ? name : 'd/' + name) + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatPath")).define("formatPath", ["domain","formatLocalPath"], function(domain,formatLocalPath){return(
+)}
+
+function _formatPath(domain,formatLocalPath){return(
 function formatPath(name, version = null) {
   return `https://${domain}${formatLocalPath(name, version)}`;
 }
-)});
-  main.variable(observer("formatSourcePath")).define("formatSourcePath", ["apiDomain","formatLocalPath"], function(apiDomain,formatLocalPath){return(
+)}
+
+function _formatSourcePath(apiDomain,formatLocalPath){return(
 function formatSourcePath(name, version = null) {
   return `https://${apiDomain}${formatLocalPath(name, version)}.js`;
 }
-)});
-  main.variable(observer("formatName")).define("formatName", function(){return(
+)}
+
+function _formatName(){return(
 function formatName(name, version = null) {
   return name + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatId")).define("formatId", function(){return(
+)}
+
+function _formatId(){return(
 function formatId(id, version = null) {
   return id + (version ? '@' + version : '');
 }
-)});
-  main.variable(observer("formatComparePath")).define("formatComparePath", ["domain","formatId"], function(domain,formatId){return(
+)}
+
+function _formatComparePath(domain,formatId){return(
 function formatComparePath(id1, version1, id2, version2) {
   return `https://${domain}/compare/${formatId(id1, version1)}...${formatId(id2, version2)}`;
 }
-)});
-  main.variable(observer("getPinnedName")).define("getPinnedName", ["getMetadata"], function(getMetadata){return(
+)}
+
+function _getPinnedName(getMetadata){return(
 async function getPinnedName(name) {
   const data = await getMetadata(name);
   if(data && data.version) return name + '@' + data.version;
   return null;
 }
-)});
-  main.variable(observer("getPinnedPath")).define("getPinnedPath", ["getMetadata","formatPath"], function(getMetadata,formatPath){return(
+)}
+
+function _getPinnedPath(getMetadata,formatPath){return(
 async function getPinnedPath(name) {
   const data = await getMetadata(name);
   if(data && data.version) return formatPath(name, data.version);
   return null;
 }
-)});
-  main.variable(observer("getComparePath")).define("getComparePath", ["getMetadata","formatComparePath"], function(getMetadata,formatComparePath){return(
+)}
+
+function _getComparePath(getMetadata,formatComparePath){return(
 async function getComparePath(name, version1 = null, version2 = null) {
   const data = await getMetadata(name);
   if(data) return formatComparePath(data.id, version1, data.id, version2);
   return null;
 }
-)});
-  main.variable(observer("getSource")).define("getSource", ["formatSourcePath"], function(formatSourcePath){return(
+)}
+
+function _getSource(formatSourcePath){return(
 async function getSource(name, version = null) {
   const path = formatSourcePath(name, version);
   try {
@@ -155,8 +173,9 @@ async function getSource(name, version = null) {
   }
   catch(e) { return null; }  
 }
-)});
-  main.variable(observer("getMetadata")).define("getMetadata", ["getSource"], function(getSource){return(
+)}
+
+function _getMetadata(getSource){return(
 async function getMetadata(name, version = null) {
   const map = {
     'URL': 'url',
@@ -178,17 +197,21 @@ async function getMetadata(name, version = null) {
     return data;
   }, {id: id[1]});
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _24(md){return(
 md`---`
-)});
-  main.variable(observer("domain")).define("domain", function(){return(
+)}
+
+function _domain(){return(
 'observablehq.com'
-)});
-  main.variable(observer("apiDomain")).define("apiDomain", function(){return(
+)}
+
+function _apiDomain(){return(
 'api.observablehq.com'
-)});
-  main.variable(observer("dataTable")).define("dataTable", ["html"], function(html){return(
+)}
+
+function _dataTable(html){return(
 function dataTable(rows) {
   const style = 'padding:.5em;vertical-align:top';
   const n = rows.map(([l,d]) => {
@@ -198,6 +221,37 @@ function dataTable(rows) {
   });
   return html`<table>${n}`;
 }
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md","getCurrentPinnedName"], _2);
+  main.variable(observer()).define(["md","dataTable","getCurrentLocalPath","getCurrentPath","getCurrentName","getCurrentPinnedName","getCurrentMetadata","getCurrentComparePath"], _3);
+  main.variable(observer("getCurrentLocalPath")).define("getCurrentLocalPath", ["html"], _getCurrentLocalPath);
+  main.variable(observer("getCurrentPath")).define("getCurrentPath", ["formatPath","getCurrentName"], _getCurrentPath);
+  main.variable(observer("getCurrentName")).define("getCurrentName", ["getCurrentLocalPath"], _getCurrentName);
+  main.variable(observer("getCurrentPinnedName")).define("getCurrentPinnedName", ["getCurrentMetadata","formatName","getCurrentName"], _getCurrentPinnedName);
+  main.variable(observer("getCurrentMetadata")).define("getCurrentMetadata", ["getMetadata","getCurrentName"], _getCurrentMetadata);
+  main.variable(observer("getCurrentComparePath")).define("getCurrentComparePath", ["getMetadata","getCurrentName","formatComparePath"], _getCurrentComparePath);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("viewof preview_name")).define("viewof preview_name", ["html","Event"], _preview_name);
+  main.variable(observer("preview_name")).define("preview_name", ["Generators", "viewof preview_name"], (G, _) => G.input(_));
+  main.variable(observer()).define(["dataTable","formatLocalPath","preview_name","formatPath","formatSourcePath","getPinnedName","getPinnedPath","getSource","getMetadata"], _12);
+  main.variable(observer("formatLocalPath")).define("formatLocalPath", _formatLocalPath);
+  main.variable(observer("formatPath")).define("formatPath", ["domain","formatLocalPath"], _formatPath);
+  main.variable(observer("formatSourcePath")).define("formatSourcePath", ["apiDomain","formatLocalPath"], _formatSourcePath);
+  main.variable(observer("formatName")).define("formatName", _formatName);
+  main.variable(observer("formatId")).define("formatId", _formatId);
+  main.variable(observer("formatComparePath")).define("formatComparePath", ["domain","formatId"], _formatComparePath);
+  main.variable(observer("getPinnedName")).define("getPinnedName", ["getMetadata"], _getPinnedName);
+  main.variable(observer("getPinnedPath")).define("getPinnedPath", ["getMetadata","formatPath"], _getPinnedPath);
+  main.variable(observer("getComparePath")).define("getComparePath", ["getMetadata","formatComparePath"], _getComparePath);
+  main.variable(observer("getSource")).define("getSource", ["formatSourcePath"], _getSource);
+  main.variable(observer("getMetadata")).define("getMetadata", ["getSource"], _getMetadata);
+  main.variable(observer()).define(["md"], _24);
+  main.variable(observer("domain")).define("domain", _domain);
+  main.variable(observer("apiDomain")).define("apiDomain", _apiDomain);
+  main.variable(observer("dataTable")).define("dataTable", ["html"], _dataTable);
   return main;
 }
