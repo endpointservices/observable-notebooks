@@ -1,6 +1,6 @@
 import define1 from "./ab3e70b29c480e6d@83.js";
 import define2 from "./6eda90668ae03044@803.js";
-import define3 from "./293899bef371e135@216.js";
+import define3 from "./293899bef371e135@225.js";
 import define4 from "./048a17a165be198d@263.js";
 
 function _1(md){return(
@@ -12,7 +12,8 @@ To use, first fill in the manual trigger fields to get a feel of the events and 
 
 Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".
 
-This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.`
+This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.
+`
 )}
 
 function _2(settings,md){return(
