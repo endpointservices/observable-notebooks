@@ -1,4 +1,5 @@
 import define1 from "./c2dae147641e012a@46.js";
+import define2 from "./a81f2a20664080d3@212.js";
 
 function _1(md){return(
 md`# Endpoint Services Footer
@@ -22,8 +23,12 @@ md`<small>
 function _footer(plausible_analytics,sentry,graphic)
 {
   plausible_analytics;
-  sentry;
-  graphic.sentry = sentry;
+  const Sentry = sentry({
+    DSN:
+      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
+    namespaces: ["endpointservices", "tomlarkworthy"]
+  });
+  graphic.sentry = Sentry;
   return graphic;
 }
 
@@ -114,55 +119,18 @@ md`### Error Monitoring: Sentry
 Sentry alerts me to errors in notebooks`
 )}
 
-function _sentry(html,location,Sentry,Tracing)
-{
-  const selfUrl = html`<a href="?">`.href;
-  if (
-    !(
-      selfUrl.includes("@endpointservices") ||
-      selfUrl.includes("@tomlarkworthy") ||
-      location.origin.includes("https://endpointservices") ||
-      location.origin.includes("https://tomlarkworthy")
-    )
-  )
-    return;
-  Sentry.init({
-    dsn:
-      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
-    beforeSend: (event) => {
-      event.request.url = selfUrl.split("?")[0];
-      return event;
-    },
-    integrations: [new Tracing.Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0
-  });
-  return Sentry;
-}
-
-
-async function _Sentry(require,FileAttachment){return(
-require(await FileAttachment("browser-6.1.0").url())
-)}
-
-async function _Tracing(require,FileAttachment){return(
-require(await FileAttachment("tracing-6.1.0").url())
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["browser-6.1.0",new URL("./files/f701739c6a6dc1a26c4350b5d8048c3d80cc87b23587bf98f80059018aa10f0273a9afb1927a6b848c20fc786284232a8128bc3d1d0b7b9e3602e8be52fecccd",import.meta.url)],["tracing-6.1.0",new URL("./files/5bebc5e1862c57759a646def0fc5a77a6d4b8d0f87cd9a515d70b85f88ccbe46dcbaa35911b1a32087af7a297d762feb679d95ceccdfdd6477b30a2e9aa75b60",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
   main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["localStorage"], _5);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer("sentry")).define("sentry", ["html","location","Sentry","Tracing"], _sentry);
-  main.variable(observer("Sentry")).define("Sentry", ["require","FileAttachment"], _Sentry);
-  main.variable(observer("Tracing")).define("Tracing", ["require","FileAttachment"], _Tracing);
   const child1 = runtime.module(define1);
   main.import("localStorage", child1);
+  main.variable(observer()).define(["md"], _8);
+  const child2 = runtime.module(define2);
+  main.import("sentry", child2);
   return main;
 }
