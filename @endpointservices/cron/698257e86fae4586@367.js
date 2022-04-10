@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase-admin@350
+// https://observablehq.com/@tomlarkworthy/firebase-admin@367
 function _1(md){return(
 md`# Firebase Admin and Google API helpers in the browser
 
@@ -396,7 +396,7 @@ md`### Support utilities`
 )}
 
 function _jwt(require){return(
-require('https://bundle.run/jsonwebtoken@8.5.1')
+require("https://bundle.run/jsonwebtoken@8.5.1")
 )}
 
 function _jsrsasign(require){return(

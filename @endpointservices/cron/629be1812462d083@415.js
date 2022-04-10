@@ -6,7 +6,7 @@ import define4 from "./84e66f78139ac354@814.js";
 import define5 from "./a2e58f97fd5e8d7c@674.js";
 import define6 from "./0905542adbad836e@55.js";
 import define7 from "./3d9d1394d858ca97@553.js";
-import define8 from "./293899bef371e135@216.js";
+import define8 from "./293899bef371e135@225.js";
 
 async function _1(md,FileAttachment){return(
 md`# Schedule Regular Tasks with Cron
