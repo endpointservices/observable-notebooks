@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/sentry@211
+// https://observablehq.com/@endpointservices/sentry@212
 import define1 from "./fa1f6059e44da1d5@394.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -104,7 +104,6 @@ function _sentry(html,location,Sentry,Tracing,catchAll,invalidation){return(
     tracesSampleRate: 1.0
   });
   catchAll((cellName, reason) => {
-    debugger;
     Sentry.captureException(reason);
   }, invalidation);
 
