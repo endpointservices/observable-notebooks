@@ -1,32 +1,30 @@
 // https://observablehq.com/@endpointservices/logs@1920
 import define1 from "./165e9411d1af7e86@1398.js";
-import define2 from "./698257e86fae4586@346.js";
-import define3 from "./993a0c51ef1175ea@1317.js";
-import define4 from "./11a5ab8b1b3a51db@1160.js";
+import define2 from "./698257e86fae4586@367.js";
+import define3 from "./993a0c51ef1175ea@1345.js";
+import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./c7a3b20cec5d4dd9@659.js";
-import define6 from "./cb60908738c3dabe@107.js";
+import define6 from "./cb60908738c3dabe@152.js";
 import define7 from "./777fe85658e39c55@470.js";
-import define8 from "./293899bef371e135@216.js";
+import define8 from "./293899bef371e135@225.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["robert-larsson-UsET4S0ginw-unsplash@1.jpg",new URL("./files/80f385bd757c2b37181f93d4a6f341849a0a28ccbdb21b28535a6dba3a52fb889d3ac52918d2849edbd76ae90fb8b732fa23821baebed742cb58f515ef67316b",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Logs Manager
 
 Here you can enable logging for your [serverless cells](https://observablehq.com/@tomlarkworthy/serverless-cells). Logs are organized by Observable subdomain. Once enabled, you will be provided a link to your logs which are hosted on [Google Cloud Logging](https://console.cloud.google.com/logs/query?project=endpointserviceusers). You will need to [certify ownership](https://observablehq.com/@tomlarkworthy/subdomain-certification) of your observable subdomain with Endpoint Services before you can access logs.
 `
-)});
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+)}
+
+async function _2(md,FileAttachment){return(
 md`
 
 ![](${await FileAttachment("robert-larsson-UsET4S0ginw-unsplash@1.jpg").url()})
 
 <span>Photo by <a href="https://unsplash.com/@squareddesign?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Robert Larsson</a> on <a href="https://unsplash.com/s/photos/logs?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
 `
-)});
-  main.variable(observer("ui")).define("ui", ["subdomains","md","html","subdomain_states","subdomain_members","enable","user","addMember"], function(subdomains,md,html,subdomain_states,subdomain_members,enable,user,addMember)
+)}
+
+function _ui(subdomains,md,html,subdomain_states,subdomain_members,enable,user,addMember)
 {
   if (subdomains.length === 0) return md`
 ## No subdomains certified
@@ -87,30 +85,35 @@ ${subdomains.map(subdomain => html`<tr>
 </tbody>
 </table></div>`
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _4(md){return(
 md`### Login
 
 A Google Identity (gmail or gsuite account) is required to access the logs service.
 `
-)});
-  main.variable(observer()).define(["viewof user"], function($0){return(
+)}
+
+function _5($0){return(
 $0
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md `## Open Cloud
 
 
 Like other Open Cloud tooling, the source code and design of this integration is in this notebook and permissively licensed.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### Change log
 - 2021-01-11: Created
 `
-)});
-  main.variable(observer("overview")).define("overview", ["md"], function(md){return(
+)}
+
+function _overview(md){return(
 md`
  ## Open Cloud Implementation
 
@@ -139,8 +142,9 @@ The IAM policy for *'endpointserviceusers'* will get large, as it serves end-use
 
 ### Serverside Endpoints
 `
-)});
-  main.variable(observer("enableEndpoint")).define("enableEndpoint", ["deploy","verifyIdToken","firebase","getAccessTokenFromServiceAccount","createGapi"], function(deploy,verifyIdToken,firebase,getAccessTokenFromServiceAccount,createGapi){return(
+)}
+
+function _enableEndpoint(deploy,verifyIdToken,firebase,getAccessTokenFromServiceAccount,createGapi){return(
 deploy("enable", async (req, res, ctx) => {
   // Check signed in user
   req.auth = await verifyIdToken(firebase.app(), req.headers['idtoken']);
@@ -192,8 +196,9 @@ deploy("enable", async (req, res, ctx) => {
 }, {
   secrets: ['endpointservices_secretadmin_service_account_key']
 })
-)});
-  main.variable(observer("addMemberEndpoint")).define("addMemberEndpoint", ["deploy","verifyIdToken","firebase","getAccessTokenFromServiceAccount","createGapi"], function(deploy,verifyIdToken,firebase,getAccessTokenFromServiceAccount,createGapi){return(
+)}
+
+function _addMemberEndpoint(deploy,verifyIdToken,firebase,getAccessTokenFromServiceAccount,createGapi){return(
 deploy("addMember", async (req, res, ctx) => {
   // Check signed in user
   req.auth = await verifyIdToken(firebase.app(), req.headers['idtoken']);
@@ -274,11 +279,13 @@ deploy("addMember", async (req, res, ctx) => {
 }, {
   secrets: ['endpointservices_secretadmin_service_account_key']
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`### Clientside SDK`
-)});
-  main.variable(observer("enable")).define("enable", ["subdomain_states_mask","mutable subdomain_states_mask","enableEndpoint","user"], function(subdomain_states_mask,$0,enableEndpoint,user){return(
+)}
+
+function _enable(subdomain_states_mask,$0,enableEndpoint,user){return(
 async (subdomain) => {
   if (subdomain_states_mask[subdomain] != "ENABLING") {
     subdomain_states_mask[subdomain] = "ENABLING"
@@ -298,8 +305,9 @@ async (subdomain) => {
   $0.value = subdomain_states_mask;
   return await response.json();
 }
-)});
-  main.variable(observer("addMember")).define("addMember", ["subdomain_states_mask","mutable subdomain_states_mask","addMemberEndpoint","user"], function(subdomain_states_mask,$0,addMemberEndpoint,user){return(
+)}
+
+function _addMember(subdomain_states_mask,$0,addMemberEndpoint,user){return(
 async (subdomain, viewer_email) => {
   if (subdomain_states_mask[subdomain] != "ADDING_MEMBER") {
     subdomain_states_mask[subdomain] = "ADDING_MEMBER"
@@ -320,14 +328,17 @@ async (subdomain, viewer_email) => {
   $0.value = subdomain_states_mask;
   return await response.json();
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`### State`
-)});
-  main.variable(observer("subdomain_certificates")).define("subdomain_certificates", ["listen","firebase","user"], function(listen,firebase,user){return(
+)}
+
+function _subdomain_certificates(listen,firebase,user){return(
 listen(firebase.firestore().collection("/services/ownership/owners").where("uid", "==", user.uid))
-)});
-  main.variable(observer("subdomains")).define("subdomains", ["subdomain_certificates"], function(subdomain_certificates){return(
+)}
+
+function _subdomains(subdomain_certificates){return(
 subdomain_certificates.reduce(
   (acc, cert) => {
     if (!acc.includes(cert.subdomain)) acc.push(cert.subdomain)
@@ -335,8 +346,9 @@ subdomain_certificates.reduce(
   },
   []
 )
-)});
-  main.variable(observer("subdomain_states")).define("subdomain_states", ["subdomains","listen","firebase","subdomain_states_mask"], async function(subdomains,listen,firebase,subdomain_states_mask)
+)}
+
+async function _subdomain_states(subdomains,listen,firebase,subdomain_states_mask)
 {
   // Fetch all the states for all subdomains
   const states = await Promise.all(subdomains.map(
@@ -354,13 +366,13 @@ subdomain_certificates.reduce(
     ,{}
   )
 }
-);
-  main.define("initial subdomain_states_mask", function(){return(
+
+
+function _subdomain_states_mask(){return(
 {}
-)});
-  main.variable(observer("mutable subdomain_states_mask")).define("mutable subdomain_states_mask", ["Mutable", "initial subdomain_states_mask"], (M, _) => new M(_));
-  main.variable(observer("subdomain_states_mask")).define("subdomain_states_mask", ["mutable subdomain_states_mask"], _ => _.generator);
-  main.variable(observer("subdomain_members")).define("subdomain_members", ["subdomains","listen","firebase","groupBy"], async function(subdomains,listen,firebase,groupBy)
+)}
+
+async function _subdomain_members(subdomains,listen,firebase,groupBy)
 {
   const members = await Promise.all(subdomains.map(
     subdomain => listen(
@@ -379,22 +391,18 @@ subdomain_certificates.reduce(
   }));
   return groupBy(extractedmembers, 'subdomain')
 }
-);
-  main.variable(observer("groupBy")).define("groupBy", function(){return(
+
+
+function _groupBy(){return(
 function(xs, key) {
   return xs.reduce(function(rv, x) {
     (rv[x[key]] = rv[x[key]] || []).push(x);
     return rv;
   }, {});
 }
-)});
-  const child1 = runtime.module(define1);
-  main.import("deploy", child1);
-  main.import("Router", child1);
-  main.import("handleWithExpress", child1);
-  const child2 = runtime.module(define2);
-  main.import("verifyIdToken", child2);
-  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], function(jsrsasign){return(
+)}
+
+function _getAccessTokenFromServiceAccount(jsrsasign){return(
 async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   // First create a JWT from the credentials
   const tNow = Math.floor((new Date()).getTime() / 1000);
@@ -423,20 +431,17 @@ async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   }
   return (await tokenResponse.json()).access_token;
 }
-)});
-  main.variable(observer("signinWithGoogleServiceAccountKeyJson")).define("signinWithGoogleServiceAccountKeyJson", ["getAccessTokenFromServiceAccount","firebase"], function(getAccessTokenFromServiceAccount,firebase){return(
+)}
+
+function _signinWithGoogleServiceAccountKeyJson(getAccessTokenFromServiceAccount,firebase){return(
 async function signinWithGoogleServiceAccountKeyJson(serviceAccountKey) {
   const access_token = await getAccessTokenFromServiceAccount(serviceAccountKey)
   const credential = firebase.auth.GoogleAuthProvider.credential(null, access_token);
   return await firebase.auth().signInWithCredential(credential)
 }
-)});
-  const child3 = runtime.module(define3).derive(["firebaseConfig"], main);
-  main.import("viewof user", child3);
-  main.import("user", child3);
-  main.import("firebase", child3);
-  main.import("listen", child3);
-  main.variable(observer("firebaseConfig")).define("firebaseConfig", function(){return(
+)}
+
+function _firebaseConfig(){return(
 {
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
   authDomain: "endpointservice.firebaseapp.com",
@@ -449,10 +454,57 @@ async function signinWithGoogleServiceAccountKeyJson(serviceAccountKey) {
     signInOptions: ["google.com"],
   },
 }
-)});
-  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], function(require){return(
+)}
+
+function _jsrsasign(require){return(
 require('https://bundle.run/jsrsasign@10.1.4')
-)});
+)}
+
+function _33(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["robert-larsson-UsET4S0ginw-unsplash@1.jpg",new URL("./files/80f385bd757c2b37181f93d4a6f341849a0a28ccbdb21b28535a6dba3a52fb889d3ac52918d2849edbd76ae90fb8b732fa23821baebed742cb58f515ef67316b",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md","FileAttachment"], _2);
+  main.variable(observer("ui")).define("ui", ["subdomains","md","html","subdomain_states","subdomain_members","enable","user","addMember"], _ui);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["viewof user"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("overview")).define("overview", ["md"], _overview);
+  main.variable(observer("enableEndpoint")).define("enableEndpoint", ["deploy","verifyIdToken","firebase","getAccessTokenFromServiceAccount","createGapi"], _enableEndpoint);
+  main.variable(observer("addMemberEndpoint")).define("addMemberEndpoint", ["deploy","verifyIdToken","firebase","getAccessTokenFromServiceAccount","createGapi"], _addMemberEndpoint);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("enable")).define("enable", ["subdomain_states_mask","mutable subdomain_states_mask","enableEndpoint","user"], _enable);
+  main.variable(observer("addMember")).define("addMember", ["subdomain_states_mask","mutable subdomain_states_mask","addMemberEndpoint","user"], _addMember);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("subdomain_certificates")).define("subdomain_certificates", ["listen","firebase","user"], _subdomain_certificates);
+  main.variable(observer("subdomains")).define("subdomains", ["subdomain_certificates"], _subdomains);
+  main.variable(observer("subdomain_states")).define("subdomain_states", ["subdomains","listen","firebase","subdomain_states_mask"], _subdomain_states);
+  main.define("initial subdomain_states_mask", _subdomain_states_mask);
+  main.variable(observer("mutable subdomain_states_mask")).define("mutable subdomain_states_mask", ["Mutable", "initial subdomain_states_mask"], (M, _) => new M(_));
+  main.variable(observer("subdomain_states_mask")).define("subdomain_states_mask", ["mutable subdomain_states_mask"], _ => _.generator);
+  main.variable(observer("subdomain_members")).define("subdomain_members", ["subdomains","listen","firebase","groupBy"], _subdomain_members);
+  main.variable(observer("groupBy")).define("groupBy", _groupBy);
+  const child1 = runtime.module(define1);
+  main.import("deploy", child1);
+  main.import("Router", child1);
+  main.import("handleWithExpress", child1);
+  const child2 = runtime.module(define2);
+  main.import("verifyIdToken", child2);
+  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], _getAccessTokenFromServiceAccount);
+  main.variable(observer("signinWithGoogleServiceAccountKeyJson")).define("signinWithGoogleServiceAccountKeyJson", ["getAccessTokenFromServiceAccount","firebase"], _signinWithGoogleServiceAccountKeyJson);
+  const child3 = runtime.module(define3).derive(["firebaseConfig"], main);
+  main.import("viewof user", child3);
+  main.import("user", child3);
+  main.import("firebase", child3);
+  main.import("listen", child3);
+  main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
+  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], _jsrsasign);
   const child4 = runtime.module(define4);
   main.import("html", child4);
   const child5 = runtime.module(define5);
@@ -466,8 +518,6 @@ require('https://bundle.run/jsrsasign@10.1.4')
   main.import("createGapi", child7);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _33);
   return main;
 }
