@@ -1,10 +1,9 @@
-// https://observablehq.com/@tomlarkworthy/utils@6
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+// https://observablehq.com/@tomlarkworthy/utils@10
+function _1(md){return(
 md`# Utils`
-)});
-  main.variable(observer("promiseRecursive")).define("promiseRecursive", function(){return(
+)}
+
+function _promiseRecursive(){return(
 function promiseRecursive(obj) {
   const getPromises = obj =>
     Object.keys(obj).reduce(
@@ -25,6 +24,16 @@ function promiseRecursive(obj) {
     )
   );
 }
-)});
+)}
+
+function _3(){return(
+Object.keys([1, 2])
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(_3);
   return main;
 }
