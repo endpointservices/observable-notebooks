@@ -1,5 +1,5 @@
 import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./293899bef371e135@216.js";
+import define2 from "./293899bef371e135@225.js";
 
 function _1(md){return(
 md`# [Webcode](https://webcode.run) API Reference`
