@@ -1,13 +1,12 @@
 // https://observablehq.com/@tomlarkworthy/ink@932
 import define1 from "./1d309dbd9697e042@627.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Ink in water`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`Using [@jashkenas](https://observablehq.com/@jashkenas/webgl-fluid-simulation)'s port of [Pavel Dobryakov’s](https://github.com/PavelDoGreat) [WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/blob/master/script.js) [(MIT License)](https://opensource.org/licenses/MIT) as a base, an **ink** model. 
 
 Our long term destination is *Suminagashi*, but we need multi-fluid simulation to model the surfactant.
@@ -23,8 +22,9 @@ Checkout [Gentle Introduction to Realtime Fluid Simulation for Programmers and T
 ## Instructions
 
 *Click inside the rectangle below*`
-)});
-  main.variable(observer("canvas")).define("canvas", ["DOM","width","height","ink","mutable mouse"], function(DOM,width,height,ink,$0)
+)}
+
+function _canvas(DOM,width,height,ink,$0)
 {
   const canvas = DOM.canvas(
     width * devicePixelRatio,
@@ -46,62 +46,61 @@ Checkout [Gentle Introduction to Realtime Fluid Simulation for Programmers and T
   canvas.addEventListener("pointerup", (evt) => ($0.value = undefined)); // Release mouse
   return canvas;
 }
-);
-  main.variable(observer("viewof height")).define("viewof height", ["Inputs"], function(Inputs){return(
+
+
+function _height(Inputs){return(
 Inputs.range([100, 1000], { value: 570, label: "height" })
-)});
-  main.variable(observer("height")).define("height", ["Generators", "viewof height"], (G, _) => G.input(_));
-  main.variable(observer("viewof dt")).define("viewof dt", ["Inputs"], function(Inputs){return(
+)}
+
+function _dt(Inputs){return(
 Inputs.range([0, 0.035], {
   value: 0.016,
   step: 0.001,
   label: "time step per frame"
 })
-)});
-  main.variable(observer("dt")).define("dt", ["Generators", "viewof dt"], (G, _) => G.input(_));
-  main.variable(observer("viewof downsample")).define("viewof downsample", ["Inputs"], function(Inputs){return(
+)}
+
+function _downsample(Inputs){return(
 Inputs.range([0.1, 5], {
   value: 1.5,
   step: 0.01,
   label: "Lower resolution"
 })
-)});
-  main.variable(observer("downsample")).define("downsample", ["Generators", "viewof downsample"], (G, _) => G.input(_));
-  main.variable(observer("viewof densityDissipation")).define("viewof densityDissipation", ["Inputs"], function(Inputs){return(
+)}
+
+function _densityDissipation(Inputs){return(
 Inputs.range([0.8, 1.1], {
   value: 0.99,
   step: 0.001,
   label: "Ink dissipation"
 })
-)});
-  main.variable(observer("densityDissipation")).define("densityDissipation", ["Generators", "viewof densityDissipation"], (G, _) => G.input(_));
-  main.variable(observer("viewof velocityDissipation")).define("viewof velocityDissipation", ["Inputs"], function(Inputs){return(
+)}
+
+function _velocityDissipation(Inputs){return(
 Inputs.range([0.95, 1.05], {
   value: 0.99,
   step: 0.001,
   label: "velocity dissipation"
 })
-)});
-  main.variable(observer("velocityDissipation")).define("velocityDissipation", ["Generators", "viewof velocityDissipation"], (G, _) => G.input(_));
-  main.variable(observer("viewof curlDegree")).define("viewof curlDegree", ["Inputs"], function(Inputs){return(
+)}
+
+function _curlDegree(Inputs){return(
 Inputs.range([0, 50], {
   value: 17,
   step: 0.1,
   label: "curl"
 })
-)});
-  main.variable(observer("curlDegree")).define("curlDegree", ["Generators", "viewof curlDegree"], (G, _) => G.input(_));
-  main.define("initial ink", function(){return(
+)}
+
+function _ink(){return(
 [255, 0, 0]
-)});
-  main.variable(observer("mutable ink")).define("mutable ink", ["Mutable", "initial ink"], (M, _) => new M(_));
-  main.variable(observer("ink")).define("ink", ["mutable ink"], _ => _.generator);
-  main.define("initial mouse", function(){return(
+)}
+
+function _mouse(){return(
 undefined
-)});
-  main.variable(observer("mutable mouse")).define("mutable mouse", ["Mutable", "initial mouse"], (M, _) => new M(_));
-  main.variable(observer("mouse")).define("mouse", ["mutable mouse"], _ => _.generator);
-  main.variable(observer("mouseSplat")).define("mouseSplat", ["ink","splat"], function(ink,splat){return(
+)}
+
+function _mouseSplat(ink,splat){return(
 function mouseSplat(evt) {
   const color = [ink[0], ink[1], ink[2]];
   const dx = 0;
@@ -116,8 +115,9 @@ function mouseSplat(evt) {
     p
   );
 }
-)});
-  main.variable(observer("ctx")).define("ctx", ["canvas","supportRenderTextureFormat"], function(canvas,supportRenderTextureFormat)
+)}
+
+function _ctx(canvas,supportRenderTextureFormat)
 {
   const params = {alpha: false, depth: false, stencil: false, antialias: false};
 
@@ -156,14 +156,17 @@ function mouseSplat(evt) {
     ext: {internalFormat, internalFormatRG, formatRG, halfFloatTexType, supportLinearFloat}
   };
 }
-);
-  main.variable(observer("gl")).define("gl", ["ctx"], function(ctx){return(
+
+
+function _gl(ctx){return(
 ctx.gl
-)});
-  main.variable(observer("ext")).define("ext", ["ctx"], function(ctx){return(
+)}
+
+function _ext(ctx){return(
 ctx.ext
-)});
-  main.variable(observer("supportRenderTextureFormat")).define("supportRenderTextureFormat", function(){return(
+)}
+
+function _supportRenderTextureFormat(){return(
 function supportRenderTextureFormat (gl, internalFormat, format, type) {
   let texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -180,8 +183,9 @@ function supportRenderTextureFormat (gl, internalFormat, format, type) {
   const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
   return status == gl.FRAMEBUFFER_COMPLETE;
 }
-)});
-  main.variable(observer("GLProgram")).define("GLProgram", ["gl"], function(gl){return(
+)}
+
+function _GLProgram(gl){return(
 class GLProgram {
   constructor (vertexShader, fragmentShader) {
     this.uniforms = {};
@@ -202,16 +206,18 @@ class GLProgram {
     gl.useProgram(this.program);
   }
 }
-)});
-  main.variable(observer("compileShader")).define("compileShader", ["gl"], function(gl){return(
+)}
+
+function _compileShader(gl){return(
 function compileShader(type, source) {
   const shader = gl.createShader(type);
   gl.shaderSource(shader, source);
   gl.compileShader(shader);
   return shader;
 }
-)});
-  main.variable(observer("baseVertexShader")).define("baseVertexShader", ["compileShader","gl"], function(compileShader,gl){return(
+)}
+
+function _baseVertexShader(compileShader,gl){return(
 compileShader(gl.VERTEX_SHADER, `
   precision highp float;
   precision mediump sampler2D;
@@ -231,8 +237,9 @@ compileShader(gl.VERTEX_SHADER, `
     gl_Position = vec4(aPosition, 0.0, 1.0);
   }
 `)
-)});
-  main.variable(observer("createFBO")).define("createFBO", ["gl"], function(gl){return(
+)}
+
+function _createFBO(gl){return(
 function createFBO(texId, w, h, internalFormat, format, type, param) {
   gl.activeTexture(gl.TEXTURE0 + texId);
   let texture = gl.createTexture();
@@ -251,8 +258,9 @@ function createFBO(texId, w, h, internalFormat, format, type, param) {
 
   return [texture, fbo, texId];
 }
-)});
-  main.variable(observer("createDoubleFBO")).define("createDoubleFBO", ["createFBO"], function(createFBO){return(
+)}
+
+function _createDoubleFBO(createFBO){return(
 function createDoubleFBO(texId, w, h, internalFormat, format, type, param) {
   let fbo1 = createFBO(texId, w, h, internalFormat, format, type, param);
   let fbo2 = createFBO(texId + 1, w, h, internalFormat, format, type, param);
@@ -271,32 +279,41 @@ function createDoubleFBO(texId, w, h, internalFormat, format, type, param) {
     }
   }
 }
-)});
-  main.variable(observer("textureWidth")).define("textureWidth", ["gl","downsample"], function(gl,downsample){return(
+)}
+
+function _textureWidth(gl,downsample){return(
 gl.drawingBufferWidth >> downsample
-)});
-  main.variable(observer("textureHeight")).define("textureHeight", ["gl","downsample"], function(gl,downsample){return(
+)}
+
+function _textureHeight(gl,downsample){return(
 gl.drawingBufferHeight >> downsample
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _24(md){return(
 md`### Density holds color information`
-)});
-  main.variable(observer("density")).define("density", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], function(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
+)}
+
+function _density(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
 createDoubleFBO(0, textureWidth, textureHeight, ext.internalFormat, gl.RGBA, ext.halfFloatTexType, ext.supportLinearFloat ? gl.LINEAR : gl.NEAREST)
-)});
-  main.variable(observer("velocity")).define("velocity", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], function(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
+)}
+
+function _velocity(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
 createDoubleFBO(2, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, ext.supportLinearFloat ? gl.LINEAR : gl.NEAREST)
-)});
-  main.variable(observer("divergence")).define("divergence", ["createFBO","textureWidth","textureHeight","ext","gl"], function(createFBO,textureWidth,textureHeight,ext,gl){return(
+)}
+
+function _divergence(createFBO,textureWidth,textureHeight,ext,gl){return(
 createFBO(4, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
-)});
-  main.variable(observer("curl")).define("curl", ["createFBO","textureWidth","textureHeight","ext","gl"], function(createFBO,textureWidth,textureHeight,ext,gl){return(
+)}
+
+function _curl(createFBO,textureWidth,textureHeight,ext,gl){return(
 createFBO(5, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
-)});
-  main.variable(observer("pressure")).define("pressure", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], function(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
+)}
+
+function _pressure(createDoubleFBO,textureWidth,textureHeight,ext,gl){return(
 createDoubleFBO(6, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
-)});
-  main.variable(observer("blit")).define("blit", ["gl"], function(gl)
+)}
+
+function _blit(gl)
 {
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
@@ -310,8 +327,9 @@ createDoubleFBO(6, textureWidth, textureHeight, ext.internalFormatRG, ext.format
     gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
   }
 }
-);
-  main.variable(observer("clearProgram")).define("clearProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+
+
+function _clearProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -328,8 +346,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("splatProgram")).define("splatProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _splatProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -353,8 +372,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("advectionProgram")).define("advectionProgram", ["GLProgram","baseVertexShader","ext","compileShader","gl"], function(GLProgram,baseVertexShader,ext,compileShader,gl){return(
+)}
+
+function _advectionProgram(GLProgram,baseVertexShader,ext,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   ext.supportLinearFloat
@@ -406,8 +426,9 @@ new GLProgram(
 `
       )
 )
-)});
-  main.variable(observer("divergenceProgram")).define("divergenceProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _divergenceProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -440,8 +461,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("curlProgram")).define("curlProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _curlProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -466,8 +488,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("vorticityProgram")).define("vorticityProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _vorticityProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -498,8 +521,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("pressureProgram")).define("pressureProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _pressureProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -531,8 +555,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("gradienSubtractProgram")).define("gradienSubtractProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _gradienSubtractProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -563,8 +588,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("displayProgram")).define("displayProgram", ["GLProgram","baseVertexShader","compileShader","gl"], function(GLProgram,baseVertexShader,compileShader,gl){return(
+)}
+
+function _displayProgram(GLProgram,baseVertexShader,compileShader,gl){return(
 new GLProgram(
   baseVertexShader,
   compileShader(
@@ -581,8 +607,9 @@ new GLProgram(
 `
   )
 )
-)});
-  main.variable(observer("splat")).define("splat", ["splatProgram","gl","velocity","canvas","blit","density","pressure"], function(splatProgram,gl,velocity,canvas,blit,density,pressure){return(
+)}
+
+function _splat(splatProgram,gl,velocity,canvas,blit,density,pressure){return(
 function splat(x, y, dx, dy, color, p) {
   splatProgram.bind();
   gl.uniform1i(splatProgram.uniforms.uTarget, velocity.first[2]);
@@ -612,8 +639,9 @@ function splat(x, y, dx, dy, color, p) {
   blit(pressure.second[1]);
   pressure.swap();
 }
-)});
-  main.variable(observer("mainLoop")).define("mainLoop", ["gl","textureWidth","textureHeight","mutable mouse","mouseSplat","advectionProgram","velocity","dt","velocityDissipation","blit","density","densityDissipation","curlProgram","curl","vorticityProgram","curlDegree","divergenceProgram","divergence","clearProgram","pressure","pressureProgram","gradienSubtractProgram","displayProgram"], function*(gl,textureWidth,textureHeight,$0,mouseSplat,advectionProgram,velocity,dt,velocityDissipation,blit,density,densityDissipation,curlProgram,curl,vorticityProgram,curlDegree,divergenceProgram,divergence,clearProgram,pressure,pressureProgram,gradienSubtractProgram,displayProgram)
+)}
+
+function* _mainLoop(gl,textureWidth,textureHeight,$0,mouseSplat,advectionProgram,velocity,dt,velocityDissipation,blit,density,densityDissipation,curlProgram,curl,vorticityProgram,curlDegree,divergenceProgram,divergence,clearProgram,pressure,pressureProgram,gradienSubtractProgram,displayProgram)
 {
   let i = 0;
   while (true) {
@@ -716,19 +744,77 @@ function splat(x, y, dx, dy, color, p) {
     yield ++i;
   }
 }
-);
-  const child1 = runtime.module(define1);
-  main.import("enableGithubBackups", child1);
-  main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
+
+
+function _43(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices", // Github username/organization
   repo: "observable-notebooks" // Github repo
 })
-)});
+)}
+
+function _45(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("canvas")).define("canvas", ["DOM","width","height","ink","mutable mouse"], _canvas);
+  main.variable(observer("viewof height")).define("viewof height", ["Inputs"], _height);
+  main.variable(observer("height")).define("height", ["Generators", "viewof height"], (G, _) => G.input(_));
+  main.variable(observer("viewof dt")).define("viewof dt", ["Inputs"], _dt);
+  main.variable(observer("dt")).define("dt", ["Generators", "viewof dt"], (G, _) => G.input(_));
+  main.variable(observer("viewof downsample")).define("viewof downsample", ["Inputs"], _downsample);
+  main.variable(observer("downsample")).define("downsample", ["Generators", "viewof downsample"], (G, _) => G.input(_));
+  main.variable(observer("viewof densityDissipation")).define("viewof densityDissipation", ["Inputs"], _densityDissipation);
+  main.variable(observer("densityDissipation")).define("densityDissipation", ["Generators", "viewof densityDissipation"], (G, _) => G.input(_));
+  main.variable(observer("viewof velocityDissipation")).define("viewof velocityDissipation", ["Inputs"], _velocityDissipation);
+  main.variable(observer("velocityDissipation")).define("velocityDissipation", ["Generators", "viewof velocityDissipation"], (G, _) => G.input(_));
+  main.variable(observer("viewof curlDegree")).define("viewof curlDegree", ["Inputs"], _curlDegree);
+  main.variable(observer("curlDegree")).define("curlDegree", ["Generators", "viewof curlDegree"], (G, _) => G.input(_));
+  main.define("initial ink", _ink);
+  main.variable(observer("mutable ink")).define("mutable ink", ["Mutable", "initial ink"], (M, _) => new M(_));
+  main.variable(observer("ink")).define("ink", ["mutable ink"], _ => _.generator);
+  main.define("initial mouse", _mouse);
+  main.variable(observer("mutable mouse")).define("mutable mouse", ["Mutable", "initial mouse"], (M, _) => new M(_));
+  main.variable(observer("mouse")).define("mouse", ["mutable mouse"], _ => _.generator);
+  main.variable(observer("mouseSplat")).define("mouseSplat", ["ink","splat"], _mouseSplat);
+  main.variable(observer("ctx")).define("ctx", ["canvas","supportRenderTextureFormat"], _ctx);
+  main.variable(observer("gl")).define("gl", ["ctx"], _gl);
+  main.variable(observer("ext")).define("ext", ["ctx"], _ext);
+  main.variable(observer("supportRenderTextureFormat")).define("supportRenderTextureFormat", _supportRenderTextureFormat);
+  main.variable(observer("GLProgram")).define("GLProgram", ["gl"], _GLProgram);
+  main.variable(observer("compileShader")).define("compileShader", ["gl"], _compileShader);
+  main.variable(observer("baseVertexShader")).define("baseVertexShader", ["compileShader","gl"], _baseVertexShader);
+  main.variable(observer("createFBO")).define("createFBO", ["gl"], _createFBO);
+  main.variable(observer("createDoubleFBO")).define("createDoubleFBO", ["createFBO"], _createDoubleFBO);
+  main.variable(observer("textureWidth")).define("textureWidth", ["gl","downsample"], _textureWidth);
+  main.variable(observer("textureHeight")).define("textureHeight", ["gl","downsample"], _textureHeight);
+  main.variable(observer()).define(["md"], _24);
+  main.variable(observer("density")).define("density", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], _density);
+  main.variable(observer("velocity")).define("velocity", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], _velocity);
+  main.variable(observer("divergence")).define("divergence", ["createFBO","textureWidth","textureHeight","ext","gl"], _divergence);
+  main.variable(observer("curl")).define("curl", ["createFBO","textureWidth","textureHeight","ext","gl"], _curl);
+  main.variable(observer("pressure")).define("pressure", ["createDoubleFBO","textureWidth","textureHeight","ext","gl"], _pressure);
+  main.variable(observer("blit")).define("blit", ["gl"], _blit);
+  main.variable(observer("clearProgram")).define("clearProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _clearProgram);
+  main.variable(observer("splatProgram")).define("splatProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _splatProgram);
+  main.variable(observer("advectionProgram")).define("advectionProgram", ["GLProgram","baseVertexShader","ext","compileShader","gl"], _advectionProgram);
+  main.variable(observer("divergenceProgram")).define("divergenceProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _divergenceProgram);
+  main.variable(observer("curlProgram")).define("curlProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _curlProgram);
+  main.variable(observer("vorticityProgram")).define("vorticityProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _vorticityProgram);
+  main.variable(observer("pressureProgram")).define("pressureProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _pressureProgram);
+  main.variable(observer("gradienSubtractProgram")).define("gradienSubtractProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _gradienSubtractProgram);
+  main.variable(observer("displayProgram")).define("displayProgram", ["GLProgram","baseVertexShader","compileShader","gl"], _displayProgram);
+  main.variable(observer("splat")).define("splat", ["splatProgram","gl","velocity","canvas","blit","density","pressure"], _splat);
+  main.variable(observer("mainLoop")).define("mainLoop", ["gl","textureWidth","textureHeight","mutable mouse","mouseSplat","advectionProgram","velocity","dt","velocityDissipation","blit","density","densityDissipation","curlProgram","curl","vorticityProgram","curlDegree","divergenceProgram","divergence","clearProgram","pressure","pressureProgram","gradienSubtractProgram","displayProgram"], _mainLoop);
+  const child1 = runtime.module(define1);
+  main.import("enableGithubBackups", child1);
+  main.variable(observer()).define(["enableGithubBackups"], _43);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _45);
   return main;
 }

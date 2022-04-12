@@ -1,7 +1,5 @@
 // https://observablehq.com/@nebrius/indented-toc@402
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Indented ToC
 
 This notebook can generate a Table of Contents (ToC), with indentations, automatically for your notebook.
@@ -9,24 +7,28 @@ This notebook can generate a Table of Contents (ToC), with indentations, automat
 Thanks to @mbostock for creating the original version of the library!
 
 _Note:_ Clicking on links in Safari doesn't work because [scrollIntoView in an iFrame doesn't really work correctly](https://www.javaer101.com/en/article/11885549.html)`
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _2(toc){return(
 toc({
   headers: "h2,h3,h4",
   skip: ["Implementation"]
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Usage`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`Import this notebook with:
 \`\`\`js
 import {toc} from "@nebrius/indented-toc"
 \`\`\`
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`### Basic Example
 
 You can create the table of contents for a notebook with the following call:
@@ -37,11 +39,13 @@ toc()
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _6(toc){return(
 toc()
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### Customizing Included Header Levels
 If you don't like which header levels are included in the ToC by default, you can customize which header levels to include:
 
@@ -59,18 +63,21 @@ toc({
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _8(toc){return(
 toc({
   headers: "h2,h3,h4"
 })
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _9(toc){return(
 toc({
   hideStartingFrom: "Implementation"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`### Customizing or Hiding the Title
 If you would like to change the title, you can change it with:
 
@@ -82,13 +89,15 @@ toc({
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _11(toc){return(
 toc({
   title: "My Table of Contents"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`
 You can also hide the title by passing in \`null\` for the title value:
 
@@ -100,23 +109,28 @@ toc({
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _13(toc){return(
 toc({
   title: null
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`### Skipping a section
 In some cases, you may want to omit a section (for example, if you use \`##\` to create a subtitle for your notebook). To skip a section, pass a string or array of strings to be omitted:`
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _15(toc){return(
 toc({ skip: "API" })
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _16(toc){return(
 toc({ skip: ["API", "Usage"] })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`### Bringing it All Together
 All of the options can be combined together to create a more highly customized ToC
 
@@ -130,15 +144,17 @@ toc({
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _18(toc){return(
 toc({
   headers: "h2,h3,h4",
   title: "My ToC",
   hideStartingFrom: "Implementation"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _19(md){return(
 md`## API
 
 The \`toc\` method has the following signature:
@@ -156,8 +172,9 @@ Options has the following defaults:
 - hideStartingFrom = null,
 - title = "Table of Contents"
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _20(md){return(
 md`## Hiding an Appendix (deprecated)
 _Suggestion:_ use the \`skip\` option above.
 
@@ -171,11 +188,13 @@ toc({
 
 This call produces the following ToC for this notebook:
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md`## Implementation`
-)});
-  main.variable(observer("toc")).define("toc", ["Generators","html","DOM","MutationObserver"], function(Generators,html,DOM,MutationObserver){return(
+)}
+
+function _toc(Generators,html,DOM,MutationObserver){return(
 function toc(options = {}) {
   if (typeof options === "string") {
     options = {
@@ -284,6 +303,31 @@ function toc(options = {}) {
     return () => observer.disconnect();
   });
 }
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["toc"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["toc"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["toc"], _8);
+  main.variable(observer()).define(["toc"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["toc"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["toc"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["toc"], _15);
+  main.variable(observer()).define(["toc"], _16);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["toc"], _18);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer("toc")).define("toc", ["Generators","html","DOM","MutationObserver"], _toc);
   return main;
 }
