@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/notebooks-2022-03@465
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-03@466
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@619.js";
@@ -135,10 +135,6 @@ function _content(cutoff,data,month)
   return markdown;
 }
 
-
-function _12(md){return(
-md`### Data wrangling`
-)}
 
 function _month(){return(
 "March"
@@ -315,7 +311,7 @@ async function _tags(FileAttachment){return(
 })
 )}
 
-function _34(footer){return(
+function _33(footer){return(
 footer
 )}
 
@@ -337,7 +333,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md","content"], _10);
   main.variable(observer("content")).define("content", ["cutoff","data","month"], _content);
-  main.variable(observer()).define(["md"], _12);
   main.variable(observer("month")).define("month", _month);
   main.variable(observer("data")).define("data", ["tweets","meta","metadata","tags","thumbnailURL","scaling","offset"], _data);
   main.variable(observer("tweets")).define("tweets", ["FileAttachment"], _tweets);
@@ -367,6 +362,6 @@ export default function define(runtime, observer) {
   main.import("fetchp", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], _34);
+  main.variable(observer()).define(["footer"], _33);
   return main;
 }

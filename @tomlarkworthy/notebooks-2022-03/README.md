@@ -1,6 +1,6 @@
 # Inspiring Notebooks of March 2022
 
-https://observablehq.com/@tomlarkworthy/notebooks-2022-03@465
+https://observablehq.com/@tomlarkworthy/notebooks-2022-03@466
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/ae4483daa1dab42a@465.tgz?v=3
+npm install https://api.observablehq.com/d/ae4483daa1dab42a@466.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

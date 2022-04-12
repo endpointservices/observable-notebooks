@@ -1,5 +1,5 @@
 // https://observablehq.com/@mootari/access-runtime@378
-import define1 from "./8e6e97112bddde8a@306.js";
+import define1 from "./8e6e97112bddde8a@334.js";
 
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
