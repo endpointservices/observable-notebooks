@@ -1,32 +1,33 @@
-import define1 from "./dff1e917c89f5e76@1709.js";
-import define2 from "./293899bef371e135@216.js";
+import define1 from "./dff1e917c89f5e76@1711.js";
+import define2 from "./293899bef371e135@225.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Get CORS tgz link (v=3)
 
 The "download code' link on observablehq does not have CORS headers so its difficult to link Observable notebooks directly as dependancies to things like CodeSandbox ([forum](https://talk.observablehq.com/t/cors-header-for-download-code-urls/5391)), or create links to [offline notebooks](https://observablehq.com/@tomlarkworthy/offline).
 
 `
-)});
-  main.variable(observer("viewof notebook")).define("viewof notebook", ["Inputs"], function(Inputs){return(
+)}
+
+function _notebook(Inputs){return(
 Inputs.text({
   label: "Which notebook?",
   value: "@tomlarkworthy/animated-kirigami"
 })
-)});
-  main.variable(observer("notebook")).define("notebook", ["Generators", "viewof notebook"], (G, _) => G.input(_));
-  main.variable(observer("cleanedNotebook")).define("cleanedNotebook", ["notebook"], function(notebook){return(
+)}
+
+function _cleanedNotebook(notebook){return(
 notebook.replaceAll(/(https:\/\/)?observablehq.com\//g, "").replaceAll(".tgz", "")
-)});
-  main.variable(observer("link")).define("link", ["cleanedNotebook","htl"], function(cleanedNotebook,htl)
+)}
+
+function _link(cleanedNotebook,htl)
 {
   const href = `https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz`
   return htl.html`Here is a CORS enabled link to that zip: <a href="${href}" target="_blank">${href}</a>`;
 }
-);
-  main.variable(observer("backend")).define("backend", ["deploy"], function(deploy){return(
+
+
+function _backend(deploy){return(
 deploy("default", async (req, res) => {
   const api = `https://api.observablehq.com${req.url}?v=3`
   const response = await fetch(api)
@@ -60,13 +61,24 @@ deploy("default", async (req, res) => {
   }
   res.end()
 })
-)});
+)}
+
+function _8(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("viewof notebook")).define("viewof notebook", ["Inputs"], _notebook);
+  main.variable(observer("notebook")).define("notebook", ["Generators", "viewof notebook"], (G, _) => G.input(_));
+  main.variable(observer("cleanedNotebook")).define("cleanedNotebook", ["notebook"], _cleanedNotebook);
+  main.variable(observer("link")).define("link", ["cleanedNotebook","htl"], _link);
+  main.variable(observer("backend")).define("backend", ["deploy"], _backend);
   const child1 = runtime.module(define1);
   main.import("deploy", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _8);
   return main;
 }
