@@ -1,12 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/gapi@470
-import define1 from "./3d9d1394d858ca97@550.js";
-import define2 from "./048a17a165be198d@262.js";
+import define1 from "./3d9d1394d858ca97@553.js";
+import define2 from "./048a17a165be198d@263.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/d87a5d0300d9df3cc0d98f61231763c86eca8b855c09d89085282da84cf009ace28c3e4eb8daf60663f2c1b79f5e113c66865bcaa9b051e6f104b53f99c958de",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Google API Client
 
 Lets try and make the [Google APIs](https://github.com/google/google-api-javascript-client) easier to use in Observable. Feedback welcome (use the burger menu to the left to 'Add Comment').
@@ -39,11 +35,13 @@ To set the POST request body use the field 'resource', for example:
   })
 ~~~
 `
-)});
-  main.variable(observer()).define(["signature","createGapi"], function(signature,createGapi){return(
+)}
+
+function _2(signature,createGapi){return(
 signature(createGapi)
-)});
-  main.variable(observer("createGapi")).define("createGapi", ["require","getAccessTokenFromServiceAccount"], function(require,getAccessTokenFromServiceAccount){return(
+)}
+
+function _createGapi(require,getAccessTokenFromServiceAccount){return(
 async function createGapi({
   // Create API key https://cloud.google.com/docs/authentication/api-keys
   apiKey = undefined,
@@ -94,11 +92,13 @@ async function createGapi({
   }
   return gapi.client;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## Playground`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`
 A simple way to get an access token for testing is execute:
 
@@ -106,8 +106,9 @@ A simple way to get an access token for testing is execute:
     gcloud auth print-access-token --project=endpointservices
 ~~~
 `
-)});
-  main.variable(observer("viewof exampleConfigText")).define("viewof exampleConfigText", ["Inputs","localStorageView"], function(Inputs,localStorageView){return(
+)}
+
+function _exampleConfigText(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.textarea({
     value: `{
@@ -119,12 +120,13 @@ Inputs.bind(
   }),
   localStorageView("@tomlarkworthy/gapi")
 )
-)});
-  main.variable(observer("exampleConfigText")).define("exampleConfigText", ["Generators", "viewof exampleConfigText"], (G, _) => G.input(_));
-  main.variable(observer("config")).define("config", ["exampleConfigText"], function(exampleConfigText){return(
+)}
+
+function _config(exampleConfigText){return(
 JSON.parse(exampleConfigText)
-)});
-  main.variable(observer("exampleClient")).define("exampleClient", ["createGapi","config"], async function(createGapi,config)
+)}
+
+async function _exampleClient(createGapi,config)
 {
   try {
     return await createGapi(config);
@@ -132,8 +134,9 @@ JSON.parse(exampleConfigText)
     return err;
   }
 }
-);
-  main.variable(observer("response")).define("response", ["exampleClient"], async function(exampleClient)
+
+
+async function _response(exampleClient)
 {
   try {
     return await exampleClient.monitoring.projects.timeSeries.query({
@@ -148,14 +151,17 @@ JSON.parse(exampleConfigText)
     return err;
   }
 }
-);
-  main.variable(observer()).define(["response"], function(response){return(
+
+
+function _10(response){return(
 response.body
-)});
-  main.variable(observer()).define(["response"], function(response){return(
+)}
+
+function _11(response){return(
 response
-)});
-  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], function(jsrsasign){return(
+)}
+
+function _getAccessTokenFromServiceAccount(jsrsasign){return(
 async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   // First create a JWT from the credentials
   const tNow = Math.floor((new Date()).getTime() / 1000);
@@ -184,10 +190,30 @@ async function getAccessTokenFromServiceAccount(serviceAccountKey) {
   }
   return (await tokenResponse.json()).access_token;
 }
-)});
-  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], function(require){return(
+)}
+
+function _jsrsasign(require){return(
 require('https://bundle.run/jsrsasign@10.1.4')
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  const fileAttachments = new Map([["image.png",new URL("./files/d87a5d0300d9df3cc0d98f61231763c86eca8b855c09d89085282da84cf009ace28c3e4eb8daf60663f2c1b79f5e113c66865bcaa9b051e6f104b53f99c958de",import.meta.url)]]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["signature","createGapi"], _2);
+  main.variable(observer("createGapi")).define("createGapi", ["require","getAccessTokenFromServiceAccount"], _createGapi);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("viewof exampleConfigText")).define("viewof exampleConfigText", ["Inputs","localStorageView"], _exampleConfigText);
+  main.variable(observer("exampleConfigText")).define("exampleConfigText", ["Generators", "viewof exampleConfigText"], (G, _) => G.input(_));
+  main.variable(observer("config")).define("config", ["exampleConfigText"], _config);
+  main.variable(observer("exampleClient")).define("exampleClient", ["createGapi","config"], _exampleClient);
+  main.variable(observer("response")).define("response", ["exampleClient"], _response);
+  main.variable(observer()).define(["response"], _10);
+  main.variable(observer()).define(["response"], _11);
+  main.variable(observer("getAccessTokenFromServiceAccount")).define("getAccessTokenFromServiceAccount", ["jsrsasign"], _getAccessTokenFromServiceAccount);
+  main.variable(observer("jsrsasign")).define("jsrsasign", ["require"], _jsrsasign);
   const child1 = runtime.module(define1);
   main.import("signature", child1);
   const child2 = runtime.module(define2);
