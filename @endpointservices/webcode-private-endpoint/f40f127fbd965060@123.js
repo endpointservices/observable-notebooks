@@ -1,15 +1,15 @@
 // https://observablehq.com/@endpointservices/webcode-private-endpoint@123
-import define1 from "./293899bef371e135@216.js";
+import define1 from "./293899bef371e135@225.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# [WEBCode.run](https://webcode.run) Private Endpoints Released`
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _2(htl){return(
 htl.html`<iframe width="560" height="315" src="https://www.youtube.com/embed/HqITeIFlRXI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`[WEBCode.run](https://webcode.run) is growing! We have added our first paid feature which will help support it long term. WEBCode is bootstrapped so this is a big milestone!
 
 For those that do not know, [WEBCode.run](https://webcode.run) allows you to run serverless compute workloads from within [Observable](https://observablehq.com) notebooks. Until now, notebooks containing [WEBCode.run](https://webcode.run) handlers had to be public so that WEBCode's compute layer could read the code. Not anymore! 
@@ -35,14 +35,24 @@ We are launching the paid tier and [webcode.run](https://webcode.run) on Product
 
 I am going to start posting webcode.run updates to a [newsletter](https://webcode.substack.com/), so this is another option you can stay up to date 
 `
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _4(htl){return(
 htl.html`<iframe src="https://webcode.substack.com/embed" width="480" height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>`
-)});
+)}
+
+function _6(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["htl"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["htl"], _4);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _6);
   return main;
 }
