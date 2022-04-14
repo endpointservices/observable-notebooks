@@ -8,7 +8,7 @@ import define6 from "./3d9d1394d858ca97@553.js";
 import define7 from "./777fe85658e39c55@470.js";
 import define8 from "./1956899a56408464@459.js";
 import define9 from "./0905542adbad836e@55.js";
-import define10 from "./293899bef371e135@216.js";
+import define10 from "./293899bef371e135@225.js";
 
 async function _1(md,FileAttachment){return(
 md`![](${await FileAttachment("storage.png").url()})
