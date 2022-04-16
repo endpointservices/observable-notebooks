@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/puppeteer@443
 import define1 from "./f92778131fd76559@1173.js";
 import define2 from "./c16efae137e70585@1416.js";
-import define3 from "./293899bef371e135@216.js";
+import define3 from "./293899bef371e135@225.js";
 
 async function _1(md,FileAttachment){return(
 md`# Browser Automation with Puppeteer
