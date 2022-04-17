@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/google-vs-trick@1499
+// https://observablehq.com/@tomlarkworthy/google-vs-trick@1501
 import define1 from "./b5172ba044a84c1e@665.js";
 import define2 from "./18498b485712f206@114.js";
 import define3 from "./0e0b35a92c819d94@408.js";
@@ -10,7 +10,7 @@ import define8 from "./bb2055d580bbbab2@106.js";
 import define9 from "./293899bef371e135@225.js";
 
 function _1(md){return(
-md`# The Google 'VS' trick online
+md`# The Google 'VS' trick
 
 Outsource tedious research to the hive mind. This tool implements the [Google Search 'VS' trick](https://medium.com/applied-data-science/the-google-vs-trick-618c8fd5359f) to find common alternatives to things. Starting with a term like 'Poodle', we ask Google for search suggestions of 'Poodle VS' which will find alternatives to poodles that people often consider on the internet. This can be used to perform basic market research (e.g. find me React alternatives), medicine (find me ibuprofen alternatives) and product choices (Peloton alternatives) it will even find you choices for philosophical schools-of-thought!`
 )}
