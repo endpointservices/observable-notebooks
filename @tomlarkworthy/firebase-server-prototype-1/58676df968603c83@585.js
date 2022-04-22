@@ -1,4 +1,4 @@
-import define1 from "./c5544d2895d5e4ad@34.js";
+import define1 from "./c5544d2895d5e4ad@36.js";
 import define2 from "./6a703b03d185f279@978.js";
 import define3 from "./6eda90668ae03044@803.js";
 import define4 from "./c7a3b20cec5d4dd9@659.js";
@@ -9,13 +9,17 @@ function _1(md){return(
 md`# Hackable Firebase Realtime Database Server Prototype #1`
 )}
 
-function _2(md){return(
+function _server2(endpoint){return(
+endpoint("server2", async (req, res) => {})
+)}
+
+function _3(md){return(
 md`An Open Source reimplementation of a Firebase Realtime Database Server designed for hacking and customization. Written with moldability, readability and developer ergonomics in mind, this server records its execution traces in the notebook for maximum observability.
 
 `
 )}
 
-function _3(md){return(
+function _4(md){return(
 md`### What this prototype does
 
 - Key based Listen/Get/Put
@@ -33,7 +37,7 @@ md`### What this prototype does
 `
 )}
 
-function _4(md){return(
+function _5(md){return(
 md`
 
 ### Background
@@ -48,40 +52,41 @@ This goal of this prototype is about getting our code layout nice, and introduci
 The prototype server here can be accessed using a vanilla client from *anywhere*. In this notebook we instantiate a Firebase client within the notebook to execute the tests, but it's important to note the server and client are communicating over the internet despite sharing a common notebook space.`
 )}
 
-function _5(md){return(
-md`## Config`
+function _6(md){return(
+md`### Firebase Test Clients`
 )}
 
-function _config(){return(
-{
-  redis: {
-    host: "redis.webcode.run",
-    port: 443,
-    tls: true
-  }
-}
+function _7(md){return(
+md`With a specially formatted database URL we can send a client to a 3rd party server implementation.`
 )}
 
-function _clientConfig(){return(
+function _databaseURL(thisNotebooksNamespace,thisNotebooksSlug){return(
+`https://webcode.run?ns=${thisNotebooksNamespace}|${thisNotebooksSlug};server`
+)}
+
+function _clientConfig(databaseURL){return(
 {
   firebaseServer: {
-    url:
-      "https://webcode.run?ns=tomlarkworthy|firebase-server-prototype-1;server"
+    url: databaseURL
   }
 }
 )}
 
-function _8(md){return(
-md`### Firebase Test Client`
+function _11(md){return(
+md`### Redis Driver`
 )}
 
-function _10(md){return(
-md`### Redis`
+function _redisConfig(){return(
+{
+  host: "redis.webcode.run",
+  port: 443,
+  tls: true
+}
 )}
 
-function _redis(createClient,config){return(
+function _redis(createClient,redisConfig){return(
 createClient({
-  socket: config.redis
+  socket: redisConfig
 })
 )}
 
@@ -93,7 +98,11 @@ createSuite({
 })
 )}
 
-function _14(suite,randomString,rtdb,rootA,expect){return(
+function _16($0){return(
+$0
+)}
+
+function _17(suite,randomString,rtdb,rootA,expect){return(
 suite.test("Read your own write - String", async () => {
   const payload = randomString();
   const location = rtdb.child(rootA, "collection/readyourownwrite");
@@ -103,7 +112,7 @@ suite.test("Read your own write - String", async () => {
 })
 )}
 
-function _15(suite,randomString,rtdb,rootA,rootB,expect){return(
+function _18(suite,randomString,rtdb,rootA,rootB,expect){return(
 suite.test("Read their write - String", async () => {
   const payload = randomString();
   const locationA = rtdb.child(rootA, "collection/readtheirwrite");
@@ -114,8 +123,8 @@ suite.test("Read their write - String", async () => {
 })
 )}
 
-function _16(suite,randomString,rtdb,rootA,rootB,_){return(
-suite.test("Subscribe their write - String", async (done) => {
+function _19(suite,randomString,rtdb,rootA,rootB,_){return(
+suite.test("onValue is notified of other's write", async (done) => {
   const payload = randomString();
   const locationA = rtdb.child(rootA, "collection/subscribetheirwrite");
   const locationB = rtdb.child(rootB, "collection/subscribetheirwrite");
@@ -130,7 +139,7 @@ suite.test("Subscribe their write - String", async (done) => {
 })
 )}
 
-function _17(md){return(
+function _20(md){return(
 md`## Custom Firebase Realtime Server`
 )}
 
@@ -140,7 +149,7 @@ endpoint("server", async (req, res) => {
 })
 )}
 
-function _19(md){return(
+function _22(md){return(
 md`### Long Poll Request Pipeline`
 )}
 
@@ -150,7 +159,7 @@ flowQueue({
 })
 )}
 
-function _21(incomingLongpollRequest){return(
+function _24(incomingLongpollRequest){return(
 incomingLongpollRequest
 )}
 
@@ -277,7 +286,7 @@ async function _incomingLongpollRequestAction(incomingLongpollRequest,sessions,n
 }
 
 
-function _26(md){return(
+function _29(md){return(
 md`## Data Request Pipeline`
 )}
 
@@ -287,7 +296,7 @@ flowQueue({
 })
 )}
 
-function _28(incomingRequest){return(
+function _31(incomingRequest){return(
 incomingRequest
 )}
 
@@ -315,7 +324,7 @@ function _requestRouter($0,$1,$2,$3,incomingRequest,$4)
 }
 
 
-function _30(md){return(
+function _33(md){return(
 md`### STATS`
 )}
 
@@ -325,7 +334,7 @@ flowQueue({
 })
 )}
 
-function _32(incomingStats){return(
+function _35(incomingStats){return(
 incomingStats
 )}
 
@@ -338,7 +347,7 @@ function _incomingStatsAction(incomingStats,$0)
 }
 
 
-function _34(md){return(
+function _37(md){return(
 md`### PUT`
 )}
 
@@ -348,7 +357,7 @@ flowQueue({
 })
 )}
 
-function _36(incomingPut){return(
+function _39(incomingPut){return(
 incomingPut
 )}
 
@@ -372,7 +381,7 @@ async function _incomingPutAction(incomingPut,redis,$0)
 }
 
 
-function _38(md){return(
+function _41(md){return(
 md`### GET`
 )}
 
@@ -382,7 +391,7 @@ flowQueue({
 })
 )}
 
-function _40(incomingGet){return(
+function _43(incomingGet){return(
 incomingGet
 )}
 
@@ -408,7 +417,7 @@ async function _incomingGetAction(incomingGet,redis,$0)
 }
 
 
-function _42(md){return(
+function _45(md){return(
 md`### QUERY`
 )}
 
@@ -418,7 +427,7 @@ flowQueue({
 })
 )}
 
-function _44(incomingQuery){return(
+function _47(incomingQuery){return(
 incomingQuery
 )}
 
@@ -444,7 +453,7 @@ function _incomingQueryAction(session,data)
 }
 
 
-function _46(md){return(
+function _49(md){return(
 md`### Utils`
 )}
 
@@ -452,79 +461,94 @@ function _randomString(){return(
 () => Math.random().toString(16).substring(3)
 )}
 
-function _48(md){return(
-md`### Dependancies`
+function _thisNotebooksNamespace(html){return(
+/@([^/]*)\//.exec(html`<a href="?">`.href)[1]
+)}
+
+function _thisNotebooksSlug(html){return(
+/\/([^/]*)\?/.exec(html`<a href="?">`.href)[1]
 )}
 
 function _53(md){return(
+md`### Dependancies`
+)}
+
+function _58(md){return(
 md`### Notebook Analytics and Backups`
 )}
 
-function _54(footer){return(
+function _59(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("server2")).define("server2", ["endpoint"], _server2);
   main.variable(observer()).define(["md"], _3);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["md"], _5);
-  main.variable(observer("config")).define("config", _config);
-  main.variable(observer("clientConfig")).define("clientConfig", _clientConfig);
-  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("databaseURL")).define("databaseURL", ["thisNotebooksNamespace","thisNotebooksSlug"], _databaseURL);
+  main.variable(observer("clientConfig")).define("clientConfig", ["databaseURL"], _clientConfig);
   const child1 = runtime.module(define1).derive([{name: "clientConfig", alias: "config"}], main);
+  main.import("viewof restartClient", child1);
+  main.import("restartClient", child1);
   main.import("rtdb", child1);
   main.import("rootA", child1);
   main.import("rootB", child1);
-  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("redisConfig")).define("redisConfig", _redisConfig);
   const child2 = runtime.module(define2);
   main.import("createClient", child2);
-  main.variable(observer("redis")).define("redis", ["createClient","config"], _redis);
+  main.variable(observer("redis")).define("redis", ["createClient","redisConfig"], _redis);
   main.variable(observer("viewof suite")).define("viewof suite", ["server","redis","createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["suite","randomString","rtdb","rootA","expect"], _14);
-  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","expect"], _15);
-  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","_"], _16);
-  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["viewof restartClient"], _16);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","expect"], _17);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","expect"], _18);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","_"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("server")).define("server", ["endpoint","viewof incomingLongpollRequest"], _server);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _22);
   main.variable(observer("viewof incomingLongpollRequest")).define("viewof incomingLongpollRequest", ["flowQueue"], _incomingLongpollRequest);
   main.variable(observer("incomingLongpollRequest")).define("incomingLongpollRequest", ["Generators", "viewof incomingLongpollRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingLongpollRequest"], _21);
+  main.variable(observer()).define(["incomingLongpollRequest"], _24);
   main.variable(observer("sessions")).define("sessions", _sessions);
   main.variable(observer("newSessionResponse")).define("newSessionResponse", _newSessionResponse);
   main.variable(observer("disconnectFrame")).define("disconnectFrame", _disconnectFrame);
   main.variable(observer("incomingLongpollRequestAction")).define("incomingLongpollRequestAction", ["incomingLongpollRequest","sessions","newSessionResponse","disconnectFrame","viewof incomingLongpollRequest","viewof incomingRequest"], _incomingLongpollRequestAction);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _29);
   main.variable(observer("viewof incomingRequest")).define("viewof incomingRequest", ["flowQueue"], _incomingRequest);
   main.variable(observer("incomingRequest")).define("incomingRequest", ["Generators", "viewof incomingRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingRequest"], _28);
+  main.variable(observer()).define(["incomingRequest"], _31);
   main.variable(observer("requestRouter")).define("requestRouter", ["viewof incomingStats","viewof incomingPut","viewof incomingQuery","viewof incomingGet","incomingRequest","viewof incomingRequest"], _requestRouter);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("viewof incomingStats")).define("viewof incomingStats", ["flowQueue"], _incomingStats);
   main.variable(observer("incomingStats")).define("incomingStats", ["Generators", "viewof incomingStats"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingStats"], _32);
+  main.variable(observer()).define(["incomingStats"], _35);
   main.variable(observer("incomingStatsAction")).define("incomingStatsAction", ["incomingStats","viewof incomingStats"], _incomingStatsAction);
-  main.variable(observer()).define(["md"], _34);
+  main.variable(observer()).define(["md"], _37);
   main.variable(observer("viewof incomingPut")).define("viewof incomingPut", ["flowQueue"], _incomingPut);
   main.variable(observer("incomingPut")).define("incomingPut", ["Generators", "viewof incomingPut"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingPut"], _36);
+  main.variable(observer()).define(["incomingPut"], _39);
   main.variable(observer("incomingPutAction")).define("incomingPutAction", ["incomingPut","redis","viewof incomingPut"], _incomingPutAction);
-  main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["md"], _41);
   main.variable(observer("viewof incomingGet")).define("viewof incomingGet", ["flowQueue"], _incomingGet);
   main.variable(observer("incomingGet")).define("incomingGet", ["Generators", "viewof incomingGet"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingGet"], _40);
+  main.variable(observer()).define(["incomingGet"], _43);
   main.variable(observer("incomingGetAction")).define("incomingGetAction", ["incomingGet","redis","viewof incomingGet"], _incomingGetAction);
-  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["md"], _45);
   main.variable(observer("viewof incomingQuery")).define("viewof incomingQuery", ["flowQueue"], _incomingQuery);
   main.variable(observer("incomingQuery")).define("incomingQuery", ["Generators", "viewof incomingQuery"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingQuery"], _44);
+  main.variable(observer()).define(["incomingQuery"], _47);
   main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["session","data"], _incomingQueryAction);
-  main.variable(observer()).define(["md"], _46);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("randomString")).define("randomString", _randomString);
-  main.variable(observer()).define(["md"], _48);
+  main.variable(observer("thisNotebooksNamespace")).define("thisNotebooksNamespace", ["html"], _thisNotebooksNamespace);
+  main.variable(observer("thisNotebooksSlug")).define("thisNotebooksSlug", ["html"], _thisNotebooksSlug);
+  main.variable(observer()).define(["md"], _53);
   const child3 = runtime.module(define3);
   main.import("endpoint", child3);
   const child4 = runtime.module(define4);
@@ -534,7 +558,7 @@ export default function define(runtime, observer) {
   main.import("flowQueue", child5);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["md"], _53);
-  main.variable(observer()).define(["footer"], _54);
+  main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["footer"], _59);
   return main;
 }

@@ -12,7 +12,7 @@ function _config(){return(
 )}
 
 function _restartClient(Inputs){return(
-Inputs.button("restart client")
+Inputs.button("restart clients")
 )}
 
 function _appLib(){return(
