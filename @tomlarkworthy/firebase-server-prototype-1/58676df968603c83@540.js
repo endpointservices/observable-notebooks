@@ -1,8 +1,9 @@
-import define1 from "./6a703b03d185f279@978.js";
-import define2 from "./6eda90668ae03044@803.js";
-import define3 from "./c7a3b20cec5d4dd9@659.js";
-import define4 from "./0e0b35a92c819d94@413.js";
-import define5 from "./293899bef371e135@225.js";
+import define1 from "./c5544d2895d5e4ad@34.js";
+import define2 from "./6a703b03d185f279@978.js";
+import define3 from "./6eda90668ae03044@803.js";
+import define4 from "./c7a3b20cec5d4dd9@659.js";
+import define5 from "./0e0b35a92c819d94@413.js";
+import define6 from "./293899bef371e135@225.js";
 
 function _1(md){return(
 md`# Hackable Firebase Realtime Database Server Prototype #1`
@@ -74,57 +75,7 @@ function _8(md){return(
 md`### Firebase Test Client`
 )}
 
-function _appLib(){return(
-import("https://www.gstatic.com/firebasejs/9.5.0/firebase-app.js")
-)}
-
-function _rtdb(){return(
-import("https://www.gstatic.com/firebasejs/9.5.0/firebase-database.js")
-)}
-
-function _firebaseAppA(restartClient,appLib,clientConfig){return(
-restartClient,
-appLib.initializeApp(
-  {
-    databaseURL: clientConfig.firebaseServer.url
-  },
-  Math.random().toString(16) // We randomize the name so we can rerun initialization
-)
-)}
-
-function _firebaseAppB(restartClient,appLib,clientConfig){return(
-restartClient,
-appLib.initializeApp(
-  {
-    databaseURL: clientConfig.firebaseServer.url
-  },
-  Math.random().toString(16) // We randomize the name so we can rerun initialization
-)
-)}
-
-function _databaseA(rtdb,firebaseAppA)
-{
-  rtdb.enableLogging(true);
-  return rtdb.getDatabase(firebaseAppA);
-}
-
-
-function _databaseB(rtdb,firebaseAppB)
-{
-  rtdb.enableLogging(true);
-  return rtdb.getDatabase(firebaseAppB);
-}
-
-
-function _rootA(rtdb,databaseA){return(
-rtdb.ref(databaseA, "/")
-)}
-
-function _rootB(rtdb,databaseA){return(
-rtdb.ref(databaseA, "/")
-)}
-
-function _17(md){return(
+function _10(md){return(
 md`### Redis`
 )}
 
@@ -132,10 +83,6 @@ function _redis(createClient,config){return(
 createClient({
   socket: config.redis
 })
-)}
-
-function _restartClient(Inputs){return(
-Inputs.button("restart client")
 )}
 
 function _suite(server,redis,createSuite){return(
@@ -146,12 +93,9 @@ createSuite({
 })
 )}
 
-function _22(suite,randomString,rtdb,rootA,expect){return(
-suite.test("Read your own write - Object", async () => {
-  // Note: This test will pass if the server throws an error, because RT DB fallsback to local cache.
-  const payload = {
-    string: randomString()
-  };
+function _14(suite,randomString,rtdb,rootA,expect){return(
+suite.test("Read your own write - String", async () => {
+  const payload = randomString();
   const location = rtdb.child(rootA, "collection/readyourownwrite");
   await rtdb.set(location, payload);
   const response = (await rtdb.get(location)).val();
@@ -159,11 +103,9 @@ suite.test("Read your own write - Object", async () => {
 })
 )}
 
-function _23(suite,randomString,rtdb,rootA,rootB,expect){return(
-suite.test("Read their write - Object", async () => {
-  const payload = {
-    string: randomString()
-  };
+function _15(suite,randomString,rtdb,rootA,rootB,expect){return(
+suite.test("Read their write - String", async () => {
+  const payload = randomString();
   const locationA = rtdb.child(rootA, "collection/readtheirwrite");
   const locationB = rtdb.child(rootB, "collection/readtheirwrite");
   await rtdb.set(locationA, payload);
@@ -172,8 +114,24 @@ suite.test("Read their write - Object", async () => {
 })
 )}
 
-function _24(redis){return(
-redis.sendCommand(["GET", "foo"])
+function _16(suite,randomString,rtdb,rootA,rootB,_){return(
+suite.test("Subscribe their write - String", async (done) => {
+  const payload = randomString();
+  const locationA = rtdb.child(rootA, "collection/subscribetheirwrite");
+  const locationB = rtdb.child(rootB, "collection/subscribetheirwrite");
+  rtdb.onValue(locationB, (snap) => {
+    const val = snap.val();
+    if (_.isEqual(val, payload)) {
+      done();
+    }
+  });
+
+  await rtdb.set(locationA, payload);
+})
+)}
+
+function _17(md){return(
+md`## Custom Firebase Realtime Server`
 )}
 
 function _server(endpoint,$0){return(
@@ -182,8 +140,8 @@ endpoint("server", async (req, res) => {
 })
 )}
 
-function _26(md){return(
-md`## Long Poll Request Pipeline`
+function _19(md){return(
+md`### Long Poll Request Pipeline`
 )}
 
 function _incomingLongpollRequest(flowQueue){return(
@@ -192,7 +150,7 @@ flowQueue({
 })
 )}
 
-function _28(incomingLongpollRequest){return(
+function _21(incomingLongpollRequest){return(
 incomingLongpollRequest
 )}
 
@@ -289,38 +247,18 @@ async function _incomingLongpollRequestAction(incomingLongpollRequest,sessions,n
       );
       commandIndex++;
       console.log("Incoming request", data);
-      if (data.d.a === "q") {
-        // Actions: Listen/Query
-        // Initial data update sent immediately
+      try {
+        const response = await $1.send(data);
         session.serverToClientQueue.push({
           t: "d",
-          d: {
-            a: "d", // data update action
-            b: {
-              p: "@tomlarkworthy/rtdb-protocol-explorer/rw",
-              d: "hi!"
-            }
-          }
+          d: { r: data.d.r, b: response }
         });
-        // Follow up with a OK to the listen
+      } catch (err) {
+        console.error(err);
         session.serverToClientQueue.push({
           t: "d",
-          d: { r: data.d.r, b: { s: "ok", d: "" } }
+          d: { s: "fail", d: err.message }
         });
-      } else {
-        try {
-          const response = await $1.send(data);
-          session.serverToClientQueue.push({
-            t: "d",
-            d: { r: data.d.r, b: response }
-          });
-        } catch (err) {
-          console.error(err);
-          session.serverToClientQueue.push({
-            t: "d",
-            d: { s: "fail", d: err.message }
-          });
-        }
       }
     }
 
@@ -339,7 +277,7 @@ async function _incomingLongpollRequestAction(incomingLongpollRequest,sessions,n
 }
 
 
-function _33(md){return(
+function _26(md){return(
 md`## Data Request Pipeline`
 )}
 
@@ -349,20 +287,21 @@ flowQueue({
 })
 )}
 
-function _35(incomingRequest){return(
+function _28(incomingRequest){return(
 incomingRequest
 )}
 
-function _requestRouter($0,$1,$2,incomingRequest,$3)
+function _requestRouter($0,$1,$2,$3,incomingRequest,$4)
 {
   const commandHandler = {
     s: $0,
     p: $1,
-    g: $2
+    q: $2,
+    g: $3
   }[incomingRequest.d.a];
 
   if (!commandHandler) {
-    return $3.reject(
+    return $4.reject(
       new Error("Unrecognised server action " + incomingRequest.d.a)
     );
   }
@@ -370,13 +309,13 @@ function _requestRouter($0,$1,$2,incomingRequest,$3)
   commandHandler
     .send(incomingRequest.d.b)
     .then((handlerResponse) => {
-      $3.respond(handlerResponse);
+      $4.respond(handlerResponse);
     })
-    .catch($3.reject);
+    .catch($4.reject);
 }
 
 
-function _37(md){return(
+function _30(md){return(
 md`### STATS`
 )}
 
@@ -386,7 +325,7 @@ flowQueue({
 })
 )}
 
-function _39(incomingStats){return(
+function _32(incomingStats){return(
 incomingStats
 )}
 
@@ -399,7 +338,7 @@ function _incomingStatsAction(incomingStats,$0)
 }
 
 
-function _41(md){return(
+function _34(md){return(
 md`### PUT`
 )}
 
@@ -409,7 +348,7 @@ flowQueue({
 })
 )}
 
-function _43(incomingPut){return(
+function _36(incomingPut){return(
 incomingPut
 )}
 
@@ -433,7 +372,7 @@ async function _incomingPutAction(incomingPut,redis,$0)
 }
 
 
-function _45(md){return(
+function _38(md){return(
 md`### GET`
 )}
 
@@ -443,7 +382,7 @@ flowQueue({
 })
 )}
 
-function _47(incomingGet){return(
+function _40(incomingGet){return(
 incomingGet
 )}
 
@@ -469,7 +408,43 @@ async function _incomingGetAction(incomingGet,redis,$0)
 }
 
 
-function _49(md){return(
+function _42(md){return(
+md`### QUERY`
+)}
+
+function _incomingQuery(flowQueue){return(
+flowQueue({
+  timeout_ms: 5000
+})
+)}
+
+function _44(incomingQuery){return(
+incomingQuery
+)}
+
+function _incomingQueryAction(session,data)
+{
+  // Actions: Listen/Query
+  // Initial data update sent immediately
+  session.serverToClientQueue.push({
+    t: "d",
+    d: {
+      a: "d", // data update action
+      b: {
+        p: "@tomlarkworthy/rtdb-protocol-explorer/rw",
+        d: "hi!"
+      }
+    }
+  });
+  // Follow up with a OK to the listen
+  session.serverToClientQueue.push({
+    t: "d",
+    d: { r: data.d.r, b: { s: "ok", d: "" } }
+  });
+}
+
+
+function _46(md){return(
 md`### Utils`
 )}
 
@@ -477,15 +452,15 @@ function _randomString(){return(
 () => Math.random().toString(16).substring(3)
 )}
 
-function _51(md){return(
+function _48(md){return(
 md`### Dependancies`
 )}
 
-function _56(md){return(
+function _53(md){return(
 md`### Notebook Analytics and Backups`
 )}
 
-function _57(footer){return(
+function _54(footer){return(
 footer
 )}
 
@@ -499,67 +474,67 @@ export default function define(runtime, observer) {
   main.variable(observer("config")).define("config", _config);
   main.variable(observer("clientConfig")).define("clientConfig", _clientConfig);
   main.variable(observer()).define(["md"], _8);
-  main.variable(observer("appLib")).define("appLib", _appLib);
-  main.variable(observer("rtdb")).define("rtdb", _rtdb);
-  main.variable(observer("firebaseAppA")).define("firebaseAppA", ["restartClient","appLib","clientConfig"], _firebaseAppA);
-  main.variable(observer("firebaseAppB")).define("firebaseAppB", ["restartClient","appLib","clientConfig"], _firebaseAppB);
-  main.variable(observer("databaseA")).define("databaseA", ["rtdb","firebaseAppA"], _databaseA);
-  main.variable(observer("databaseB")).define("databaseB", ["rtdb","firebaseAppB"], _databaseB);
-  main.variable(observer("rootA")).define("rootA", ["rtdb","databaseA"], _rootA);
-  main.variable(observer("rootB")).define("rootB", ["rtdb","databaseA"], _rootB);
-  main.variable(observer()).define(["md"], _17);
-  const child1 = runtime.module(define1);
-  main.import("createClient", child1);
+  const child1 = runtime.module(define1).derive([{name: "clientConfig", alias: "config"}], main);
+  main.import("rtdb", child1);
+  main.import("rootA", child1);
+  main.import("rootB", child1);
+  main.variable(observer()).define(["md"], _10);
+  const child2 = runtime.module(define2);
+  main.import("createClient", child2);
   main.variable(observer("redis")).define("redis", ["createClient","config"], _redis);
-  main.variable(observer("viewof restartClient")).define("viewof restartClient", ["Inputs"], _restartClient);
-  main.variable(observer("restartClient")).define("restartClient", ["Generators", "viewof restartClient"], (G, _) => G.input(_));
   main.variable(observer("viewof suite")).define("viewof suite", ["server","redis","createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["suite","randomString","rtdb","rootA","expect"], _22);
-  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","expect"], _23);
-  main.variable(observer()).define(["redis"], _24);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","expect"], _14);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","expect"], _15);
+  main.variable(observer()).define(["suite","randomString","rtdb","rootA","rootB","_"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("server")).define("server", ["endpoint","viewof incomingLongpollRequest"], _server);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _19);
   main.variable(observer("viewof incomingLongpollRequest")).define("viewof incomingLongpollRequest", ["flowQueue"], _incomingLongpollRequest);
   main.variable(observer("incomingLongpollRequest")).define("incomingLongpollRequest", ["Generators", "viewof incomingLongpollRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingLongpollRequest"], _28);
+  main.variable(observer()).define(["incomingLongpollRequest"], _21);
   main.variable(observer("sessions")).define("sessions", _sessions);
   main.variable(observer("newSessionResponse")).define("newSessionResponse", _newSessionResponse);
   main.variable(observer("disconnectFrame")).define("disconnectFrame", _disconnectFrame);
   main.variable(observer("incomingLongpollRequestAction")).define("incomingLongpollRequestAction", ["incomingLongpollRequest","sessions","newSessionResponse","disconnectFrame","viewof incomingLongpollRequest","viewof incomingRequest"], _incomingLongpollRequestAction);
-  main.variable(observer()).define(["md"], _33);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("viewof incomingRequest")).define("viewof incomingRequest", ["flowQueue"], _incomingRequest);
   main.variable(observer("incomingRequest")).define("incomingRequest", ["Generators", "viewof incomingRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingRequest"], _35);
-  main.variable(observer("requestRouter")).define("requestRouter", ["viewof incomingStats","viewof incomingPut","viewof incomingGet","incomingRequest","viewof incomingRequest"], _requestRouter);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["incomingRequest"], _28);
+  main.variable(observer("requestRouter")).define("requestRouter", ["viewof incomingStats","viewof incomingPut","viewof incomingQuery","viewof incomingGet","incomingRequest","viewof incomingRequest"], _requestRouter);
+  main.variable(observer()).define(["md"], _30);
   main.variable(observer("viewof incomingStats")).define("viewof incomingStats", ["flowQueue"], _incomingStats);
   main.variable(observer("incomingStats")).define("incomingStats", ["Generators", "viewof incomingStats"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingStats"], _39);
+  main.variable(observer()).define(["incomingStats"], _32);
   main.variable(observer("incomingStatsAction")).define("incomingStatsAction", ["incomingStats","viewof incomingStats"], _incomingStatsAction);
-  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["md"], _34);
   main.variable(observer("viewof incomingPut")).define("viewof incomingPut", ["flowQueue"], _incomingPut);
   main.variable(observer("incomingPut")).define("incomingPut", ["Generators", "viewof incomingPut"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingPut"], _43);
+  main.variable(observer()).define(["incomingPut"], _36);
   main.variable(observer("incomingPutAction")).define("incomingPutAction", ["incomingPut","redis","viewof incomingPut"], _incomingPutAction);
-  main.variable(observer()).define(["md"], _45);
+  main.variable(observer()).define(["md"], _38);
   main.variable(observer("viewof incomingGet")).define("viewof incomingGet", ["flowQueue"], _incomingGet);
   main.variable(observer("incomingGet")).define("incomingGet", ["Generators", "viewof incomingGet"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingGet"], _47);
+  main.variable(observer()).define(["incomingGet"], _40);
   main.variable(observer("incomingGetAction")).define("incomingGetAction", ["incomingGet","redis","viewof incomingGet"], _incomingGetAction);
-  main.variable(observer()).define(["md"], _49);
+  main.variable(observer()).define(["md"], _42);
+  main.variable(observer("viewof incomingQuery")).define("viewof incomingQuery", ["flowQueue"], _incomingQuery);
+  main.variable(observer("incomingQuery")).define("incomingQuery", ["Generators", "viewof incomingQuery"], (G, _) => G.input(_));
+  main.variable(observer()).define(["incomingQuery"], _44);
+  main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["session","data"], _incomingQueryAction);
+  main.variable(observer()).define(["md"], _46);
   main.variable(observer("randomString")).define("randomString", _randomString);
-  main.variable(observer()).define(["md"], _51);
-  const child2 = runtime.module(define2);
-  main.import("endpoint", child2);
+  main.variable(observer()).define(["md"], _48);
   const child3 = runtime.module(define3);
-  main.import("expect", child3);
-  main.import("createSuite", child3);
+  main.import("endpoint", child3);
   const child4 = runtime.module(define4);
-  main.import("flowQueue", child4);
+  main.import("expect", child4);
+  main.import("createSuite", child4);
   const child5 = runtime.module(define5);
-  main.import("footer", child5);
-  main.variable(observer()).define(["md"], _56);
-  main.variable(observer()).define(["footer"], _57);
+  main.import("flowQueue", child5);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
+  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["footer"], _54);
   return main;
 }
