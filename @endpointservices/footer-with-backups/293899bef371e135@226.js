@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@225
+// https://observablehq.com/@endpointservices/footer-with-backups@226
 import define1 from "./a81f2a20664080d3@212.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@627.js";
@@ -23,9 +23,9 @@ md`<small>
 *Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>`
 )}
 
-function _footer(backups,plausible_analytics,sentry,graphic)
+function _footer($0,plausible_analytics,sentry,graphic)
 {
-  backups;
+  $0;
   plausible_analytics;
   const Sentry = sentry({
     DSN:
@@ -135,7 +135,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
-  main.variable(observer("footer")).define("footer", ["backups","plausible_analytics","sentry","graphic"], _footer);
+  main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
   main.variable(observer()).define(["md"], _6);
