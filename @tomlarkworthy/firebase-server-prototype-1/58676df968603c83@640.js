@@ -3,7 +3,7 @@ import define2 from "./6a703b03d185f279@978.js";
 import define3 from "./6eda90668ae03044@803.js";
 import define4 from "./c7a3b20cec5d4dd9@659.js";
 import define5 from "./0e0b35a92c819d94@413.js";
-import define6 from "./293899bef371e135@225.js";
+import define6 from "./293899bef371e135@226.js";
 
 function _1(md){return(
 md`# Hackable Firebase Realtime Database Server Prototype #1`
@@ -431,10 +431,11 @@ function _47(incomingQuery){return(
 incomingQuery
 )}
 
-function _incomingQueryAction(session,data)
+function _incomingQueryAction($0)
 {
   // Actions: Listen/Query
   // Initial data update sent immediately
+  /*
   session.serverToClientQueue.push({
     t: "d",
     d: {
@@ -444,12 +445,11 @@ function _incomingQueryAction(session,data)
         d: "hi!"
       }
     }
-  });
-  // Follow up with a OK to the listen
-  session.serverToClientQueue.push({
-    t: "d",
-    d: { r: data.d.r, b: { s: "ok", d: "" } }
-  });
+  });*/
+  // Follow up with a OK to the query
+  const response = { s: "ok", d: "" };
+  $0.respond(response);
+  return response;
 }
 
 
@@ -543,7 +543,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof incomingQuery")).define("viewof incomingQuery", ["flowQueue"], _incomingQuery);
   main.variable(observer("incomingQuery")).define("incomingQuery", ["Generators", "viewof incomingQuery"], (G, _) => G.input(_));
   main.variable(observer()).define(["incomingQuery"], _47);
-  main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["session","data"], _incomingQueryAction);
+  main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["viewof incomingQuery"], _incomingQueryAction);
   main.variable(observer()).define(["md"], _49);
   main.variable(observer("randomString")).define("randomString", _randomString);
   main.variable(observer("thisNotebooksNamespace")).define("thisNotebooksNamespace", ["html"], _thisNotebooksNamespace);
