@@ -1,6 +1,5 @@
 import define1 from "./ef672b935bd480fc@619.js";
-import define2 from "./c7a3b20cec5d4dd9@659.js";
-import define3 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
 function _1(md){return(
 md`# ⛔️ Get Notebook Comments ⚠️
@@ -15,11 +14,33 @@ function _example(getComments){return(
 getComments('https://observablehq.com/@endpointservices/get-comments')
 )}
 
-function _suite(createSuite){return(
-createSuite()
+async function _testing(getComments)
+{
+  getComments;
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+
+
+function _suite(testing){return(
+testing.createSuite()
 )}
 
-function _4(suite,expect,example){return(
+function _expect(testing){return(
+testing.expect
+)}
+
+function _6(suite,expect,example){return(
 suite.test("getComments('https://observablehq.com/@endpointservices/get-comments' has 'Hi I am leaving a comment'", async () => {
   expect(example.length).toBeGreaterThanOrEqual(1);
   const lookup = example.find((el) => el.content === "Hi I am leaving a comment");
@@ -82,7 +103,7 @@ function _ALLOW_DOMAINS(){return(
 ['observablehq.com']
 )}
 
-function _13(footer){return(
+function _14(footer){return(
 footer
 )}
 
@@ -90,9 +111,11 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("example")).define("example", ["getComments"], _example);
-  main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
+  main.variable(observer("testing")).define("testing", ["getComments"], _testing);
+  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["suite","expect","example"], _4);
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer()).define(["suite","expect","example"], _6);
   main.variable(observer("getComments")).define("getComments", ["fetchp","DOMParser","findComments"], _getComments);
   main.variable(observer("getCommentsAndNamespace")).define("getCommentsAndNamespace", ["fetchp","DOMParser","findComments","findNamespace"], _getCommentsAndNamespace);
   main.variable(observer("findComments")).define("findComments", _findComments);
@@ -101,10 +124,7 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1).derive(["ALLOW_DOMAINS"], main);
   main.import("fetchp", child1);
   const child2 = runtime.module(define2);
-  main.import("createSuite", child2);
-  main.import("expect", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _13);
+  main.import("footer", child2);
+  main.variable(observer()).define(["footer"], _14);
   return main;
 }
