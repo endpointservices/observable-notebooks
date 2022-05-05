@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/serverless-cells@1711
 import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
 async function _1(FileAttachment,width,md){return(
 md`# Serverless Cells
@@ -442,7 +442,11 @@ function _notebook(html){return(
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["PreviewServerlessCells@2.png",new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9",import.meta.url)],["webcodeURL@1.svg",new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["PreviewServerlessCells@2.png", {url: new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9", import.meta.url), mimeType: "image/png", toString}],
+    ["webcodeURL@1.svg", {url: new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","width","md"], _1);
   main.variable(observer()).define(["md"], _2);

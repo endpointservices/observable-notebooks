@@ -1,6 +1,6 @@
-// https://observablehq.com/@tomlarkworthy/testing@659
+// https://observablehq.com/@tomlarkworthy/testing@660
 import define1 from "./84e66f78139ac354@814.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -133,7 +133,7 @@ function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){
 
   function generate() {
     return html`<div class="testsuite" id=${id}>
-        <h2 id="title{id}">${name}</h2>
+        ${name ? `<h2 id="title{id}">${name}</h2>` : null}
         <a name="testsuite${id}"></a>
         <input key="filter"
           oninput=${(e) => e.stopPropagation()}
@@ -398,7 +398,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["noun_test_2404407.svg",new URL("./files/b85565d2b6f001a2db39bdbeafbf5aa687188a77a6f65088a3da275743064af6ec763f97d4575207873165a49b07b65e492987b100b4a0d6bbe3df1f74efda1e",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["noun_test_2404407.svg", {url: new URL("./files/b85565d2b6f001a2db39bdbeafbf5aa687188a77a6f65088a3da275743064af6ec763f97d4575207873165a49b07b65e492987b100b4a0d6bbe3df1f74efda1e", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
