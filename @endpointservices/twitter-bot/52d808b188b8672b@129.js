@@ -1,24 +1,24 @@
-import define1 from "./993a0c51ef1175ea@1317.js";
-import define2 from "./698257e86fae4586@346.js";
-import define3 from "./293899bef371e135@216.js";
+import define1 from "./993a0c51ef1175ea@1345.js";
+import define2 from "./698257e86fae4586@374.js";
+import define3 from "./293899bef371e135@226.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Endpoint Utils
 ~~~js
 import {viewof user, firebase, listen, subdomain, isOwner} from '@endpointservices/utils'
 import {firebase, getAccessTokenFromServiceAccount, signinWithAccessToken} from '@endpointservices/utils'
 ~~~`
-)});
-  main.variable(observer("isOwner")).define("isOwner", ["firebase","subdomain"], function(firebase,subdomain){return(
+)}
+
+function _isOwner(firebase,subdomain){return(
 async function isOwner(uid, subdomain_) {
   return (await (await firebase.firestore().collection("/services/ownership/owners")
                  .where("subdomain", '==', subdomain_ || subdomain())
                  .where("uid", '==', uid).limit(1).get())).docs.length > 0;
 }
-)});
-  main.variable(observer("subdomain")).define("subdomain", ["html","location"], function(html,location){return(
+)}
+
+function _subdomain(html,location){return(
 (url) => {
   url = url || html`<a href="">`.href;
   const origin = location.origin;
@@ -29,22 +29,26 @@ async function isOwner(uid, subdomain_) {
   if (match = /^https:\/\/([^.]*).static.observableusercontent.com/.exec(origin)) return match[1]
   return undefined;
 }
-)});
-  main.variable(observer("notebook")).define("notebook", ["html"], function(html){return(
+)}
+
+function _notebook(html){return(
 (url) => {
   url = url || html`<a href="">`.href;
   let match;
   if (match = /^https:\/\/(next\.)?observablehq.com\/@[^/]*\/([^/?#]*)/.exec(url)) return match[2]
   throw new Error("Cannot determine notebook name, did you publish/share?")
 }
-)});
-  main.variable(observer()).define(["subdomain"], function(subdomain){return(
+)}
+
+function _5(subdomain){return(
 subdomain('https://endpointservices.static.observableusercontent.com')
-)});
-  main.variable(observer()).define(["notebook"], function(notebook){return(
+)}
+
+function _6(notebook){return(
 notebook()
-)});
-  main.variable(observer("firebaseConfig")).define("firebaseConfig", function(){return(
+)}
+
+function _firebaseConfig(){return(
 {
   // See https://console.firebase.google.com/u/0/project/_/settings/general/web
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
@@ -59,8 +63,9 @@ notebook()
     // privacyPolicyUrl: '<your-privacy-policy-url>', // Privacy policy url.
   },
 }
-)});
-  main.variable(observer("signinWithAccessToken")).define("signinWithAccessToken", ["firebase"], function(firebase){return(
+)}
+
+function _signinWithAccessToken(firebase){return(
 async function signinWithAccessToken(access_token) {
   const credential = firebase.firebase_.auth.GoogleAuthProvider.credential(
     null,
@@ -68,7 +73,22 @@ async function signinWithAccessToken(access_token) {
   );
   return await firebase.auth().signInWithCredential(credential);
 }
-)});
+)}
+
+function _12(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("isOwner")).define("isOwner", ["firebase","subdomain"], _isOwner);
+  main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
+  main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
+  main.variable(observer()).define(["subdomain"], _5);
+  main.variable(observer()).define(["notebook"], _6);
+  main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
+  main.variable(observer("signinWithAccessToken")).define("signinWithAccessToken", ["firebase"], _signinWithAccessToken);
   const child1 = runtime.module(define1).derive(["firebaseConfig"], main);
   main.import("viewof user", child1);
   main.import("user", child1);
@@ -78,8 +98,6 @@ async function signinWithAccessToken(access_token) {
   main.import("getAccessTokenFromServiceAccount", child2);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _12);
   return main;
 }

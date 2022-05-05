@@ -1,18 +1,14 @@
 // https://observablehq.com/@endpointservices/cron@415
 import define1 from "./52d808b188b8672b@129.js";
-import define2 from "./dff1e917c89f5e76@1709.js";
-import define3 from "./11a5ab8b1b3a51db@1160.js";
+import define2 from "./dff1e917c89f5e76@1711.js";
+import define3 from "./11a5ab8b1b3a51db@1161.js";
 import define4 from "./84e66f78139ac354@814.js";
-import define5 from "./a2e58f97fd5e8d7c@672.js";
+import define5 from "./a2e58f97fd5e8d7c@674.js";
 import define6 from "./0905542adbad836e@55.js";
-import define7 from "./3d9d1394d858ca97@550.js";
-import define8 from "./293899bef371e135@216.js";
+import define7 from "./3d9d1394d858ca97@553.js";
+import define8 from "./293899bef371e135@226.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["Cron.png",new URL("./files/db6a61a4a210555c4422ea034ec059f52ee2d3128a3e23eb16e24c2197b85c46128aca9ccebb8b72c431456d84f31c4648df69e2dbfaf473eecf75e2188c2220",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Schedule Regular Tasks with Cron
 
 ![](${await FileAttachment("Cron.png").url()})
@@ -20,11 +16,13 @@ md`# Schedule Regular Tasks with Cron
 Cron will call a URL regularly. To create a regular task call _createCron_.
 
 `
-)});
-  main.variable(observer()).define(["signature","createCron"], function(signature,createCron){return(
+)}
+
+function _2(signature,createCron){return(
 signature(createCron)
-)});
-  main.variable(observer("createCron")).define("createCron", ["deploy","firebase","configPath","subdomain","notebook","html","Table","reconcile","update"], function(deploy,firebase,configPath,subdomain,notebook,html,Table,reconcile,update){return(
+)}
+
+function _createCron(deploy,firebase,configPath,subdomain,notebook,html,Table,reconcile,update){return(
 async function createCron({
   name = "default", // Unique name needed per cron per notebook
   enabled = true, // Fastest way to disable a cron is to set enabled = false
@@ -108,34 +106,40 @@ async function createCron({
 
   return ui;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`
 This will return a UI which will tell you the current state of the named cron job, and a button to update the latest version. Cron is configured like infrastructure-as-code, you need to *publish* the notebook containing configuration before you can _update_.
 `
-)});
-  main.variable(observer("example")).define("example", ["createCron"], function(createCron){return(
+)}
+
+function _example(createCron){return(
 createCron({
   schedule: '5 2 * * *', // Daily, at 2a.m.
   url: "https://observablehq.com/@endpointservices/cron"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`
 
 The strange way schedules are expressed is an oddity due to historical reasons. There are plenty of resources on the web to help you figure out the correct expression, for example [crontab.guru](https://crontab.guru/examples.html). Don't feel bad, I look them up all the time too! The good thing is that they can model stuff like _"do something every hour but only during office hours"_ which is very useful to alert you of faults but not in the middle of the night.
 
 The API that actually creates the Job can be found in [https://observablehq.com/@endpointservices/cron-backend](https://observablehq.com/@endpointservices/cron-backend)
 `
-)});
-  main.variable(observer("configPath")).define("configPath", function(){return(
+)}
+
+function _configPath(){return(
 (subdomain, notebook, name) =>
   `services/cron/subdomains/${subdomain}/notebooks/${notebook}/crons/${name}`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`### Update calls [@endpointservices/cron-backend](https://observablehq.com/@endpointservices/cron-backend)`
-)});
-  main.variable(observer("update")).define("update", ["notebook","subdomain"], function(notebook,subdomain){return(
+)}
+
+function _update(notebook,subdomain){return(
 async function update(config) {
   const response = await fetch(
     "https://webcode.run/observablehq.com/@endpointservices/cron-backend;update_cron",
@@ -152,7 +156,28 @@ async function update(config) {
     return await response.text();
   }
 }
-)});
+)}
+
+function _18(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Cron.png", {url: new URL("./files/db6a61a4a210555c4422ea034ec059f52ee2d3128a3e23eb16e24c2197b85c46128aca9ccebb8b72c431456d84f31c4648df69e2dbfaf473eecf75e2188c2220", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["signature","createCron"], _2);
+  main.variable(observer("createCron")).define("createCron", ["deploy","firebase","configPath","subdomain","notebook","html","Table","reconcile","update"], _createCron);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer("example")).define("example", ["createCron"], _example);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("configPath")).define("configPath", _configPath);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer("update")).define("update", ["notebook","subdomain"], _update);
   const child1 = runtime.module(define1);
   main.import("firebase", child1);
   main.import("subdomain", child1);
@@ -171,8 +196,6 @@ async function update(config) {
   main.import("signature", child7);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _18);
   return main;
 }

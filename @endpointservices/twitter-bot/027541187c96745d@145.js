@@ -1,9 +1,7 @@
-import define1 from "./c16efae137e70585@1416.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define1 from "./c16efae137e70585@1429.js";
+import define2 from "./58f3eb7334551ae6@209.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Endpoint Services: Login with Comment
 
 This auth server creates tokens signed for use with endpointservices Firebase account. 
@@ -16,19 +14,13 @@ However, we also want userA to configure their own services programatically. So 
 
 This auth logic is encoded in the AUTH_CHECK
 `
-)});
-  const child1 = runtime.module(define1).derive([{name: "firebaseConfig", alias: "TOKEN_FIREBASE_CONFIG"},"TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET","HOST_NOTEBOOK","AUTH_CHECK"], main);
-  main.import("createLogin", child1);
-  main.import("verify_backend", child1);
-  main.import("prepare_backend", child1);
-  main.import("userFirebase", "firebase", child1);
-  main.import("verifyIdToken", child1);
-  main.import("subdomain", child1);
-  main.variable(observer("viewof user")).define("viewof user", ["createLogin"], function(createLogin){return(
+)}
+
+function _user(createLogin){return(
 createLogin()
-)});
-  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md","verifyIdToken","firebase","user"], async function(md,verifyIdToken,firebase,user){return(
+)}
+
+async function _4(md,verifyIdToken,firebase,user){return(
 md`~~~
 ${JSON.stringify(
   await verifyIdToken(firebase, await user.getIdToken()),
@@ -36,8 +28,9 @@ ${JSON.stringify(
   2
 )}
 ~~~`
-)});
-  main.variable(observer("AUTH_CHECK")).define("AUTH_CHECK", function(){return(
+)}
+
+function _AUTH_CHECK(){return(
 ({ login, namespace } = {}) => {
   // Anybody can sign into the trusted domains
   if (namespace == "endpointservices" || namespace == "tomlarkworthy") {
@@ -52,31 +45,58 @@ ${JSON.stringify(
     }
   }
 }
-)});
-  main.variable(observer()).define(["verify_backend"], function(verify_backend){return(
+)}
+
+function _6(verify_backend){return(
 verify_backend
-)});
-  main.variable(observer()).define(["prepare_backend"], function(prepare_backend){return(
+)}
+
+function _7(prepare_backend){return(
 prepare_backend
-)});
-  main.variable(observer("HOST_NOTEBOOK")).define("HOST_NOTEBOOK", function(){return(
+)}
+
+function _HOST_NOTEBOOK(){return(
 '@endpointservices/endpoint-login-with-comment'
-)});
-  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", function(){return(
+)}
+
+function _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET(){return(
 'endpointservices_secretadmin_service_account_key'
-)});
-  main.variable(observer("firebaseConfig")).define("firebaseConfig", function(){return(
+)}
+
+function _firebaseConfig(){return(
 {
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
   authDomain: "endpointservice.firebaseapp.com",
   projectId: "endpointservice",
   databaseURL: "https://endpointservice-eu.europe-west1.firebasedatabase.app/"
 }
-)});
+)}
+
+function _12(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  const child1 = runtime.module(define1).derive([{name: "firebaseConfig", alias: "TOKEN_FIREBASE_CONFIG"},"TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET","HOST_NOTEBOOK","AUTH_CHECK"], main);
+  main.import("createLogin", child1);
+  main.import("verify_backend", child1);
+  main.import("prepare_backend", child1);
+  main.import("userFirebase", "firebase", child1);
+  main.import("verifyIdToken", child1);
+  main.import("subdomain", child1);
+  main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
+  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md","verifyIdToken","firebase","user"], _4);
+  main.variable(observer("AUTH_CHECK")).define("AUTH_CHECK", _AUTH_CHECK);
+  main.variable(observer()).define(["verify_backend"], _6);
+  main.variable(observer()).define(["prepare_backend"], _7);
+  main.variable(observer("HOST_NOTEBOOK")).define("HOST_NOTEBOOK", _HOST_NOTEBOOK);
+  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET);
+  main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _12);
   return main;
 }
