@@ -43,17 +43,21 @@ appLib.initializeApp(
 )
 )}
 
-function _databaseA(rtdb,firebaseAppA)
+function _databaseA(rtdb,firebaseAppA,invalidation)
 {
   rtdb.enableLogging(true);
-  return rtdb.getDatabase(firebaseAppA);
+  const db = rtdb.getDatabase(firebaseAppA);
+  invalidation.then(() => rtdb.goOffline(db));
+  return db;
 }
 
 
-function _databaseB(rtdb,firebaseAppB)
+function _databaseB(rtdb,firebaseAppB,invalidation)
 {
   rtdb.enableLogging(true);
-  return rtdb.getDatabase(firebaseAppB);
+  const db = rtdb.getDatabase(firebaseAppB);
+  invalidation.then(() => rtdb.goOffline(db));
+  return db;
 }
 
 
@@ -61,8 +65,8 @@ function _rootA(rtdb,databaseA){return(
 rtdb.ref(databaseA, "/")
 )}
 
-function _rootB(rtdb,databaseA){return(
-rtdb.ref(databaseA, "/")
+function _rootB(rtdb,databaseB){return(
+rtdb.ref(databaseB, "/")
 )}
 
 export default function define(runtime, observer) {
@@ -75,9 +79,9 @@ export default function define(runtime, observer) {
   main.variable(observer("rtdb")).define("rtdb", _rtdb);
   main.variable(observer("firebaseAppA")).define("firebaseAppA", ["restartClient","appLib","config"], _firebaseAppA);
   main.variable(observer("firebaseAppB")).define("firebaseAppB", ["restartClient","appLib","config"], _firebaseAppB);
-  main.variable(observer("databaseA")).define("databaseA", ["rtdb","firebaseAppA"], _databaseA);
-  main.variable(observer("databaseB")).define("databaseB", ["rtdb","firebaseAppB"], _databaseB);
+  main.variable(observer("databaseA")).define("databaseA", ["rtdb","firebaseAppA","invalidation"], _databaseA);
+  main.variable(observer("databaseB")).define("databaseB", ["rtdb","firebaseAppB","invalidation"], _databaseB);
   main.variable(observer("rootA")).define("rootA", ["rtdb","databaseA"], _rootA);
-  main.variable(observer("rootB")).define("rootB", ["rtdb","databaseA"], _rootB);
+  main.variable(observer("rootB")).define("rootB", ["rtdb","databaseB"], _rootB);
   return main;
 }
