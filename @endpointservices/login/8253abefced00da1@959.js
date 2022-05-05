@@ -1,10 +1,10 @@
 // https://observablehq.com/@endpointservices/login@959
-import define1 from "./698257e86fae4586@367.js";
+import define1 from "./698257e86fae4586@374.js";
 import define2 from "./52d808b188b8672b@129.js";
 import define3 from "./165e9411d1af7e86@1398.js";
 import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./c0de6bf6c2f598ef@62.js";
-import define6 from "./293899bef371e135@225.js";
+import define6 from "./293899bef371e135@226.js";
 
 function _1(html,md){return(
 html`<div class="content"> ${md`# Federated Login (⚠️ not in use)
