@@ -1,8 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/notebooks-2022-01@383
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-01@386
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./293899bef371e135@225.js";
+import define4 from "./293899bef371e135@226.js";
 
 function _1(md){return(
 md`# Engaging Notebooks of Jan 2022`
@@ -308,7 +308,14 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv",new URL("./files/9c846183cce847cef674131ad8bec8f590225e27a36af41480e75b4733b879090ea3a95d02bc5c7b99a53c40f95d1a5640e464ed32d1cd40056cf3ff7153015d",import.meta.url)],["fetchedNotebookURL.json",new URL("./files/e7f4e5e0e9549e843c12fffa630b9093207806aa36e985b9eca4b094c4d4bdd5e124345de28857bf032883b952dbd375500d5f0bf4042cc20aff84c1af0980be",import.meta.url)],["fetchedMetadata (1).json",new URL("./files/b8765b3740d5c3d8573adc60b1b2aa3ead50e2ffd625151852e7c4540c5ef599ebf72d024e55eec1bd436c2b02f36e8921d5bb3c4477e7f5c7625e12054e2f43",import.meta.url)],["fetchedMeta (1).json",new URL("./files/c0484f26e0b6c674ab1ee957d62712562b37f0000195b0d9bbc754b31b61aa4ab664999953ceb3ae32096fed574032ffbb5fa6520abd1fc49db6ac30902479b3",import.meta.url)],["fetchedTags (2).json",new URL("./files/c4d11deada8350ad56433f126b42571626b5584de4de9fe731ceff5fa95501e78d9c6b28a13e94f4b1638130a16ce011674bcc56328d74127f9324d5ca076154",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv", {url: new URL("./files/9c846183cce847cef674131ad8bec8f590225e27a36af41480e75b4733b879090ea3a95d02bc5c7b99a53c40f95d1a5640e464ed32d1cd40056cf3ff7153015d", import.meta.url), mimeType: "text/csv", toString}],
+    ["fetchedNotebookURL.json", {url: new URL("./files/e7f4e5e0e9549e843c12fffa630b9093207806aa36e985b9eca4b094c4d4bdd5e124345de28857bf032883b952dbd375500d5f0bf4042cc20aff84c1af0980be", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMetadata (1).json", {url: new URL("./files/b8765b3740d5c3d8573adc60b1b2aa3ead50e2ffd625151852e7c4540c5ef599ebf72d024e55eec1bd436c2b02f36e8921d5bb3c4477e7f5c7625e12054e2f43", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMeta (1).json", {url: new URL("./files/c0484f26e0b6c674ab1ee957d62712562b37f0000195b0d9bbc754b31b61aa4ab664999953ceb3ae32096fed574032ffbb5fa6520abd1fc49db6ac30902479b3", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedTags (2).json", {url: new URL("./files/c4d11deada8350ad56433f126b42571626b5584de4de9fe731ceff5fa95501e78d9c6b28a13e94f4b1638130a16ce011674bcc56328d74127f9324d5ca076154", import.meta.url), mimeType: "application/json", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["data","htl"], _2);

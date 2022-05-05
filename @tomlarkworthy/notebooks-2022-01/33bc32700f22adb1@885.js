@@ -311,7 +311,14 @@ md`<a title="Plot: Map" style="display: inline-flex; align-items: center; font: 
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["unemployment.csv",new URL("./files/76f13741128340cc88798c0a0b7fa5a2df8370f57554000774ab8ee9ae785ffa2903010cad670d4939af3e9c17e5e18e7e05ed2b38b848ac2fc1a0066aa0005f",import.meta.url)],["riaa-us-revenue.csv",new URL("./files/11666df39db7651969fb76fc5d735d851534b667ad348bd7a2e9e489862ccdb702734ceeed800a79b363f429a4b7fbf966b75d1bbf14c51ac13b60c99ceb3b1a",import.meta.url)],["crimea.csv",new URL("./files/80f4b5aaff1b414f6fbd8cac308847b4821e42e6e00b567311c5575edcbf86c4b0cf9852e1adc12373fe9b242e1dc8343ac7ac908ef5e101309b843f14ac0d27",import.meta.url)],["us-congress-members.csv",new URL("./files/3592d7e8c98e9d838445801f2d42dc9de9f9f0fb80cf393a1977587e2ec9c79e2fee8ae2c6ea54859e9739da1cb0501c4a2fa15b8eb5d91930241172bd177d5a",import.meta.url)],["iowa-energy.csv",new URL("./files/d78cafc08cb624880e5a11dc210aeacd21045517b6d2a56092699db1945ab9c756d304fb9a72e56c9d7658f63ad21eca049cd8509faa8b717805a229485f85ef",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["unemployment.csv", {url: new URL("./files/76f13741128340cc88798c0a0b7fa5a2df8370f57554000774ab8ee9ae785ffa2903010cad670d4939af3e9c17e5e18e7e05ed2b38b848ac2fc1a0066aa0005f", import.meta.url), mimeType: "text/csv", toString}],
+    ["riaa-us-revenue.csv", {url: new URL("./files/11666df39db7651969fb76fc5d735d851534b667ad348bd7a2e9e489862ccdb702734ceeed800a79b363f429a4b7fbf966b75d1bbf14c51ac13b60c99ceb3b1a", import.meta.url), mimeType: "text/csv", toString}],
+    ["crimea.csv", {url: new URL("./files/80f4b5aaff1b414f6fbd8cac308847b4821e42e6e00b567311c5575edcbf86c4b0cf9852e1adc12373fe9b242e1dc8343ac7ac908ef5e101309b843f14ac0d27", import.meta.url), mimeType: "text/csv", toString}],
+    ["us-congress-members.csv", {url: new URL("./files/3592d7e8c98e9d838445801f2d42dc9de9f9f0fb80cf393a1977587e2ec9c79e2fee8ae2c6ea54859e9739da1cb0501c4a2fa15b8eb5d91930241172bd177d5a", import.meta.url), mimeType: "text/csv", toString}],
+    ["iowa-energy.csv", {url: new URL("./files/d78cafc08cb624880e5a11dc210aeacd21045517b6d2a56092699db1945ab9c756d304fb9a72e56c9d7658f63ad21eca049cd8509faa8b717805a229485f85ef", import.meta.url), mimeType: "text/csv", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("crimea")).define("crimea", ["FileAttachment"], _crimea);

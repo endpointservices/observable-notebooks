@@ -109,9 +109,11 @@ headerCreator({
 })
 )}
 
-function _headerCreator(supress,view,Inputs,$0,variable,urlTitle,normalizeObservablehqEndpoint,tabbedPane,statusPane,secretsPane,style){return(
+function _headerCreator(supress,view,style,Inputs,$0,variable,urlTitle,normalizeObservablehqEndpoint,tabbedPane,statusPane,secretsPane){return(
 (config, invalidation) => {
-  const ui = supress(view`<details open class="e-header-details">
+  const ui = supress(view`
+  ${style()}
+  <details open class="e-header-details">
     ${["_user", Inputs.input($0.value)]}
     ${["_href", variable(config.endpoint)]}
     <summary style="width: 100%;">
@@ -125,7 +127,6 @@ function _headerCreator(supress,view,Inputs,$0,variable,urlTitle,normalizeObserv
       status: () => statusPane(config, invalidation),
       secrets: () => secretsPane(config, invalidation)
     })}
-    ${style}
   </details>`);
 
   return ui;
@@ -141,21 +142,23 @@ headerNotCreator({
 })
 )}
 
-function _headerNotCreator(supress,view,variable,urlTitle,normalizeObservablehqEndpoint,style,$0,md){return(
+function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0,md){return(
 (config, invalidation) => {
-  const ui = supress(view`<details class="e-header-details">
-  ${["_href", variable(config.endpoint)]}
+  const ui = supress(view`
+  ${style()}
+  <details class="e-header-details">
+    ${["_href", variable(config.endpoint)]}
     <summary style="width: 100%;">
       ${urlTitle({
         url: config.endpoint,
         text: normalizeObservablehqEndpoint(config.endpoint)
       })}
     </summary>
-    ${style}
     ${$0}
     <span style="font-size: 16px">
     ${md`⚠️ You are not an admin of ${config.namespace}, [fork](https://observablehq.com/@observablehq/fork-share-merge) into your own namespace to configure or debug it.`}
-    </span>`);
+    </span>
+  </details>`);
   return ui;
 }
 )}
@@ -173,10 +176,12 @@ function _17(exampleHeaderLogin){return(
 exampleHeaderLogin
 )}
 
-function _headerLogin(supress,view,variable,urlTitle,normalizeObservablehqEndpoint,$0,style){return(
-config =>
-  supress(view`<details class="e-header-details">
-  ${['_href', variable(config.endpoint)]}
+function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0){return(
+(config) =>
+  supress(view`
+  ${style()}
+  <details class="e-header-details">
+  ${["_href", variable(config.endpoint)]}
   <summary style="width: 100%;">
     ${urlTitle({
       url: config.endpoint,
@@ -184,7 +189,6 @@ config =>
     })}
     ${$0}
   </summary>
-  ${style}
 </details>`)
 )}
 
@@ -1398,7 +1402,7 @@ function _mobile(){return(
 )}
 
 function _style(html,titleCSS,buttonCSS,textAreaCSS,listSelectorCSS,tabPaneCSS,colPaneCSS,tabsCSS,headerCSS,colors){return(
-html`<style>
+() => html`<style>
   ${titleCSS.innerHTML}
   ${buttonCSS.innerHTML}
   ${textAreaCSS.innerHTML}
@@ -1426,7 +1430,7 @@ html`<style>
 </style>`
 )}
 
-function _105(md){return(
+function _106(md){return(
 md`## Implementation`
 )}
 
@@ -1443,13 +1447,13 @@ endpoint =>
   )
 )}
 
-function _108(normalizeObservablehqEndpoint){return(
+function _109(normalizeObservablehqEndpoint){return(
 normalizeObservablehqEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo"
 )
 )}
 
-function _109(md){return(
+function _110(md){return(
 md`### Secrets`
 )}
 
@@ -1494,7 +1498,7 @@ async ({ user, namespace, name }) =>
   secretClient(user, `/subdomains/${namespace}/secrets/${name}`, "DELETE")
 )}
 
-function _115(md){return(
+function _116(md){return(
 md`### Live code`
 )}
 
@@ -1587,7 +1591,7 @@ async function createChannel({
 }
 )}
 
-function _117(deploy){return(
+function _118(deploy){return(
 deploy("test", async (request, response) => {
   response
     .header("foo", "bar")
@@ -1611,7 +1615,7 @@ function _database(firebase)
 }
 
 
-function _125(footer){return(
+function _126(footer){return(
 footer
 )}
 
@@ -1637,14 +1641,14 @@ export default function define(runtime, observer) {
   main.variable(observer("serverlessCellUI")).define("serverlessCellUI", ["viewroutine","viewof user","ask","headerLogin","headerCreator","headerNotCreator"], _serverlessCellUI);
   main.variable(observer("viewof exampleHeaderActive")).define("viewof exampleHeaderActive", ["headerCreator","user"], _exampleHeaderActive);
   main.variable(observer("exampleHeaderActive")).define("exampleHeaderActive", ["Generators", "viewof exampleHeaderActive"], (G, _) => G.input(_));
-  main.variable(observer("headerCreator")).define("headerCreator", ["supress","view","Inputs","viewof user","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","statusPane","secretsPane","style"], _headerCreator);
+  main.variable(observer("headerCreator")).define("headerCreator", ["supress","view","style","Inputs","viewof user","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","statusPane","secretsPane"], _headerCreator);
   main.variable(observer("viewof exampleHeaderNotCreator")).define("viewof exampleHeaderNotCreator", ["headerNotCreator"], _exampleHeaderNotCreator);
   main.variable(observer("exampleHeaderNotCreator")).define("exampleHeaderNotCreator", ["Generators", "viewof exampleHeaderNotCreator"], (G, _) => G.input(_));
-  main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","variable","urlTitle","normalizeObservablehqEndpoint","style","viewof user","md"], _headerNotCreator);
+  main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user","md"], _headerNotCreator);
   main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin"], _exampleHeaderLogin);
   main.variable(observer("exampleHeaderLogin")).define("exampleHeaderLogin", ["Generators", "viewof exampleHeaderLogin"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleHeaderLogin"], _17);
-  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","variable","urlTitle","normalizeObservablehqEndpoint","viewof user","style"], _headerLogin);
+  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user"], _headerLogin);
   main.variable(observer("headerCSS")).define("headerCSS", ["html","colors"], _headerCSS);
   main.variable(observer()).define(["md"], _20);
   main.variable(observer()).define(["externalLinkSVG"], _21);
@@ -1745,19 +1749,19 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _102);
   main.variable(observer("mobile")).define("mobile", _mobile);
   main.variable(observer("style")).define("style", ["html","titleCSS","buttonCSS","textAreaCSS","listSelectorCSS","tabPaneCSS","colPaneCSS","tabsCSS","headerCSS","colors"], _style);
-  main.variable(observer()).define(["md"], _105);
+  main.variable(observer()).define(["md"], _106);
   main.variable(observer("normalizeEndpoint")).define("normalizeEndpoint", _normalizeEndpoint);
   main.variable(observer("normalizeObservablehqEndpoint")).define("normalizeObservablehqEndpoint", _normalizeObservablehqEndpoint);
-  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _108);
-  main.variable(observer()).define(["md"], _109);
+  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _109);
+  main.variable(observer()).define(["md"], _110);
   main.variable(observer("SECRET_API")).define("SECRET_API", _SECRET_API);
   main.variable(observer("secretClient")).define("secretClient", ["SECRET_API"], _secretClient);
   main.variable(observer("getStoredSecrets")).define("getStoredSecrets", ["secretClient"], _getStoredSecrets);
   main.variable(observer("setSecret")).define("setSecret", ["secretClient"], _setSecret);
   main.variable(observer("deleteSecret")).define("deleteSecret", ["secretClient"], _deleteSecret);
-  main.variable(observer()).define(["md"], _115);
+  main.variable(observer()).define(["md"], _116);
   main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","getContext","Response"], _createChannel);
-  main.variable(observer()).define(["deploy"], _117);
+  main.variable(observer()).define(["deploy"], _118);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
   const child3 = runtime.module(define3);
@@ -1773,6 +1777,6 @@ export default function define(runtime, observer) {
   main.import("randomId", child6);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _125);
+  main.variable(observer()).define(["footer"], _126);
   return main;
 }

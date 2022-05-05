@@ -1,6 +1,6 @@
 # Engaging Notebooks of Jan 2022
 
-https://observablehq.com/@tomlarkworthy/notebooks-2022-01@383
+https://observablehq.com/@tomlarkworthy/notebooks-2022-01@386
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/e66a32b1d4a70369@383.tgz?v=3
+npm install https://api.observablehq.com/d/e66a32b1d4a70369@386.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
