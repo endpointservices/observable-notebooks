@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/animated-sequence-diagrams",
+  "main": "4c8138da42ecfcec@98.js",
+  "version": "98.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
