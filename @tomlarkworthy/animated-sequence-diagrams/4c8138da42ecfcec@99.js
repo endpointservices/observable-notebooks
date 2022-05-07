@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@98
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@99
 import define1 from "./293899bef371e135@226.js";
 
 function _1(md){return(
@@ -21,7 +21,10 @@ md`## ${
 
 function _4(mermaid,step){return(
 mermaid`sequenceDiagram
+
     autonumber
+    participant Alice
+    participant John
     ${
       step > 0
         ? `${
