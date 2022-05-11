@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@99
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@107
 import define1 from "./293899bef371e135@226.js";
 
 function _1(md){return(
@@ -10,7 +10,7 @@ Yes the example is weird but it comes from the Mermaid [documentation](https://m
 )}
 
 function _step(Inputs){return(
-Inputs.range([0, 6], { step: 1, value: 1 })
+Inputs.range([0, 6], { step: 1, value: 1, label: "step" })
 )}
 
 function _3(step,md){return(
