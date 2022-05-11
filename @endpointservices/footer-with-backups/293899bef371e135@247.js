@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@226
+// https://observablehq.com/@endpointservices/footer-with-backups@247
 import define1 from "./a81f2a20664080d3@212.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@627.js";
@@ -148,5 +148,6 @@ export default function define(runtime, observer) {
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
   const child3 = runtime.module(define3);
   main.import("enableGithubBackups", child3);
+  main.import("backupNowButton", child3);
   return main;
 }
