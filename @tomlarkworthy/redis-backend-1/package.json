@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/redis-backend-1",
+  "main": "de798a70f81e9e09@1702.js",
+  "version": "1702.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/redis-backend-1",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
