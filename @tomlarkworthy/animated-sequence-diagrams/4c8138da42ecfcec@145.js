@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@143
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@145
 import define1 from "./293899bef371e135@226.js";
 
 function _1(md){return(
@@ -34,9 +34,9 @@ mermaid`sequenceDiagram
       step > 1,
       `loop Healthcheck
       ${includeIf(step === 2, `rect rgb(0, 255, 0)\n`)}
-      John->>John: Fight against hypochondri
+        John->>John: Fight against hypochondri
       ${includeIf(step == 2, "\nend")}
-    end
+      end
     ${includeIf(
       step > 2,
       `${includeIf(step === 3, `rect rgb(0, 255, 0)\n`)}
