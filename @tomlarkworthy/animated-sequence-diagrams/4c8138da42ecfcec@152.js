@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@145
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@152
 import define1 from "./293899bef371e135@226.js";
 
 function _1(md){return(
@@ -21,7 +21,6 @@ md`## ${
 
 function _4(mermaid,includeIf,step){return(
 mermaid`sequenceDiagram
-
     autonumber
     participant Alice
     participant John
@@ -30,38 +29,38 @@ mermaid`sequenceDiagram
       `${includeIf(step === 1, `rect rgb(0,255,0)\n`)}
       Alice->>John: Hello John, how are you?
       ${includeIf(step == 1, "\nend")}
-    ${includeIf(
-      step > 1,
-      `loop Healthcheck
-      ${includeIf(step === 2, `rect rgb(0, 255, 0)\n`)}
-        John->>John: Fight against hypochondri
-      ${includeIf(step == 2, "\nend")}
-      end
-    ${includeIf(
-      step > 2,
-      `${includeIf(step === 3, `rect rgb(0, 255, 0)\n`)}
-      Note right of John: Rational thoughts!
-      ${includeIf(step == 3, "\nend")}
-    ${includeIf(
-      step > 3,
-      `${includeIf(step === 4, `rect rgb(0, 255, 0)\n`)}
-      John-->>Alice: Great!
-      ${includeIf(step == 4, "\nend")}
-    ${includeIf(
-      step > 4,
-      `${includeIf(step === 5, `rect rgb(0, 255, 0)\n`)}
-      John->>Bob: How about you?
-      ${includeIf(step == 5, "\nend")}
-    ${includeIf(
-      step > 5,
-      `${includeIf(step === 6, `rect rgb(0, 255, 0)\n`)}
-      Bob-->>John: Jolly good!
-      ${includeIf(step == 6, "\nend")}`
-    )}`
-    )}`
-    )}`
-    )}`
-    )}`
+      ${includeIf(
+        step > 1,
+        `loop Healthcheck
+        ${includeIf(step === 2, `rect rgb(0, 255, 0)\n`)}
+          John->>John: Fight against hypochondri
+        ${includeIf(step == 2, "\nend")}
+        end
+        ${includeIf(
+          step > 2,
+          `${includeIf(step === 3, `rect rgb(0, 255, 0)\n`)}
+            Note right of John: Rational thoughts!
+            ${includeIf(step == 3, "\nend")}
+          ${includeIf(
+            step > 3,
+            `${includeIf(step === 4, `rect rgb(0, 255, 0)\n`)}
+              John-->>Alice: Great!
+              ${includeIf(step == 4, "\nend")}
+            ${includeIf(
+              step > 4,
+              `${includeIf(step === 5, `rect rgb(0, 255, 0)\n`)}
+                John->>Bob: How about you?
+                ${includeIf(step == 5, "\nend")}
+              ${includeIf(
+                step > 5,
+                `${includeIf(step === 6, `rect rgb(0, 255, 0)\n`)}
+                Bob-->>John: Jolly good!
+                ${includeIf(step == 6, "\nend")}`
+              )}`
+            )}`
+          )}`
+        )}`
+      )}`
     )}
 `
 )}
