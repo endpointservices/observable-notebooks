@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@155
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@156
 import define1 from "./293899bef371e135@226.js";
 
 function _1(md){return(
