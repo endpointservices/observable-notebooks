@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/redis@1000
+// https://observablehq.com/@tomlarkworthy/redis@1002
 import define1 from "./bb2055d580bbbab2@106.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -142,7 +142,16 @@ async function createClient({
       if (ws.readyState > 1 /* CLOSING or CLOSED */) {
         await newSocket();
       }
-      writeCommand(args);
+      var retries = 5;
+      while (retries-- >= 0) {
+        try {
+          writeCommand(args);
+          break;
+        } catch (err) {
+          console.error(err);
+          await newSocket(); // try a reconnect
+        }
+      }
     }
   };
 
