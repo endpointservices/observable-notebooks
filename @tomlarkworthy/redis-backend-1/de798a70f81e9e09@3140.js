@@ -3,7 +3,7 @@ import define2 from "./0e0b35a92c819d94@418.js";
 import define3 from "./293899bef371e135@247.js";
 
 function _1(md){return(
-md`#  Redis as the Shared State for an Elastic Realtime Database`
+md`# Choosing *Causal Consistency* for a Realtime Database`
 )}
 
 function _2(md){return(
@@ -84,7 +84,7 @@ Firebase is (nearly) a causally consistent distributed database. This implies th
     </g>
 </svg>
 
-*Causal* consistency is the best consistency you can hope for in a distributed setting. The stronger consistency model, *sequential* consistency, requires a global ordering of operations and doesn't permit progress during network partitions. Sequential consistency, of course, cannot work for something including web page visitors. Going the other way, *eventual* consistency, implies nothing other than operations eventually become visible, but says nothing about ordering. Eventual consistency can be the cause of hard to replicate race conditions, and can leave you second guessing root causes of bugs. Causal consistency, on the other hand, is the optimal middle ground, and seems to match programmer's intuitive mental model of database. The ergonomics of causal consistency is one of reasons why I think Firebase was hit, suffice it to say that **causal consistency is a desirable property in a distributed databases!**
+*Causal* consistency is the best consistency you can hope for in a distributed setting. The stronger consistency model, *sequential* consistency, requires a global ordering of operations and doesn't permit progress during network partitions, so sequential consistency is a non-starter for something including web page visitors. Going the other way, *eventual* consistency, implies nothing other than operations eventually become visible, but says nothing about ordering. Eventual consistency can be the cause of hard to replicate race conditions, and can leave you second guessing root causes of bugs. Causal consistency, on the other hand, is the optimal middle ground, and seems to match programmer's intuitive mental model of database. The ergonomics of causal consistency is one of reasons why I think Firebase was hit, suffice it to say that **causal consistency is a desirable property in a distributed databases!**
 
 
 `
@@ -184,7 +184,7 @@ function _init_client(clear_operations,clear_notifications,set_head_operation_id
 ({ redis, client_id }) => {
   clear_operations({ redis, client_id });
   clear_notifications({ redis, client_id });
-  set_head_operation_id({ redis, client_id }, "0-0");
+  set_head_operation_id({ redis, client_id }, "0");
   return set_head_notify_id({ redis, client_id }, "0-0");
 }
 )}
@@ -279,7 +279,7 @@ suite.test("init_client resets queues and heads", async () => {
 
   init_client(client); // reset the client
 
-  testing.expect(await get_head_operation_id(client)).toBe("0-0");
+  testing.expect(await get_head_operation_id(client)).toBe("0");
   testing.expect(await get_head_notify_id(client)).toBe("0-0");
   testing.expect(await next_operation(client)).toBe(null);
   testing.expect(await next_notify(client)).toBe(null);
@@ -321,7 +321,6 @@ async (client) => {
     client_longpoll_session_key(client.client_id),
     "password"
   ]);
-  debugger;
   return {
     client,
     password: response[0]
@@ -503,8 +502,10 @@ async ({ redis, client_id } = {}) => {
     "1",
     "STREAMS",
     client_operation_queue_key(client_id),
-    id
+    `0-${id}`
   ]);
+  if (response === "QUEUED")
+    throw new Error("Can't use next_operation in transaction");
   return (
     response &&
     response[0][1][0][1].reduce((obj, val, index, arr) => {
@@ -544,12 +545,21 @@ suite.test(
       payload: "dedupe_test"
     });
 
+    enqueue_operation(client, {
+      request_id: "2",
+      payload: "second"
+    });
+
     const next1 = next_operation(client);
     const next2 = next_operation(client);
 
-    ack_operation(client, "1"); // This should be part of a transaction to prevent double ACKs
+    ack_operation(client, "1");
 
     const next3 = next_operation(client);
+
+    ack_operation(client, "2");
+
+    const next4 = next_operation(client);
 
     testing.expect(await next1).toEqual({
       request_id: "1",
@@ -561,7 +571,12 @@ suite.test(
       payload: "init"
     });
 
-    testing.expect(await next3).toEqual(null);
+    testing.expect(await next3).toEqual({
+      request_id: "2",
+      payload: "second"
+    });
+
+    testing.expect(await next4).toEqual(null);
   }
 )
 )}
@@ -569,9 +584,9 @@ suite.test(
 function _76(md){return(
 md`## At-most-once notifications
 
-The server responds to every incoming operation through a server-to-client notification stream. If any data is written to location with an active *listen*, the server will inform the client through this channel too. Because this channel contains operation replies AND data notifications, we cannot use the 1-at-a-time incremented *request_id* as the *stream_id*. This is kind of annoying as we can't form an at-least-once request pipeline, but does not compromise consistency because if an notification goes missing the client can detect it and restart the session (how the detection works is transport dependant).
+The server responds to every incoming operation through a server-to-client notification stream. If any data is written to location with an active *listen*, the server will inform the client through this channel too. Because this channel contains operation replies AND data notifications, we cannot use the 1-at-a-time incremented *request_id* as the *stream_id*. This is kind of annoying as we can't form an at-least-once request pipeline, but it doesn't compromise consistency because if an notification goes missing the client can detect it and restart the session (how the detection works is transport dependant).
 
-Largely this code is the same as the queue for the *operation_queue*, the major difference is we let it generate its own *stream_id* when calling [XADD](https://redis.io/commands/xadd/).
+Largely this code is the same as the queue for the *operation_queue*, the major difference is we let it auto-generate its own *stream_id* when calling [XADD](https://redis.io/commands/xadd/).
 `
 )}
 
@@ -612,12 +627,14 @@ function _ack_notify(set_head_notify_id){return(
 function _81(md){return(
 md`## process_operation
 
-Removes item from operation queue, then ACKS and effects it **within a transaction**. The transaction ensures the *operation* is applied atomically _i.e._ all or nothing. Some of the operation side-effects might include enqueueing *notifications* to other client's outbound message queues. Within the transaction a [WATCH](https://redis.io/commands/watch/) on the *head_operation_id* ensures only one worker can process this work task, leading to *exactly-once* processing.  
+Processing an operation is the meat of the implementation. It is where we actually do database-like things like setting data values and registering listener. Of course, care must be taken to ensure we meet our causal consistency goals.
+
+Specifically, *process_operation*, removes an item from operation queue, effects it and ACKS it **within a single transaction**. The transaction ensures the *operation* is applied atomically _i.e._ all or nothing. Some of the operation side-effects might include enqueueing *notifications* to other client's outbound message queues. Within the transaction a [WATCH](https://redis.io/commands/watch/) on the *head_operation_id* ensures that **only one** worker can process this work task, leading to *exactly-once* processing.  
 `
 )}
 
 function _82(md){return(
-md`To help with observability during development, the functional interface is converted dataflow using a [*flowQueue*](https://observablehq.com/@tomlarkworthy/flow-queue). This allows us to break the program flow across notebook cells so it's easier to diagnose how decisions are made. It also gives the autocomplete visibility into the data on the wire. So, the main *process_operation* function just forwards the function arguments to the beginning of coresponding flowQueue cell`
+md`To help with observability during development, the functional interface is converted to dataflow using a [*flowQueue*](https://observablehq.com/@tomlarkworthy/flow-queue). This allows us to break the program flow across notebook cells so it's easier to diagnose how decisions are made. It also gives the autocomplete visibility into the data on the wire. So, the main *process_operation* function just forwards the function arguments to the beginning of corresponding flowQueue cell *process_operation_args*.`
 )}
 
 function _process_operation($0){return(
@@ -640,7 +657,7 @@ process_operation_args
 )}
 
 function _87(md){return(
-md`First we fetch the next action`
+md`First we fetch the next action after [WATCH](https://redis.io/commands/watch/)ing the *operation_head_id_key*. The WATCH prevents multiple workers doing the same operation.`
 )}
 
 async function _action(process_operation_args,client_operation_head_id_key,next_operation,$0,invalidation)
@@ -652,10 +669,7 @@ async function _action(process_operation_args,client_operation_head_id_key,next_
   ]);
   const actionRaw = await next_operation(process_operation_args);
   if (!actionRaw) {
-    client.redis.sendCommand([
-      "UNWATCH",
-      client_operation_head_id_key(client.client_id)
-    ]);
+    client.redis.sendCommand(["UNWATCH"]);
     $0.respond("NOOP");
     return invalidation;
   } else {
@@ -668,55 +682,65 @@ function _89(md){return(
 md`Then a transaction block is started with [MULTI](https://redis.io/commands/multi/). Followed by _operation_ specific code (each explained later). `
 )}
 
-async function _process_operation_effect(process_operation_args,action,data_listeners_key,get_data_listeners,$0,data_key,get_data,$1,$2,$3,$4)
+async function _process_operation_effect(process_operation_args,action,data_listeners_key,get_data_listeners,data_key,get_data,$0,$1,$2,$3,$4)
 {
-  debugger;
   const client = process_operation_args;
-  const code = action.action;
+  const operation = action.action;
   let result;
+
+  // Some operations required additional data to be gathered before execution
+  let prerequisites;
+
   try {
-    if (code === "PUT") {
-      // We need a snapshot of the affected listeners before we start the transaciton
+    if (operation === "PUT") {
       client.redis.sendCommand(["WATCH", data_listeners_key(action.key)]);
-      const listenersPromise = get_data_listeners(client, action.key);
-      client.redis.sendCommand(["MULTI"]);
-      result = await $0.send({
-        client,
-        listeners: await listenersPromise,
-        action: action
-      });
-    } else if (code === "GET") {
+      prerequisites = {
+        listeners: await get_data_listeners(client, action.key)
+      };
+    } else if (operation === "GET" || operation === "LISTEN") {
       client.redis.sendCommand(["WATCH", data_key(action.key)]);
-      const dataPromise = get_data(client, action.key);
-      client.redis.sendCommand(["MULTI"]);
+      prerequisites = {
+        data: await get_data(client, action.key)
+      };
+    }
+  } catch (err) {
+    console.error(err.message, action);
+    $0.reject(err);
+    return err;
+  }
+  try {
+    client.redis.sendCommand(["MULTI"]);
+    if (operation === "PUT") {
       result = await $1.send({
+        ...prerequisites,
         client,
-        data: await dataPromise,
         action: action
       });
-    } else if (code === "LISTEN") {
-      client.redis.sendCommand(["WATCH", data_key(action.key)]);
-      const dataPromise = get_data(client, action.key);
-      client.redis.sendCommand(["MULTI"]);
+    } else if (operation === "GET") {
       result = await $2.send({
+        ...prerequisites,
         client,
-        data: await dataPromise,
         action: action
       });
-    } else if (code === "UNLISTEN") {
-      client.redis.sendCommand(["MULTI"]);
+    } else if (operation === "LISTEN") {
       result = await $3.send({
+        ...prerequisites,
+        client,
+        action: action
+      });
+    } else if (operation === "UNLISTEN") {
+      result = await $4.send({
         client,
         action: action
       });
     } else {
-      throw new Error("Unknown action code " + code);
+      throw new Error("Unknown operation " + operation);
     }
     return result;
   } catch (err) {
     console.error(err.message, action);
     client.redis.sendCommand(["DISCARD"]);
-    $4.reject(err);
+    $0.reject(err);
     return err;
   }
 }
@@ -726,9 +750,10 @@ function _91(md){return(
 md`Finally, the transaction is executed and the response is passed back to the [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue).`
 )}
 
-async function _ack_process_operation(process_operation_args,ack_operation,action,$0)
+async function _ack_process_operation(process_operation_args,process_operation_effect,ack_operation,action,$0)
 {
   const client = process_operation_args;
+  process_operation_effect;
   try {
     ack_operation(client, action.request_id);
     const response = client.redis.sendCommand(["EXEC"]);
@@ -746,23 +771,24 @@ async function _93(clear_data_listeners,exampleClient,init_client,enqueue_operat
 {
   clear_data_listeners(exampleClient, "foo");
   init_client(exampleClient);
-  await enqueue_operation(exampleClient, {
+  enqueue_operation(exampleClient, {
     request_id: "1",
     action: "LISTEN",
     key: "foo"
   });
-  await enqueue_operation(exampleClient, {
+  enqueue_operation(exampleClient, {
     request_id: "2",
     action: "PUT",
     key: "foo",
     value: "bar"
   });
-  await enqueue_operation(exampleClient, {
+  enqueue_operation(exampleClient, {
     request_id: "3",
     action: "GET",
     key: "foo"
   });
-  await enqueue_operation(exampleClient, {
+
+  enqueue_operation(exampleClient, {
     request_id: "4",
     action: "UNLISTEN",
     key: "foo"
@@ -1124,11 +1150,11 @@ $0.respond(
 )
 )}
 
-function _140(md){return(
+function _141(md){return(
 md`---`
 )}
 
-function _141(md){return(
+function _142(md){return(
 md`## Dependencies`
 )}
 
@@ -1154,11 +1180,11 @@ async function _testing(createClient)
 }
 
 
-function _145(md){return(
+function _146(md){return(
 md`## Backups and Analytics`
 )}
 
-function _147(footer){return(
+function _148(footer){return(
 footer
 )}
 
@@ -1262,9 +1288,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _87);
   main.variable(observer("action")).define("action", ["process_operation_args","client_operation_head_id_key","next_operation","viewof process_operation_args","invalidation"], _action);
   main.variable(observer()).define(["md"], _89);
-  main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","data_listeners_key","get_data_listeners","viewof run_put_operation_args","data_key","get_data","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args","viewof process_operation_args"], _process_operation_effect);
+  main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","data_listeners_key","get_data_listeners","data_key","get_data","viewof process_operation_args","viewof run_put_operation_args","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args"], _process_operation_effect);
   main.variable(observer()).define(["md"], _91);
-  main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
+  main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","process_operation_effect","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
   main.variable(observer()).define(["clear_data_listeners","exampleClient","init_client","enqueue_operation","process_operation","next_notify","ack_notify"], _93);
   main.variable(observer()).define(["md"], _94);
   main.variable(observer()).define(["md"], _95);
@@ -1317,15 +1343,15 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["run_unlisten_operation_args"], _137);
   main.variable(observer("run_unlisten_effect")).define("run_unlisten_effect", ["run_unlisten_operation_args","remove_data_listener","enqueue_notify"], _run_unlisten_effect);
   main.variable(observer("unlisten_operation_response")).define("unlisten_operation_response", ["viewof run_unlisten_operation_args","run_unlisten_effect"], _unlisten_operation_response);
-  main.variable(observer()).define(["md"], _140);
   main.variable(observer()).define(["md"], _141);
+  main.variable(observer()).define(["md"], _142);
   main.variable(observer("includeIf")).define("includeIf", _includeIf);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
   main.variable(observer("testing")).define("testing", ["createClient"], _testing);
-  main.variable(observer()).define(["md"], _145);
+  main.variable(observer()).define(["md"], _146);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _147);
+  main.variable(observer()).define(["footer"], _148);
   return main;
 }
