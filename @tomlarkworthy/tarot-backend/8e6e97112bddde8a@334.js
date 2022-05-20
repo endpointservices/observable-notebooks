@@ -1,4 +1,4 @@
-// https://observablehq.com/@observablehq/demo@306
+// https://observablehq.com/@observablehq/demo@334
 import define1 from "./bb2055d580bbbab2@106.js";
 
 function _1(md){return(
@@ -84,16 +84,16 @@ function _18(md){return(
 md`You can [load libraries](/@tmcw/introduction-to-require) from npm.`
 )}
 
-function _d3(require){return(
-require("d3-array@2")
+function _he(require){return(
+require("he@1")
 )}
 
 function _20(md){return(
 md`If a cell’s value is a [promise](/@observablehq/introduction-to-promises), any referencing cell implicitly awaits it. Both \`fetch\` and \`require\` return promises, but the cell below can refer simply to their eventual values. (You can explicitly \`await\`, too.)`
 )}
 
-function _21(d3,cars){return(
-d3.median(cars, d => d.Horsepower)
+function _21(he){return(
+he.encode("foo © bar ≠ baz 𝌆 qux")
 )}
 
 function _22(md){return(
@@ -212,9 +212,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("cars")).define("cars", _cars);
   main.variable(observer()).define(["md"], _18);
-  main.variable(observer("d3")).define("d3", ["require"], _d3);
+  main.variable(observer("he")).define("he", ["require"], _he);
   main.variable(observer()).define(["md"], _20);
-  main.variable(observer()).define(["d3","cars"], _21);
+  main.variable(observer()).define(["he"], _21);
   main.variable(observer()).define(["md"], _22);
   main.variable(observer("greet")).define("greet", _greet);
   main.variable(observer()).define(["greet"], _24);

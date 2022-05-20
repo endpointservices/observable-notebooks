@@ -1,23 +1,22 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./374124b361974cb3@206.js";
+import define2 from "./374124b361974cb3@259.js";
 import define3 from "./993a0c51ef1175ea@1345.js";
-import define4 from "./6b51d73d81a1b21f@207.js";
+import define4 from "./3d59cab3a9c819e2@168.js";
 import define5 from "./6eda90668ae03044@803.js";
-import define6 from "./0e0b35a92c819d94@325.js";
+import define6 from "./0e0b35a92c819d94@418.js";
 import define7 from "./048a17a165be198d@263.js";
 import define8 from "./0c800138c487d3e1@860.js";
-import define9 from "./698257e86fae4586@350.js";
+import define9 from "./698257e86fae4586@374.js";
 import define10 from "./f92778131fd76559@1173.js";
 import define11 from "./92ff66b718c1972f@141.js";
 import define12 from "./653c46ed55693b1f@646.js";
 import define13 from "./9bed702f80a3797e@402.js";
 import define14 from "./dff1e917c89f5e76@1711.js";
-import define15 from "./ef672b935bd480fc@619.js";
-import define16 from "./293899bef371e135@216.js";
+import define15 from "./293899bef371e135@225.js";
 
 function _1(md){return(
 md`# Tarot Backend
-
+ 
 Welcome curious traveler to the Tarot backend. Its purpose is to show you how you can make a fully working app entirely from the comfort of an Observable notebook. You can fork this notebook and create your own.
 
 The Tarot Backend uses [OpenAI](https://openai.com/) to interpret a 3 card tarot spread. The OpenAI API key is kept secret by executing it serverside in an API endpoint defined inline to the notebook using [webcode.run](https://webcode.run). You can bring your own OpenAI API key so you can run that remote logic locally which is useful during development.
@@ -30,9 +29,9 @@ The UI is designed hierarchically and assembled into a single cell, following th
 
 We the API request process across several Observable reactive dataflow cells using a [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue). If a step has a bug, we can then fix that individual line and the trace will continue which makes development very ergonomic. Furthermore, by exploiting [webcode.run](https://webcode.run) live coding, production traffic will be traced in the development notebook, and we can develop and debug directly on prod.
 
-I hope you find [webcode.run](https://webcode.run) + [observable](/) application development interesting. This took about 2 weeks of fulltime work to develop.
+Errors in prod are recorded with [Sentry](https://observablehq.com/@endpointservices/sentry), and active monitoring is performed with [uptimerobot + healthcheck](https://observablehq.com/@endpointservices/healthcheck).
 
-
+I hope you find [webcode.run](https://webcode.run) + [observable](/) application development interesting. This took about 2 weeks of fulltime work to develop. 
 `
 )}
 
@@ -41,16 +40,6 @@ toc("h2,h3,h4")
 )}
 
 function _3(md){return(
-md`## Ideas
-
-This is a list of ideas for what I should do
-
-- Fix twitter sharing (not possible)
-- Literate Backend
-- Medium article`
-)}
-
-function _4(md){return(
 md`## Application UI
 
 This is the final application, it is a composite of all our separately designed UI pieces.`
@@ -59,7 +48,7 @@ This is the final application, it is a composite of all our separately designed 
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
 view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
-  "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
+  "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp"
 ).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
   <style>
     body {
@@ -102,13 +91,13 @@ view`<div style="height: 800px; display: none; background-image: url('${await Fi
 </div>`
 )}
 
-function _6(md){return(
+function _5(md){return(
 md`## Application Logic
 
 Business logic is in seperate cells to the UI, but reevaluates on changes to UI state and drives additional state changes.`
 )}
 
-function _7(md){return(
+function _6(md){return(
 md`### restartAction
 
 The restart cell binds to the "ask another question" button. It clears the UI state, and yields a value. By having the downstream transition cells reference the value of the restart, we can reset the transitional state too on a restart.`
@@ -131,17 +120,18 @@ Generators.observe((notify) => {
   invalidation.then(() =>
     $0.restart.removeEventListener("click", onrestart)
   );
+
   notify();
 })
 )}
 
-function _9(md){return(
+function _8(md){return(
 md`### Loading shared fortune
 
 If the URL contains a share id, we load a fortune from history.`
 )}
 
-function _10(md){return(
+function _9(md){return(
 md`#### shareID
 
 First, we detect a share id from either the URL params, or the last path segment.`
@@ -156,7 +146,7 @@ function _shareId(URLSearchParams,location)
 }
 
 
-function _12(md){return(
+function _11(md){return(
 md`#### previousFortune
 
 If a shareId is present we load it from the realtime database, this will return null if shareId is undefined`
@@ -172,7 +162,7 @@ async function _previousFortune(firebase,shareId)
 }
 
 
-function _14(md){return(
+function _13(md){return(
 md`#### loadPreviousFortune
 
 This cell executes once, and will update the UI with a previousFortune if we have one.`
@@ -196,7 +186,7 @@ async function _loadPreviousFortune(previousFortune,$0,findCardsByName,baseURL,s
 }
 
 
-function _16(md){return(
+function _15(md){return(
 md`### Application State transitions
 
 The core application toggles the UI element visibility, based on their current state (which is modified by the user). `
@@ -270,7 +260,7 @@ async function _transitions(display,restartAction,loadPreviousFortune,$0,getCard
 }
 
 
-function _18(md){return(
+function _17(md){return(
 md`## Configuration`
 )}
 
@@ -278,23 +268,15 @@ function _baseURL(){return(
 "https://thetarot.online"
 )}
 
-function _20(md){return(
+function _19(md){return(
 md`## Design`
 )}
 
-function _cards(getCards){return(
-getCards({ numCards: 3 })
+function _cards(){return(
+[]
 )}
 
-function _22(cards,htl,width){return(
-htl.html`<div style="display: flex;">
-  ${cards.map(c => htl.html`<div style="width: ${Math.min(width, 650)/3}px">
-    <img style="width: 100%" src=${c.imgURL}></img>
-  </div>`)}
-</div>`
-)}
-
-function _23(md){return(
+function _21(md){return(
 md`#### whoInput`
 )}
 
@@ -319,7 +301,7 @@ ${[
 }
 )}
 
-function _27(md){return(
+function _25(md){return(
 md`#### questionInput`
 )}
 
@@ -343,7 +325,7 @@ function _questionInput(DOM,view,textBackground,borderColor,htl,QUESTION_MAX_LEN
 }
 )}
 
-function _31(md){return(
+function _29(md){return(
 md`#### fortuneOutput`
 )}
 
@@ -363,11 +345,11 @@ function _fortuneOutputExample(fortuneOutput){return(
 fortuneOutput()
 )}
 
-function _34($0){return(
+function _32($0){return(
 $0.value = "cool"
 )}
 
-function _35(md){return(
+function _33(md){return(
 md`#### Share button`
 )}
 
@@ -397,11 +379,11 @@ function _shareButtonExample(shareButton){return(
 shareButton()
 )}
 
-function _38($0){return(
+function _36($0){return(
 $0.value = "https://cool2.com "
 )}
 
-function _39(md){return(
+function _37(md){return(
 md`#### restartButton`
 )}
 
@@ -416,19 +398,28 @@ function _restartButtonExample(restartButton){return(
 restartButton()
 )}
 
-function _42(md){return(
+function _40(md){return(
 md`#### pickCards`
 )}
 
 function _cardBack(FileAttachment){return(
-FileAttachment("image@4.png").image()
+FileAttachment("image-4.webp").image()
 )}
 
 function _backUrl(FileAttachment){return(
-FileAttachment("image@4.png").url()
+FileAttachment("image-4.webp").url()
 )}
 
-function _pickCards(htl,spreadConfig,backUrl,Event){return(
+function _43(htl){return(
+htl.html`<style>
+  .pickable .card:hover {
+    filter: hue-rotate(180deg);
+    y: -10
+  }
+</style>`
+)}
+
+function _pickCards(htl,spreadConfig,backUrl,Event,borderColor){return(
 () => {
   let state = "stack";
   const stack = () => htl.svg`<g transform="translate(500 ${spreadConfig.oy})">
@@ -481,9 +472,13 @@ function _pickCards(htl,spreadConfig,backUrl,Event){return(
       </g></g>`
       )}
     </g>`;
-  const ui = htl.svg`<svg viewbox="0 0 1000 400" style="margin-top:-10%">${stack()}</svg>`;
+  const pickPrompt = htl.svg`<text x="300" y="250" style="fill: ${borderColor}; font-family: Montserrat">Pick 3 cards</text>`;
+  const ui = htl.svg`<svg viewbox="0 0 1000 400" style="margin-top:-10%">
+      ${pickPrompt}
+      ${stack()}
+  </svg>`;
   ui.reset = () => {
-    ui.innerHTML = "";
+    ui.innerHTML = pickPrompt.outerHTML;
     ui.appendChild(stack());
     state = ui.value = "stack";
     ui.dispatchEvent(new Event("input", { bubbles: true }));
@@ -492,28 +487,15 @@ function _pickCards(htl,spreadConfig,backUrl,Event){return(
 }
 )}
 
-function _46(htl){return(
-htl.html`<style>
-  .pickable .card:hover {
-    filter: hue-rotate(180deg);
-    y: -10
-  }
-</style>`
-)}
-
-function _el(){return(
-document.createElement("div")
-)}
-
 function _pickCardsExample(pickCards){return(
 pickCards()
 )}
 
-function _49(pickCardsExample){return(
+function _46(pickCardsExample){return(
 pickCardsExample
 )}
 
-function _50($0){return(
+function _47($0){return(
 $0.reset()
 )}
 
@@ -528,11 +510,11 @@ verticalSliders({
 })
 )}
 
-function _52(spreadConfig){return(
+function _49(spreadConfig){return(
 spreadConfig
 )}
 
-function _53(md){return(
+function _50(md){return(
 md`#### Show cards`
 )}
 
@@ -560,25 +542,34 @@ juice(
 )
 )}
 
-function _exampleCards(showCards,cards){return(
-showCards(cards)
+function _showCardsExample(Inputs){return(
+Inputs.toggle({
+  label: "show cards example?"
+})
 )}
 
-function _56(exampleCards){return(
+async function _exampleCards(showCardsExample,showCards,getCards,invalidation)
+{
+  if (showCardsExample) return showCards(await getCards({ numCards: 3 }));
+  return invalidation;
+}
+
+
+function _54(exampleCards){return(
 exampleCards
 )}
 
-function _57(Inputs,exampleCards,getCards){return(
+function _55(Inputs,exampleCards,getCards){return(
 Inputs.button("shuffle", {
   reduce: async () => (exampleCards.cards = await getCards({ numCards: 3 }))
 })
 )}
 
-function _58(md){return(
+function _56(md){return(
 md`## Social Image Generator Pipeline`
 )}
 
-function _59(exampleOutput,htl){return(
+function _57(exampleOutput,htl){return(
 htl.html`<img src="${exampleOutput}">`
 )}
 
@@ -604,7 +595,7 @@ flowQueue({
 })
 )}
 
-function _63(socialImageParams){return(
+function _61(socialImageParams){return(
 socialImageParams
 )}
 
@@ -633,7 +624,7 @@ async function _image(socialData,socialImageInner,findCardsByName,$0)
 }
 
 
-function _67(md){return(
+function _65(md){return(
 md`#### socialImageInner`
 )}
 
@@ -698,7 +689,7 @@ async ({ reading, cards } = {}) => {
   const promises = [];
   const ui = svg`<svg viewBox="0 0 ${boardw} 618" width="100%">
   <image width="100%" href=${await FileAttachment(
-    "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg"
+    "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp"
   ).url()} />
   ${cards.map(
     (c, i) => htl.svg`<g transform="translate(${
@@ -740,7 +731,8 @@ async function _fitImage(textFit,image)
     alignHoriz: true,
     alignVert: true
   });
-  return image;
+  // textFit did not look like it was always applied so I think we need to slow it down
+  return new Promise((resolve) => setTimeout(() => resolve(image), 100));
 }
 
 
@@ -752,15 +744,15 @@ async function _dom2img(){return(
 await import("https://cdn.skypack.dev/html-to-image@1.9.0?min")
 )}
 
-function _81(md){return(
+function _79(md){return(
 md`#### End of Social Image Generation Pipeline`
 )}
 
-function _82($0,jpeg){return(
+function _80($0,jpeg){return(
 $0.respond(jpeg)
 )}
 
-function _83(md){return(
+function _81(md){return(
 md`## Business Logic`
 )}
 
@@ -772,7 +764,7 @@ function _readingOrEmpty($0){return(
 $0.value || ""
 )}
 
-function _86(md){return(
+function _84(md){return(
 md`### Run tarot reading in remote service
 
 We can pass the cards and question and name parameters to a webcode.run endpoint, which runs the core code remotely, and injects the OPENAI_API_KEY secret so you do not need to fill this out.
@@ -797,7 +789,7 @@ Inputs.button("run remote", {
 })
 )}
 
-function _88(md){return(
+function _86(md){return(
 md`### getFortune API client `
 )}
 
@@ -822,11 +814,11 @@ async ({ name, token, cards, question } = {}) => {
 }
 )}
 
-function _90(md){return(
+function _88(md){return(
 md`## API Server`
 )}
 
-function _91(md){return(
+function _89(md){return(
 md`### [Optional] Local Credentials`
 )}
 
@@ -844,7 +836,7 @@ Inputs.bind(
 )
 )}
 
-function _94(Inputs,$0,cards,OPENAI_API_KEY,ADMIN_SERVICE_ACCOUNT,user,$1,Event,md){return(
+function _92(Inputs,$0,cards,OPENAI_API_KEY,ADMIN_SERVICE_ACCOUNT,user,$1,Event,md){return(
 md`This button uses the local credentials and bypasses the API by writing straight the the pipeline.
 
 ${Inputs.button("trigger API pipeline using local credentials", {
@@ -865,11 +857,11 @@ ${Inputs.button("trigger API pipeline using local credentials", {
 })}`
 )}
 
-function _95(md){return(
+function _93(md){return(
 md`### Health check`
 )}
 
-function _96(Inputs,$0){return(
+function _94(Inputs,$0){return(
 Inputs.button("trigger health check", {
   required: true,
   reduce: async () => {
@@ -884,7 +876,7 @@ Inputs.button("trigger health check", {
 })
 )}
 
-function _97(md){return(
+function _95(md){return(
 md`### Load Test
 
 We had some difficulties with stability, the load test fires 5 overlapping requests to test the concurrent behaviour`
@@ -913,7 +905,7 @@ Inputs.button(
 )
 )}
 
-function _99(md){return(
+function _97(md){return(
 md`### Debug Case From History`
 )}
 
@@ -943,11 +935,11 @@ Inputs.button("run debug case", {
 })
 )}
 
-function _103(debugResults){return(
+function _101(debugResults){return(
 debugResults
 )}
 
-function _104(apiServer,md){return(
+function _102(apiServer,md){return(
 md`### <a target="_blank" href=${apiServer.href + '?health'}>HTTP Endpoint</a>`
 )}
 
@@ -973,7 +965,7 @@ endpoint(
 )
 )}
 
-function _106(md){return(
+function _104(md){return(
 md`### API Request pipeline`
 )}
 
@@ -981,11 +973,11 @@ function _config(flowQueue){return(
 flowQueue({ timeout_ms: 15000 })
 )}
 
-function _108(config){return(
+function _106(config){return(
 config
 )}
 
-function _109(md){return(
+function _107(md){return(
 md`#### Validate User Input`
 )}
 
@@ -997,14 +989,14 @@ function _validatedConfig(config,$0,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH)
     return $0.respond("ok"); // Check queue health if param is 'health'
   }
 
-  if (config.question.length >= QUESTION_MAX_LENGTH) {
-    msg = "Question too long";
-  } else if (!config.question || config.question == "") {
+  if (!config.question || config.question == "") {
     msg = "No question";
-  } else if (config.name.length >= NAME_MAX_LENGTH) {
-    msg = "Name too long";
+  } else if (config.question.length >= QUESTION_MAX_LENGTH) {
+    msg = "Question too long";
   } else if (!config.name || config.name == "") {
     msg = "No name";
+  } else if (config.name.length >= NAME_MAX_LENGTH) {
+    msg = "Name too long";
   } else {
     return config;
   }
@@ -1016,13 +1008,13 @@ function _validatedConfig(config,$0,QUESTION_MAX_LENGTH,NAME_MAX_LENGTH)
 }
 
 
-function _111(md){return(
+function _109(md){return(
 md`### User token validation`
 )}
 
 function _currentUser(validatedConfig,invalidation,verifyIdToken,adminFirebase,$0)
 {
-  if (validatedConfig.health) return invalidation; // Processing stops when doing a health check here.
+  if (!validatedConfig) return invalidation; // Processing stops when doing a health check here.
   try {
     return verifyIdToken(adminFirebase, validatedConfig.token);
   } catch (err) {
@@ -1031,7 +1023,7 @@ function _currentUser(validatedConfig,invalidation,verifyIdToken,adminFirebase,$
 }
 
 
-function _113(md){return(
+function _111(md){return(
 md`#### Rate limit check`
 )}
 
@@ -1053,7 +1045,7 @@ function _rateLimitOk(currentUsersRequestsInLastDay,$0,invalidation)
 }
 
 
-function _116(md){return(
+function _114(md){return(
 md`#### Call openAI`
 )}
 
@@ -1077,13 +1069,13 @@ you tell ${config.name} the meaning of the cards and their positions.`,
 })
 )}
 
-function _118(md){return(
+function _116(md){return(
 md`#### OpenAI Generation Settings`
 )}
 
 function _settings(){return(
 {
-  temperature: 0.8,
+  temperature: 0.9,
   max_tokens: 250,
   top_p: 1,
   frequency_penalty: 0,
@@ -1091,7 +1083,7 @@ function _settings(){return(
 }
 )}
 
-function _120(md){return(
+function _118(md){return(
 md`#### OpenAI Response`
 )}
 
@@ -1101,7 +1093,7 @@ openapi_reponse.status === 200
   : $0.reject(new Error(await openapi_reponse.text()))
 )}
 
-function _122(md){return(
+function _120(md){return(
 md`#### Record OpenAI Response in History`
 )}
 
@@ -1120,7 +1112,7 @@ function _id(persistHistory,$0,settings,result)
 }
 
 
-function _124(md){return(
+function _122(md){return(
 md`### history`
 )}
 
@@ -1141,7 +1133,7 @@ async ({ name, cards, question, reading, settings } = {}) => {
 }
 )}
 
-function _126(md){return(
+function _124(md){return(
 md`#### OpenAI Text Safety Classification`
 )}
 
@@ -1152,11 +1144,11 @@ contentFilter({
 })
 )}
 
-function _128(md){return(
+function _126(md){return(
 md`### Rate limiting`
 )}
 
-function _129(Inputs,recordMeteredUse,user){return(
+function _127(Inputs,recordMeteredUse,user){return(
 Inputs.button("record use", {
   reduce: () => recordMeteredUse(user.uid)
 })
@@ -1188,7 +1180,7 @@ function _quota(htl,user){return(
 htl.html`<a target="_blank" href="https://console.firebase.google.com/u/0/project/larkworthy-dfb11/database/larkworthy-dfb11-default-rtdb/data/@tomlarkworthy/tarot-backend/users/${user.uid}/history">quota records`
 )}
 
-function _133(md){return(
+function _131(md){return(
 md`### Content Filter
 
 https://beta.openai.com/docs/engines/content-filter
@@ -1273,11 +1265,7 @@ Inputs.button("testContentFilter", {
 })
 )}
 
-function _136(exampleFilter){return(
-exampleFilter
-)}
-
-function _137(md){return(
+function _134(md){return(
 md`#### uploadObject to Cloud Storage`
 )}
 
@@ -1309,15 +1297,22 @@ async ({ name, access_token, content_type, content } = {}) => {
 }
 )}
 
-function _139(md){return(
+function _136(md){return(
 md`### Generate Social Image`
 )}
 
-function _fortuneImg(socialImage,id){return(
-socialImage({
-  shareId: id
-})
-)}
+function _fortuneImg(socialImage,id,$0,result)
+{
+  try {
+    return socialImage({
+      shareId: id
+    });
+  } catch (err) {
+    $0.respond(result);
+    throw err;
+  }
+}
+
 
 async function _fortuneImageData(fortuneImg){return(
 await fetch(fortuneImg)
@@ -1329,11 +1324,11 @@ function _access_token(getAccessTokenFromServiceAccount,config){return(
 getAccessTokenFromServiceAccount(config.ADMIN_SERVICE_ACCOUNT)
 )}
 
-function _143(fortuneImageData){return(
+function _140(fortuneImageData){return(
 fortuneImageData
 )}
 
-function _144(md){return(
+function _141(md){return(
 md`#### uploadImageToCloud`
 )}
 
@@ -1349,13 +1344,16 @@ async function _cloudImage(uploadObject,id,access_token,fortuneImageData){return
 }
 )}
 
-function _146(md){return(
+function _143(md){return(
 md`#### Render page()`
 )}
 
 function _page(baseURL){return(
 ({ name, question, imgURL, shareId } = {}) => `<!DOCTYPE html>
 <head>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js" as="script" />
+  <link rel="preload" href="https://api.observablehq.com/@tomlarkworthy/tarot-backend.js?v=3" as="script" />
+
   <title>${name ? `Tarot Reading for ${name}` : "Tarot Reader"}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no;user-scalable=0;">
   <meta property="og:title" content="${
@@ -1377,6 +1375,7 @@ function _page(baseURL){return(
     shareId ? `${baseURL}/${shareId}` : "https://thetarot.online"
   }">
   <meta name="twitter:card" content="summary_large_image">
+
 </head>
 <body style="background-color:black;">
 <div id="display"></div>
@@ -1395,7 +1394,7 @@ new Runtime().module(notebook, name => {
 <script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
 )}
 
-function _148(md){return(
+function _145(md){return(
 md`### upload share page`
 )}
 
@@ -1417,7 +1416,7 @@ async function _uploads(uploadObject,id,access_token,page,config,cloudImage){ret
 }
 )}
 
-function _150(md){return(
+function _147(md){return(
 md`#### End of Pipeline`
 )}
 
@@ -1443,11 +1442,11 @@ function _responder(uploads,classification,$0,id,result)
 }
 
 
-function _152(md){return(
+function _149(md){return(
 md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
 )}
 
-function _153(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
+function _150(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
 Inputs.button("update index.html", {
   reduce: async () => {
     await uploadObject({
@@ -1462,7 +1461,7 @@ Inputs.button("update index.html", {
 })
 )}
 
-function _154(md){return(
+function _151(md){return(
 md`### Clientside User`
 )}
 
@@ -1480,15 +1479,11 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _exampleSnapshot(notebookSnapshot){return(
-notebookSnapshot()
+function _156(md){return(
+md`By exporting the state in a endoint we can sample the state of the server via a flatdata collector.`
 )}
 
-function _trackedSnapshot(notebookSnapshot){return(
-notebookSnapshot("trackingVariable_e3366d24de62")
-)}
-
-function _161(endpoint,notebookSnapshot){return(
+function _157(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
     (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
@@ -1503,7 +1498,7 @@ endpoint("variables", async (req, res) => {
 })
 )}
 
-function _162(md){return(
+function _158(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1535,11 +1530,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _167(md){return(
+function _163(md){return(
 md`## Utilities`
 )}
 
-function _168(md){return(
+function _164(md){return(
 md`### findCardsByName`
 )}
 
@@ -1555,7 +1550,7 @@ async (cardNames) =>
   )
 )}
 
-function _170(md){return(
+function _166(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1582,14 +1577,8 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _172(md){return(
-md`## Dependencies`
-)}
-
-function _font(htl){return(
-htl.html`<style>
-  @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-</style>`
+function _168(md){return(
+md`### textFit v2.3.1 11/2014 by STRML (strml.github.com) (see license in source)`
 )}
 
 function _textFit(HTMLElement)
@@ -1842,93 +1831,114 @@ async function _loremIpsum(require){return(
 (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
 )}
 
-function _189(footer){return(
+function _font(htl){return(
+htl.html`<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+</style>`
+)}
+
+function _172(md){return(
+md`## Dependencies`
+)}
+
+function _185(md){return(
+md`### Prefetch transitive dependancies`
+)}
+
+function _186(md){return(
+md`### Analytics & Backup`
+)}
+
+function _187(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@4.png",new URL("./files/c754fb284a0de3b6d47a3e5ca84774670b2d9d1407794b401d9b730649f5f5ae27579518c909c5862e0f4d2c9a29da48550c35ada43ba0de457e1f43e0975274",import.meta.url)],["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp.jpg",new URL("./files/1b8cd6ab9c7df78a279d435fd0eb4bbf4596f94cdacca6ce8b1526083e62285f358d7813d09671307b616d97164268f9ea49099ae9ab0e63eb7ea2af45d7478e",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image-4.webp", {url: new URL("./files/d43230aa295b503aad4ef9dcd43e28813ac9b3a315edc352b9973894c78842303dd7caf2238b0d0695f7d0722eb550582003cf4c9da64d43b72c351779e1439d", import.meta.url), mimeType: "image/webp", toString}],
+    ["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp", {url: new URL("./files/243c42aef6b56101d952c0e6bda1ff0c7ebcf54b1612f0e39d7bc49858712d76956721397f937923b8c286a0710c717afbc38bbd0a54df221ca63a02fd1f25a9", import.meta.url), mimeType: "image/webp", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer()).define(["md"], _4);
   main.variable(observer("viewof display")).define("viewof display", ["font","view","FileAttachment","whoInput","questionInput","pickCards","showCards","cards","fortuneOutput","restartButton","shareButton"], _display);
   main.variable(observer("display")).define("display", ["Generators", "viewof display"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _5);
   main.variable(observer()).define(["md"], _6);
-  main.variable(observer()).define(["md"], _7);
   main.variable(observer("restartAction")).define("restartAction", ["Generators","viewof display","invalidation"], _restartAction);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer()).define(["md"], _10);
   main.variable(observer("shareId")).define("shareId", ["URLSearchParams","location"], _shareId);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer("previousFortune")).define("previousFortune", ["firebase","shareId"], _previousFortune);
-  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["md"], _13);
   main.variable(observer("loadPreviousFortune")).define("loadPreviousFortune", ["previousFortune","viewof display","findCardsByName","baseURL","shareId"], _loadPreviousFortune);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer("transitions")).define("transitions", ["display","restartAction","loadPreviousFortune","viewof display","getCards","getFortune","user","baseURL"], _transitions);
-  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("baseURL")).define("baseURL", _baseURL);
-  main.variable(observer()).define(["md"], _20);
-  main.variable(observer("cards")).define("cards", ["getCards"], _cards);
-  main.variable(observer()).define(["cards","htl","width"], _22);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer("cards")).define("cards", _cards);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("NAME_MAX_LENGTH")).define("NAME_MAX_LENGTH", _NAME_MAX_LENGTH);
   main.variable(observer("viewof name")).define("viewof name", ["whoInput"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
   main.variable(observer("whoInput")).define("whoInput", ["DOM","view","textBackground","borderColor","htl","NAME_MAX_LENGTH"], _whoInput);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("QUESTION_MAX_LENGTH")).define("QUESTION_MAX_LENGTH", _QUESTION_MAX_LENGTH);
   main.variable(observer("viewof question")).define("viewof question", ["questionInput"], _question);
   main.variable(observer("question")).define("question", ["Generators", "viewof question"], (G, _) => G.input(_));
   main.variable(observer("questionInput")).define("questionInput", ["DOM","view","textBackground","borderColor","htl","QUESTION_MAX_LENGTH"], _questionInput);
-  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["md"], _29);
   main.variable(observer("fortuneOutput")).define("fortuneOutput", ["DOM","view","textBackground","borderColor","htl"], _fortuneOutput);
   main.variable(observer("viewof fortuneOutputExample")).define("viewof fortuneOutputExample", ["fortuneOutput"], _fortuneOutputExample);
   main.variable(observer("fortuneOutputExample")).define("fortuneOutputExample", ["Generators", "viewof fortuneOutputExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof fortuneOutputExample"], _34);
-  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["viewof fortuneOutputExample"], _32);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("shareButton")).define("shareButton", ["view","textBackground","borderColor","htl"], _shareButton);
   main.variable(observer("viewof shareButtonExample")).define("viewof shareButtonExample", ["shareButton"], _shareButtonExample);
   main.variable(observer("shareButtonExample")).define("shareButtonExample", ["Generators", "viewof shareButtonExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof shareButtonExample"], _38);
-  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["viewof shareButtonExample"], _36);
+  main.variable(observer()).define(["md"], _37);
   main.variable(observer("restartButton")).define("restartButton", ["view","borderColor"], _restartButton);
   main.variable(observer("viewof restartButtonExample")).define("viewof restartButtonExample", ["restartButton"], _restartButtonExample);
   main.variable(observer("restartButtonExample")).define("restartButtonExample", ["Generators", "viewof restartButtonExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["md"], _40);
   main.variable(observer("cardBack")).define("cardBack", ["FileAttachment"], _cardBack);
   main.variable(observer("backUrl")).define("backUrl", ["FileAttachment"], _backUrl);
-  main.variable(observer("pickCards")).define("pickCards", ["htl","spreadConfig","backUrl","Event"], _pickCards);
-  main.variable(observer()).define(["htl"], _46);
-  main.variable(observer("el")).define("el", _el);
+  main.variable(observer()).define(["htl"], _43);
+  main.variable(observer("pickCards")).define("pickCards", ["htl","spreadConfig","backUrl","Event","borderColor"], _pickCards);
   main.variable(observer("viewof pickCardsExample")).define("viewof pickCardsExample", ["pickCards"], _pickCardsExample);
   main.variable(observer("pickCardsExample")).define("pickCardsExample", ["Generators", "viewof pickCardsExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["pickCardsExample"], _49);
-  main.variable(observer()).define(["viewof pickCardsExample"], _50);
+  main.variable(observer()).define(["pickCardsExample"], _46);
+  main.variable(observer()).define(["viewof pickCardsExample"], _47);
   main.variable(observer("viewof spreadConfig")).define("viewof spreadConfig", ["verticalSliders"], _spreadConfig);
   main.variable(observer("spreadConfig")).define("spreadConfig", ["Generators", "viewof spreadConfig"], (G, _) => G.input(_));
-  main.variable(observer()).define(["spreadConfig"], _52);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["spreadConfig"], _49);
+  main.variable(observer()).define(["md"], _50);
   main.variable(observer("showCards")).define("showCards", ["juice","htl","boardw","cpad","coffsetx","coffsety","texty","cwidth"], _showCards);
-  main.variable(observer("viewof exampleCards")).define("viewof exampleCards", ["showCards","cards"], _exampleCards);
+  main.variable(observer("viewof showCardsExample")).define("viewof showCardsExample", ["Inputs"], _showCardsExample);
+  main.variable(observer("showCardsExample")).define("showCardsExample", ["Generators", "viewof showCardsExample"], (G, _) => G.input(_));
+  main.variable(observer("viewof exampleCards")).define("viewof exampleCards", ["showCardsExample","showCards","getCards","invalidation"], _exampleCards);
   main.variable(observer("exampleCards")).define("exampleCards", ["Generators", "viewof exampleCards"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleCards"], _56);
-  main.variable(observer()).define(["Inputs","exampleCards","getCards"], _57);
-  main.variable(observer()).define(["md"], _58);
-  main.variable(observer()).define(["exampleOutput","htl"], _59);
+  main.variable(observer()).define(["exampleCards"], _54);
+  main.variable(observer()).define(["Inputs","exampleCards","getCards"], _55);
+  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["exampleOutput","htl"], _57);
   main.variable(observer("viewof exampleOutput")).define("viewof exampleOutput", ["Inputs","socialImage"], _exampleOutput);
   main.variable(observer("exampleOutput")).define("exampleOutput", ["Generators", "viewof exampleOutput"], (G, _) => G.input(_));
   main.variable(observer("socialImage")).define("socialImage", ["viewof socialImageParams"], _socialImage);
   main.variable(observer("viewof socialImageParams")).define("viewof socialImageParams", ["flowQueue"], _socialImageParams);
   main.variable(observer("socialImageParams")).define("socialImageParams", ["Generators", "viewof socialImageParams"], (G, _) => G.input(_));
-  main.variable(observer()).define(["socialImageParams"], _63);
+  main.variable(observer()).define(["socialImageParams"], _61);
   main.variable(observer("socialData")).define("socialData", ["adminFirebase","socialImageParams"], _socialData);
   const child1 = runtime.module(define1);
   main.import("rasterize", child1);
   main.variable(observer("image")).define("image", ["socialData","socialImageInner","findCardsByName","viewof socialImageParams"], _image);
-  main.variable(observer()).define(["md"], _67);
+  main.variable(observer()).define(["md"], _65);
   main.variable(observer("boardw")).define("boardw", _boardw);
   main.variable(observer("boardh")).define("boardh", _boardh);
   main.variable(observer("viewof texty")).define("viewof texty", ["Inputs"], _texty);
@@ -1949,99 +1959,97 @@ export default function define(runtime, observer) {
   main.variable(observer("fitImage")).define("fitImage", ["textFit","image"], _fitImage);
   main.variable(observer("jpeg")).define("jpeg", ["dom2img","fitImage"], _jpeg);
   main.variable(observer("dom2img")).define("dom2img", _dom2img);
+  main.variable(observer()).define(["md"], _79);
+  main.variable(observer()).define(["viewof socialImageParams","jpeg"], _80);
   main.variable(observer()).define(["md"], _81);
-  main.variable(observer()).define(["viewof socialImageParams","jpeg"], _82);
-  main.variable(observer()).define(["md"], _83);
   main.variable(observer("viewof reading")).define("viewof reading", ["Inputs"], _reading);
   main.variable(observer("reading")).define("reading", ["Generators", "viewof reading"], (G, _) => G.input(_));
   main.variable(observer("readingOrEmpty")).define("readingOrEmpty", ["viewof reading"], _readingOrEmpty);
-  main.variable(observer()).define(["md"], _86);
+  main.variable(observer()).define(["md"], _84);
   main.variable(observer("viewof clientResponse")).define("viewof clientResponse", ["Inputs","getFortune","user","cards","viewof reading","Event"], _clientResponse);
   main.variable(observer("clientResponse")).define("clientResponse", ["Generators", "viewof clientResponse"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["md"], _86);
   main.variable(observer("getFortune")).define("getFortune", ["apiServer","user"], _getFortune);
-  main.variable(observer()).define(["md"], _90);
-  main.variable(observer()).define(["md"], _91);
+  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["md"], _89);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
   main.variable(observer("viewof ADMIN_SERVICE_ACCOUNT")).define("viewof ADMIN_SERVICE_ACCOUNT", ["Inputs","localStorageView"], _ADMIN_SERVICE_ACCOUNT);
   main.variable(observer("ADMIN_SERVICE_ACCOUNT")).define("ADMIN_SERVICE_ACCOUNT", ["Generators", "viewof ADMIN_SERVICE_ACCOUNT"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event","md"], _94);
+  main.variable(observer()).define(["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user","viewof reading","Event","md"], _92);
+  main.variable(observer()).define(["md"], _93);
+  main.variable(observer()).define(["Inputs","viewof config"], _94);
   main.variable(observer()).define(["md"], _95);
-  main.variable(observer()).define(["Inputs","viewof config"], _96);
-  main.variable(observer()).define(["md"], _97);
   main.variable(observer("viewof results")).define("viewof results", ["Inputs","viewof config","cards","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user"], _results);
   main.variable(observer("results")).define("results", ["Generators", "viewof results"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _99);
+  main.variable(observer()).define(["md"], _97);
   main.variable(observer("viewof debugConfig")).define("viewof debugConfig", ["Inputs","localStorageView"], _debugConfig);
   main.variable(observer("debugConfig")).define("debugConfig", ["Generators", "viewof debugConfig"], (G, _) => G.input(_));
   main.variable(observer("parsedDebugConfig")).define("parsedDebugConfig", ["debugConfig"], _parsedDebugConfig);
   main.variable(observer("viewof debugResults")).define("viewof debugResults", ["Inputs","viewof config","parsedDebugConfig","OPENAI_API_KEY","ADMIN_SERVICE_ACCOUNT","user"], _debugResults);
   main.variable(observer("debugResults")).define("debugResults", ["Generators", "viewof debugResults"], (G, _) => G.input(_));
-  main.variable(observer()).define(["debugResults"], _103);
-  main.variable(observer()).define(["apiServer","md"], _104);
+  main.variable(observer()).define(["debugResults"], _101);
+  main.variable(observer()).define(["apiServer","md"], _102);
   main.variable(observer("apiServer")).define("apiServer", ["endpoint","viewof config"], _apiServer);
-  main.variable(observer()).define(["md"], _106);
+  main.variable(observer()).define(["md"], _104);
   main.variable(observer("viewof config")).define("viewof config", ["flowQueue"], _config);
   main.variable(observer("config")).define("config", ["Generators", "viewof config"], (G, _) => G.input(_));
-  main.variable(observer()).define(["config"], _108);
-  main.variable(observer()).define(["md"], _109);
+  main.variable(observer()).define(["config"], _106);
+  main.variable(observer()).define(["md"], _107);
   main.variable(observer("validatedConfig")).define("validatedConfig", ["config","viewof config","QUESTION_MAX_LENGTH","NAME_MAX_LENGTH"], _validatedConfig);
-  main.variable(observer()).define(["md"], _111);
+  main.variable(observer()).define(["md"], _109);
   main.variable(observer("currentUser")).define("currentUser", ["validatedConfig","invalidation","verifyIdToken","adminFirebase","viewof config"], _currentUser);
-  main.variable(observer()).define(["md"], _113);
+  main.variable(observer()).define(["md"], _111);
   main.variable(observer("currentUsersRequestsInLastDay")).define("currentUsersRequestsInLastDay", ["requestsInLastDay","currentUser"], _currentUsersRequestsInLastDay);
   main.variable(observer("rateLimitOk")).define("rateLimitOk", ["currentUsersRequestsInLastDay","viewof config","invalidation"], _rateLimitOk);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer()).define(["md"], _114);
   main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","config","settings"], _openapi_reponse);
-  main.variable(observer()).define(["md"], _118);
+  main.variable(observer()).define(["md"], _116);
   main.variable(observer("settings")).define("settings", _settings);
-  main.variable(observer()).define(["md"], _120);
+  main.variable(observer()).define(["md"], _118);
   main.variable(observer("result")).define("result", ["openapi_reponse","viewof config"], _result);
-  main.variable(observer()).define(["md"], _122);
+  main.variable(observer()).define(["md"], _120);
   main.variable(observer("id")).define("id", ["persistHistory","viewof config","settings","result"], _id);
-  main.variable(observer()).define(["md"], _124);
+  main.variable(observer()).define(["md"], _122);
   main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
-  main.variable(observer()).define(["md"], _126);
+  main.variable(observer()).define(["md"], _124);
   main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
-  main.variable(observer()).define(["md"], _128);
-  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _129);
+  main.variable(observer()).define(["md"], _126);
+  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _127);
   main.variable(observer("recordMeteredUse")).define("recordMeteredUse", ["firebase"], _recordMeteredUse);
   main.variable(observer("requestsInLastDay")).define("requestsInLastDay", ["adminFirebase"], _requestsInLastDay);
   main.variable(observer("quota")).define("quota", ["htl","user"], _quota);
-  main.variable(observer()).define(["md"], _133);
+  main.variable(observer()).define(["md"], _131);
   main.variable(observer("contentFilter")).define("contentFilter", _contentFilter);
   main.variable(observer("viewof exampleFilter")).define("viewof exampleFilter", ["Inputs","loremIpsum","contentFilter","OPENAI_API_KEY"], _exampleFilter);
   main.variable(observer("exampleFilter")).define("exampleFilter", ["Generators", "viewof exampleFilter"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleFilter"], _136);
-  main.variable(observer()).define(["md"], _137);
+  main.variable(observer()).define(["md"], _134);
   main.variable(observer("uploadObject")).define("uploadObject", _uploadObject);
-  main.variable(observer()).define(["md"], _139);
-  main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id"], _fortuneImg);
+  main.variable(observer()).define(["md"], _136);
+  main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id","viewof config","result"], _fortuneImg);
   main.variable(observer("fortuneImageData")).define("fortuneImageData", ["fortuneImg"], _fortuneImageData);
   main.variable(observer("access_token")).define("access_token", ["getAccessTokenFromServiceAccount","config"], _access_token);
-  main.variable(observer()).define(["fortuneImageData"], _143);
-  main.variable(observer()).define(["md"], _144);
+  main.variable(observer()).define(["fortuneImageData"], _140);
+  main.variable(observer()).define(["md"], _141);
   main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
-  main.variable(observer()).define(["md"], _146);
+  main.variable(observer()).define(["md"], _143);
   main.variable(observer("page")).define("page", ["baseURL"], _page);
-  main.variable(observer()).define(["md"], _148);
+  main.variable(observer()).define(["md"], _145);
   main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
-  main.variable(observer()).define(["md"], _150);
+  main.variable(observer()).define(["md"], _147);
   main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
-  main.variable(observer()).define(["md"], _152);
-  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _153);
-  main.variable(observer()).define(["md"], _154);
+  main.variable(observer()).define(["md"], _149);
+  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _150);
+  main.variable(observer()).define(["md"], _151);
   main.variable(observer("user")).define("user", ["firebase"], _user);
   main.variable(observer("debuggingSection")).define("debuggingSection", ["md"], _debuggingSection);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
   main.import("modules", child2);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer("exampleSnapshot")).define("exampleSnapshot", ["notebookSnapshot"], _exampleSnapshot);
-  main.variable(observer("trackedSnapshot")).define("trackedSnapshot", ["notebookSnapshot"], _trackedSnapshot);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _161);
-  main.variable(observer()).define(["md"], _162);
+  main.variable(observer()).define(["md"], _156);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _157);
+  main.variable(observer()).define(["md"], _158);
   const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child3);
   main.import("DocView", child3);
@@ -2049,11 +2057,15 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child4);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _167);
-  main.variable(observer()).define(["md"], _168);
+  main.variable(observer()).define(["md"], _163);
+  main.variable(observer()).define(["md"], _164);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _170);
+  main.variable(observer()).define(["md"], _166);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
+  main.variable(observer()).define(["md"], _168);
+  main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
+  main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
+  main.variable(observer("font")).define("font", ["htl"], _font);
   main.variable(observer()).define(["md"], _172);
   const child5 = runtime.module(define4);
   main.import("getCards", child5);
@@ -2082,11 +2094,9 @@ export default function define(runtime, observer) {
   const child15 = runtime.module(define14);
   main.import("deploy", child15);
   const child16 = runtime.module(define15);
-  main.variable(observer("font")).define("font", ["htl"], _font);
-  main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
-  main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
-  const child17 = runtime.module(define16);
-  main.import("footer", child17);
-  main.variable(observer()).define(["footer"], _189);
+  main.import("footer", child16);
+  main.variable(observer()).define(["md"], _185);
+  main.variable(observer()).define(["md"], _186);
+  main.variable(observer()).define(["footer"], _187);
   return main;
 }
