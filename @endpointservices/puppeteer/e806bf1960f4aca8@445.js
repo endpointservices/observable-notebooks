@@ -1,7 +1,7 @@
-// https://observablehq.com/@endpointservices/puppeteer@443
+// https://observablehq.com/@endpointservices/puppeteer@445
 import define1 from "./f92778131fd76559@1173.js";
 import define2 from "./c16efae137e70585@1429.js";
-import define3 from "./293899bef371e135@226.js";
+import define3 from "./293899bef371e135@247.js";
 
 async function _1(md,FileAttachment){return(
 md`# Browser Automation with Puppeteer
@@ -46,9 +46,10 @@ Most things that you can do manually in the browser can be done using Puppeteer!
 ### Quickstart
 
 ~~~js
-    import {viewof connect, weblogin} from '@endpointservices/puppeteer'
+    import {viewof connect, viewof user} from '@endpointservices/puppeteer'
 ~~~
 
+An example of a 3rd party notebook using puppeteer can be found [here](https://observablehq.com/@tdlgkjfhdljovtttqrzu/puppeteer-example)
 
 `
 )}
