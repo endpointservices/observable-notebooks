@@ -1,6 +1,6 @@
 # Why causal consistency for realtime databases and how to achieve it with Redis
 
-https://observablehq.com/@tomlarkworthy/redis-backend-1@3963
+https://observablehq.com/@tomlarkworthy/redis-backend-1@3989
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/de798a70f81e9e09@3963.tgz?v=3
+npm install https://api.observablehq.com/d/de798a70f81e9e09@3989.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

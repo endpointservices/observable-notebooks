@@ -863,7 +863,16 @@ function _96(md){return(
 md`## Operation Effects`
 )}
 
-function _97(md){return(
+function _operations(put_operation_response,get_operation_response,listen_operation_response,unlisten_operation_response){return(
+[
+  put_operation_response,
+  get_operation_response,
+  listen_operation_response,
+  unlisten_operation_response
+]
+)}
+
+function _98(md){return(
 md`### run_put_operation
 
 A PUT operation overwrites a data location with a new value, and notifies all listeners of the change. Thus to apply the operation the liste of listeners at that location is required.`
@@ -875,7 +884,7 @@ flowQueue({
 })
 )}
 
-function _99(run_put_operation_args){return(
+function _100(run_put_operation_args){return(
 run_put_operation_args
 )}
 
@@ -898,11 +907,13 @@ function _run_put_operation_effect(run_put_operation_args,set_data,enqueue_notif
 }
 
 
-function _put_operation_reponse($0,run_put_operation_effect){return(
-$0.respond(run_put_operation_effect)
+function _put_operation_response($0,run_put_operation_effect){return(
+$0.respond(
+  run_put_operation_effect
+)
 )}
 
-function _102(md){return(
+function _103(md){return(
 md`### run_get_operation
 
 A GET operation retrieves the data at a data location.`
@@ -914,7 +925,7 @@ flowQueue({
 })
 )}
 
-function _104(run_get_operation_args){return(
+function _105(run_get_operation_args){return(
 run_get_operation_args
 )}
 
@@ -931,11 +942,13 @@ function _run_get_operation_effect(run_get_operation_args,enqueue_notify)
 }
 
 
-function _get_operation_repsonse($0,run_get_operation_effect){return(
-$0.respond(run_get_operation_effect)
+function _get_operation_response($0,run_get_operation_effect){return(
+$0.respond(
+  run_get_operation_effect
+)
 )}
 
-function _107(md){return(
+function _108(md){return(
 md`### run_listen_operation
 
 A LISTEN operation adds a client to the list of listeners at a data location. The client is also informed of the current value of the data location.
@@ -949,7 +962,7 @@ flowQueue({
 })
 )}
 
-function _109(run_listen_operation_args){return(
+function _110(run_listen_operation_args){return(
 run_listen_operation_args
 )}
 
@@ -971,11 +984,13 @@ function _run_listen_effect(run_listen_operation_args,enqueue_notify,add_data_li
 }
 
 
-function _listen_operation_reponse($0,run_listen_effect){return(
-$0.respond(run_listen_effect)
+function _listen_operation_response($0,run_listen_effect){return(
+$0.respond(
+  run_listen_effect
+)
 )}
 
-function _112(md){return(
+function _113(md){return(
 md`### run_unlisten
 
 Unlisten removes a listener at a data location.`
@@ -987,7 +1002,7 @@ flowQueue({
 })
 )}
 
-function _114(run_unlisten_operation_args){return(
+function _115(run_unlisten_operation_args){return(
 run_unlisten_operation_args
 )}
 
@@ -1014,10 +1029,6 @@ md`---`
 )}
 
 function _119(md){return(
-md`---`
-)}
-
-function _120(md){return(
 md`## Dependencies`
 )}
 
@@ -1025,9 +1036,9 @@ function _includeIf(){return(
 (predicate, string) => (predicate ? string : "")
 )}
 
-async function _testing(createClient)
+async function _testing($0)
 {
-  createClient;
+  $0;
   const [{ Runtime }, { default: define }] = await Promise.all([
     import(
       "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
@@ -1043,11 +1054,11 @@ async function _testing(createClient)
 }
 
 
-function _124(md){return(
+function _123(md){return(
 md`## Backups and Analytics`
 )}
 
-function _126(footer){return(
+function _125(footer){return(
 footer
 )}
 
@@ -1158,40 +1169,40 @@ export default function define(runtime, observer) {
   main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","process_operation_effect","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
   main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","testing"], _95);
   main.variable(observer()).define(["md"], _96);
-  main.variable(observer()).define(["md"], _97);
+  main.variable(observer("operations")).define("operations", ["put_operation_response","get_operation_response","listen_operation_response","unlisten_operation_response"], _operations);
+  main.variable(observer()).define(["md"], _98);
   main.variable(observer("viewof run_put_operation_args")).define("viewof run_put_operation_args", ["flowQueue"], _run_put_operation_args);
   main.variable(observer("run_put_operation_args")).define("run_put_operation_args", ["Generators", "viewof run_put_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_put_operation_args"], _99);
+  main.variable(observer()).define(["run_put_operation_args"], _100);
   main.variable(observer("run_put_operation_effect")).define("run_put_operation_effect", ["run_put_operation_args","set_data","enqueue_notify"], _run_put_operation_effect);
-  main.variable(observer("put_operation_reponse")).define("put_operation_reponse", ["viewof run_put_operation_args","run_put_operation_effect"], _put_operation_reponse);
-  main.variable(observer()).define(["md"], _102);
+  main.variable(observer("put_operation_response")).define("put_operation_response", ["viewof run_put_operation_args","run_put_operation_effect"], _put_operation_response);
+  main.variable(observer()).define(["md"], _103);
   main.variable(observer("viewof run_get_operation_args")).define("viewof run_get_operation_args", ["flowQueue"], _run_get_operation_args);
   main.variable(observer("run_get_operation_args")).define("run_get_operation_args", ["Generators", "viewof run_get_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_get_operation_args"], _104);
+  main.variable(observer()).define(["run_get_operation_args"], _105);
   main.variable(observer("run_get_operation_effect")).define("run_get_operation_effect", ["run_get_operation_args","enqueue_notify"], _run_get_operation_effect);
-  main.variable(observer("get_operation_repsonse")).define("get_operation_repsonse", ["viewof run_get_operation_args","run_get_operation_effect"], _get_operation_repsonse);
-  main.variable(observer()).define(["md"], _107);
+  main.variable(observer("get_operation_response")).define("get_operation_response", ["viewof run_get_operation_args","run_get_operation_effect"], _get_operation_response);
+  main.variable(observer()).define(["md"], _108);
   main.variable(observer("viewof run_listen_operation_args")).define("viewof run_listen_operation_args", ["flowQueue"], _run_listen_operation_args);
   main.variable(observer("run_listen_operation_args")).define("run_listen_operation_args", ["Generators", "viewof run_listen_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_listen_operation_args"], _109);
+  main.variable(observer()).define(["run_listen_operation_args"], _110);
   main.variable(observer("run_listen_effect")).define("run_listen_effect", ["run_listen_operation_args","enqueue_notify","add_data_listener"], _run_listen_effect);
-  main.variable(observer("listen_operation_reponse")).define("listen_operation_reponse", ["viewof run_listen_operation_args","run_listen_effect"], _listen_operation_reponse);
-  main.variable(observer()).define(["md"], _112);
+  main.variable(observer("listen_operation_response")).define("listen_operation_response", ["viewof run_listen_operation_args","run_listen_effect"], _listen_operation_response);
+  main.variable(observer()).define(["md"], _113);
   main.variable(observer("viewof run_unlisten_operation_args")).define("viewof run_unlisten_operation_args", ["flowQueue"], _run_unlisten_operation_args);
   main.variable(observer("run_unlisten_operation_args")).define("run_unlisten_operation_args", ["Generators", "viewof run_unlisten_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_unlisten_operation_args"], _114);
+  main.variable(observer()).define(["run_unlisten_operation_args"], _115);
   main.variable(observer("run_unlisten_effect")).define("run_unlisten_effect", ["run_unlisten_operation_args","remove_data_listener","enqueue_notify"], _run_unlisten_effect);
   main.variable(observer("unlisten_operation_response")).define("unlisten_operation_response", ["viewof run_unlisten_operation_args","run_unlisten_effect"], _unlisten_operation_response);
   main.variable(observer()).define(["md"], _118);
   main.variable(observer()).define(["md"], _119);
-  main.variable(observer()).define(["md"], _120);
   main.variable(observer("includeIf")).define("includeIf", _includeIf);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
-  main.variable(observer("testing")).define("testing", ["createClient"], _testing);
-  main.variable(observer()).define(["md"], _124);
+  main.variable(observer("testing")).define("testing", ["viewof process_operation_args"], _testing);
+  main.variable(observer()).define(["md"], _123);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _126);
+  main.variable(observer()).define(["footer"], _125);
   return main;
 }
