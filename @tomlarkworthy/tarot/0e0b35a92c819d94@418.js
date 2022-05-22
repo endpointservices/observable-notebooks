@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@413
+// https://observablehq.com/@tomlarkworthy/flow-queue@418
 import define1 from "./293899bef371e135@225.js";
 
 async function _1(FileAttachment,md){return(
@@ -69,7 +69,7 @@ md`## Changelog
 )}
 
 function _flowQueue(htl,Event){return(
-({ timeout_ms = 1000 } = {}) => {
+({ name, timeout_ms = 1000 } = {}) => {
   let runningResolve = undefined;
   let runningReject = undefined;
   const q = [];
@@ -89,7 +89,10 @@ function _flowQueue(htl,Event){return(
     };
 
     timer = setTimeout(
-      () => ui.reject(new Error("Timeout (maybe increase timeout_ms?)")),
+      () =>
+        ui.reject(
+          new Error(`Timeout (maybe increase timeout_ms?) ${name || ""}`)
+        ),
       timeout_ms
     );
 
@@ -104,7 +107,7 @@ function _flowQueue(htl,Event){return(
     });
 
   ui.reject = async (err) => {
-    if (!runningReject) throw new Error("No task executing!");
+    if (!runningReject) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -114,7 +117,7 @@ function _flowQueue(htl,Event){return(
   };
 
   ui.respond = async (value) => {
-    if (!runningResolve) throw new Error("No task executing!");
+    if (!runningResolve) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -222,7 +225,7 @@ suite.test("respond without send throws", async () => {
   const q = flowQueue();
   await testing
     .expect(q.respond())
-    .rejects.toEqual(Error("No task executing!"));
+    .rejects.toEqual(Error("No task executing! "));
 })
 )}
 
@@ -231,7 +234,7 @@ suite.test("missing respond rejects with timout", async () => {
   const q = flowQueue({ timeout_ms: 1 });
   await testing
     .expect(q.send())
-    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?)"));
+    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?) "));
 })
 )}
 
@@ -249,7 +252,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["flowQuery@1.svg",new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","md"], _1);
   main.variable(observer()).define(["md"], _2);

@@ -1,4 +1,4 @@
-import define1 from "./549f62919a7018eb@4226.js";
+import define1 from "./549f62919a7018eb@4252.js";
 import define2 from "./293899bef371e135@225.js";
 
 function _app(transitions,$0){return(
@@ -20,7 +20,7 @@ ${(app, '')}
 )}
 
 function _4(md){return(
-md`## Learnings`
+md`## Learnings (this is my rough notes until I write them up properly)`
 )}
 
 async function _5(FileAttachment,md){return(
@@ -48,7 +48,7 @@ Fixed unused testing.js javascript loading
 Avoided running examples that draw cards in the notebook code. We removed 4MB of assets 
 
 Biggest drag is largest contentful paint takes 8 seconds. This is stated as being due to long critical chains, but prefetch/preload assets did not help although we could remove the chaining.
-age speed has a helpful display of the order assets are loaded
+Page speed has a helpful display of the order assets are loaded
 
 ${await FileAttachment("image.png").image()}
 
@@ -62,7 +62,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/fb520994ff7d4b4c03533b716352aaf85b802b3033a00cc2f6c5f0ad59a310ee1c9a009ceacdbd24e67ad102075b95a1906beb2f4a7b3f7cf576569e0d3c911b",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/fb520994ff7d4b4c03533b716352aaf85b802b3033a00cc2f6c5f0ad59a310ee1c9a009ceacdbd24e67ad102075b95a1906beb2f4a7b3f7cf576569e0d3c911b", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer("app")).define("app", ["transitions","viewof display"], _app);
   main.variable(observer()).define(["app","md"], _2);

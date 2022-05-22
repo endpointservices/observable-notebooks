@@ -3,7 +3,7 @@ import define2 from "./374124b361974cb3@259.js";
 import define3 from "./993a0c51ef1175ea@1345.js";
 import define4 from "./3d59cab3a9c819e2@168.js";
 import define5 from "./6eda90668ae03044@803.js";
-import define6 from "./0e0b35a92c819d94@413.js";
+import define6 from "./0e0b35a92c819d94@418.js";
 import define7 from "./048a17a165be198d@263.js";
 import define8 from "./0c800138c487d3e1@860.js";
 import define9 from "./698257e86fae4586@374.js";
@@ -12,6 +12,7 @@ import define11 from "./92ff66b718c1972f@141.js";
 import define12 from "./653c46ed55693b1f@646.js";
 import define13 from "./9bed702f80a3797e@402.js";
 import define14 from "./dff1e917c89f5e76@1711.js";
+import define15 from "./293899bef371e135@225.js";
 
 function _1(md){return(
 md`# Tarot Backend
@@ -31,8 +32,6 @@ We the API request process across several Observable reactive dataflow cells usi
 Errors in prod are recorded with [Sentry](https://observablehq.com/@endpointservices/sentry), and active monitoring is performed with [uptimerobot + healthcheck](https://observablehq.com/@endpointservices/healthcheck).
 
 I hope you find [webcode.run](https://webcode.run) + [observable](/) application development interesting. This took about 2 weeks of fulltime work to develop. 
-
-
 `
 )}
 
@@ -1842,21 +1841,25 @@ function _172(md){return(
 md`## Dependencies`
 )}
 
-function _184(md){return(
+function _185(md){return(
 md`### Prefetch transitive dependancies`
 )}
 
-function _185(md){return(
+function _186(md){return(
 md`### Analytics & Backup`
 )}
 
-function _186(footer){return(
+function _187(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image-4.webp",new URL("./files/d43230aa295b503aad4ef9dcd43e28813ac9b3a315edc352b9973894c78842303dd7caf2238b0d0695f7d0722eb550582003cf4c9da64d43b72c351779e1439d",import.meta.url)],["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp",new URL("./files/243c42aef6b56101d952c0e6bda1ff0c7ebcf54b1612f0e39d7bc49858712d76956721397f937923b8c286a0710c717afbc38bbd0a54df221ca63a02fd1f25a9",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image-4.webp", {url: new URL("./files/d43230aa295b503aad4ef9dcd43e28813ac9b3a315edc352b9973894c78842303dd7caf2238b0d0695f7d0722eb550582003cf4c9da64d43b72c351779e1439d", import.meta.url), mimeType: "image/webp", toString}],
+    ["imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp", {url: new URL("./files/243c42aef6b56101d952c0e6bda1ff0c7ebcf54b1612f0e39d7bc49858712d76956721397f937923b8c286a0710c717afbc38bbd0a54df221ca63a02fd1f25a9", import.meta.url), mimeType: "image/webp", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
@@ -2090,8 +2093,10 @@ export default function define(runtime, observer) {
   main.import("toc", child14);
   const child15 = runtime.module(define14);
   main.import("deploy", child15);
-  main.variable(observer()).define(["md"], _184);
+  const child16 = runtime.module(define15);
+  main.import("footer", child16);
   main.variable(observer()).define(["md"], _185);
-  main.variable(observer()).define(["footer"], _186);
+  main.variable(observer()).define(["md"], _186);
+  main.variable(observer()).define(["footer"], _187);
   return main;
 }
