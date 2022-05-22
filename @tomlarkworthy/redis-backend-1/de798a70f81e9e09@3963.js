@@ -3,7 +3,7 @@ import define2 from "./0e0b35a92c819d94@418.js";
 import define3 from "./293899bef371e135@247.js";
 
 function _1(md){return(
-md`# Choosing *Causal Consistency* for a Realtime Database`
+md`# Why *causal consistency* for realtime databases and how to achieve it with Redis`
 )}
 
 function _2(md){return(
@@ -37,7 +37,7 @@ md`## Why we are here: bespoke security languages suck`
 )}
 
 function _7(md){return(
-md`*(BTW, this comes from painful realization from reflecting on [Firebase Rules](https://firebase.blog/posts/2018/01/introducing-query-based-security-rules), [Blaze Compiler](https://github.com/googlearchive/blaze_compiler) and the [Common Expression Language](https://github.com/google/cel-spec))*`
+md`*(BTW, this comes from painful personal realization from reflecting on my work on the [Firebase Rules](https://firebase.blog/posts/2018/01/introducing-query-based-security-rules), [Blaze Compiler](https://github.com/googlearchive/blaze_compiler) and the [Common Expression Language](https://github.com/google/cel-spec))*`
 )}
 
 async function _8(FileAttachment,width,md){return(
@@ -614,7 +614,15 @@ async ({ redis, client_id } = {}) => {
     client_notify_queue_key(client_id),
     id
   ]);
-  return response && response[0][1][0];
+  return (
+    response && [
+      response[0][1][0][0],
+      response[0][1][0][1].reduce((obj, val, index, arr) => {
+        if (index % 2 == 1) obj[arr[index - 1]] = arr[index];
+        return obj;
+      }, {})
+    ]
+  );
 }
 )}
 
@@ -679,75 +687,73 @@ async function _action(process_operation_args,client_operation_head_id_key,next_
 
 
 function _89(md){return(
-md`Then a transaction block is started with [MULTI](https://redis.io/commands/multi/). Followed by _operation_ specific code (each explained later). `
+md`Some operations require additional data to be available before they can be fulfilled correctly. For a PUT operation, we need to know what the active listeners are. With the list of active listeners, a transaction can update the data location **and** notify the listeners through their queues in a single atomic update. To do this consistently, the prerequisite data must be not change during operation processing, so the gathered data is locked with [WATCH](https://redis.io/commands/watch/).`
 )}
 
-async function _process_operation_effect(process_operation_args,action,data_listeners_key,get_data_listeners,data_key,get_data,$0,$1,$2,$3,$4)
+async function _prerequisites(process_operation_args,action,data_listeners_key,get_data_listeners,data_key,get_data,$0)
 {
   const client = process_operation_args;
   const operation = action.action;
-  let result;
-
-  // Some operations required additional data to be gathered before execution
-  let prerequisites;
-
   try {
     if (operation === "PUT") {
       client.redis.sendCommand(["WATCH", data_listeners_key(action.key)]);
-      prerequisites = {
+      return {
         listeners: await get_data_listeners(client, action.key)
       };
     } else if (operation === "GET" || operation === "LISTEN") {
       client.redis.sendCommand(["WATCH", data_key(action.key)]);
-      prerequisites = {
+      return {
         data: await get_data(client, action.key)
       };
     }
   } catch (err) {
+    client.redis.sendCommand(["UNWATCH"]);
     console.error(err.message, action);
     $0.reject(err);
     return err;
   }
+  return {};
+}
+
+
+function _91(md){return(
+md`After gathering the prerequisite data for the operation, we execute all the mutations within a transaction block [MULTI](https://redis.io/commands/multi/). Exactly what is mutated depends on the operation, which is handled by _operation_ specific flowQueues (explained later). `
+)}
+
+async function _process_operation_effect(process_operation_args,action,$0,$1,$2,$3,prerequisites,$4)
+{
+  const client = process_operation_args;
+  const operation = action.action;
   try {
     client.redis.sendCommand(["MULTI"]);
-    if (operation === "PUT") {
-      result = await $1.send({
-        ...prerequisites,
-        client,
-        action: action
-      });
-    } else if (operation === "GET") {
-      result = await $2.send({
-        ...prerequisites,
-        client,
-        action: action
-      });
-    } else if (operation === "LISTEN") {
-      result = await $3.send({
-        ...prerequisites,
-        client,
-        action: action
-      });
-    } else if (operation === "UNLISTEN") {
-      result = await $4.send({
-        client,
-        action: action
-      });
-    } else {
+    const handler = {
+      PUT: $0,
+      GET: $1,
+      LISTEN: $2,
+      UNLISTEN: $3
+    }[operation];
+
+    if (handler === undefined)
       throw new Error("Unknown operation " + operation);
-    }
-    return result;
+
+    return await handler.send({
+      ...prerequisites,
+      client,
+      action
+    });
   } catch (err) {
     console.error(err.message, action);
     client.redis.sendCommand(["DISCARD"]);
-    $0.reject(err);
+    $4.reject(err);
     return err;
   }
 }
 
 
-function _91(md){return(
-md`Finally, the transaction is executed and the response is passed back to the [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue).`
+function _93(md){return(
+md`Finally, after the operation specific effects are queued, we acknowledge the operation to indicate it is processed, and execute the everything in an atomic transaction. Because *ack_operation* mutates the *client_operation_head_id_key* and we WATCHed it at the beginning, we guarantee that only one worker can do an operation. Because we also do the effect in the same transaction, we ensure we only *ack_operation* if the effect is applied. So we achieve *exactly-once* operation processing. 
+
+The response of the transaction is passed back to the enclosing [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue) using the *respond* function.`
 )}
 
 async function _ack_process_operation(process_operation_args,process_operation_effect,ack_operation,action,$0)
@@ -767,263 +773,109 @@ async function _ack_process_operation(process_operation_args,process_operation_e
 }
 
 
-async function _93(clear_data_listeners,exampleClient,init_client,enqueue_operation,process_operation,next_notify,ack_notify)
-{
-  clear_data_listeners(exampleClient, "foo");
-  init_client(exampleClient);
-  enqueue_operation(exampleClient, {
-    request_id: "1",
-    action: "LISTEN",
-    key: "foo"
-  });
-  enqueue_operation(exampleClient, {
-    request_id: "2",
-    action: "PUT",
-    key: "foo",
-    value: "bar"
-  });
-  enqueue_operation(exampleClient, {
-    request_id: "3",
-    action: "GET",
-    key: "foo"
-  });
+function _95(suite,createClient,redisConfig,clear_data_listeners,init_client,enqueue_operation,process_operation,next_notify,ack_notify,testing){return(
+suite.test(
+  "smoke test process_operation with LISTEN/PUT/GET/UNLISTEN",
+  async () => {
+    const client = await createClient(
+      redisConfig,
+      "process_operation_smoke_test"
+    );
+    clear_data_listeners(client, "foo");
+    init_client(client);
+    enqueue_operation(client, {
+      request_id: "1",
+      action: "PUT",
+      key: "foo",
+      value: "baz"
+    });
+    enqueue_operation(client, {
+      request_id: "2",
+      action: "LISTEN",
+      key: "foo"
+    });
+    enqueue_operation(client, {
+      request_id: "3",
+      action: "PUT",
+      key: "foo",
+      value: "bar"
+    });
+    enqueue_operation(client, {
+      request_id: "4",
+      action: "GET",
+      key: "foo"
+    });
 
-  enqueue_operation(exampleClient, {
-    request_id: "4",
-    action: "UNLISTEN",
-    key: "foo"
-  });
+    enqueue_operation(client, {
+      request_id: "5",
+      action: "UNLISTEN",
+      key: "foo"
+    });
 
-  while ((await process_operation(exampleClient)) !== "NOOP") {}
+    while ((await process_operation(client)) !== "NOOP") {}
 
-  const history = [];
-  var next = await next_notify(exampleClient);
-  while (next) {
-    const [id, reply] = next;
-    history.push(reply);
-    ack_notify(exampleClient, id);
-    next = await next_notify(exampleClient);
+    const history = [];
+    var next = await next_notify(client);
+    while (next) {
+      const [id, reply] = next;
+      history.push(reply);
+      ack_notify(client, id);
+      next = await next_notify(client);
+    }
+    testing.expect(history).toEqual([
+      {
+        request_id: "1",
+        status: "ok"
+      },
+      {
+        action: "DATA",
+        data: "baz",
+        key: "foo"
+      },
+      {
+        request_id: "2",
+        status: "ok"
+      },
+      {
+        action: "DATA",
+        data: "bar",
+        key: "foo"
+      },
+      {
+        request_id: "3",
+        status: "ok"
+      },
+      {
+        data: "bar",
+        request_id: "4",
+        status: "ok"
+      },
+      {
+        request_id: "5",
+        status: "ok"
+      }
+    ]);
   }
-  return history;
-}
-
-
-function _94(md){return(
-md`## Test clients`
-)}
-
-function _95(md){return(
-md`## Fuzzer`
+)
 )}
 
 function _96(md){return(
-md`### *mulberry32*, a seeded random number generator
-
-When fuzzing it's nice to be able to reconstruct the failure case from a seed. So we want a deterministic plan given some numeric seed.
-
-From [stack overflow, seeding RNG](https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript)
-Thanks [bryc](https://stackoverflow.com/users/815680/bryc)!
-`
+md`## Operation Effects`
 )}
 
-function _mulberry32(){return(
-function mulberry32(a) {
-  return function () {
-    var t = (a += 0x6d2b79f5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-)}
+function _97(md){return(
+md`### run_put_operation
 
-function _rnd(mulberry32){return(
-mulberry32(Math.random() * 100000000)
-)}
-
-function _fuzz(Inputs){return(
-Inputs.toggle({
-  label: "Run fuzzer?"
-})
-)}
-
-function _plan(fuzz,rnd,invalidation){return(
-fuzz
-  ? Array.from({ length: 20 }).map((_) => {
-      const action = Math.floor(rnd() * 4);
-      const client = Math.floor(rnd() * 3);
-      const key = Math.floor(rnd() * 3);
-      return {
-        client: client,
-        action: action,
-        key: key
-      };
-    })
-  : invalidation
-)}
-
-async function _runPlan(clients,init_client,clear_data_listeners,exampleClient,plan,enqueue_operation,process_operation)
-{
-  // clear state
-  console.log("Resetting clients");
-  await Promise.all(clients.map((c) => init_client(c)));
-  console.log("Resetting listeners");
-  await Promise.all(
-    ["k0", "k1", "k2"].map((k) => clear_data_listeners(exampleClient, k))
-  );
-  // enqueue actions
-  console.log("Running plan");
-  return await Promise.all(
-    plan.map((instruction, i) => {
-      const client = clients[instruction.client];
-      const key = "k" + instruction.key.toString();
-      const action =
-        instruction.action == 0
-          ? {
-              action: "PUT",
-              key,
-              value: "t" + i
-            }
-          : instruction.action == 1
-          ? {
-              action: "LISTEN",
-              key
-            }
-          : instruction.action == 2
-          ? {
-              action: "UNLISTEN",
-              key
-            }
-          : instruction.action == 3
-          ? {
-              action: "GET",
-              key
-            }
-          : undefined;
-      action.request_id = "r" + i;
-      enqueue_operation(client, action);
-      return process_operation(client);
-    })
-  );
-}
-
-
-function _histories(runPlan,clients,next_notify,ack_notify)
-{
-  // wait for plan to run
-  runPlan;
-  // Now drain the queues
-  return Promise.all(
-    clients.map(async (client) => {
-      const history = [];
-      var next = await next_notify(client);
-      while (next) {
-        const [id, replyRaw] = next;
-        const reply = replyRaw.reduce((obj, val, index, arr) => {
-          if (index % 2 == 1) obj[arr[index - 1]] = arr[index];
-          return obj;
-        }, {});
-        ack_notify(client, id);
-        history.push(reply);
-        next = await next_notify(client);
-      }
-      return history;
-    })
-  );
-}
-
-
-async function _clients(restartClients,exampleClient,createClient,redisConfig){return(
-restartClients,
-[
-  exampleClient,
-  await createClient(redisConfig, "1"),
-  await createClient(redisConfig, "2")
-]
-)}
-
-function _104(md){return(
-md`## Resource Identifiers`
-)}
-
-function _105(md){return(
-md`## Data Model`
-)}
-
-function _106(md){return(
-md`### Data Storage`
-)}
-
-function _107(md){return(
-md`### Listeners`
-)}
-
-function _108(md){return(
-md`### init_client`
-)}
-
-function _109(init_client,exampleClient){return(
-init_client(exampleClient)
-)}
-
-function _110(md){return(
-md`### Workers`
-)}
-
-function _workers(ack_process_operation,put_operation_reponse,get_operation_repsonse,listen_operation_reponse,unlisten_operation_response){return(
-[
-  ack_process_operation,
-  put_operation_reponse,
-  get_operation_repsonse,
-  listen_operation_reponse,
-  unlisten_operation_response
-]
-)}
-
-function _112(md){return(
-md`## Client Actions`
-)}
-
-function _113(md){return(
-md`### enqueue_operation`
-)}
-
-function _114(md){return(
-md`### head_operation_id`
-)}
-
-function _115(md){return(
-md`### next_operation`
-)}
-
-function _116(md){return(
-md`### ack_operation`
-)}
-
-function _117(md){return(
-md`### clear_operations`
-)}
-
-function _118(md){return(
-md`## Client Reply`
-)}
-
-function _119(md){return(
-md`## Action Processing`
-)}
-
-function _120(md){return(
-md`### run_put_operation`
+A PUT operation overwrites a data location with a new value, and notifies all listeners of the change. Thus to apply the operation the liste of listeners at that location is required.`
 )}
 
 function _run_put_operation_args(flowQueue){return(
 flowQueue({
-  name: "run_put_operation_args",
-  timeout_ms: 2000
+  name: "run_put_operation_args"
 })
 )}
 
-function _122(run_put_operation_args){return(
+function _99(run_put_operation_args){return(
 run_put_operation_args
 )}
 
@@ -1050,18 +902,19 @@ function _put_operation_reponse($0,run_put_operation_effect){return(
 $0.respond(run_put_operation_effect)
 )}
 
-function _125(md){return(
-md`### run_get_operation`
+function _102(md){return(
+md`### run_get_operation
+
+A GET operation retrieves the data at a data location.`
 )}
 
 function _run_get_operation_args(flowQueue){return(
 flowQueue({
-  name: "run_get_operation_args",
-  timeout_ms: 2000
+  name: "run_get_operation_args"
 })
 )}
 
-function _127(run_get_operation_args){return(
+function _104(run_get_operation_args){return(
 run_get_operation_args
 )}
 
@@ -1082,8 +935,12 @@ function _get_operation_repsonse($0,run_get_operation_effect){return(
 $0.respond(run_get_operation_effect)
 )}
 
-function _130(md){return(
-md`### run_listen_operation`
+function _107(md){return(
+md`### run_listen_operation
+
+A LISTEN operation adds a client to the list of listeners at a data location. The client is also informed of the current value of the data location.
+
+TODO: Firebase also supports query filters and listening over collections of location too.`
 )}
 
 function _run_listen_operation_args(flowQueue){return(
@@ -1092,7 +949,7 @@ flowQueue({
 })
 )}
 
-function _132(run_listen_operation_args){return(
+function _109(run_listen_operation_args){return(
 run_listen_operation_args
 )}
 
@@ -1118,8 +975,10 @@ function _listen_operation_reponse($0,run_listen_effect){return(
 $0.respond(run_listen_effect)
 )}
 
-function _135(md){return(
-md`### run_unlisten`
+function _112(md){return(
+md`### run_unlisten
+
+Unlisten removes a listener at a data location.`
 )}
 
 function _run_unlisten_operation_args(flowQueue){return(
@@ -1128,7 +987,7 @@ flowQueue({
 })
 )}
 
-function _137(run_unlisten_operation_args){return(
+function _114(run_unlisten_operation_args){return(
 run_unlisten_operation_args
 )}
 
@@ -1150,11 +1009,15 @@ $0.respond(
 )
 )}
 
-function _141(md){return(
+function _118(md){return(
 md`---`
 )}
 
-function _142(md){return(
+function _119(md){return(
+md`---`
+)}
+
+function _120(md){return(
 md`## Dependencies`
 )}
 
@@ -1180,11 +1043,11 @@ async function _testing(createClient)
 }
 
 
-function _146(md){return(
+function _124(md){return(
 md`## Backups and Analytics`
 )}
 
-function _148(footer){return(
+function _126(footer){return(
 footer
 )}
 
@@ -1288,70 +1151,47 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _87);
   main.variable(observer("action")).define("action", ["process_operation_args","client_operation_head_id_key","next_operation","viewof process_operation_args","invalidation"], _action);
   main.variable(observer()).define(["md"], _89);
-  main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","data_listeners_key","get_data_listeners","data_key","get_data","viewof process_operation_args","viewof run_put_operation_args","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args"], _process_operation_effect);
+  main.variable(observer("prerequisites")).define("prerequisites", ["process_operation_args","action","data_listeners_key","get_data_listeners","data_key","get_data","viewof process_operation_args"], _prerequisites);
   main.variable(observer()).define(["md"], _91);
+  main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","viewof run_put_operation_args","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args","prerequisites","viewof process_operation_args"], _process_operation_effect);
+  main.variable(observer()).define(["md"], _93);
   main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","process_operation_effect","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
-  main.variable(observer()).define(["clear_data_listeners","exampleClient","init_client","enqueue_operation","process_operation","next_notify","ack_notify"], _93);
-  main.variable(observer()).define(["md"], _94);
-  main.variable(observer()).define(["md"], _95);
+  main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","testing"], _95);
   main.variable(observer()).define(["md"], _96);
-  main.variable(observer("mulberry32")).define("mulberry32", _mulberry32);
-  main.variable(observer("rnd")).define("rnd", ["mulberry32"], _rnd);
-  main.variable(observer("viewof fuzz")).define("viewof fuzz", ["Inputs"], _fuzz);
-  main.variable(observer("fuzz")).define("fuzz", ["Generators", "viewof fuzz"], (G, _) => G.input(_));
-  main.variable(observer("plan")).define("plan", ["fuzz","rnd","invalidation"], _plan);
-  main.variable(observer("runPlan")).define("runPlan", ["clients","init_client","clear_data_listeners","exampleClient","plan","enqueue_operation","process_operation"], _runPlan);
-  main.variable(observer("histories")).define("histories", ["runPlan","clients","next_notify","ack_notify"], _histories);
-  main.variable(observer("clients")).define("clients", ["restartClients","exampleClient","createClient","redisConfig"], _clients);
-  main.variable(observer()).define(["md"], _104);
-  main.variable(observer()).define(["md"], _105);
-  main.variable(observer()).define(["md"], _106);
+  main.variable(observer()).define(["md"], _97);
+  main.variable(observer("viewof run_put_operation_args")).define("viewof run_put_operation_args", ["flowQueue"], _run_put_operation_args);
+  main.variable(observer("run_put_operation_args")).define("run_put_operation_args", ["Generators", "viewof run_put_operation_args"], (G, _) => G.input(_));
+  main.variable(observer()).define(["run_put_operation_args"], _99);
+  main.variable(observer("run_put_operation_effect")).define("run_put_operation_effect", ["run_put_operation_args","set_data","enqueue_notify"], _run_put_operation_effect);
+  main.variable(observer("put_operation_reponse")).define("put_operation_reponse", ["viewof run_put_operation_args","run_put_operation_effect"], _put_operation_reponse);
+  main.variable(observer()).define(["md"], _102);
+  main.variable(observer("viewof run_get_operation_args")).define("viewof run_get_operation_args", ["flowQueue"], _run_get_operation_args);
+  main.variable(observer("run_get_operation_args")).define("run_get_operation_args", ["Generators", "viewof run_get_operation_args"], (G, _) => G.input(_));
+  main.variable(observer()).define(["run_get_operation_args"], _104);
+  main.variable(observer("run_get_operation_effect")).define("run_get_operation_effect", ["run_get_operation_args","enqueue_notify"], _run_get_operation_effect);
+  main.variable(observer("get_operation_repsonse")).define("get_operation_repsonse", ["viewof run_get_operation_args","run_get_operation_effect"], _get_operation_repsonse);
   main.variable(observer()).define(["md"], _107);
-  main.variable(observer()).define(["md"], _108);
-  main.variable(observer()).define(["init_client","exampleClient"], _109);
-  main.variable(observer()).define(["md"], _110);
-  main.variable(observer("workers")).define("workers", ["ack_process_operation","put_operation_reponse","get_operation_repsonse","listen_operation_reponse","unlisten_operation_response"], _workers);
+  main.variable(observer("viewof run_listen_operation_args")).define("viewof run_listen_operation_args", ["flowQueue"], _run_listen_operation_args);
+  main.variable(observer("run_listen_operation_args")).define("run_listen_operation_args", ["Generators", "viewof run_listen_operation_args"], (G, _) => G.input(_));
+  main.variable(observer()).define(["run_listen_operation_args"], _109);
+  main.variable(observer("run_listen_effect")).define("run_listen_effect", ["run_listen_operation_args","enqueue_notify","add_data_listener"], _run_listen_effect);
+  main.variable(observer("listen_operation_reponse")).define("listen_operation_reponse", ["viewof run_listen_operation_args","run_listen_effect"], _listen_operation_reponse);
   main.variable(observer()).define(["md"], _112);
-  main.variable(observer()).define(["md"], _113);
-  main.variable(observer()).define(["md"], _114);
-  main.variable(observer()).define(["md"], _115);
-  main.variable(observer()).define(["md"], _116);
-  main.variable(observer()).define(["md"], _117);
+  main.variable(observer("viewof run_unlisten_operation_args")).define("viewof run_unlisten_operation_args", ["flowQueue"], _run_unlisten_operation_args);
+  main.variable(observer("run_unlisten_operation_args")).define("run_unlisten_operation_args", ["Generators", "viewof run_unlisten_operation_args"], (G, _) => G.input(_));
+  main.variable(observer()).define(["run_unlisten_operation_args"], _114);
+  main.variable(observer("run_unlisten_effect")).define("run_unlisten_effect", ["run_unlisten_operation_args","remove_data_listener","enqueue_notify"], _run_unlisten_effect);
+  main.variable(observer("unlisten_operation_response")).define("unlisten_operation_response", ["viewof run_unlisten_operation_args","run_unlisten_effect"], _unlisten_operation_response);
   main.variable(observer()).define(["md"], _118);
   main.variable(observer()).define(["md"], _119);
   main.variable(observer()).define(["md"], _120);
-  main.variable(observer("viewof run_put_operation_args")).define("viewof run_put_operation_args", ["flowQueue"], _run_put_operation_args);
-  main.variable(observer("run_put_operation_args")).define("run_put_operation_args", ["Generators", "viewof run_put_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_put_operation_args"], _122);
-  main.variable(observer("run_put_operation_effect")).define("run_put_operation_effect", ["run_put_operation_args","set_data","enqueue_notify"], _run_put_operation_effect);
-  main.variable(observer("put_operation_reponse")).define("put_operation_reponse", ["viewof run_put_operation_args","run_put_operation_effect"], _put_operation_reponse);
-  main.variable(observer()).define(["md"], _125);
-  main.variable(observer("viewof run_get_operation_args")).define("viewof run_get_operation_args", ["flowQueue"], _run_get_operation_args);
-  main.variable(observer("run_get_operation_args")).define("run_get_operation_args", ["Generators", "viewof run_get_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_get_operation_args"], _127);
-  main.variable(observer("run_get_operation_effect")).define("run_get_operation_effect", ["run_get_operation_args","enqueue_notify"], _run_get_operation_effect);
-  main.variable(observer("get_operation_repsonse")).define("get_operation_repsonse", ["viewof run_get_operation_args","run_get_operation_effect"], _get_operation_repsonse);
-  main.variable(observer()).define(["md"], _130);
-  main.variable(observer("viewof run_listen_operation_args")).define("viewof run_listen_operation_args", ["flowQueue"], _run_listen_operation_args);
-  main.variable(observer("run_listen_operation_args")).define("run_listen_operation_args", ["Generators", "viewof run_listen_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_listen_operation_args"], _132);
-  main.variable(observer("run_listen_effect")).define("run_listen_effect", ["run_listen_operation_args","enqueue_notify","add_data_listener"], _run_listen_effect);
-  main.variable(observer("listen_operation_reponse")).define("listen_operation_reponse", ["viewof run_listen_operation_args","run_listen_effect"], _listen_operation_reponse);
-  main.variable(observer()).define(["md"], _135);
-  main.variable(observer("viewof run_unlisten_operation_args")).define("viewof run_unlisten_operation_args", ["flowQueue"], _run_unlisten_operation_args);
-  main.variable(observer("run_unlisten_operation_args")).define("run_unlisten_operation_args", ["Generators", "viewof run_unlisten_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_unlisten_operation_args"], _137);
-  main.variable(observer("run_unlisten_effect")).define("run_unlisten_effect", ["run_unlisten_operation_args","remove_data_listener","enqueue_notify"], _run_unlisten_effect);
-  main.variable(observer("unlisten_operation_response")).define("unlisten_operation_response", ["viewof run_unlisten_operation_args","run_unlisten_effect"], _unlisten_operation_response);
-  main.variable(observer()).define(["md"], _141);
-  main.variable(observer()).define(["md"], _142);
   main.variable(observer("includeIf")).define("includeIf", _includeIf);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
   main.variable(observer("testing")).define("testing", ["createClient"], _testing);
-  main.variable(observer()).define(["md"], _146);
+  main.variable(observer()).define(["md"], _124);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _148);
+  main.variable(observer()).define(["footer"], _126);
   return main;
 }
