@@ -1,12 +1,11 @@
 // https://observablehq.com/@mbostock/canvas-to-gif@89
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Canvas to GIF
 
 Let’s make an animated GIF from a Canvas element using [gif.js](https://jnordberg.github.io/gif.js/).`
-)});
-  main.variable(observer("viewof gif")).define("viewof gif", ["GIF","DOM","width","height"], function*(GIF,DOM,width,height)
+)}
+
+function* _gif(GIF,DOM,width,height)
 {
   const gif = new GIF;
   const canvas = DOM.canvas(width, height);
@@ -24,15 +23,17 @@ Let’s make an animated GIF from a Canvas element using [gif.js](https://jnordb
   gif.render();
   yield canvas;
 }
-);
-  main.variable(observer("gif")).define("gif", ["Generators", "viewof gif"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","gif"], function(html,gif){return(
+
+
+function _3(html,gif){return(
 html`<img src="${URL.createObjectURL(gif, {type: "image/gif"})}">`
-)});
-  main.variable(observer()).define(["DOM","gif"], function(DOM,gif){return(
+)}
+
+function _4(DOM,gif){return(
 DOM.download(gif)
-)});
-  main.variable(observer("GIF")).define("GIF", ["require"], async function(require)
+)}
+
+async function _GIF(require)
 {
   const [gif, workerScript] = await Promise.all([
     require("gif.js@0.2"),
@@ -47,12 +48,25 @@ DOM.download(gif)
     }
   };
 }
-);
-  main.variable(observer("width")).define("width", function(){return(
+
+
+function _width(){return(
 640
-)});
-  main.variable(observer("height")).define("height", function(){return(
+)}
+
+function _height(){return(
 480
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("viewof gif")).define("viewof gif", ["GIF","DOM","width","height"], _gif);
+  main.variable(observer("gif")).define("gif", ["Generators", "viewof gif"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","gif"], _3);
+  main.variable(observer()).define(["DOM","gif"], _4);
+  main.variable(observer("GIF")).define("GIF", ["require"], _GIF);
+  main.variable(observer("width")).define("width", _width);
+  main.variable(observer("height")).define("height", _height);
   return main;
 }
