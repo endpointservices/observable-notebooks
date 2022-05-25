@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/testing@660
+// https://observablehq.com/@tomlarkworthy/testing@661
 import define1 from "./84e66f78139ac354@814.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -133,7 +133,7 @@ function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){
 
   function generate() {
     return html`<div class="testsuite" id=${id}>
-        ${name ? `<h2 id="title{id}">${name}</h2>` : null}
+        ${name ? html`<h2 id="title{id}">${name}</h2>` : null}
         <a name="testsuite${id}"></a>
         <input key="filter"
           oninput=${(e) => e.stopPropagation()}
