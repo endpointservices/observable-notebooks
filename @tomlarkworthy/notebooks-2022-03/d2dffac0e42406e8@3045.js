@@ -1091,7 +1091,14 @@ htl.html`<style>
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["youtubeIcon.png",new URL("./files/dd9624e7da061d6bcfa3cba4e71981d23cf2945f02b99777c3c66d48cf36c3afc48e375faaf1c18d47ca854d6f13b5c4e16fb4582e228cd16bc13e5fd2be8313",import.meta.url)],["googleImg@1.png",new URL("./files/62896dcc9298fd5a56f63cb77e8a6ca6bc6d9617f26a49e6d458380914d6c81e4ba9a8e56cc9caa4df8a8869ecaba3d0027f94f6ab5f8c1d52f0dd42066072fc",import.meta.url)],["googleCloudImg.png",new URL("./files/3cf2d4d48da9fa4ce0bf772acc6e299ce98d49baf95d3b8319947ef65c01c0d57c5950466e30983c8e917773b13842b16c98b8757a52d41a8efe53327545355e",import.meta.url)],["androidImg.png",new URL("./files/38366b46e64ba8f382a18051e899616c8ad2aa5d35e87470e891a6439221e2945b73366237dfc00b26b8d9ef9aa6637b4957a5d2133d32b803f5851ee262bcaf",import.meta.url)],["purchase_data.csv",new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["youtubeIcon.png", {url: new URL("./files/dd9624e7da061d6bcfa3cba4e71981d23cf2945f02b99777c3c66d48cf36c3afc48e375faaf1c18d47ca854d6f13b5c4e16fb4582e228cd16bc13e5fd2be8313", import.meta.url), mimeType: "image/png", toString}],
+    ["googleImg@1.png", {url: new URL("./files/62896dcc9298fd5a56f63cb77e8a6ca6bc6d9617f26a49e6d458380914d6c81e4ba9a8e56cc9caa4df8a8869ecaba3d0027f94f6ab5f8c1d52f0dd42066072fc", import.meta.url), mimeType: "image/png", toString}],
+    ["googleCloudImg.png", {url: new URL("./files/3cf2d4d48da9fa4ce0bf772acc6e299ce98d49baf95d3b8319947ef65c01c0d57c5950466e30983c8e917773b13842b16c98b8757a52d41a8efe53327545355e", import.meta.url), mimeType: "image/png", toString}],
+    ["androidImg.png", {url: new URL("./files/38366b46e64ba8f382a18051e899616c8ad2aa5d35e87470e891a6439221e2945b73366237dfc00b26b8d9ef9aa6637b4957a5d2133d32b803f5851ee262bcaf", import.meta.url), mimeType: "image/png", toString}],
+    ["purchase_data.csv", {url: new URL("./files/f06990c669c6571a25995fd1282640b5b352f0608e78914239554db701641dd2db875745e588bc35546ecedf8ddffa56e25af3f702b4f500bf4d57d8024baa34", import.meta.url), mimeType: "text/csv", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["deck"], _2);
