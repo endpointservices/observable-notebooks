@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/encapsulated-monitoring@216
-import define1 from "./293899bef371e135@225.js";
+import define1 from "./293899bef371e135@247.js";
 
 function _1(md){return(
 md`# The Fully Encapsulated Monitoring Notebook
