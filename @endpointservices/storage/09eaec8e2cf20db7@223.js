@@ -94,7 +94,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["logo"], _2);

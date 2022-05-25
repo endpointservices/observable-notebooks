@@ -8,7 +8,7 @@ import define6 from "./3d9d1394d858ca97@553.js";
 import define7 from "./777fe85658e39c55@470.js";
 import define8 from "./1956899a56408464@459.js";
 import define9 from "./0905542adbad836e@55.js";
-import define10 from "./293899bef371e135@225.js";
+import define10 from "./293899bef371e135@247.js";
 
 async function _1(md,FileAttachment){return(
 md`![](${await FileAttachment("storage.png").url()})
@@ -390,7 +390,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["storage.png",new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["storage.png", {url: new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["html","width"], _2);
