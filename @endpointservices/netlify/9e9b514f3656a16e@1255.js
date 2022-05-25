@@ -6,7 +6,7 @@ import define4 from "./c0de6bf6c2f598ef@62.js";
 import define5 from "./ef672b935bd480fc@619.js";
 import define6 from "./3d9d1394d858ca97@553.js";
 import define7 from "./b8a500058f806a6b@10.js";
-import define8 from "./293899bef371e135@216.js";
+import define8 from "./293899bef371e135@247.js";
 
 async function _1(html,md,FileAttachment){return(
 html`<div class="content">${md`
@@ -518,7 +518,13 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/828a7e731e643b93e2abaf5bd206e1b1b4c9fd0f88526c3714c1dd2f3efba17ed3f403cec8299bc727df64210ebc5077bb57b13d824e7b7848ca19fc9019c9cc",import.meta.url)],["image@2.png",new URL("./files/54e88b3adc3bcfcf2ccaa8f572e87f9466b08254c241ec4ef382f73504a9e7b484e5d71108eef168c8eb53ccea3ef8b30d2fa0134626e71079dbacca51e32897",import.meta.url)],["image@3.png",new URL("./files/43094e670aa7e161a39587fb31042c51d8fef2785a86ee68cb846e678d5a15e476b447502c8b7b5818e9b1e8e828b0eee2cc26d187fa02f9b138b61b79561e00",import.meta.url)],["image@5.png",new URL("./files/9a8c6eb0b661748266a1dd047581f160cedb0e80b165e49299a6c6e443acac6c866fdb8b18cee5d0bcb01cd86c5284586b7754918aefddddc4707ac80a705111",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/828a7e731e643b93e2abaf5bd206e1b1b4c9fd0f88526c3714c1dd2f3efba17ed3f403cec8299bc727df64210ebc5077bb57b13d824e7b7848ca19fc9019c9cc", import.meta.url), mimeType: "image/png", toString}],
+    ["image@2.png", {url: new URL("./files/54e88b3adc3bcfcf2ccaa8f572e87f9466b08254c241ec4ef382f73504a9e7b484e5d71108eef168c8eb53ccea3ef8b30d2fa0134626e71079dbacca51e32897", import.meta.url), mimeType: "image/png", toString}],
+    ["image@3.png", {url: new URL("./files/43094e670aa7e161a39587fb31042c51d8fef2785a86ee68cb846e678d5a15e476b447502c8b7b5818e9b1e8e828b0eee2cc26d187fa02f9b138b61b79561e00", import.meta.url), mimeType: "image/png", toString}],
+    ["image@5.png", {url: new URL("./files/9a8c6eb0b661748266a1dd047581f160cedb0e80b165e49299a6c6e443acac6c866fdb8b18cee5d0bcb01cd86c5284586b7754918aefddddc4707ac80a705111", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["html","md","FileAttachment"], _1);
   main.variable(observer()).define(["html","md"], _2);
