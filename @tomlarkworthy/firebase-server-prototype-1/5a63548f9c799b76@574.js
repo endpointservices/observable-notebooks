@@ -28,15 +28,17 @@ width="${Math.min(width, 1200)}px" height="${
 
     
     <radialGradient id="groundFill" cy="0%" r="1">
-      <stop offset="0%" stop-color="#6149ED" />
+      <stop offset="0%" stop-color="#6149ED"/>
       <stop offset="100%" stop-color="#120017" />
     </radialGradient>
 
 
-    <radialGradient id="surfaceFill" cy="0%" r="1">
-      <stop offset="0%" stop-color="yellow" />
+    <linearGradient id="surfaceFill" gradientTransform="rotate(90)">
+      <stop offset="0%" stop-color="yellow"  stop-opacity="0"/>
+      <stop offset="13%" stop-color="yellow"  stop-opacity="0"/>
+      <stop offset="16%" stop-color="yellow" />
       <stop offset="100%" stop-color="orange" />
-    </radialGradient>
+    </linearGradient>
 
 
     <linearGradient id="chromeFill" gradientTransform="rotate(90)">
@@ -72,7 +74,7 @@ width="${Math.min(width, 1200)}px" height="${
 
   
     <clipPath id="cells">
-      ${Array.from({ length: 4 * 80 }).map((_, xy) =>
+      ${Array.from({ length: 4 * 15 }).map((_, xy) =>
         square([(xy % 4) - 2, Math.floor(xy / 4), 1], "url(#ground)")
       )}
     </clipPath>

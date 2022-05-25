@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/redis@978
+// https://observablehq.com/@tomlarkworthy/redis@1002
 import define1 from "./bb2055d580bbbab2@106.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -142,7 +142,16 @@ async function createClient({
       if (ws.readyState > 1 /* CLOSING or CLOSED */) {
         await newSocket();
       }
-      writeCommand(args);
+      var retries = 5;
+      while (retries-- >= 0) {
+        try {
+          writeCommand(args);
+          break;
+        } catch (err) {
+          console.error(err);
+          await newSocket(); // try a reconnect
+        }
+      }
     }
   };
 
@@ -195,7 +204,8 @@ function _encodeCommand(encoder){return(
 function* encodeCommand(args) {
   let strings = `*${args.length}\r\n`,
     stringsLength = 0;
-  for (const arg of args) {
+  for (var arg of args) {
+    if (typeof arg === "number") arg = String(arg);
     const isString = typeof arg === "string",
       byteLength = isString ? encoder.encode(arg).length : arg.byteLength;
     strings += `$${byteLength}\r\n`;
@@ -1424,11 +1434,22 @@ tests.test("MULTI/EXEC block", async () => {
 })
 )}
 
-function _55(md){return(
+function _multi2(tests,transClient,expect){return(
+tests.test("MULTI with no EXEC throws", async (done) => {
+  try {
+    await transClient.sendCommand(["EXEC"]);
+  } catch (err) {
+    expect(err.message).toContain("ERR EXEC without MULTI");
+    done();
+  }
+})
+)}
+
+function _56(md){return(
 md`WATCH combines with MULTI/EXEC to guaranteed pin key values, allowing read/modify/write transactions.`
 )}
 
-function _56(tests,multi1,transClient,expect){return(
+function _57(tests,multi1,transClient,expect){return(
 tests.test("WATCH atomic increment", async () => {
   multi1;
   transClient.sendCommand(["WATCH", "k1"]);
@@ -1440,7 +1461,7 @@ tests.test("WATCH atomic increment", async () => {
 })
 )}
 
-function _59(footer){return(
+function _60(footer){return(
 footer
 )}
 
@@ -1507,12 +1528,13 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _52);
   main.variable(observer()).define(["md"], _53);
   main.variable(observer("multi1")).define("multi1", ["tests","transClient","expect"], _multi1);
-  main.variable(observer()).define(["md"], _55);
-  main.variable(observer()).define(["tests","multi1","transClient","expect"], _56);
+  main.variable(observer("multi2")).define("multi2", ["tests","transClient","expect"], _multi2);
+  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["tests","multi1","transClient","expect"], _57);
   const child1 = runtime.module(define1);
   main.import("tweet", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _59);
+  main.variable(observer()).define(["footer"], _60);
   return main;
 }

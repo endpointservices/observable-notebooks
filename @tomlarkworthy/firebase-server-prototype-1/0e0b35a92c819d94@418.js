@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@413
-import define1 from "./293899bef371e135@226.js";
+// https://observablehq.com/@tomlarkworthy/flow-queue@418
+import define1 from "./293899bef371e135@247.js";
 
 async function _1(FileAttachment,md){return(
 md`# How to convert dataflow to a promise using *flowQueue*
@@ -69,7 +69,7 @@ md`## Changelog
 )}
 
 function _flowQueue(htl,Event){return(
-({ timeout_ms = 1000 } = {}) => {
+({ name, timeout_ms = 1000 } = {}) => {
   let runningResolve = undefined;
   let runningReject = undefined;
   const q = [];
@@ -89,7 +89,10 @@ function _flowQueue(htl,Event){return(
     };
 
     timer = setTimeout(
-      () => ui.reject(new Error("Timeout (maybe increase timeout_ms?)")),
+      () =>
+        ui.reject(
+          new Error(`Timeout (maybe increase timeout_ms?) ${name || ""}`)
+        ),
       timeout_ms
     );
 
@@ -104,7 +107,7 @@ function _flowQueue(htl,Event){return(
     });
 
   ui.reject = async (err) => {
-    if (!runningReject) throw new Error("No task executing!");
+    if (!runningReject) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -114,7 +117,7 @@ function _flowQueue(htl,Event){return(
   };
 
   ui.respond = async (value) => {
-    if (!runningResolve) throw new Error("No task executing!");
+    if (!runningResolve) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -222,7 +225,7 @@ suite.test("respond without send throws", async () => {
   const q = flowQueue();
   await testing
     .expect(q.respond())
-    .rejects.toEqual(Error("No task executing!"));
+    .rejects.toEqual(Error("No task executing! "));
 })
 )}
 
@@ -231,7 +234,7 @@ suite.test("missing respond rejects with timout", async () => {
   const q = flowQueue({ timeout_ms: 1 });
   await testing
     .expect(q.send())
-    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?)"));
+    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?) "));
 })
 )}
 

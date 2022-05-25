@@ -1,12 +1,12 @@
-// https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@997
+// https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@1002
 import define1 from "./c5544d2895d5e4ad@39.js";
-import define2 from "./6a703b03d185f279@978.js";
+import define2 from "./6a703b03d185f279@1002.js";
 import define3 from "./374124b361974cb3@259.js";
-import define4 from "./5a63548f9c799b76@550.js";
-import define5 from "./6eda90668ae03044@803.js";
-import define6 from "./c7a3b20cec5d4dd9@660.js";
-import define7 from "./0e0b35a92c819d94@413.js";
-import define8 from "./293899bef371e135@226.js";
+import define4 from "./5a63548f9c799b76@574.js";
+import define5 from "./6eda90668ae03044@804.js";
+import define6 from "./c7a3b20cec5d4dd9@661.js";
+import define7 from "./0e0b35a92c819d94@418.js";
+import define8 from "./293899bef371e135@247.js";
 import define9 from "./64641700df65baed@91.js";
 
 function _1(gfx,htl){return(
@@ -68,10 +68,16 @@ In a previous work we developed a tool for [reverse engineering the Firebase Rea
 )}
 
 function _8(md){return(
-md`## Database URL`
+md`## Follow along
+[twitter](https://twitter.com/tomlarkworthy) or 
+<iframe src="https://webcode.substack.com/embed" width="640" height="200px" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>`
 )}
 
 function _9(md){return(
+md`## Database URL`
+)}
+
+function _10(md){return(
 md`With a specially formatted database URL we can send a vanilla Firebase client to a 3rd party server implementation.`
 )}
 
@@ -79,7 +85,7 @@ function _databaseURL(thisNotebooksNamespace,thisNotebooksSlug){return(
 `https://webcode.run?ns=${thisNotebooksNamespace}|${thisNotebooksSlug};server`
 )}
 
-function _11(md){return(
+function _12(md){return(
 md`## Live Tests
 
 The tests are meant to be read. They illustrate what features are working and furthermore, they are executed in **your** browser so you know it works because you have seen it work. Pop open DevTools and take a look when the clients are reset.
@@ -95,11 +101,11 @@ function _clientConfig(databaseURL){return(
 }
 )}
 
-function _13(md){return(
+function _14(md){return(
 md`### Firebase Test Clients`
 )}
 
-function _15(md){return(
+function _16(md){return(
 md`### Test Results`
 )}
 
@@ -112,19 +118,19 @@ createSuite({
 })
 )}
 
-function _17(md){return(
+function _18(md){return(
 md`### Restart Test Clients & Tests`
 )}
 
-function _18($0){return(
+function _19($0){return(
 $0
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`### Smoke Tests`
 )}
 
-function _20(md){return(
+function _21(md){return(
 md`#### Read your write`
 )}
 
@@ -138,7 +144,7 @@ suite.test("Read your own write - String", async () => {
 })
 )}
 
-function _22(md){return(
+function _23(md){return(
 md`#### Read other's write`
 )}
 
@@ -153,7 +159,7 @@ suite.test("Read their write - String", async () => {
 })
 )}
 
-function _24(md){return(
+function _25(md){return(
 md`#### Listen notified of other's write`
 )}
 
@@ -177,11 +183,11 @@ suite.test(
 )
 )}
 
-function _26(md){return(
+function _27(md){return(
 md`## Custom Firebase Realtime Server`
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`### Storage Engine: Redis
 
 Redis the the storage engine for this prototype. We are using a custom [redis-web](https://observablehq.com/@tomlarkworthy/redis) client.`
@@ -201,7 +207,7 @@ function _redisConfig(){return(
 }
 )}
 
-function _31(md){return(
+function _32(md){return(
 md`### Long Poll Endpoint
 
 Firebase clients make long lived connection to this endpoint`
@@ -210,11 +216,15 @@ Firebase clients make long lived connection to this endpoint`
 function _server(endpoint,redis,flowQueue,$0){return(
 endpoint("server", async (req, res) => {
   redis, flowQueue; // make sure these are setup first
-  $0.send({ req, res }); // handle in to poll pipeline (unfold across Dataflow)
+  try {
+    $0.send({ req, res }); // handle in to poll pipeline (unfold across Dataflow)
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 })
 )}
 
-function _33(md){return(
+function _34(md){return(
 md`### Long Poll Request Pipeline
 
 If you are live tunnelling the server endpoint, these cells will evaluate in response to production traffic (and will handle production traffic).`
@@ -226,7 +236,7 @@ flowQueue({
 })
 )}
 
-function _35(incomingLongpollRequest){return(
+function _36(incomingLongpollRequest){return(
 incomingLongpollRequest
 )}
 
@@ -356,7 +366,7 @@ async function _incomingLongpollRequestAction(incomingLongpollRequest,sessions,n
 }
 
 
-function _40(md){return(
+function _41(md){return(
 md`### Data Request Pipeline`
 )}
 
@@ -366,7 +376,7 @@ flowQueue({
 })
 )}
 
-function _42(incomingRequest){return(
+function _43(incomingRequest){return(
 incomingRequest
 )}
 
@@ -399,7 +409,7 @@ function _requestRouter(incomingRequest,$0,$1,$2,$3,$4)
 }
 
 
-function _44(md){return(
+function _45(md){return(
 md`#### STATS`
 )}
 
@@ -409,7 +419,7 @@ flowQueue({
 })
 )}
 
-function _46(incomingStats){return(
+function _47(incomingStats){return(
 incomingStats
 )}
 
@@ -422,7 +432,7 @@ function _incomingStatsAction(incomingStats,$0)
 }
 
 
-function _48(md){return(
+function _49(md){return(
 md`#### PUT`
 )}
 
@@ -432,7 +442,7 @@ flowQueue({
 })
 )}
 
-function _50(incomingPut){return(
+function _51(incomingPut){return(
 incomingPut
 )}
 
@@ -483,7 +493,7 @@ async function _incomingPutAction(incomingPut,redis,pathToListeners,$0)
 }
 
 
-function _52(md){return(
+function _53(md){return(
 md`#### GET`
 )}
 
@@ -493,7 +503,7 @@ flowQueue({
 })
 )}
 
-function _54(incomingGet){return(
+function _55(incomingGet){return(
 incomingGet
 )}
 
@@ -519,7 +529,7 @@ async function _incomingGetAction(incomingGet,redis,$0)
 }
 
 
-function _56(md){return(
+function _57(md){return(
 md`#### QUERY`
 )}
 
@@ -533,7 +543,7 @@ flowQueue({
 })
 )}
 
-function _59(incomingQuery){return(
+function _60(incomingQuery){return(
 incomingQuery
 )}
 
@@ -576,7 +586,7 @@ async function _incomingQueryAction(incomingQuery,redis,pathToListeners,$0)
 }
 
 
-function _61(md){return(
+function _62(md){return(
 md`### Utils`
 )}
 
@@ -600,7 +610,7 @@ function _thisNotebooksSlug(html,HEALTH_CHECK_FALLBACK_SLUG)
 }
 
 
-function _65(md){return(
+function _66(md){return(
 md`### Remote notebook state
 
 We expose an endpoint for reading the remote notebooks state, which can be useful for debugging remote errors.`
@@ -610,7 +620,7 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _68(endpoint,notebookSnapshot){return(
+function _69(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
     (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
@@ -625,7 +635,7 @@ endpoint("variables", async (req, res) => {
 })
 )}
 
-function _69(md){return(
+function _70(md){return(
 md`### [Health check](https://observablehq.com/@endpointservices/healthcheck)
 
 The healthcheck is actively monitored and includes the smoke tests.
@@ -636,7 +646,7 @@ The healthcheck is actively monitored and includes the smoke tests.
 | europe-west4   | https://webcode.run/regions/europe-west4/observablehq.com/@endpointservices/healthcheck?target=%40tomlarkworthy%2Ffirebase-server-prototype-1&wait=50        |`
 )}
 
-function _70(md){return(
+function _71(md){return(
 md`When running inside the healthcheck notebook, the slug is detected incorrectly as "healthcheck" which means the clients connect to the wrong place. So we have manual fix.`
 )}
 
@@ -648,15 +658,15 @@ function _HEALTH_CHECK_FALLBACK_NAMESPACE(){return(
 "tomlarkworthy"
 )}
 
-function _73(md){return(
+function _74(md){return(
 md`### Notebook Error Monitoring, Analytics and Backups`
 )}
 
-function _74(footer){return(
+function _75(footer){return(
 footer
 )}
 
-function _75(md){return(
+function _76(md){return(
 md`### Dependancies`
 )}
 
@@ -671,86 +681,87 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
   main.variable(observer("databaseURL")).define("databaseURL", ["thisNotebooksNamespace","thisNotebooksSlug"], _databaseURL);
-  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
   main.variable(observer("clientConfig")).define("clientConfig", ["databaseURL"], _clientConfig);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
   const child1 = runtime.module(define1).derive([{name: "clientConfig", alias: "config"}], main);
   main.import("viewof restartClient", child1);
   main.import("restartClient", child1);
   main.import("rtdb", child1);
   main.import("rootA", child1);
   main.import("rootB", child1);
-  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer("viewof suite")).define("viewof suite", ["server","redis","flowQueue","createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _17);
-  main.variable(observer()).define(["viewof restartClient"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["viewof restartClient"], _19);
   main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("readYourWriteTest")).define("readYourWriteTest", ["suite","randomString","rtdb","rootA","expect"], _readYourWriteTest);
-  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["md"], _23);
   main.variable(observer("readTheirWriteTest")).define("readTheirWriteTest", ["suite","randomString","rtdb","rootA","rootB","expect"], _readTheirWriteTest);
-  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("listenNotifiedOfWrite")).define("listenNotifiedOfWrite", ["suite","randomString","rtdb","rootA","rootB","_"], _listenNotifiedOfWrite);
-  main.variable(observer()).define(["md"], _26);
   main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("redis")).define("redis", ["createClient","redisConfig"], _redis);
   main.variable(observer("redisConfig")).define("redisConfig", _redisConfig);
   const child2 = runtime.module(define2);
   main.import("createClient", child2);
-  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["md"], _32);
   main.variable(observer("server")).define("server", ["endpoint","redis","flowQueue","viewof incomingLongpollRequest"], _server);
-  main.variable(observer()).define(["md"], _33);
+  main.variable(observer()).define(["md"], _34);
   main.variable(observer("viewof incomingLongpollRequest")).define("viewof incomingLongpollRequest", ["flowQueue"], _incomingLongpollRequest);
   main.variable(observer("incomingLongpollRequest")).define("incomingLongpollRequest", ["Generators", "viewof incomingLongpollRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingLongpollRequest"], _35);
+  main.variable(observer()).define(["incomingLongpollRequest"], _36);
   main.variable(observer("sessions")).define("sessions", _sessions);
   main.variable(observer("newSessionResponse")).define("newSessionResponse", _newSessionResponse);
   main.variable(observer("disconnectFrame")).define("disconnectFrame", _disconnectFrame);
   main.variable(observer("incomingLongpollRequestAction")).define("incomingLongpollRequestAction", ["incomingLongpollRequest","sessions","newSessionResponse","disconnectFrame","viewof incomingLongpollRequest","viewof incomingRequest"], _incomingLongpollRequestAction);
-  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["md"], _41);
   main.variable(observer("viewof incomingRequest")).define("viewof incomingRequest", ["flowQueue"], _incomingRequest);
   main.variable(observer("incomingRequest")).define("incomingRequest", ["Generators", "viewof incomingRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingRequest"], _42);
+  main.variable(observer()).define(["incomingRequest"], _43);
   main.variable(observer("requestRouter")).define("requestRouter", ["incomingRequest","viewof incomingStats","viewof incomingPut","viewof incomingQuery","viewof incomingGet","viewof incomingRequest"], _requestRouter);
-  main.variable(observer()).define(["md"], _44);
+  main.variable(observer()).define(["md"], _45);
   main.variable(observer("viewof incomingStats")).define("viewof incomingStats", ["flowQueue"], _incomingStats);
   main.variable(observer("incomingStats")).define("incomingStats", ["Generators", "viewof incomingStats"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingStats"], _46);
+  main.variable(observer()).define(["incomingStats"], _47);
   main.variable(observer("incomingStatsAction")).define("incomingStatsAction", ["incomingStats","viewof incomingStats"], _incomingStatsAction);
-  main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("viewof incomingPut")).define("viewof incomingPut", ["flowQueue"], _incomingPut);
   main.variable(observer("incomingPut")).define("incomingPut", ["Generators", "viewof incomingPut"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingPut"], _50);
+  main.variable(observer()).define(["incomingPut"], _51);
   main.variable(observer("incomingPutAction")).define("incomingPutAction", ["incomingPut","redis","pathToListeners","viewof incomingPut"], _incomingPutAction);
-  main.variable(observer()).define(["md"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("viewof incomingGet")).define("viewof incomingGet", ["flowQueue"], _incomingGet);
   main.variable(observer("incomingGet")).define("incomingGet", ["Generators", "viewof incomingGet"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingGet"], _54);
+  main.variable(observer()).define(["incomingGet"], _55);
   main.variable(observer("incomingGetAction")).define("incomingGetAction", ["incomingGet","redis","viewof incomingGet"], _incomingGetAction);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _57);
   main.variable(observer("pathToListeners")).define("pathToListeners", _pathToListeners);
   main.variable(observer("viewof incomingQuery")).define("viewof incomingQuery", ["flowQueue"], _incomingQuery);
   main.variable(observer("incomingQuery")).define("incomingQuery", ["Generators", "viewof incomingQuery"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingQuery"], _59);
+  main.variable(observer()).define(["incomingQuery"], _60);
   main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["incomingQuery","redis","pathToListeners","viewof incomingQuery"], _incomingQueryAction);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["md"], _62);
   main.variable(observer("randomString")).define("randomString", _randomString);
   main.variable(observer("thisNotebooksNamespace")).define("thisNotebooksNamespace", ["thisNotebooksSlug","HEALTH_CHECK_FALLBACK_SLUG","HEALTH_CHECK_FALLBACK_NAMESPACE","html"], _thisNotebooksNamespace);
   main.variable(observer("thisNotebooksSlug")).define("thisNotebooksSlug", ["html","HEALTH_CHECK_FALLBACK_SLUG"], _thisNotebooksSlug);
-  main.variable(observer()).define(["md"], _65);
+  main.variable(observer()).define(["md"], _66);
   const child3 = runtime.module(define3);
   main.import("notebookSnapshot", child3);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _68);
-  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _69);
   main.variable(observer()).define(["md"], _70);
+  main.variable(observer()).define(["md"], _71);
   main.variable(observer("HEALTH_CHECK_FALLBACK_SLUG")).define("HEALTH_CHECK_FALLBACK_SLUG", _HEALTH_CHECK_FALLBACK_SLUG);
   main.variable(observer("HEALTH_CHECK_FALLBACK_NAMESPACE")).define("HEALTH_CHECK_FALLBACK_NAMESPACE", _HEALTH_CHECK_FALLBACK_NAMESPACE);
-  main.variable(observer()).define(["md"], _73);
-  main.variable(observer()).define(["footer"], _74);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["footer"], _75);
+  main.variable(observer()).define(["md"], _76);
   const child4 = runtime.module(define4);
   main.import("gfx", child4);
   const child5 = runtime.module(define5);
