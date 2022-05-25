@@ -1,5 +1,5 @@
 import define1 from "./dff1e917c89f5e76@1711.js";
-import define2 from "./293899bef371e135@226.js";
+import define2 from "./293899bef371e135@247.js";
 
 function _1(md){return(
 md`# Get CORS tgz link (v=3)
