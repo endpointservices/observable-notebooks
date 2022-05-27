@@ -1,8 +1,9 @@
 import define1 from "./6a703b03d185f279@1002.js";
 import define2 from "./9bed702f80a3797e@402.js";
-import define3 from "./5a63548f9c799b76@574.js";
+import define3 from "./5a63548f9c799b76@576.js";
 import define4 from "./0e0b35a92c819d94@418.js";
-import define5 from "./293899bef371e135@247.js";
+import define5 from "./c7a3b20cec5d4dd9@669.js";
+import define6 from "./293899bef371e135@267.js";
 
 function _1(gfx,md){return(
 md`${gfx}
@@ -94,8 +95,8 @@ function _9(md){return(
 md`If you have any questions, you can ask them inline with a [comment](https://observablehq.com/@observablehq/comments).`
 )}
 
-function _suite(testing){return(
-testing.createSuite({ name: "Reactive Integration Tests" })
+function _suite(createSuite){return(
+createSuite({ name: "Reactive Integration Tests" })
 )}
 
 function _11(md){return(
@@ -171,16 +172,18 @@ function _25(md){return(
 md`We can test the client is working by sending a PING command `
 )}
 
-function _26(suite,testing,exampleClient){return(
+function _26(suite,expect,exampleClient){return(
 suite.test("Example client responds to PONG with PING", async () => {
-  testing.expect(await exampleClient.redis.sendCommand(["PING"])).toBe("PONG");
+  expect(await exampleClient.redis.sendCommand(["PING"])).toBe("PONG");
 })
 )}
 
-function _27(md){return(
+async function _27(FileAttachment,md){return(
 md`### Initializing the state for a fresh client: *init_client*
 
 Central to the ordering guarantees is that client operations are processed in order, implying a queue for each client. 
+
+${await FileAttachment("Q.SVG").image({style: "max-width: 640px"})}
 
 When an SDK connects for the first time to the server, we need to setup two queues streams for the inbound (operations) and outbound (notifications) directions. We use Redis [streams](https://redis.io/docs/manual/data-types/streams/) to implement the queues, as they have features for ensuring *at-least-once* delivery which are beyond the basic [lists](https://redis.io/docs/manual/data-types/#lists).`
 )}
@@ -277,17 +280,17 @@ function _46(md){return(
 md`So after we initialize a client, we expect their head pointers to be 0-0. Let's confirm that with an integration test:`
 )}
 
-function _47(suite,createClient,redisConfig,enqueue_operation,init_client,testing,get_head_operation_id,get_head_notify_id,next_operation,next_notify){return(
+function _47(suite,createClient,redisConfig,enqueue_operation,init_client,expect,get_head_operation_id,get_head_notify_id,next_operation,next_notify){return(
 suite.test("init_client resets queues and heads", async () => {
   const client = await createClient(redisConfig, "init_client");
   enqueue_operation(client, {}); // Put some data in the queue
 
   init_client(client); // reset the client
 
-  testing.expect(await get_head_operation_id(client)).toBe("0");
-  testing.expect(await get_head_notify_id(client)).toBe("0-0");
-  testing.expect(await next_operation(client)).toBe(null);
-  testing.expect(await next_notify(client)).toBe(null);
+  expect(await get_head_operation_id(client)).toBe("0");
+  expect(await get_head_notify_id(client)).toBe("0-0");
+  expect(await next_operation(client)).toBe(null);
+  expect(await next_notify(client)).toBe(null);
 })
 )}
 
@@ -333,14 +336,14 @@ async (client) => {
 }
 )}
 
-function _52(suite,createLongpollSession,exampleClient,retrieveLongpollSession,testing){return(
+function _52(suite,createLongpollSession,exampleClient,retrieveLongpollSession,expect){return(
 suite.test(
   "createLongpollSession can set a password that is visible to retrieveLongpollSession",
   async () => {
     const randomPassword = Math.random().toString();
     createLongpollSession(exampleClient, { password: randomPassword });
     const retrieveSession = await retrieveLongpollSession(exampleClient);
-    testing.expect(retrieveSession.password).toBe(randomPassword);
+    expect(retrieveSession.password).toBe(randomPassword);
   }
 )
 )}
@@ -376,10 +379,14 @@ suite.test(
 )
 )}
 
-function _57(md){return(
+async function _57(FileAttachment,md){return(
 md`## Database Semantics: Listenable Key-Value Store
 
-Firebase' data model boils down to a Key-Value store that clients can register for changes. So for a single data *location*, we need: 1, a place to store its *value*, and 2, a list of interested data *listeners*.`
+Firebase' data model boils down to a Key-Value store that clients can register for changes. So for a single data *location*, we need: 1, a place to store its *value*, and 2, a list of interested data *listeners*. 
+
+${await FileAttachment("l.svg").image({style: "max-width: 640px"})}
+
+*It's actually a bit more complex than that, listeners can be queries over collection, and the JSON structure cascades across data locations, but for this early prototype we are ignoring these details. *`
 )}
 
 function _data_key(){return(
@@ -404,14 +411,14 @@ function _get_data(data_key){return(
   redis.sendCommand(["GET", data_key(location)])
 )}
 
-function _63(suite,set_data,exampleClient,get_data,testing){return(
+function _63(suite,set_data,exampleClient,get_data,expect){return(
 suite.test(
   "Read our writes. get_data retreives data previously set by set_data",
   async () => {
     const data = JSON.stringify(Math.random());
     set_data(exampleClient, "read_our_writes_test", data);
     const fetched = await get_data(exampleClient, "read_our_writes_test");
-    testing.expect(fetched).toBe(data);
+    expect(fetched).toBe(data);
   }
 )
 )}
@@ -442,7 +449,7 @@ function _clear_data_listeners(data_listeners_key){return(
   redis.sendCommand(["DEL", data_listeners_key(location)])
 )}
 
-function _69(suite,clear_data_listeners,exampleClient,get_data_listeners,add_data_listener,remove_data_listener,testing){return(
+function _69(suite,clear_data_listeners,exampleClient,get_data_listeners,add_data_listener,remove_data_listener,expect){return(
 suite.test(
   "Listeners: add_data_listener, remove_data_listener, get_data_listeners, clear_data_listeners record client_id in a list",
   async () => {
@@ -454,9 +461,9 @@ suite.test(
     remove_data_listener(exampleClient, location);
     const afterRemove = get_data_listeners(exampleClient, location);
 
-    testing.expect(await afterClear).toEqual([]);
-    testing.expect(await afterAdd).toEqual([exampleClient.client_id]);
-    testing.expect(await afterRemove).toEqual([]);
+    expect(await afterClear).toEqual([]);
+    expect(await afterAdd).toEqual([exampleClient.client_id]);
+    expect(await afterRemove).toEqual([]);
   }
 )
 )}
@@ -533,7 +540,7 @@ function _ack_operation(set_head_operation_id){return(
 }
 )}
 
-function _78(suite,createClient,redisConfig,init_client,enqueue_operation,next_operation,ack_operation,testing){return(
+function _78(suite,createClient,redisConfig,init_client,enqueue_operation,next_operation,ack_operation,expect){return(
 suite.test(
   "Client operation queue: enqueue_operation, next_operation, ack_operation",
   async () => {
@@ -566,22 +573,22 @@ suite.test(
 
     const next4 = next_operation(client);
 
-    testing.expect(await next1).toEqual({
+    expect(await next1).toEqual({
       request_id: "1",
       payload: "init"
     });
 
-    testing.expect(await next2).toEqual({
+    expect(await next2).toEqual({
       request_id: "1",
       payload: "init"
     });
 
-    testing.expect(await next3).toEqual({
+    expect(await next3).toEqual({
       request_id: "2",
       payload: "second"
     });
 
-    testing.expect(await next4).toEqual(null);
+    expect(await next4).toEqual(null);
   }
 )
 )}
@@ -778,7 +785,7 @@ async function _ack_process_operation(process_operation_args,process_operation_e
 }
 
 
-function _98(suite,createClient,redisConfig,clear_data_listeners,init_client,enqueue_operation,process_operation,next_notify,ack_notify,testing){return(
+function _98(suite,createClient,redisConfig,clear_data_listeners,init_client,enqueue_operation,process_operation,next_notify,ack_notify,expect){return(
 suite.test(
   "smoke test process_operation with LISTEN/PUT/GET/UNLISTEN",
   async () => {
@@ -827,7 +834,7 @@ suite.test(
       ack_notify(client, id);
       next = await next_notify(client);
     }
-    testing.expect(history).toEqual([
+    expect(history).toEqual([
       {
         request_id: "1",
         status: "ok"
@@ -1041,24 +1048,6 @@ function _includeIf(){return(
 (predicate, string) => (predicate ? string : "")
 )}
 
-async function _testing($0)
-{
-  $0;
-  const [{ Runtime }, { default: define }] = await Promise.all([
-    import(
-      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
-    ),
-    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
-  ]);
-  const module = new Runtime().module(define);
-  return Object.fromEntries(
-    await Promise.all(
-      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
-    )
-  );
-}
-
-
 function _128(md){return(
 md`## Notebook Backups and Analytics`
 )}
@@ -1072,7 +1061,9 @@ export default function define(runtime, observer) {
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["cc@1.svg", {url: new URL("./files/dcaef342095f3be1dab70b47943b99879e58dc529328c05be704e141703e928b09b1f476c1b44c2a077a4ff1e0e96a0fee4eb411c6103c6ee75fb76213f27dac", import.meta.url), mimeType: "image/svg+xml", toString}],
-    ["a.svg", {url: new URL("./files/983bc063173c7a92038c7ae5da914679660dbecbd957d5c1d3e64e75b5ec6db5f7b9e3005e42fcf6f6afbc9f21e51b7cdc8aebc55ecbe1db6205f89fda2db484", import.meta.url), mimeType: "image/svg+xml", toString}]
+    ["a.svg", {url: new URL("./files/983bc063173c7a92038c7ae5da914679660dbecbd957d5c1d3e64e75b5ec6db5f7b9e3005e42fcf6f6afbc9f21e51b7cdc8aebc55ecbe1db6205f89fda2db484", import.meta.url), mimeType: "image/svg+xml", toString}],
+    ["Q.SVG", {url: new URL("./files/bf4ad5b16896b3d6d2944e02f7f23bd6f67a36b1e085c9d255bf7f757fc4a4cf51dbe05a70d6aaed0974bd8849e203bc67a2aef4a257a984579bca40daca3a65", import.meta.url), mimeType: "image/svg+xml", toString}],
+    ["l.svg", {url: new URL("./files/7216a502ce536fbb7cd66f865a878b13f2aa40a1f96c342c91c4ad8a9679d89b00dfd2c1a31780d6079892048e4eba4ab4c5455a27d513b010354e313ff71e1f", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["gfx","md"], _1);
@@ -1084,7 +1075,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("redisConfig")).define("redisConfig", _redisConfig);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
+  main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["md"], _12);
@@ -1103,8 +1094,8 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof restartClients")).define("viewof restartClients", ["Inputs"], _restartClients);
   main.variable(observer("restartClients")).define("restartClients", ["Generators", "viewof restartClients"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _25);
-  main.variable(observer()).define(["suite","testing","exampleClient"], _26);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["suite","expect","exampleClient"], _26);
+  main.variable(observer()).define(["FileAttachment","md"], _27);
   main.variable(observer("init_client")).define("init_client", ["clear_operations","clear_notifications","set_head_operation_id","set_head_notify_id"], _init_client);
   main.variable(observer()).define(["md"], _29);
   main.variable(observer("client_operation_queue_key")).define("client_operation_queue_key", _client_operation_queue_key);
@@ -1124,29 +1115,29 @@ export default function define(runtime, observer) {
   main.variable(observer("get_head_operation_id")).define("get_head_operation_id", ["client_operation_head_id_key"], _get_head_operation_id);
   main.variable(observer("get_head_notify_id")).define("get_head_notify_id", ["client_notify_head_id_key"], _get_head_notify_id);
   main.variable(observer()).define(["md"], _46);
-  main.variable(observer()).define(["suite","createClient","redisConfig","enqueue_operation","init_client","testing","get_head_operation_id","get_head_notify_id","next_operation","next_notify"], _47);
+  main.variable(observer()).define(["suite","createClient","redisConfig","enqueue_operation","init_client","expect","get_head_operation_id","get_head_notify_id","next_operation","next_notify"], _47);
   main.variable(observer()).define(["md"], _48);
   main.variable(observer("client_longpoll_session_key")).define("client_longpoll_session_key", _client_longpoll_session_key);
   main.variable(observer("createLongpollSession")).define("createLongpollSession", ["init_client","client_longpoll_session_key"], _createLongpollSession);
   main.variable(observer("retrieveLongpollSession")).define("retrieveLongpollSession", ["client_longpoll_session_key"], _retrieveLongpollSession);
-  main.variable(observer()).define(["suite","createLongpollSession","exampleClient","retrieveLongpollSession","testing"], _52);
+  main.variable(observer()).define(["suite","createLongpollSession","exampleClient","retrieveLongpollSession","expect"], _52);
   main.variable(observer()).define(["md"], _53);
   main.variable(observer("client_longpoll_response_num_key")).define("client_longpoll_response_num_key", _client_longpoll_response_num_key);
   main.variable(observer("incrementLongpollResponseNum")).define("incrementLongpollResponseNum", ["client_longpoll_response_num_key"], _incrementLongpollResponseNum);
   main.variable(observer()).define(["suite","incrementLongpollResponseNum","exampleClient","testing"], _56);
-  main.variable(observer()).define(["md"], _57);
+  main.variable(observer()).define(["FileAttachment","md"], _57);
   main.variable(observer("data_key")).define("data_key", _data_key);
   main.variable(observer("data_listeners_key")).define("data_listeners_key", _data_listeners_key);
   main.variable(observer()).define(["md"], _60);
   main.variable(observer("set_data")).define("set_data", ["data_key"], _set_data);
   main.variable(observer("get_data")).define("get_data", ["data_key"], _get_data);
-  main.variable(observer()).define(["suite","set_data","exampleClient","get_data","testing"], _63);
+  main.variable(observer()).define(["suite","set_data","exampleClient","get_data","expect"], _63);
   main.variable(observer()).define(["md"], _64);
   main.variable(observer("add_data_listener")).define("add_data_listener", ["data_listeners_key"], _add_data_listener);
   main.variable(observer("remove_data_listener")).define("remove_data_listener", ["data_listeners_key"], _remove_data_listener);
   main.variable(observer("get_data_listeners")).define("get_data_listeners", ["data_listeners_key"], _get_data_listeners);
   main.variable(observer("clear_data_listeners")).define("clear_data_listeners", ["data_listeners_key"], _clear_data_listeners);
-  main.variable(observer()).define(["suite","clear_data_listeners","exampleClient","get_data_listeners","add_data_listener","remove_data_listener","testing"], _69);
+  main.variable(observer()).define(["suite","clear_data_listeners","exampleClient","get_data_listeners","add_data_listener","remove_data_listener","expect"], _69);
   main.variable(observer()).define(["md"], _70);
   main.variable(observer()).define(["md"], _71);
   main.variable(observer()).define(["md"], _72);
@@ -1155,7 +1146,7 @@ export default function define(runtime, observer) {
   main.variable(observer("next_operation")).define("next_operation", ["get_head_operation_id","client_operation_queue_key"], _next_operation);
   main.variable(observer()).define(["md"], _76);
   main.variable(observer("ack_operation")).define("ack_operation", ["set_head_operation_id"], _ack_operation);
-  main.variable(observer()).define(["suite","createClient","redisConfig","init_client","enqueue_operation","next_operation","ack_operation","testing"], _78);
+  main.variable(observer()).define(["suite","createClient","redisConfig","init_client","enqueue_operation","next_operation","ack_operation","expect"], _78);
   main.variable(observer()).define(["md"], _79);
   main.variable(observer("enqueue_notify")).define("enqueue_notify", ["client_notify_queue_key"], _enqueue_notify);
   main.variable(observer()).define(["enqueue_notify","exampleClient"], _81);
@@ -1176,7 +1167,7 @@ export default function define(runtime, observer) {
   main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","viewof run_put_operation_args","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args","prerequisites","viewof process_operation_args"], _process_operation_effect);
   main.variable(observer()).define(["md"], _96);
   main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","process_operation_effect","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
-  main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","testing"], _98);
+  main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","expect"], _98);
   main.variable(observer()).define(["md"], _99);
   main.variable(observer("operations")).define("operations", ["put_operation_response","get_operation_response","listen_operation_response","unlisten_operation_response"], _operations);
   main.variable(observer()).define(["md"], _101);
@@ -1212,10 +1203,12 @@ export default function define(runtime, observer) {
   main.variable(observer("includeIf")).define("includeIf", _includeIf);
   const child4 = runtime.module(define4);
   main.import("flowQueue", child4);
-  main.variable(observer("testing")).define("testing", ["viewof process_operation_args"], _testing);
-  main.variable(observer()).define(["md"], _128);
   const child5 = runtime.module(define5);
-  main.import("footer", child5);
+  main.import("createSuite", child5);
+  main.import("expect", child5);
+  main.variable(observer()).define(["md"], _128);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
   main.variable(observer()).define(["footer"], _130);
   return main;
 }

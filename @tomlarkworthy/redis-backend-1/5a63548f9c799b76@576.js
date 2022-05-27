@@ -4,8 +4,8 @@ md`# Hackable Realtime Database Title Graphic`
 
 function _gfx(svg,fov,width,horizonOffset,square,hackableY,realtimeY){return(
 svg`<svg viewBox="${-fov} ${-fov} ${2 * fov} ${2 * fov}"
-width="${Math.min(width, 1200)}px" height="${
-  (Math.min(width, 1200) * 630) / 1200
+width="${Math.min(width, 640)}px" height="${
+  (Math.min(width, 640) * 630) / 1200
 }px">
   <defs>
 
