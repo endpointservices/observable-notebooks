@@ -14,7 +14,7 @@ md`${gfx}
 )}
 
 function _2(md){return(
-md`Firebase's databases are easy-to-use and intuitive, but actually they solve some of the trickiest problems in distributed databases. **Firebase is often misclassified as an eventually consistent database**, but if that were the full truth, you would hear developers complain of data loss footguns and logically "impossible" security holes.
+md`Firebase's databases are easy-to-use and intuitive, but they solve some tricky problems in distributed databases. **Firebase is often misclassified as an eventually consistent database**, but if that were the full truth, you would hear developers complain of data loss footguns and logically "impossible" security holes.
 
 The reason why Firebase is intuitive to use, even for inexperienced programmers, is because a phenomenal amount of engineering resources were dedicated in ensuring the database achieved the best possible consistency guarantees you could hope for in a distributed setting *i.e.* **causal consistency**.
 
@@ -127,7 +127,7 @@ Horizontal compute, like serverless, add additional design constraints though. W
 function _16(md){return(
 md`## Redis as the Shared State
 
-In this new architecture, we use shared state that all the stateless workers will need to access every request. We chose Redis, as it is a common offering, that is low latency, that can also fulfill the storage role too. In this architecture, the stateless workers terminate public client connections and execute the database protocol by moving state around a Redis backend.
+In this new architecture, we use shared state that all the stateless workers will need to access every request. We chose Redis, as it is offered everywhere, it is known for low latency, and because we can also  use it as the primary storage too. In this architecture, the stateless workers terminate public client connections and execute the database protocol by moving state around a Redis backend.
 
 Redis has some fantastic features for ensuring *at-least-once delivery*, *exactly-one* processing and therefore _causal consistency_. Firstly, queues, hashmaps and stream are all first class citizens in Redis with their own specialised instructions for manipulation. Secondly, sequences of Redis commands can be applied atomically in a [transaction](https://redis.io/docs/manual/transactions/). For example, we can pop an instruction from an inbox, apply the effects, and write notifications to other inboxes in a single atomic operation. 
 
@@ -367,14 +367,12 @@ async ({ redis, client_id }) => {
 }
 )}
 
-function _56(suite,incrementLongpollResponseNum,exampleClient,testing){return(
+function _56(suite,incrementLongpollResponseNum,exampleClient,expect){return(
 suite.test(
   "incrementLongpollResponseNum increases by one each time",
   async () => {
     const current = await incrementLongpollResponseNum(exampleClient);
-    testing
-      .expect(await incrementLongpollResponseNum(exampleClient))
-      .toBe(current + 1);
+    expect(await incrementLongpollResponseNum(exampleClient)).toBe(current + 1);
   }
 )
 )}
@@ -386,7 +384,7 @@ Firebase' data model boils down to a Key-Value store that clients can register f
 
 ${await FileAttachment("l.svg").image({style: "max-width: 640px"})}
 
-*It's actually a bit more complex than that, listeners can be queries over collection, and the JSON structure cascades across data locations, but for this early prototype we are ignoring these details. *`
+*Firebase is a bit more complex, listeners can be queries over a collection, and the JSON structure cascades across data locations, but for this early prototype we are ignoring these details. *`
 )}
 
 function _data_key(){return(
@@ -649,11 +647,18 @@ md`## process_operation
 
 Processing an operation is the meat of the implementation. It is where we actually do database-like things like setting data values and registering listener. Of course, care must be taken to ensure we meet our causal consistency goals.
 
-Specifically, *process_operation*, removes an item from operation queue, effects it and ACKS it **within a single transaction**. The transaction ensures the *operation* is applied atomically _i.e._ all or nothing. Some of the operation side-effects might include enqueueing *notifications* to other client's outbound message queues. Within the transaction a [WATCH](https://redis.io/commands/watch/) on the *head_operation_id* ensures that **only one** worker can process this work task, leading to *exactly-once* processing.  
+Specifically, *process_operation*, removes an item from operation queue, effects it and ACKS it **within a single transaction**. The transaction ensures the *operation* is applied atomically _i.e._ all or nothing. Some of the operation side-effects might include enqueueing *notifications* to other client's outbound message queues. Within the transaction, a [WATCH](https://redis.io/commands/watch/) on the *head_operation_id* ensures that **only one** worker can process this work task, leading to *exactly-once* processing.  
 `
 )}
 
-function _85(md){return(
+async function _t(FileAttachment,htl){return(
+htl.html`<figure>
+  ${await FileAttachment("t.svg").image({ style: "max-width: 640px" })}
+  <figcaption>Casual conistincy implies applying operations exactly-once and notifing observers through queues. This can be acheived in Redis within a transaction that does various datastructure manipulations.</figcaption>
+</figure>`
+)}
+
+function _86(md){return(
 md`To help with observability during development, the functional interface is converted to dataflow using a [*flowQueue*](https://observablehq.com/@tomlarkworthy/flow-queue). This allows us to break the program flow across notebook cells so it's easier to diagnose how decisions are made. It also gives the autocomplete visibility into the data on the wire. So, the main *process_operation* function just forwards the function arguments to the beginning of corresponding flowQueue cell *process_operation_args*.`
 )}
 
@@ -668,15 +673,15 @@ flowQueue({
 })
 )}
 
-function _88(md){return(
+function _89(md){return(
 md`The *process_operation_args* variable holds the last value seen:  `
 )}
 
-function _89(process_operation_args){return(
+function _90(process_operation_args){return(
 process_operation_args
 )}
 
-function _90(md){return(
+function _91(md){return(
 md`First we fetch the next action after [WATCH](https://redis.io/commands/watch/)ing the *operation_head_id_key*. The WATCH prevents multiple workers doing the same operation.`
 )}
 
@@ -698,7 +703,7 @@ async function _action(process_operation_args,client_operation_head_id_key,next_
 }
 
 
-function _92(md){return(
+function _93(md){return(
 md`Some operations require additional data to be available before they can be fulfilled correctly. For a PUT operation, we need to know what the active listeners are. With the list of active listeners, a transaction can update the data location **and** notify the listeners through their queues in a single atomic update. To do this consistently, the prerequisite data must be not change during operation processing, so the gathered data is locked with [WATCH](https://redis.io/commands/watch/).`
 )}
 
@@ -728,7 +733,7 @@ async function _prerequisites(process_operation_args,action,data_listeners_key,g
 }
 
 
-function _94(md){return(
+function _95(md){return(
 md`After gathering the prerequisite data for the operation, we execute all the mutations within a transaction block [MULTI](https://redis.io/commands/multi/). Exactly what is mutated depends on the operation, which is handled by _operation_ specific flowQueues (explained later). `
 )}
 
@@ -762,7 +767,7 @@ async function _process_operation_effect(process_operation_args,action,$0,$1,$2,
 }
 
 
-function _96(md){return(
+function _97(md){return(
 md`Finally, after the operation specific effects are queued, we acknowledge the operation to indicate it is processed, and execute the everything in an atomic transaction. Because *ack_operation* mutates the *client_operation_head_id_key* and we WATCHed it at the beginning, we guarantee that only one worker can do an operation. Because we also do the effect in the same transaction, we ensure we only *ack_operation* if the effect is applied. So we achieve *exactly-once* operation processing. 
 
 The response of the transaction is passed back to the enclosing [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue) using the *respond* function.`
@@ -785,7 +790,7 @@ async function _ack_process_operation(process_operation_args,process_operation_e
 }
 
 
-function _98(suite,createClient,redisConfig,clear_data_listeners,init_client,enqueue_operation,process_operation,next_notify,ack_notify,expect){return(
+function _99(suite,createClient,redisConfig,clear_data_listeners,init_client,enqueue_operation,process_operation,next_notify,ack_notify,expect){return(
 suite.test(
   "smoke test process_operation with LISTEN/PUT/GET/UNLISTEN",
   async () => {
@@ -871,7 +876,7 @@ suite.test(
 )
 )}
 
-function _99(md){return(
+function _100(md){return(
 md`## Operation Effects`
 )}
 
@@ -884,7 +889,7 @@ function _operations(put_operation_response,get_operation_response,listen_operat
 ]
 )}
 
-function _101(md){return(
+function _102(md){return(
 md`### run_put_operation
 
 A PUT operation overwrites a data location with a new value, and notifies all listeners of the change. Thus to apply the operation the liste of listeners at that location is required.`
@@ -896,7 +901,7 @@ flowQueue({
 })
 )}
 
-function _103(run_put_operation_args){return(
+function _104(run_put_operation_args){return(
 run_put_operation_args
 )}
 
@@ -925,7 +930,7 @@ $0.respond(
 )
 )}
 
-function _106(md){return(
+function _107(md){return(
 md`### run_get_operation
 
 A GET operation retrieves the data at a data location.`
@@ -937,7 +942,7 @@ flowQueue({
 })
 )}
 
-function _108(run_get_operation_args){return(
+function _109(run_get_operation_args){return(
 run_get_operation_args
 )}
 
@@ -960,7 +965,7 @@ $0.respond(
 )
 )}
 
-function _111(md){return(
+function _112(md){return(
 md`### run_listen_operation
 
 A LISTEN operation adds a client to the list of listeners at a data location. The client is also informed of the current value of the data location.
@@ -974,7 +979,7 @@ flowQueue({
 })
 )}
 
-function _113(run_listen_operation_args){return(
+function _114(run_listen_operation_args){return(
 run_listen_operation_args
 )}
 
@@ -1002,7 +1007,7 @@ $0.respond(
 )
 )}
 
-function _116(md){return(
+function _117(md){return(
 md`### run_unlisten
 
 Unlisten removes a listener at a data location.`
@@ -1014,7 +1019,7 @@ flowQueue({
 })
 )}
 
-function _118(run_unlisten_operation_args){return(
+function _119(run_unlisten_operation_args){return(
 run_unlisten_operation_args
 )}
 
@@ -1036,11 +1041,11 @@ $0.respond(
 )
 )}
 
-function _121(md){return(
+function _122(md){return(
 md`---`
 )}
 
-function _122(md){return(
+function _123(md){return(
 md`## Notebook Dependencies`
 )}
 
@@ -1048,11 +1053,11 @@ function _includeIf(){return(
 (predicate, string) => (predicate ? string : "")
 )}
 
-function _128(md){return(
+function _129(md){return(
 md`## Notebook Backups and Analytics`
 )}
 
-function _130(footer){return(
+function _131(footer){return(
 footer
 )}
 
@@ -1063,7 +1068,8 @@ export default function define(runtime, observer) {
     ["cc@1.svg", {url: new URL("./files/dcaef342095f3be1dab70b47943b99879e58dc529328c05be704e141703e928b09b1f476c1b44c2a077a4ff1e0e96a0fee4eb411c6103c6ee75fb76213f27dac", import.meta.url), mimeType: "image/svg+xml", toString}],
     ["a.svg", {url: new URL("./files/983bc063173c7a92038c7ae5da914679660dbecbd957d5c1d3e64e75b5ec6db5f7b9e3005e42fcf6f6afbc9f21e51b7cdc8aebc55ecbe1db6205f89fda2db484", import.meta.url), mimeType: "image/svg+xml", toString}],
     ["Q.SVG", {url: new URL("./files/bf4ad5b16896b3d6d2944e02f7f23bd6f67a36b1e085c9d255bf7f757fc4a4cf51dbe05a70d6aaed0974bd8849e203bc67a2aef4a257a984579bca40daca3a65", import.meta.url), mimeType: "image/svg+xml", toString}],
-    ["l.svg", {url: new URL("./files/7216a502ce536fbb7cd66f865a878b13f2aa40a1f96c342c91c4ad8a9679d89b00dfd2c1a31780d6079892048e4eba4ab4c5455a27d513b010354e313ff71e1f", import.meta.url), mimeType: "image/svg+xml", toString}]
+    ["l.svg", {url: new URL("./files/7216a502ce536fbb7cd66f865a878b13f2aa40a1f96c342c91c4ad8a9679d89b00dfd2c1a31780d6079892048e4eba4ab4c5455a27d513b010354e313ff71e1f", import.meta.url), mimeType: "image/svg+xml", toString}],
+    ["t.svg", {url: new URL("./files/ab6ca1e70f72cc5b97db5df4a5200c8bae82aa9bc4204d7d9da3b203ac5614e19728806d385512e248634e107e88841392abce0423619e8c86ed2edadda035d7", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["gfx","md"], _1);
@@ -1124,7 +1130,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _53);
   main.variable(observer("client_longpoll_response_num_key")).define("client_longpoll_response_num_key", _client_longpoll_response_num_key);
   main.variable(observer("incrementLongpollResponseNum")).define("incrementLongpollResponseNum", ["client_longpoll_response_num_key"], _incrementLongpollResponseNum);
-  main.variable(observer()).define(["suite","incrementLongpollResponseNum","exampleClient","testing"], _56);
+  main.variable(observer()).define(["suite","incrementLongpollResponseNum","exampleClient","expect"], _56);
   main.variable(observer()).define(["FileAttachment","md"], _57);
   main.variable(observer("data_key")).define("data_key", _data_key);
   main.variable(observer("data_listeners_key")).define("data_listeners_key", _data_listeners_key);
@@ -1153,49 +1159,50 @@ export default function define(runtime, observer) {
   main.variable(observer("next_notify")).define("next_notify", ["get_head_notify_id","client_notify_queue_key"], _next_notify);
   main.variable(observer("ack_notify")).define("ack_notify", ["set_head_notify_id"], _ack_notify);
   main.variable(observer()).define(["md"], _84);
-  main.variable(observer()).define(["md"], _85);
+  main.variable(observer("t")).define("t", ["FileAttachment","htl"], _t);
+  main.variable(observer()).define(["md"], _86);
   main.variable(observer("process_operation")).define("process_operation", ["viewof process_operation_args"], _process_operation);
   main.variable(observer("viewof process_operation_args")).define("viewof process_operation_args", ["flowQueue"], _process_operation_args);
   main.variable(observer("process_operation_args")).define("process_operation_args", ["Generators", "viewof process_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _88);
-  main.variable(observer()).define(["process_operation_args"], _89);
-  main.variable(observer()).define(["md"], _90);
+  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["process_operation_args"], _90);
+  main.variable(observer()).define(["md"], _91);
   main.variable(observer("action")).define("action", ["process_operation_args","client_operation_head_id_key","next_operation","viewof process_operation_args","invalidation"], _action);
-  main.variable(observer()).define(["md"], _92);
+  main.variable(observer()).define(["md"], _93);
   main.variable(observer("prerequisites")).define("prerequisites", ["process_operation_args","action","data_listeners_key","get_data_listeners","data_key","get_data","viewof process_operation_args"], _prerequisites);
-  main.variable(observer()).define(["md"], _94);
+  main.variable(observer()).define(["md"], _95);
   main.variable(observer("process_operation_effect")).define("process_operation_effect", ["process_operation_args","action","viewof run_put_operation_args","viewof run_get_operation_args","viewof run_listen_operation_args","viewof run_unlisten_operation_args","prerequisites","viewof process_operation_args"], _process_operation_effect);
-  main.variable(observer()).define(["md"], _96);
+  main.variable(observer()).define(["md"], _97);
   main.variable(observer("ack_process_operation")).define("ack_process_operation", ["process_operation_args","process_operation_effect","ack_operation","action","viewof process_operation_args"], _ack_process_operation);
-  main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","expect"], _98);
-  main.variable(observer()).define(["md"], _99);
+  main.variable(observer()).define(["suite","createClient","redisConfig","clear_data_listeners","init_client","enqueue_operation","process_operation","next_notify","ack_notify","expect"], _99);
+  main.variable(observer()).define(["md"], _100);
   main.variable(observer("operations")).define("operations", ["put_operation_response","get_operation_response","listen_operation_response","unlisten_operation_response"], _operations);
-  main.variable(observer()).define(["md"], _101);
+  main.variable(observer()).define(["md"], _102);
   main.variable(observer("viewof run_put_operation_args")).define("viewof run_put_operation_args", ["flowQueue"], _run_put_operation_args);
   main.variable(observer("run_put_operation_args")).define("run_put_operation_args", ["Generators", "viewof run_put_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_put_operation_args"], _103);
+  main.variable(observer()).define(["run_put_operation_args"], _104);
   main.variable(observer("run_put_operation_effect")).define("run_put_operation_effect", ["run_put_operation_args","set_data","enqueue_notify"], _run_put_operation_effect);
   main.variable(observer("put_operation_response")).define("put_operation_response", ["viewof run_put_operation_args","run_put_operation_effect"], _put_operation_response);
-  main.variable(observer()).define(["md"], _106);
+  main.variable(observer()).define(["md"], _107);
   main.variable(observer("viewof run_get_operation_args")).define("viewof run_get_operation_args", ["flowQueue"], _run_get_operation_args);
   main.variable(observer("run_get_operation_args")).define("run_get_operation_args", ["Generators", "viewof run_get_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_get_operation_args"], _108);
+  main.variable(observer()).define(["run_get_operation_args"], _109);
   main.variable(observer("run_get_operation_effect")).define("run_get_operation_effect", ["run_get_operation_args","enqueue_notify"], _run_get_operation_effect);
   main.variable(observer("get_operation_response")).define("get_operation_response", ["viewof run_get_operation_args","run_get_operation_effect"], _get_operation_response);
-  main.variable(observer()).define(["md"], _111);
+  main.variable(observer()).define(["md"], _112);
   main.variable(observer("viewof run_listen_operation_args")).define("viewof run_listen_operation_args", ["flowQueue"], _run_listen_operation_args);
   main.variable(observer("run_listen_operation_args")).define("run_listen_operation_args", ["Generators", "viewof run_listen_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_listen_operation_args"], _113);
+  main.variable(observer()).define(["run_listen_operation_args"], _114);
   main.variable(observer("run_listen_effect")).define("run_listen_effect", ["run_listen_operation_args","enqueue_notify","add_data_listener"], _run_listen_effect);
   main.variable(observer("listen_operation_response")).define("listen_operation_response", ["viewof run_listen_operation_args","run_listen_effect"], _listen_operation_response);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer()).define(["md"], _117);
   main.variable(observer("viewof run_unlisten_operation_args")).define("viewof run_unlisten_operation_args", ["flowQueue"], _run_unlisten_operation_args);
   main.variable(observer("run_unlisten_operation_args")).define("run_unlisten_operation_args", ["Generators", "viewof run_unlisten_operation_args"], (G, _) => G.input(_));
-  main.variable(observer()).define(["run_unlisten_operation_args"], _118);
+  main.variable(observer()).define(["run_unlisten_operation_args"], _119);
   main.variable(observer("run_unlisten_effect")).define("run_unlisten_effect", ["run_unlisten_operation_args","remove_data_listener","enqueue_notify"], _run_unlisten_effect);
   main.variable(observer("unlisten_operation_response")).define("unlisten_operation_response", ["viewof run_unlisten_operation_args","run_unlisten_effect"], _unlisten_operation_response);
-  main.variable(observer()).define(["md"], _121);
   main.variable(observer()).define(["md"], _122);
+  main.variable(observer()).define(["md"], _123);
   const child2 = runtime.module(define2);
   main.import("toc", child2);
   const child3 = runtime.module(define3);
@@ -1206,9 +1213,9 @@ export default function define(runtime, observer) {
   const child5 = runtime.module(define5);
   main.import("createSuite", child5);
   main.import("expect", child5);
-  main.variable(observer()).define(["md"], _128);
+  main.variable(observer()).define(["md"], _129);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], _130);
+  main.variable(observer()).define(["footer"], _131);
   return main;
 }

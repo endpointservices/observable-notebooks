@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@827
+// https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@829
 async function _1(md,FileAttachment){return(
 md`
 # Hypertext literal reconciliation with nanomorph
@@ -38,7 +38,7 @@ We can create a very simple chat UI using the hypertext literal to change this e
 `
 )}
 
-function _5(msgs,$0,htl,html)
+function _5(msgs,$0,htl)
 {
   async function sendMsg(evt) {
     if (evt.keyCode === 13) {
@@ -47,7 +47,7 @@ function _5(msgs,$0,htl,html)
     }
   }
   return htl.html`
-    ${msgs.map((msg) => html`<p>${msg}</p>`)}
+    ${msgs.map((msg) => htl.html`<p>${msg}</p>`)}
     <input class="text" onkeydown=${sendMsg}></input>
     <button onclick=${() => ($0.value = [])}>clear</button>
   `;
@@ -80,7 +80,7 @@ The reconciliation algorithm will use the "id" attribute to guide matching.
 `
 )}
 
-function _8(msgs,$0,reconcile,html,htl)
+function _8(msgs,$0,reconcile,htl)
 {
   function sendMsg(evt) {
     if (evt.keyCode === 13) {
@@ -90,7 +90,7 @@ function _8(msgs,$0,reconcile,html,htl)
   }
   return reconcile(
     this,
-    html`
+    htl.html`
     ${msgs.map((msg) => htl.html`<p>${msg}</p>`)}
     <input id="chat" class="text" onkeydown=${sendMsg}></input>
     <button onclick=${() => ($0.value = [])}>clear</button> 
@@ -277,10 +277,10 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable msgs")).define("mutable msgs", ["Mutable", "initial msgs"], (M, _) => new M(_));
   main.variable(observer("msgs")).define("msgs", ["mutable msgs"], _ => _.generator);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["msgs","mutable msgs","htl","html"], _5);
+  main.variable(observer()).define(["msgs","mutable msgs","htl"], _5);
   main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["msgs","mutable msgs","reconcile","html","htl"], _8);
+  main.variable(observer()).define(["msgs","mutable msgs","reconcile","htl"], _8);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer("morph")).define("morph", ["require"], _morph);
