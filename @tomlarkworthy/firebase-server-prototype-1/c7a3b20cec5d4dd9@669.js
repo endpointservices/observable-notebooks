@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/testing@661
-import define1 from "./84e66f78139ac354@814.js";
+// https://observablehq.com/@tomlarkworthy/testing@669
+import define1 from "./84e66f78139ac354@829.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
 async function _1(md,FileAttachment){return(
@@ -370,6 +370,10 @@ suite.test('async4: the data is peanut butter', () => {
 })
 )}
 
+function _html(htl){return(
+htl.html
+)}
+
 function _pseudouuid(){return(
 () => Math.random().toString(16).substring(3)
 )}
@@ -392,7 +396,7 @@ function _JEST_EXPECT_STANDALONE_VERSION(){return(
 "24.0.2"
 )}
 
-function _31(footer){return(
+function _32(footer){return(
 footer
 )}
 
@@ -429,14 +433,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _23);
   main.variable(observer()).define(["suite","expect"], _24);
   main.variable(observer()).define(["suite","expect"], _25);
+  main.variable(observer("html")).define("html", ["htl"], _html);
   const child1 = runtime.module(define1);
   main.import("reconcile", child1);
-  main.import("html", child1);
   main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _31);
+  main.variable(observer()).define(["footer"], _32);
   return main;
 }
