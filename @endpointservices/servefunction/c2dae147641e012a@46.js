@@ -1,7 +1,5 @@
 // https://observablehq.com/@mbostock/safe-local-storage@46
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Safe Local Storage
 
 If a reader has localStorage disabled, simply referencing it will throw an error and prevent any downstream cells from running. This can break your notebook!
@@ -14,8 +12,9 @@ import {localStorage} from "@mbostock/safe-local-storage"
 
 Please note that this implementation does not support direct-setting of properties on localStorage; use the [Storage interface methods](https://html.spec.whatwg.org/multipage/webstorage.html#webstorage) instead.
 `
-)});
-  main.variable(observer("localStorage")).define("localStorage", ["MemoryStorage"], function(MemoryStorage)
+)}
+
+function _localStorage(MemoryStorage)
 {
   try {
     const storage = window.localStorage;
@@ -27,8 +26,9 @@ Please note that this implementation does not support direct-setting of properti
     return new MemoryStorage;
   }
 }
-);
-  main.variable(observer("MemoryStorage")).define("MemoryStorage", function(){return(
+
+
+function _MemoryStorage(){return(
 class MemoryStorage {
   constructor() {
     Object.defineProperties(this, {_: {value: new Map}});
@@ -52,6 +52,12 @@ class MemoryStorage {
     this._.clear();
   }
 }
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("localStorage")).define("localStorage", ["MemoryStorage"], _localStorage);
+  main.variable(observer("MemoryStorage")).define("MemoryStorage", _MemoryStorage);
   return main;
 }

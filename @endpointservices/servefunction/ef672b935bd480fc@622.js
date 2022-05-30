@@ -1,9 +1,7 @@
-// https://observablehq.com/@tomlarkworthy/fetchp@619
-import define1 from "./dff1e917c89f5e76@1709.js";
+// https://observablehq.com/@tomlarkworthy/fetchp@622
+import define1 from "./dff1e917c89f5e76@1711.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# CORS Proxy _fetchp_
 
 A drop in replacement for [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) that uses a proxy to get around CORS and can optionally mixin [secrets](https://observablehq.com/@endpointservices/secrets) into URL parameters and Basic Auth. Retries with exponential backoff in the case of 429 response code.
@@ -59,23 +57,29 @@ To see some executable examples check out the [tests](https://observablehq.com/@
 - 2020-02-12 Fixed UInt8array as body encoding problems
 - 2021-01-24 Added exponential backoff on 429s
 `
-)});
-  main.variable(observer("SECRET_PARAMS")).define("SECRET_PARAMS", function(){return(
+)}
+
+function _SECRET_PARAMS(){return(
 {}
-)});
-  main.variable(observer("ALLOW_DOMAINS")).define("ALLOW_DOMAINS", function(){return(
+)}
+
+function _ALLOW_DOMAINS(){return(
 null
-)});
-  main.variable(observer("BASIC_AUTH")).define("BASIC_AUTH", function(){return(
+)}
+
+function _BASIC_AUTH(){return(
 null
-)});
-  main.variable(observer("MODIFIERS")).define("MODIFIERS", function(){return(
+)}
+
+function _MODIFIERS(){return(
 ['terminal']
-)});
-  main.variable(observer("id")).define("id", ["hash","ALLOW_DOMAINS","SECRET_PARAMS","BASIC_AUTH","MODIFIERS"], function(hash,ALLOW_DOMAINS,SECRET_PARAMS,BASIC_AUTH,MODIFIERS){return(
+)}
+
+function _id(hash,ALLOW_DOMAINS,SECRET_PARAMS,BASIC_AUTH,MODIFIERS){return(
 hash([ALLOW_DOMAINS, SECRET_PARAMS, BASIC_AUTH, MODIFIERS]).substring(30)
-)});
-  main.variable(observer("fetchp")).define("fetchp", ["ALLOW_DOMAINS","Response","getContext","SECRET_PARAMS","BASIC_AUTH","proxy"], function(ALLOW_DOMAINS,Response,getContext,SECRET_PARAMS,BASIC_AUTH,proxy){return(
+)}
+
+function _fetchp(ALLOW_DOMAINS,Response,getContext,SECRET_PARAMS,BASIC_AUTH,proxy){return(
 async (url, options) => {
   options = options || {};
   let retries = options.retries || 10;
@@ -151,8 +155,9 @@ async (url, options) => {
   }
   return response;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md` Use like normal [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API). The implementation just serialize the two parameters and executed on a remote headless Chrome that has had CORS disabled.
 
 ~~~js
@@ -163,11 +168,13 @@ response = await fetchp("https://google.com", {
 ~~~
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`### Serverside Implementation`
-)});
-  main.variable(observer("proxy")).define("proxy", ["deploy","id","SECRET_PARAMS","BASIC_AUTH","ALLOW_DOMAINS","MODIFIERS","array"], function(deploy,id,SECRET_PARAMS,BASIC_AUTH,ALLOW_DOMAINS,MODIFIERS,array){return(
+)}
+
+function _proxy(deploy,id,SECRET_PARAMS,BASIC_AUTH,ALLOW_DOMAINS,MODIFIERS,array){return(
 deploy(
   `proxy_${id}`, // Each proxy gets unique ID so they are not confused in notebooks with many
   async (req, res, ctx) => {
@@ -271,8 +278,9 @@ deploy(
     ]
   }
 )
-)});
-  main.variable(observer("tryme")).define("tryme", ["html","fetchp"], function(html,fetchp)
+)}
+
+function _tryme(html,fetchp)
 { // Press it really quickly and see the 429 errors hidden from caller
   const button = html`<button>try me</button>`
   button.onclick = async () => {
@@ -281,13 +289,31 @@ deploy(
   }
   return button;
 }
-);
-  main.variable(observer("hash")).define("hash", ["require"], function(require){return(
+
+
+function _hash(require){return(
 require('object-hash')
-)});
-  main.variable(observer("array")).define("array", function(){return(
+)}
+
+function _array(){return(
 value => (value ? [value] : [])
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("SECRET_PARAMS")).define("SECRET_PARAMS", _SECRET_PARAMS);
+  main.variable(observer("ALLOW_DOMAINS")).define("ALLOW_DOMAINS", _ALLOW_DOMAINS);
+  main.variable(observer("BASIC_AUTH")).define("BASIC_AUTH", _BASIC_AUTH);
+  main.variable(observer("MODIFIERS")).define("MODIFIERS", _MODIFIERS);
+  main.variable(observer("id")).define("id", ["hash","ALLOW_DOMAINS","SECRET_PARAMS","BASIC_AUTH","MODIFIERS"], _id);
+  main.variable(observer("fetchp")).define("fetchp", ["ALLOW_DOMAINS","Response","getContext","SECRET_PARAMS","BASIC_AUTH","proxy"], _fetchp);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("proxy")).define("proxy", ["deploy","id","SECRET_PARAMS","BASIC_AUTH","ALLOW_DOMAINS","MODIFIERS","array"], _proxy);
+  main.variable(observer("tryme")).define("tryme", ["html","fetchp"], _tryme);
+  main.variable(observer("hash")).define("hash", ["require"], _hash);
+  main.variable(observer("array")).define("array", _array);
   const child1 = runtime.module(define1);
   main.import("deploy", child1);
   main.import("getContext", child1);
