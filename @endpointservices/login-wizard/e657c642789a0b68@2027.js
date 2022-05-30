@@ -1,25 +1,23 @@
 // https://observablehq.com/@endpointservices/auth@2027
-import define1 from "./993a0c51ef1175ea@1317.js";
-import define2 from "./698257e86fae4586@346.js";
-import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./6eda90668ae03044@803.js";
+import define1 from "./993a0c51ef1175ea@1362.js";
+import define2 from "./698257e86fae4586@374.js";
+import define3 from "./ef672b935bd480fc@622.js";
+import define4 from "./6eda90668ae03044@804.js";
 import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
 import define8 from "./1131d8b2f152e8a8@463.js";
-import define9 from "./293899bef371e135@216.js";
+import define9 from "./293899bef371e135@267.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["AuthServerBanner@1.png",new URL("./files/c7243676b934e5cf12e7c54b80a7d9d7bf31c90a202edb62c30bf74507106c1f9cb1ba138c1f0c17494c674966ac5f3a7de30a4c1317059c93414153281466cb",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["bannerImage","FileAttachment"], async function(bannerImage,FileAttachment){return(
+async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("AuthServerBanner@1.png").url(), "Federated IndieAuth Server")
-)});
-  main.variable(observer()).define(["getContext","toc"], function(getContext,toc){return(
+)}
+
+function _2(getContext,toc){return(
 getContext().serverless ? undefined : toc()
-)});
-  main.variable(observer()).define(["md","htl","authorization_endpoint"], function(md,htl,authorization_endpoint){return(
+)}
+
+function _3(md,htl,authorization_endpoint){return(
 md`## Introduction
 
 This notebook is an *authentication server* [[okta](https://developer.okta.com/docs/concepts/auth-servers/), [auth0](https://auth0.com/blog/what-is-an-authentication-server/), [wikipedia](https://en.wikipedia.org/wiki/OAuth)]. It implements a generic [Oauth 2.0](https://oauth.net/2/) *authorization_endpoint* and *token_endpoint*. This is a technology that can enable a user to login to a service and execute private operations. **You need one of these to build secure services.** Leading commercial services include [Okta](https://www.okta.com/), [Auth0](https://auth0.com/), [Firebase Auth](https://firebase.google.com/docs/auth), [AWS Cognito](https://aws.amazon.com/identity/). Leading Open Source solutions include [Keycloak](https://www.keycloak.org/).
@@ -102,8 +100,9 @@ But users are free to use whatever for the *authorization_endpoint* as long as i
 
 The *token_endpoint* mints standard JWTs that are compatible with Firebase Auth. So this service can be used as a replacement for [Firebase Authentication](https://firebase.google.com/docs/auth) (see *[signInWithCustomToken()](https://firebase.google.com/docs/auth/admin/create-custom-tokens)*).  Firebase Auth in its current form complicates European compliance by storing [confidential information in the US](https://firebase.google.com/support/privacy), but with this server, you choose which regions the databases reside.
 `
-)});
-  main.variable(observer("observable_features")).define("observable_features", ["md"], function(md){return(
+)}
+
+function _observable_features(md){return(
 md`### Observablehq Features
 
 We can detect what observable profile the user owns as part of the RelMeAuth scan. The user's profile(s) are added as additionalClaims in the JWT/token, enabling portable personal data access across notebook subdomains, with Oauth consent dialog to ensure the user can choose which domains have access to their data.
@@ -122,8 +121,9 @@ We also look for URLs with authorization_endpoint in their name as nominated ind
 
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`### More info
 
 The proposed spec of [IndieAuth](https://observablehq.com/@endpointservices/auth) and [relMeAuth](http://microformats.org/wiki/RelMeAuth). You can create your own Authorization server for use anywhere in the internet by forking this notebook and updating the Oauth configs. This one run by [@endpointservices](https://observablehq.com/@endpointservices) for federated use across the Observable platform.
@@ -135,43 +135,52 @@ Lift and shift + fork of [Github/indieauth.com](https://github.com/aaronpk/Indie
 ### Reporting Issues
 
 There is a Github repo for issues [here](https://github.com/endpointservices/auth/issues)`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Configuration
 
 Fork this notebook or import this notebook and override the following variables to create your own authorization server.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`####  SERVICE_ACCOUNT_SECRETS
 The names of [secrets](https://observablehq.com/@endpointservices/secrets) each containing a GCP [JSON service account key](https://cloud.google.com/iam/docs/creating-managing-service-account-keys).
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`##### SERVICE_ACCOUNT_SECRET
 Used to access the backend Firebase persistence layer (must be a member of the project containing the Firebase database).`
-)});
-  main.variable(observer("SERVICE_ACCOUNT_SECRET")).define("SERVICE_ACCOUNT_SECRET", function(){return(
+)}
+
+function _SERVICE_ACCOUNT_SECRET(){return(
 'endpointservices_secretadmin_service_account_key'
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`##### TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET
 
 Used to sign keys (can be for a different project)`
-)});
-  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", function(){return(
+)}
+
+function _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET(){return(
 "endpointservices_minter"
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`####  FIREBASE_CONFIG
 
 Firebase Realtime Database is used to cache user profiles and Oauth 2.0 state machines.
 `
-)});
-  main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", function(){return(
+)}
+
+function _FIREBASE_CONFIG(){return(
 {
   name: "authinfra",
   databaseURL: "https://endpointservice-eu.europe-west1.firebasedatabase.app/",
@@ -180,11 +189,13 @@ Firebase Realtime Database is used to cache user profiles and Oauth 2.0 state ma
   projectId: "endpointservice",
   appId: "1:1986724398:web:9b8bc33895b45dd2e095bf"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`The token Firebase is used to verify tokens and must be in same project as TOKEN_SIGNER_SERVICE_ACCOUNT`
-)});
-  main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", function(){return(
+)}
+
+function _TOKEN_FIREBASE_CONFIG(){return(
 {
   name: "targetfirebase",
   apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
@@ -192,13 +203,15 @@ md`The token Firebase is used to verify tokens and must be in same project as TO
   projectId: "endpointserviceusers",
   appId: "1:283622646315:web:baa488124636283783006e"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`#### Security Rules
 
 [Security rules](https://firebase.google.com/docs/database/security) hosted by the Firebase Realtime Database should include the following to secure the backend database (FIREBASE_CONFIG). The rules ensure only the service account can access it. The rules are generated by querying service account's *whoami* endpoint, so the instructions will update when you configure the service account.`
-)});
-  main.variable(observer()).define(["getContext","whoami","md"], async function(getContext,whoami,md)
+)}
+
+async function _18(getContext,whoami,md)
 {
   if (!getContext().serverless) {
     const UID = (await (await fetch(whoami.href)).json()).uid;
@@ -235,20 +248,24 @@ md`#### Security Rules
 `;
   }
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _19(md){return(
 md`####  ASSETS_BASE_URL
 
 Root of static assets such as images.
 `
-)});
-  main.variable(observer("ASSETS_BASE_URL")).define("ASSETS_BASE_URL", function(){return(
+)}
+
+function _ASSETS_BASE_URL(){return(
 "https://storage.googleapis.com/indieauth_com/public"
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md`#### Providers`
-)});
-  main.variable(observer("PROVIDERS")).define("PROVIDERS", function(){return(
+)}
+
+function _PROVIDERS(){return(
 {
   github: {
     regex: /https?:\/\/(?:www\.)?github\.com\/([^\/]+)/,
@@ -267,8 +284,9 @@ md`#### Providers`
     auth: true
   },
 }
-)});
-  main.variable(observer("PROVIDER_FOR_URL")).define("PROVIDER_FOR_URL", ["PROVIDERS"], function(PROVIDERS){return(
+)}
+
+function _PROVIDER_FOR_URL(PROVIDERS){return(
 (url, rel = 'me') => {
     // https://github.com/aaronpk/IndieAuth.com/blob/5d4ae533a72781d6a1a1c3cd8a288928edf2ae9c/models/provider.rb#L25
     if (rel === 'me') {
@@ -279,26 +297,32 @@ md`#### Providers`
       return 'indieauth' 
     }
   }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _24(md){return(
 md`#### GITHUB_XXX
 
 Configuration of the backend's Github Oauth Client. Server allows users to authenticated with Github, then substitutes a Github issued token for a custom one. Settings we figured out using [Oauth 2.0 Examples](https://observablehq.com/@tomlarkworthy/oauth-examples)
 `
-)});
-  main.variable(observer("GITHUB_CLIENT_SECRET_SECRET_NAME")).define("GITHUB_CLIENT_SECRET_SECRET_NAME", function(){return(
+)}
+
+function _GITHUB_CLIENT_SECRET_SECRET_NAME(){return(
 "endpointservices_github_client_secret"
-)});
-  main.variable(observer("GITHUB_TOKEN_URL")).define("GITHUB_TOKEN_URL", function(){return(
+)}
+
+function _GITHUB_TOKEN_URL(){return(
 "https://github.com/login/oauth/access_token"
-)});
-  main.variable(observer("GITHUB_CLIENT_ID")).define("GITHUB_CLIENT_ID", function(){return(
+)}
+
+function _GITHUB_CLIENT_ID(){return(
 "Iv1.058b3e2cc86bdb17"
-)});
-  main.variable(observer("GITHUB_AUTHORIZE_URL")).define("GITHUB_AUTHORIZE_URL", function(){return(
+)}
+
+function _GITHUB_AUTHORIZE_URL(){return(
 'https://github.com/login/oauth/authorize'
-)});
-  main.variable(observer("GITHUB_TOKEN_PARAMS")).define("GITHUB_TOKEN_PARAMS", function(){return(
+)}
+
+function _GITHUB_TOKEN_PARAMS(){return(
 args => ({
   client_id: args.CLIENT_ID,
   redirect_uri: args.REDIRECT_URI,
@@ -306,8 +330,9 @@ args => ({
   code: args.code,
   state: args.state
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _30(md){return(
 md`
 
 ---
@@ -315,8 +340,9 @@ md`
 
 The core of the implementation is a set of HTTP endpoints
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _31(md){return(
 md`
 ### Oauth 2.0 Authorization Endpoint
 
@@ -324,8 +350,9 @@ You redirect the user to the authorization endpoint, with a client_id, redirect_
 
 Unusually, IndieAuth also allows the code to be exchanged at the *authorization_endpoint* in addition to the typical *token_endpoint*.
 `
-)});
-  main.variable(observer("authorization_endpoint")).define("authorization_endpoint", ["deploy","checkIsURL","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","FKEY","auth_html","signin_html"], function(deploy,checkIsURL,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,FKEY,auth_html,signin_html){return(
+)}
+
+function _authorization_endpoint(deploy,checkIsURL,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,FKEY,auth_html,signin_html){return(
 deploy(
   "authorization_endpoint",
   async (req, res, ctx) => {
@@ -384,8 +411,9 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _33(md){return(
 md`
 ### Oauth 2.0 Token Endpoint
 
@@ -396,8 +424,9 @@ The token has two major roles
 
 
 `
-)});
-  main.variable(observer("token_endpoint")).define("token_endpoint", ["deploy","verifyToken","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","FKEY","createCustomToken","TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET"], function(deploy,verifyToken,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,FKEY,createCustomToken,TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET){return(
+)}
+
+function _token_endpoint(deploy,verifyToken,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,FKEY,createCustomToken,TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET){return(
 deploy(
   "token_endpoint",
   async (req, res, ctx) => {
@@ -500,16 +529,16 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET, TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer("verifyToken")).define("verifyToken", ["extractBearerToken","verifyCustomToken","tokenFirebase"], function(extractBearerToken,verifyCustomToken,tokenFirebase){return(
+)}
+
+function _verifyToken(extractBearerToken,verifyCustomToken,tokenFirebase){return(
 async (authorization) => {
   const token = extractBearerToken(authorization)
   return verifyCustomToken(tokenFirebase, token);
 }
-)});
-  const child1 = runtime.module(define1).derive([{name: "TOKEN_FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
-  main.import("firebase", "tokenFirebase", child1);
-  main.variable(observer("extractBearerToken")).define("extractBearerToken", function(){return(
+)}
+
+function _extractBearerToken(){return(
 function extractBearerToken(headerValue) {
   // https://tools.ietf.org/html/rfc6750#section-2.1
   let match = undefined 
@@ -518,14 +547,16 @@ function extractBearerToken(headerValue) {
   }
   throw new Error("No bearer token found")
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _38(md){return(
 md`### Scan Identity URL
 
 Scans a URL looking for rel="me" links and tries to classify each as a supported provider or not. It does not inspect those links, so it cannot check for backlinks.
 `
-)});
-  main.variable(observer("supported_providers_endpoint")).define("supported_providers_endpoint", ["deploy","checkIsURL","checkNotEmptyString","SERVICE_ACCOUNT_SECRET","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","rel_links","PROVIDER_FOR_URL","FKEY","auth_path"], function(deploy,checkIsURL,checkNotEmptyString,SERVICE_ACCOUNT_SECRET,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,rel_links,PROVIDER_FOR_URL,FKEY,auth_path){return(
+)}
+
+function _supported_providers_endpoint(deploy,checkIsURL,checkNotEmptyString,SERVICE_ACCOUNT_SECRET,getAccessTokenFromServiceAccount,signinWithAccessToken,firebase,rel_links,PROVIDER_FOR_URL,FKEY,auth_path){return(
 deploy(
   "supported_providers.json",
   async (req, res, ctx) => {
@@ -634,14 +665,16 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _40(md){return(
 md`### Verify link
 
 Given an identity URL (me) and a profile link (profile) checks whether the profile is a legitimate identity provider for me by considering backlinks. If so, and the provider is supported, it will return a link to to start the auth flow.
 `
-)});
-  main.variable(observer("verify_link_endpoint")).define("verify_link_endpoint", ["deploy","checkIsURL","checkNotEmptyString","PROVIDER_FOR_URL","rel_links","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","verify_link","FKEY","PROVIDERS","auth_path"], function(deploy,checkIsURL,checkNotEmptyString,PROVIDER_FOR_URL,rel_links,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,verify_link,FKEY,PROVIDERS,auth_path){return(
+)}
+
+function _verify_link_endpoint(deploy,checkIsURL,checkNotEmptyString,PROVIDER_FOR_URL,rel_links,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,verify_link,FKEY,PROVIDERS,auth_path){return(
 deploy(
   "verify_link.json",
   async (req, res, ctx) => {
@@ -727,8 +760,9 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer("rel_links")).define("rel_links", ["checkIsURL","PROVIDER_FOR_URL","fetchp"], function(checkIsURL,PROVIDER_FOR_URL,fetchp){return(
+)}
+
+function _rel_links(checkIsURL,PROVIDER_FOR_URL,fetchp){return(
 async function rel_links (url, rel) {
   url = checkIsURL(url);
   if (!url.startsWith('https')) throw new Error("Only secure (https) rel links supported");
@@ -785,13 +819,15 @@ async function rel_links (url, rel) {
   
   return rel ? links.filter(link => link.rel === rel) : links
 }
-)});
-  main.variable(observer("links_to")).define("links_to", ["rel_links"], function(rel_links){return(
+)}
+
+function _links_to(rel_links){return(
 async function links_to(page, url) {
   return (await rel_links(page, 'me')).some(link => link.href === (new URL(url)).toString())
 }
-)});
-  main.variable(observer("verify_link")).define("verify_link", ["checkIsURL","rel_links","PROVIDERS","PROVIDER_FOR_URL"], function(checkIsURL,rel_links,PROVIDERS,PROVIDER_FOR_URL){return(
+)}
+
+function _verify_link(checkIsURL,rel_links,PROVIDERS,PROVIDER_FOR_URL){return(
 async function verify_link(me, link) {
   me = checkIsURL(me);
   link = checkIsURL(link);
@@ -818,14 +854,16 @@ async function verify_link(me, link) {
   }
   return verified;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _45(md){return(
 md`### Auth Flow Start Endpoint
 
 Start of an Oauth 2.0 flow. Given the parameters, this endpoint will cache the client settings and redirect to a more specific identity provider.
 `
-)});
-  main.variable(observer("auth_start")).define("auth_start", ["deploy","checkNotEmptyString","checkIsURL","randomId","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","b64S256","GITHUB_CLIENT_ID","GITHUB_REDIRECT_URI","GITHUB_AUTHORIZE_URL","encodeParams","FKEY","INDIEAUTH_REDIRECT_URI"], function(deploy,checkNotEmptyString,checkIsURL,randomId,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,b64S256,GITHUB_CLIENT_ID,GITHUB_REDIRECT_URI,GITHUB_AUTHORIZE_URL,encodeParams,FKEY,INDIEAUTH_REDIRECT_URI){return(
+)}
+
+function _auth_start(deploy,checkNotEmptyString,checkIsURL,randomId,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,b64S256,GITHUB_CLIENT_ID,GITHUB_REDIRECT_URI,GITHUB_AUTHORIZE_URL,encodeParams,FKEY,INDIEAUTH_REDIRECT_URI){return(
 deploy(
   "auth_start",
   async (req, res, ctx) => {
@@ -915,20 +953,24 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _47(md){return(
 md`### Provider Specific Endpoints`
-)});
-  main.variable(observer("auth_path")).define("auth_path", ["auth_start"], function(auth_start){return(
+)}
+
+function _auth_path(auth_start){return(
 (provider, profile, me, client_id, state, scope) => {
     // https://github.com/aaronpk/IndieAuth.com/blob/5d4ae533a72781d6a1a1c3cd8a288928edf2ae9c/models/provider.rb#L38
     return `${auth_start.href}?me=${encodeURIComponent(me)}&provider=${encodeURIComponent(provider)}&profile=${encodeURIComponent(profile)}&client_id=${client_id}&state=${state}&scope=${scope}`
   }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _49(md){return(
 md`#### Github Redirect URI`
-)});
-  main.variable(observer("GITHUB_REDIRECT_URI")).define("GITHUB_REDIRECT_URI", ["deploy","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","verify_link","GITHUB_TOKEN_URL","encodeParams","GITHUB_CLIENT_ID","GITHUB_CLIENT_SECRET_SECRET_NAME","URLSearchParams","checkRedirect","randomId"], function(deploy,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,verify_link,GITHUB_TOKEN_URL,encodeParams,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET_SECRET_NAME,URLSearchParams,checkRedirect,randomId){return(
+)}
+
+function _GITHUB_REDIRECT_URI(deploy,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,verify_link,GITHUB_TOKEN_URL,encodeParams,GITHUB_CLIENT_ID,GITHUB_CLIENT_SECRET_SECRET_NAME,URLSearchParams,checkRedirect,randomId){return(
 deploy(
   "github_redirect",
   async (req, res, ctx) => {
@@ -1027,11 +1069,13 @@ deploy(
     secrets: [GITHUB_CLIENT_SECRET_SECRET_NAME, SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _51(md){return(
 md`#### IndieAuth Redirect URI`
-)});
-  main.variable(observer("INDIEAUTH_REDIRECT_URI")).define("INDIEAUTH_REDIRECT_URI", ["deploy","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","decodeJsonOrForm","checkRedirect","randomId"], function(deploy,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,decodeJsonOrForm,checkRedirect,randomId){return(
+)}
+
+function _INDIEAUTH_REDIRECT_URI(deploy,checkNotEmptyString,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,decodeJsonOrForm,checkRedirect,randomId){return(
 deploy("indieauth_redirect", async (req, res, ctx) => {
   try {
     const state = checkNotEmptyString(req.query.state, 'state');
@@ -1094,14 +1138,16 @@ deploy("indieauth_redirect", async (req, res, ctx) => {
 }, {
   secrets: [SERVICE_ACCOUNT_SECRET]
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _53(md){return(
 md`### Whoami: Service Account Endpoint
 
 Firebase rules need to grant write access to the service account. This endpoint can be used to get its *uid*  of the DATABASE_SERVICE_ACCOUNT and confirm it is wired up properly.
 `
-)});
-  main.variable(observer("whoami")).define("whoami", ["deploy","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase"], function(deploy,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase){return(
+)}
+
+function _whoami(deploy,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase){return(
 deploy("whoami", async (req, res, ctx) => {
   try {
     const service_access_token = await getAccessTokenFromServiceAccount(
@@ -1117,14 +1163,16 @@ deploy("whoami", async (req, res, ctx) => {
 }, {
   secrets: [SERVICE_ACCOUNT_SECRET]
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _55(md){return(
 md`## Validators
 
 Helpers on cleaning inputs. A *check* will normalize and throw if invalid.
 `
-)});
-  main.variable(observer("checkIsURL")).define("checkIsURL", function(){return(
+)}
+
+function _checkIsURL(){return(
 function checkIsURL(arg, name) {
   try {
     return new URL(arg).toString()
@@ -1132,14 +1180,16 @@ function checkIsURL(arg, name) {
     throw new Error(`${name || 'arg'} is not a URL`)
   } 
 }
-)});
-  main.variable(observer("checkNotEmptyString")).define("checkNotEmptyString", function(){return(
+)}
+
+function _checkNotEmptyString(){return(
 function checkNotEmptyString(arg, name) {
   if (!arg || arg === '') throw new Error(`${name || 'arg'} is empty`)
   return arg;
 }
-)});
-  main.variable(observer("checkRedirect")).define("checkRedirect", function(){return(
+)}
+
+function _checkRedirect(){return(
 (redirect_uri, redirect_uris) => {
   if (!redirect_uris.some(candidate => {
     if (redirect_uri === candidate) return true; // Exact match, ofc
@@ -1148,17 +1198,20 @@ function checkNotEmptyString(arg, name) {
   })) throw new Error(`No matching redirect_uri for ${redirect_uri}`)
   return true;
 }
-)});
-  main.variable(observer("encodeParams")).define("encodeParams", function(){return(
+)}
+
+function _encodeParams(){return(
 p =>
   Object.entries(p)
     .map(kv => kv.map(encodeURIComponent).join("="))
     .join("&")
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _60(md){return(
 md`## Frontend (HTML & JS)`
-)});
-  main.variable(observer("header_html")).define("header_html", ["html","ASSETS_BASE_URL"], function(html,ASSETS_BASE_URL){return(
+)}
+
+function _header_html(html,ASSETS_BASE_URL){return(
 () => html`
 <meta charset="utf-8">
 <title>Web Sign-In</title>
@@ -1169,8 +1222,9 @@ md`## Frontend (HTML & JS)`
 <script src="${ASSETS_BASE_URL}/js/mustache.js"></script>
 <script src="${ASSETS_BASE_URL}/bootstrap-3.3.7/js/bootstrap.min.js"</script>
 </script>`
-)});
-  main.variable(observer("signin_html")).define("signin_html", ["success_endpoint","html","header_html","ASSETS_BASE_URL"], function(success_endpoint,html,header_html,ASSETS_BASE_URL){return(
+)}
+
+function _signin_html(success_endpoint,html,header_html,ASSETS_BASE_URL){return(
 ({
   redirect_uri = success_endpoint.href,
   client_id = '',
@@ -1217,8 +1271,9 @@ md`## Frontend (HTML & JS)`
   </div>
 </div>`
 }
-)});
-  main.variable(observer("auth_html")).define("auth_html", ["html","header_html","verify_link_endpoint","supported_providers_endpoint","PROVIDERS","auth_path","ASSETS_BASE_URL"], function(html,header_html,verify_link_endpoint,supported_providers_endpoint,PROVIDERS,auth_path,ASSETS_BASE_URL){return(
+)}
+
+function _auth_html(html,header_html,verify_link_endpoint,supported_providers_endpoint,PROVIDERS,auth_path,ASSETS_BASE_URL){return(
 ({
   me,
   app_logo,
@@ -1956,8 +2011,9 @@ ${ (gpg_challenges || []).map(challenge => html`
   }
 </style>`
 }
-)});
-  main.variable(observer("success_html")).define("success_html", ["html","header_html","ASSETS_BASE_URL"], function(html,header_html,ASSETS_BASE_URL){return(
+)}
+
+function _success_html(html,header_html,ASSETS_BASE_URL){return(
 ({
   domain = "domain"
 } = {}) => html`
@@ -2004,14 +2060,17 @@ ${header_html()}
   </div><!-- section -->
 
 </div><!-- container -->`
-)});
-  main.variable(observer("success_endpoint")).define("success_endpoint", ["deploy","success_html"], function(deploy,success_html){return(
+)}
+
+function _success_endpoint(deploy,success_html){return(
 deploy("success_endpoint", (req, res) => res.send(success_html().outerHTML))
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _66(md){return(
 md`## Utils`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _67(md){return(
 md`#### b64S256 (Base64url Encoding without Padding)
 
 For PKCE code verifier challenges you need this encoding function.
@@ -2019,8 +2078,9 @@ For PKCE code verifier challenges you need this encoding function.
 https://tools.ietf.org/html/rfc7636#appendix-A
 Also see https://tonyxu-io.github.io/pkce-generator/
 `
-)});
-  main.variable(observer("b64S256")).define("b64S256", function(){return(
+)}
+
+function _b64S256(){return(
 async function b64S256(str) {
   const encoder = new TextEncoder();
   const data = encoder.encode(str);
@@ -2028,14 +2088,16 @@ async function b64S256(str) {
   const b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer))).split('=')[0];
   return b64.replaceAll('+', '-').replaceAll('/', '_')
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _69(md){return(
 md`#### decodeJsonOrForm
 
 Tries to parse a string as JSON and falls back to URL encoded form data if that fails.
 `
-)});
-  main.variable(observer("decodeJsonOrForm")).define("decodeJsonOrForm", ["URLSearchParams"], function(URLSearchParams){return(
+)}
+
+function _decodeJsonOrForm(URLSearchParams){return(
 function decodeJsonOrForm(text) {
   console.log(text)
   try {
@@ -2044,13 +2106,98 @@ function decodeJsonOrForm(text) {
     return Object.fromEntries(new URLSearchParams(text))
   }
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _71(md){return(
 md`## Imports
 
 For security and stability reasons all imports are pinned.
 `
-)});
+)}
+
+function _81(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["AuthServerBanner@1.png", {url: new URL("./files/c7243676b934e5cf12e7c54b80a7d9d7bf31c90a202edb62c30bf74507106c1f9cb1ba138c1f0c17494c674966ac5f3a7de30a4c1317059c93414153281466cb", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["bannerImage","FileAttachment"], _1);
+  main.variable(observer()).define(["getContext","toc"], _2);
+  main.variable(observer()).define(["md","htl","authorization_endpoint"], _3);
+  main.variable(observer("observable_features")).define("observable_features", ["md"], _observable_features);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("SERVICE_ACCOUNT_SECRET")).define("SERVICE_ACCOUNT_SECRET", _SERVICE_ACCOUNT_SECRET);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", _FIREBASE_CONFIG);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", _TOKEN_FIREBASE_CONFIG);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["getContext","whoami","md"], _18);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer("ASSETS_BASE_URL")).define("ASSETS_BASE_URL", _ASSETS_BASE_URL);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer("PROVIDERS")).define("PROVIDERS", _PROVIDERS);
+  main.variable(observer("PROVIDER_FOR_URL")).define("PROVIDER_FOR_URL", ["PROVIDERS"], _PROVIDER_FOR_URL);
+  main.variable(observer()).define(["md"], _24);
+  main.variable(observer("GITHUB_CLIENT_SECRET_SECRET_NAME")).define("GITHUB_CLIENT_SECRET_SECRET_NAME", _GITHUB_CLIENT_SECRET_SECRET_NAME);
+  main.variable(observer("GITHUB_TOKEN_URL")).define("GITHUB_TOKEN_URL", _GITHUB_TOKEN_URL);
+  main.variable(observer("GITHUB_CLIENT_ID")).define("GITHUB_CLIENT_ID", _GITHUB_CLIENT_ID);
+  main.variable(observer("GITHUB_AUTHORIZE_URL")).define("GITHUB_AUTHORIZE_URL", _GITHUB_AUTHORIZE_URL);
+  main.variable(observer("GITHUB_TOKEN_PARAMS")).define("GITHUB_TOKEN_PARAMS", _GITHUB_TOKEN_PARAMS);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _31);
+  main.variable(observer("authorization_endpoint")).define("authorization_endpoint", ["deploy","checkIsURL","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","FKEY","auth_html","signin_html"], _authorization_endpoint);
+  main.variable(observer()).define(["md"], _33);
+  main.variable(observer("token_endpoint")).define("token_endpoint", ["deploy","verifyToken","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","FKEY","createCustomToken","TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET"], _token_endpoint);
+  main.variable(observer("verifyToken")).define("verifyToken", ["extractBearerToken","verifyCustomToken","tokenFirebase"], _verifyToken);
+  const child1 = runtime.module(define1).derive([{name: "TOKEN_FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
+  main.import("firebase", "tokenFirebase", child1);
+  main.variable(observer("extractBearerToken")).define("extractBearerToken", _extractBearerToken);
+  main.variable(observer()).define(["md"], _38);
+  main.variable(observer("supported_providers_endpoint")).define("supported_providers_endpoint", ["deploy","checkIsURL","checkNotEmptyString","SERVICE_ACCOUNT_SECRET","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","rel_links","PROVIDER_FOR_URL","FKEY","auth_path"], _supported_providers_endpoint);
+  main.variable(observer()).define(["md"], _40);
+  main.variable(observer("verify_link_endpoint")).define("verify_link_endpoint", ["deploy","checkIsURL","checkNotEmptyString","PROVIDER_FOR_URL","rel_links","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","verify_link","FKEY","PROVIDERS","auth_path"], _verify_link_endpoint);
+  main.variable(observer("rel_links")).define("rel_links", ["checkIsURL","PROVIDER_FOR_URL","fetchp"], _rel_links);
+  main.variable(observer("links_to")).define("links_to", ["rel_links"], _links_to);
+  main.variable(observer("verify_link")).define("verify_link", ["checkIsURL","rel_links","PROVIDERS","PROVIDER_FOR_URL"], _verify_link);
+  main.variable(observer()).define(["md"], _45);
+  main.variable(observer("auth_start")).define("auth_start", ["deploy","checkNotEmptyString","checkIsURL","randomId","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","b64S256","GITHUB_CLIENT_ID","GITHUB_REDIRECT_URI","GITHUB_AUTHORIZE_URL","encodeParams","FKEY","INDIEAUTH_REDIRECT_URI"], _auth_start);
+  main.variable(observer()).define(["md"], _47);
+  main.variable(observer("auth_path")).define("auth_path", ["auth_start"], _auth_path);
+  main.variable(observer()).define(["md"], _49);
+  main.variable(observer("GITHUB_REDIRECT_URI")).define("GITHUB_REDIRECT_URI", ["deploy","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","verify_link","GITHUB_TOKEN_URL","encodeParams","GITHUB_CLIENT_ID","GITHUB_CLIENT_SECRET_SECRET_NAME","URLSearchParams","checkRedirect","randomId"], _GITHUB_REDIRECT_URI);
+  main.variable(observer()).define(["md"], _51);
+  main.variable(observer("INDIEAUTH_REDIRECT_URI")).define("INDIEAUTH_REDIRECT_URI", ["deploy","checkNotEmptyString","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","decodeJsonOrForm","checkRedirect","randomId"], _INDIEAUTH_REDIRECT_URI);
+  main.variable(observer()).define(["md"], _53);
+  main.variable(observer("whoami")).define("whoami", ["deploy","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase"], _whoami);
+  main.variable(observer()).define(["md"], _55);
+  main.variable(observer("checkIsURL")).define("checkIsURL", _checkIsURL);
+  main.variable(observer("checkNotEmptyString")).define("checkNotEmptyString", _checkNotEmptyString);
+  main.variable(observer("checkRedirect")).define("checkRedirect", _checkRedirect);
+  main.variable(observer("encodeParams")).define("encodeParams", _encodeParams);
+  main.variable(observer()).define(["md"], _60);
+  main.variable(observer("header_html")).define("header_html", ["html","ASSETS_BASE_URL"], _header_html);
+  main.variable(observer("signin_html")).define("signin_html", ["success_endpoint","html","header_html","ASSETS_BASE_URL"], _signin_html);
+  main.variable(observer("auth_html")).define("auth_html", ["html","header_html","verify_link_endpoint","supported_providers_endpoint","PROVIDERS","auth_path","ASSETS_BASE_URL"], _auth_html);
+  main.variable(observer("success_html")).define("success_html", ["html","header_html","ASSETS_BASE_URL"], _success_html);
+  main.variable(observer("success_endpoint")).define("success_endpoint", ["deploy","success_html"], _success_endpoint);
+  main.variable(observer()).define(["md"], _66);
+  main.variable(observer()).define(["md"], _67);
+  main.variable(observer("b64S256")).define("b64S256", _b64S256);
+  main.variable(observer()).define(["md"], _69);
+  main.variable(observer("decodeJsonOrForm")).define("decodeJsonOrForm", ["URLSearchParams"], _decodeJsonOrForm);
+  main.variable(observer()).define(["md"], _71);
   const child2 = runtime.module(define1).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
   main.import("firebase", child2);
   main.import("FKEY", child2);
@@ -2074,8 +2221,6 @@ For security and stability reasons all imports are pinned.
   main.import("bannerImage", child9);
   const child10 = runtime.module(define9);
   main.import("footer", child10);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _81);
   return main;
 }

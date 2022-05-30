@@ -1,12 +1,10 @@
 // https://observablehq.com/@endpointservices/notebook-secret@504
-import define1 from "./11a5ab8b1b3a51db@1160.js";
-import define2 from "./a2e58f97fd5e8d7c@672.js";
+import define1 from "./11a5ab8b1b3a51db@1161.js";
+import define2 from "./a2e58f97fd5e8d7c@736.js";
 import define3 from "./ab3e70b29c480e6d@83.js";
-import define4 from "./293899bef371e135@216.js";
+import define4 from "./293899bef371e135@267.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# How to password protect a Notebook secret
 
 I sometimes wish to hide a secret in a public notebook, for example, a [service account to run billable cloud commands](https://observablehq.com/@endpointservices/cache-bigquery). This notebook provides functionality to generate a password-protected encrypted payload, which is safe to save in a public notebook.
@@ -29,25 +27,28 @@ If you want to encode a secret for programatic use, use decode instead
 import {decode} from '@endpointservices/notebook-secret'
 ~~~
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Step 1, generate an encrypted payload
 
 Configure the password and the secret
 `
-)});
-  main.variable(observer("viewof pass")).define("viewof pass", ["html","Text"], function(html,Text){return(
+)}
+
+function _pass(html,Text){return(
 html`${Text({"label":"Password"})}`
-)});
-  main.variable(observer("pass")).define("pass", ["Generators", "viewof pass"], (G, _) => G.input(_));
-  main.variable(observer("viewof secret")).define("viewof secret", ["Textarea"], function(Textarea){return(
+)}
+
+function _secret(Textarea){return(
 Textarea({label: "Secret", rows: 6})
-)});
-  main.variable(observer("secret")).define("secret", ["Generators", "viewof secret"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`This generates a encrypted payload which is safe to put in a public place`
-)});
-  main.variable(observer("encrypt")).define("encrypt", ["deriveKey","enc","encode64"], function(deriveKey,enc,encode64){return(
+)}
+
+function _encrypt(deriveKey,enc,encode64){return(
 async ({
   secret, password
 } = {}) => {
@@ -69,17 +70,20 @@ async ({
     ciphertext: encode64(ciphertext)
   };
 }
-)});
-  main.variable(observer("encryptedSecret")).define("encryptedSecret", ["encrypt","pass","secret"], function(encrypt,pass,secret){return(
+)}
+
+function _encryptedSecret(encrypt,pass,secret){return(
 encrypt({
   password: pass,
   secret
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`You will probably need to pass this to the _decrypt_ function so you can click the following button to copy it to the clipboard`
-)});
-  main.variable(observer("toClipboard")).define("toClipboard", ["html","pbcopy","encryptedSecret"], function(html,pbcopy,encryptedSecret)
+)}
+
+function _toClipboard(html,pbcopy,encryptedSecret)
 {
   const msg = html`Copy encrypted payload`;
   
@@ -98,8 +102,9 @@ md`You will probably need to pass this to the _decrypt_ function so you can clic
   
   return ui;
 }
-);
-  main.variable(observer()).define(["md"], function(md){return(
+
+
+function _10(md){return(
 md`## Step 2, create a _decrypt_ control
 
 The _decrypt_ UI control takes an encrypted payload as an argument, and prompts the reader for a password. Only when the password is correct, the control can resolve a value which is the decrypted secret.
@@ -108,23 +113,26 @@ The _decrypt_ UI control takes an encrypted payload as an argument, and prompts 
 viewof decryptedSecret = decrypt(<encrypted payload>)
 ~~~
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`In the following example the password is "12345"`
-)});
-  main.variable(observer("viewof decryptedSecret")).define("viewof decryptedSecret", ["decrypt"], function(decrypt){return(
+)}
+
+function _decryptedSecret(decrypt){return(
 decrypt({
   "name": "AES-GCM",
   "salt": "R6IPpW0u06A+sObp",
   "iv": "8Qo+fJwwOUBz+UuU",
   "ciphertext": "D2Hw1RK41fNnYL3MEbJVSdjkQJK2BfjV4hYwavJqdjsbFl5G8QJQUANHri1hE2eLvADXrkFp8tRt7Yk="
 })
-)});
-  main.variable(observer("decryptedSecret")).define("decryptedSecret", ["Generators", "viewof decryptedSecret"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","decryptedSecret"], function(html,decryptedSecret){return(
+)}
+
+function _13(html,decryptedSecret){return(
 html`<a href=${decryptedSecret}>${decryptedSecret}</a>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`### Implementation Notes
 
 We use "PBKDF2" to derive a high quality key from a low quality one like a user password.
@@ -132,8 +140,9 @@ We use "PBKDF2" to derive a high quality key from a low quality one like a user 
 We use "AES-GCM" to encrypt the secret payload, which is a notable for being an [authenticated encryption](https://en.wikipedia.org/wiki/Authenticated_encryption) algorithm that is available in the browser.
 
 `
-)});
-  main.variable(observer("decrypt")).define("decrypt", ["decode","Event","html"], function(decode,Event,html){return(
+)}
+
+function _decrypt(decode,Event,html){return(
 function decrypt(encryptedSecret) {
   function input(evt) {
       evt.stopPropagation()
@@ -170,8 +179,9 @@ function decrypt(encryptedSecret) {
   ui.value = undefined
   return ui;
 }
-)});
-  main.variable(observer("decode")).define("decode", ["deriveKey","decode64"], function(deriveKey,decode64){return(
+)}
+
+function _decode(deriveKey,decode64){return(
 async function decode(password, encryptedSecret) {
   if (typeof encryptedSecret === 'string') encryptedSecret = JSON.parse(encryptedSecret)
   const key = await deriveKey(password, decode64(encryptedSecret.salt));
@@ -185,8 +195,9 @@ async function decode(password, encryptedSecret) {
   );
   return new TextDecoder().decode(secret)
 }
-)});
-  main.variable(observer("deriveKey")).define("deriveKey", ["enc"], function(enc){return(
+)}
+
+function _deriveKey(enc){return(
 async (password, salt) => {
   const material = await window.crypto.subtle.importKey(
       "raw", 
@@ -208,16 +219,49 @@ async (password, salt) => {
       [ "encrypt", "decrypt" ]
     );
 }
-)});
-  main.variable(observer("enc")).define("enc", function(){return(
+)}
+
+function _enc(){return(
 new TextEncoder()
-)});
-  main.variable(observer("encode64")).define("encode64", function(){return(
+)}
+
+function _encode64(){return(
 (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)))
-)});
-  main.variable(observer("decode64")).define("decode64", function(){return(
+)}
+
+function _decode64(){return(
 (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0))
-)});
+)}
+
+function _25(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("viewof pass")).define("viewof pass", ["html","Text"], _pass);
+  main.variable(observer("pass")).define("pass", ["Generators", "viewof pass"], (G, _) => G.input(_));
+  main.variable(observer("viewof secret")).define("viewof secret", ["Textarea"], _secret);
+  main.variable(observer("secret")).define("secret", ["Generators", "viewof secret"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("encrypt")).define("encrypt", ["deriveKey","enc","encode64"], _encrypt);
+  main.variable(observer("encryptedSecret")).define("encryptedSecret", ["encrypt","pass","secret"], _encryptedSecret);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer("toClipboard")).define("toClipboard", ["html","pbcopy","encryptedSecret"], _toClipboard);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("viewof decryptedSecret")).define("viewof decryptedSecret", ["decrypt"], _decryptedSecret);
+  main.variable(observer("decryptedSecret")).define("decryptedSecret", ["Generators", "viewof decryptedSecret"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","decryptedSecret"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("decrypt")).define("decrypt", ["decode","Event","html"], _decrypt);
+  main.variable(observer("decode")).define("decode", ["deriveKey","decode64"], _decode);
+  main.variable(observer("deriveKey")).define("deriveKey", ["enc"], _deriveKey);
+  main.variable(observer("enc")).define("enc", _enc);
+  main.variable(observer("encode64")).define("encode64", _encode64);
+  main.variable(observer("decode64")).define("decode64", _decode64);
   const child1 = runtime.module(define1);
   main.import("html", child1);
   const child2 = runtime.module(define2);
@@ -227,8 +271,6 @@ new TextEncoder()
   main.import("pbcopy", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _25);
   return main;
 }

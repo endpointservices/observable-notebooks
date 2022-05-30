@@ -1,21 +1,18 @@
 // https://observablehq.com/@endpointservices/identity@604
 import define1 from "./b5ee47165ef0a032@504.js";
-import define2 from "./dff1e917c89f5e76@1709.js";
+import define2 from "./dff1e917c89f5e76@1711.js";
 import define3 from "./9a81133e63eb4a91@136.js";
 import define4 from "./1131d8b2f152e8a8@463.js";
 import define5 from "./573e072575f28fb9@454.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./52d808b188b8672b@129.js";
-import define8 from "./293899bef371e135@216.js";
+import define8 from "./293899bef371e135@267.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["Identity.png",new URL("./files/df501385ecbb382199076ccbc922bedf7ff4f3f8c2d21d25322ed7db4b5d8376aea5c0f8d6213d0ebc6bdd5bd3ef0860cba924468f5499515d43654c1d8e1df0",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["bannerImage","FileAttachment"], async function(bannerImage,FileAttachment){return(
+async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("Identity.png").url(), "Bring your own Identity with IndieAuth")
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`# Bring your own Identity with IndieAuth
 
 This Notebook provides _identity_, a function that generates an RelMeAuth/IndieAuth identity URL. It is recommended you host your own permanent identity on your homepage on a domain that *you* own, but this notebook is useful for programatically creating temporary, experimental, throw away or test identities, and for explaining how it works.
@@ -46,11 +43,13 @@ This Notebook provides _identity_, a function that generates an RelMeAuth/IndieA
 You can use these identities with services that accept IndieAuth login like the IndieWeb [wiki](https://indieweb.org/) or the one below
 
 `
-)});
-  main.variable(observer()).define(["weblogin"], function(weblogin){return(
+)}
+
+function _3(weblogin){return(
 weblogin
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`
 ### How [RelMeAuth](http://microformats.org/wiki/relmeauth) works
 
@@ -86,11 +85,13 @@ But users are free to use whatever for the *authorization_endpoint* as long as i
 In this notebook we supply an authorization_endpoint that authenticates anybody (like a public identity).
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`## Implementation`
-)});
-  main.variable(observer("identity")).define("identity", ["deploy","html","escapeHtml"], function(deploy,html,escapeHtml){return(
+)}
+
+function _identity(deploy,html,escapeHtml){return(
 function identity({
   title,
   authorization_endpoint,
@@ -126,11 +127,13 @@ ${escapeHtml(content)}
   
   </div>`
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`## Basic RelMeAuth Example:`
-)});
-  main.variable(observer()).define(["identity"], function(identity){return(
+)}
+
+function _8(identity){return(
 identity({
     // For RelMeAuth you can delegate signin to a third party like Github
     // Those profile have to backlink to this identity URL for the link to be usable for login
@@ -140,22 +143,25 @@ identity({
       "https://github.com/tomlarkworthy",
     ],
   })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Public IndieAuth Identity Example
 
 You can create an identity anybody can use by setting an autentication_endpoint that always says 'yes'.
 
 This works with the Indielogin.com [login](https://indielogin.com/?url=https%3A%2F%2Findieweb.org%2FMain_Page), copy the public link address and try it!
 `
-)});
-  main.variable(observer("publicIdentity")).define("publicIdentity", ["identity","yes_authorization_endpoint"], function(identity,yes_authorization_endpoint){return(
+)}
+
+function _publicIdentity(identity,yes_authorization_endpoint){return(
 identity({
   title: "demo",
   authorization_endpoint: yes_authorization_endpoint.href,
 })
-)});
-  main.variable(observer("yes_authorization_endpoint")).define("yes_authorization_endpoint", ["deploy"], function(deploy){return(
+)}
+
+function _yes_authorization_endpoint(deploy){return(
 deploy("yes_authorization_endpoint", async (req, res) => {
   if (req.method === 'GET') {
     res.send(`
@@ -172,8 +178,9 @@ deploy("yes_authorization_endpoint", async (req, res) => {
 }, {
   modifiers: ['terminal']
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`## Password protected IndieAuth Identity
 
 This is useful for getting started, you can link your Observable profile website to this identity URL and have the identity URL provide an encrypted password check.
@@ -199,8 +206,9 @@ Generate the encrypted payload at [@endpointservices/notebook-secret](https://ob
     // Afterwards, copy the full identity URL and put as a website on your observable profile settings.
 ~~~
 `
-)});
-  main.variable(observer("examplePasswordIdentity")).define("examplePasswordIdentity", ["passwordIdentity"], function(passwordIdentity){return(
+)}
+
+function _examplePasswordIdentity(passwordIdentity){return(
 passwordIdentity({
   observableProfile: 'https://observablehq.com/@tdlgkjfhdljovtttqrzu',
   // Generate secret containing password in https://observablehq.com/@endpointservices/notebook-secret
@@ -211,14 +219,16 @@ passwordIdentity({
     "ciphertext": "73u0IiXvo5Wt6uPCDDaB9w=="
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`## Password protected authorization_endpoint
 
 A password protected *authorization_endpoint* can be used as an IndieAuth authentication method. You can, for instance, add it to your Observable profile as a website and then login with your Observable profile as your Identity URL.
 `
-)});
-  main.variable(observer("password_authorization_endpoint")).define("password_authorization_endpoint", ["deploy","decodeJsonOrForm","decode","randomId","firebase"], function(deploy,decodeJsonOrForm,decode,randomId,firebase){return(
+)}
+
+function _password_authorization_endpoint(deploy,decodeJsonOrForm,decode,randomId,firebase){return(
 function password_authorization_endpoint({
     me,     // function that returns a string or a string
     secret  // Encrypted empty payload protected by password generated in @endpointservices/notebook-secret
@@ -263,8 +273,9 @@ function password_authorization_endpoint({
       modifiers: ['terminal']
     });
 }
-)});
-  main.variable(observer("passwordIdentity")).define("passwordIdentity", ["password_authorization_endpoint","identity"], function(password_authorization_endpoint,identity){return(
+)}
+
+function _passwordIdentity(password_authorization_endpoint,identity){return(
 function passwordIdentity({
   observableProfile,
   secret
@@ -283,10 +294,9 @@ function passwordIdentity({
   identityURL = indentityPage.querySelector('a').href;
   return indentityPage;
 }
-)});
-  const child1 = runtime.module(define1);
-  main.import("decode", child1);
-  main.variable(observer("decodeJsonOrForm")).define("decodeJsonOrForm", ["URLSearchParams"], function(URLSearchParams){return(
+)}
+
+function _decodeJsonOrForm(URLSearchParams){return(
 function decodeJsonOrForm(text) {
   try {
     return JSON.parse(text)
@@ -294,7 +304,38 @@ function decodeJsonOrForm(text) {
     return Object.fromEntries(new URLSearchParams(text))
   }
 }
-)});
+)}
+
+function _26(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Identity.png", {url: new URL("./files/df501385ecbb382199076ccbc922bedf7ff4f3f8c2d21d25322ed7db4b5d8376aea5c0f8d6213d0ebc6bdd5bd3ef0860cba924468f5499515d43654c1d8e1df0", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["bannerImage","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["weblogin"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("identity")).define("identity", ["deploy","html","escapeHtml"], _identity);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["identity"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("publicIdentity")).define("publicIdentity", ["identity","yes_authorization_endpoint"], _publicIdentity);
+  main.variable(observer("yes_authorization_endpoint")).define("yes_authorization_endpoint", ["deploy"], _yes_authorization_endpoint);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("examplePasswordIdentity")).define("examplePasswordIdentity", ["passwordIdentity"], _examplePasswordIdentity);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("password_authorization_endpoint")).define("password_authorization_endpoint", ["deploy","decodeJsonOrForm","decode","randomId","firebase"], _password_authorization_endpoint);
+  main.variable(observer("passwordIdentity")).define("passwordIdentity", ["password_authorization_endpoint","identity"], _passwordIdentity);
+  const child1 = runtime.module(define1);
+  main.import("decode", child1);
+  main.variable(observer("decodeJsonOrForm")).define("decodeJsonOrForm", ["URLSearchParams"], _decodeJsonOrForm);
   const child2 = runtime.module(define2);
   main.import("deploy", child2);
   const child3 = runtime.module(define3);
@@ -310,8 +351,6 @@ function decodeJsonOrForm(text) {
   main.import("firebase", child7);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _26);
   return main;
 }

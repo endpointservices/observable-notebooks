@@ -1,68 +1,70 @@
 // https://observablehq.com/@observablehq/logo@388
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["Screen Shot 2021-07-13 at 1.45.14 PM.png",new URL("./files/f328d3956498a7abe446eebc2ae77d054354219fedd6d24ff4ce4a99aed8c5b49ca2d38d7aa4bcd36a0a2ead200ffd6f1a983e3758bb3a9a7b13b8861026e3fd",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
+async function _1(FileAttachment,md){return(
 md`# Logo and wordmark
 
 <img src="${await FileAttachment("Screen Shot 2021-07-13 at 1.45.14 PM.png").url()}" style="width: 140px; float: right;" />
 
 For PNG versions, use the cell menus in the left margins and choose “Download PNG.”`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Logo`
-)});
-  main.variable(observer("viewof logoWidth")).define("viewof logoWidth", ["Inputs"], function(Inputs){return(
+)}
+
+function _logoWidth(Inputs){return(
 Inputs.range([1, 2000], { value: 200, step: 1, label: "Image width" })
-)});
-  main.variable(observer("logoWidth")).define("logoWidth", ["Generators", "viewof logoWidth"], (G, _) => G.input(_));
-  main.variable(observer("viewof logoPadding")).define("viewof logoPadding", ["Inputs"], function(Inputs){return(
+)}
+
+function _logoPadding(Inputs){return(
 Inputs.range([0, 49], { value: 0, step: 1, label: "Padding %" })
-)});
-  main.variable(observer("logoPadding")).define("logoPadding", ["Generators", "viewof logoPadding"], (G, _) => G.input(_));
-  main.variable(observer("viewof logoHeight")).define("viewof logoHeight", ["Inputs"], function(Inputs){return(
+)}
+
+function _logoHeight(Inputs){return(
 Inputs.range([1, 2000], { value: 200, step: 1, label: "Image height" })
-)});
-  main.variable(observer("logoHeight")).define("logoHeight", ["Generators", "viewof logoHeight"], (G, _) => G.input(_));
-  main.variable(observer("viewof logoMaintainRatio")).define("viewof logoMaintainRatio", ["Inputs"], function(Inputs){return(
+)}
+
+function _logoMaintainRatio(Inputs){return(
 Inputs.toggle({label: "Auto height", value: true})
-)});
-  main.variable(observer("logoMaintainRatio")).define("logoMaintainRatio", ["Generators", "viewof logoMaintainRatio"], (G, _) => G.input(_));
-  main.variable(observer("logo")).define("logo", ["html","logoSvgWidth","logoSvgHeight","backgroundColorFinal","graphicColor","logoNativeX","logoNativeY","logoGraphicWidth","logoGraphicHeight","logoGraphicX","logoGraphicY"], function(html,logoSvgWidth,logoSvgHeight,backgroundColorFinal,graphicColor,logoNativeX,logoNativeY,logoGraphicWidth,logoGraphicHeight,logoGraphicX,logoGraphicY){return(
+)}
+
+function _logo(html,logoSvgWidth,logoSvgHeight,backgroundColorFinal,graphicColor,logoNativeX,logoNativeY,logoGraphicWidth,logoGraphicHeight,logoGraphicX,logoGraphicY){return(
 html`
 <svg width="${logoSvgWidth}" height="${logoSvgHeight}" style="background-color:${backgroundColorFinal}" fill="${graphicColor}">
     <svg viewBox="0 0 ${logoNativeX}, ${logoNativeY}" width="${logoGraphicWidth}" height="${logoGraphicHeight}" x="${logoGraphicX}" y="${logoGraphicY}">
       <path d="M10.9646 18.9046C9.95224 18.9046 9.07507 18.6853 8.33313 18.2467C7.59386 17.8098 7.0028 17.1909 6.62722 16.4604C6.22789 15.7003 5.93558 14.8965 5.75735 14.0684C5.56825 13.1704 5.47613 12.2574 5.48232 11.3427C5.48232 10.6185 5.52984 9.92616 5.62578 9.26408C5.7208 8.60284 5.89715 7.93067 6.15391 7.24843C6.41066 6.56618 6.74143 5.97468 7.14438 5.47308C7.56389 4.9592 8.1063 4.54092 8.72969 4.25059C9.38391 3.93719 10.1277 3.78091 10.9646 3.78091C11.977 3.78091 12.8542 4.00021 13.5962 4.43879C14.3354 4.87564 14.9265 5.49454 15.3021 6.22506C15.6986 6.97704 15.9883 7.7744 16.1719 8.61712C16.3547 9.459 16.447 10.3681 16.447 11.3427C16.447 12.067 16.3995 12.7593 16.3035 13.4214C16.2013 14.1088 16.0206 14.7844 15.7644 15.437C15.4994 16.1193 15.1705 16.7108 14.7739 17.2124C14.3774 17.714 13.8529 18.1215 13.1996 18.4349C12.5463 18.7483 11.8016 18.9046 10.9646 18.9046ZM12.8999 13.3447C13.4242 12.8211 13.7159 12.0966 13.7058 11.3427C13.7058 10.5639 13.4436 9.89654 12.92 9.34074C12.3955 8.78495 11.7441 8.50705 10.9646 8.50705C10.1852 8.50705 9.53376 8.78495 9.00928 9.34074C8.49569 9.87018 8.21207 10.5928 8.22348 11.3427C8.22348 12.1216 8.48572 12.7889 9.00928 13.3447C9.53376 13.9005 10.1852 14.1784 10.9646 14.1784C11.7441 14.1784 12.3891 13.9005 12.8999 13.3447ZM10.9646 22.6855C17.0199 22.6855 21.9293 17.6068 21.9293 11.3427C21.9293 5.07871 17.0199 0 10.9646 0C4.90942 0 0 5.07871 0 11.3427C0 17.6068 4.90942 22.6855 10.9646 22.6855Z"/>
   </svg>
 </svg>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`## Wordmark`
-)});
-  main.variable(observer("viewof wordmarkWidth")).define("viewof wordmarkWidth", ["Inputs"], function(Inputs){return(
+)}
+
+function _wordmarkWidth(Inputs){return(
 Inputs.range([1, 2000], { value: 600, step: 1, label: "Image width" })
-)});
-  main.variable(observer("wordmarkWidth")).define("wordmarkWidth", ["Generators", "viewof wordmarkWidth"], (G, _) => G.input(_));
-  main.variable(observer("viewof wordmarkPadding")).define("viewof wordmarkPadding", ["Inputs"], function(Inputs){return(
+)}
+
+function _wordmarkPadding(Inputs){return(
 Inputs.range([0, 49], { value: 0, step: 1, label: "Padding %" })
-)});
-  main.variable(observer("wordmarkPadding")).define("wordmarkPadding", ["Generators", "viewof wordmarkPadding"], (G, _) => G.input(_));
-  main.variable(observer("viewof wordmarkHeight")).define("viewof wordmarkHeight", ["Inputs"], function(Inputs){return(
+)}
+
+function _wordmarkHeight(Inputs){return(
 Inputs.range([1, 2000], { value: 600, step: 1, label: "Image height" })
-)});
-  main.variable(observer("wordmarkHeight")).define("wordmarkHeight", ["Generators", "viewof wordmarkHeight"], (G, _) => G.input(_));
-  main.variable(observer("viewof wordmarkMaintainRatio")).define("viewof wordmarkMaintainRatio", ["Inputs"], function(Inputs){return(
+)}
+
+function _wordmarkMaintainRatio(Inputs){return(
 Inputs.toggle({label: "Auto height", value: true})
-)});
-  main.variable(observer("wordmarkMaintainRatio")).define("wordmarkMaintainRatio", ["Generators", "viewof wordmarkMaintainRatio"], (G, _) => G.input(_));
-  main.variable(observer("wordmark")).define("wordmark", ["html","wordmarkSvgWidth","wordmarkSvgHeight","backgroundColorFinal","graphicColor","wordmarkNativeX","wordmarkNativeY","wordmarkGraphicWidth","wordmarkGraphicHeight","wordmarkGraphicX","wordmarkGraphicY"], function(html,wordmarkSvgWidth,wordmarkSvgHeight,backgroundColorFinal,graphicColor,wordmarkNativeX,wordmarkNativeY,wordmarkGraphicWidth,wordmarkGraphicHeight,wordmarkGraphicX,wordmarkGraphicY){return(
+)}
+
+function _wordmark(html,wordmarkSvgWidth,wordmarkSvgHeight,backgroundColorFinal,graphicColor,wordmarkNativeX,wordmarkNativeY,wordmarkGraphicWidth,wordmarkGraphicHeight,wordmarkGraphicX,wordmarkGraphicY){return(
 html`
 <svg width="${wordmarkSvgWidth}" height="${wordmarkSvgHeight}" style="background-color:${backgroundColorFinal}" fill="${graphicColor}">
     <svg viewBox="0.7084810137748718, 0.7565160393714905, ${wordmarkNativeX}, ${wordmarkNativeY}" width="${wordmarkGraphicWidth}" height="${wordmarkGraphicHeight}" x="${wordmarkGraphicX}" y="${wordmarkGraphicY}">
@@ -78,30 +80,33 @@ html`
       <path d="M128.732 7.63894C128.344 7.63894 128.015 7.92571 127.745 8.49924C127.475 9.07278 127.323 10.1439 127.289 11.7127H128.478C129.086 11.7127 129.491 11.5946 129.693 11.3585C129.912 11.1055 130.022 10.6584 130.022 10.0174C130.022 9.14025 129.887 8.52455 129.617 8.1703C129.364 7.81606 129.069 7.63894 128.732 7.63894ZM128.807 19.4048C127.542 19.4048 126.412 19.1434 125.417 18.6205C124.438 18.0975 123.662 17.3469 123.089 16.3685C122.515 15.3732 122.229 14.184 122.229 12.8008C122.229 11.7043 122.423 10.7512 122.811 9.94151C123.199 9.13182 123.722 8.45707 124.379 7.91727C125.037 7.36061 125.771 6.94732 126.581 6.67742C127.39 6.40752 128.209 6.27258 129.035 6.27258C130.25 6.27258 131.253 6.52561 132.046 7.03167C132.856 7.52086 133.463 8.18717 133.868 9.03061C134.273 9.85717 134.475 10.7849 134.475 11.8139C134.475 12.0838 134.467 12.32 134.45 12.5224C134.433 12.708 134.399 12.9188 134.349 13.155H127.315C127.45 14.3864 127.812 15.2805 128.403 15.8371C129.01 16.3938 129.685 16.6721 130.427 16.6721C131.068 16.6721 131.616 16.5625 132.072 16.3432C132.544 16.107 132.957 15.8203 133.311 15.4829L134.298 16.4444C133.758 17.4734 133.016 18.224 132.072 18.6964C131.144 19.1687 130.056 19.4048 128.807 19.4048Z"/>
   </svg>
 </svg>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _17(md){return(
 md`## Logo and wordmark`
-)});
-  main.variable(observer("viewof combinedWidth")).define("viewof combinedWidth", ["Inputs"], function(Inputs){return(
+)}
+
+function _combinedWidth(Inputs){return(
 Inputs.range([1, 2000], { value: 750, step: 1, label: "Image width" })
-)});
-  main.variable(observer("combinedWidth")).define("combinedWidth", ["Generators", "viewof combinedWidth"], (G, _) => G.input(_));
-  main.variable(observer("viewof combinedPadding")).define("viewof combinedPadding", ["Inputs"], function(Inputs){return(
+)}
+
+function _combinedPadding(Inputs){return(
 Inputs.range([0, 49], { value: 0, step: 1, label: "Padding %" })
-)});
-  main.variable(observer("combinedPadding")).define("combinedPadding", ["Generators", "viewof combinedPadding"], (G, _) => G.input(_));
-  main.variable(observer("viewof combinedHeight")).define("viewof combinedHeight", ["Inputs"], function(Inputs){return(
+)}
+
+function _combinedHeight(Inputs){return(
 Inputs.range([1, 2000], { value: 750, step: 1, label: "Image height" })
-)});
-  main.variable(observer("combinedHeight")).define("combinedHeight", ["Generators", "viewof combinedHeight"], (G, _) => G.input(_));
-  main.variable(observer("viewof combinedMaintainRatio")).define("viewof combinedMaintainRatio", ["Inputs"], function(Inputs){return(
+)}
+
+function _combinedMaintainRatio(Inputs){return(
 Inputs.toggle({label: "Auto height", value: true})
-)});
-  main.variable(observer("combinedMaintainRatio")).define("combinedMaintainRatio", ["Generators", "viewof combinedMaintainRatio"], (G, _) => G.input(_));
-  main.variable(observer("logoAndWordmark")).define("logoAndWordmark", ["html","combinedSvgWidth","combinedSvgHeight","backgroundColorFinal","graphicColor","combinedNativeX","combinedNativeY","combinedGraphicWidth","combinedGraphicHeight","combinedGraphicX","combinedGraphicY"], function(html,combinedSvgWidth,combinedSvgHeight,backgroundColorFinal,graphicColor,combinedNativeX,combinedNativeY,combinedGraphicWidth,combinedGraphicHeight,combinedGraphicX,combinedGraphicY){return(
+)}
+
+function _logoAndWordmark(html,combinedSvgWidth,combinedSvgHeight,backgroundColorFinal,graphicColor,combinedNativeX,combinedNativeY,combinedGraphicWidth,combinedGraphicHeight,combinedGraphicX,combinedGraphicY){return(
 html`
 <svg width="${combinedSvgWidth}" height="${combinedSvgHeight}" style="background-color:${backgroundColorFinal}" fill="${graphicColor}">
     <svg viewBox="0, 0, ${combinedNativeX}, ${combinedNativeY}" width="${combinedGraphicWidth}" height="${combinedGraphicHeight}" x="${combinedGraphicX}" y="${combinedGraphicY}">
@@ -118,29 +123,33 @@ html`
       <path d="M10.9646 18.9046C9.95224 18.9046 9.07507 18.6853 8.33313 18.2467C7.59386 17.8098 7.0028 17.1909 6.62722 16.4604C6.22789 15.7003 5.93558 14.8965 5.75735 14.0684C5.56825 13.1704 5.47613 12.2574 5.48232 11.3427C5.48232 10.6185 5.52984 9.92616 5.62578 9.26408C5.7208 8.60284 5.89715 7.93067 6.15391 7.24843C6.41066 6.56618 6.74143 5.97468 7.14438 5.47308C7.56389 4.9592 8.1063 4.54092 8.72969 4.25059C9.38391 3.93719 10.1277 3.78091 10.9646 3.78091C11.977 3.78091 12.8542 4.00021 13.5962 4.43879C14.3354 4.87564 14.9265 5.49454 15.3021 6.22506C15.6986 6.97704 15.9883 7.7744 16.1719 8.61712C16.3547 9.459 16.447 10.3681 16.447 11.3427C16.447 12.067 16.3995 12.7593 16.3035 13.4214C16.2013 14.1088 16.0206 14.7844 15.7644 15.437C15.4994 16.1193 15.1705 16.7108 14.7739 17.2124C14.3774 17.714 13.8529 18.1215 13.1996 18.4349C12.5463 18.7483 11.8016 18.9046 10.9646 18.9046ZM12.8999 13.3447C13.4242 12.8211 13.7159 12.0966 13.7058 11.3427C13.7058 10.5639 13.4436 9.89654 12.92 9.34074C12.3955 8.78495 11.7441 8.50705 10.9646 8.50705C10.1852 8.50705 9.53376 8.78495 9.00928 9.34074C8.49569 9.87018 8.21207 10.5928 8.22348 11.3427C8.22348 12.1216 8.48572 12.7889 9.00928 13.3447C9.53376 13.9005 10.1852 14.1784 10.9646 14.1784C11.7441 14.1784 12.3891 13.9005 12.8999 13.3447ZM10.9646 22.6855C17.0199 22.6855 21.9293 17.6068 21.9293 11.3427C21.9293 5.07871 17.0199 0 10.9646 0C4.90942 0 0 5.07871 0 11.3427C0 17.6068 4.90942 22.6855 10.9646 22.6855Z"/>
   </svg>
 </svg>`
-)});
-  main.variable(observer("combined")).define("combined", ["logoAndWordmark"], function(logoAndWordmark){return(
+)}
+
+function _combined(logoAndWordmark){return(
 logoAndWordmark
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _24(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`## Variables`
-)});
-  main.variable(observer("viewof graphicColor")).define("viewof graphicColor", ["Inputs"], function(Inputs){return(
+)}
+
+function _graphicColor(Inputs){return(
 Inputs.text({label: "Graphic color", type: "color", value: "#000000"})
-)});
-  main.variable(observer("graphicColor")).define("graphicColor", ["Generators", "viewof graphicColor"], (G, _) => G.input(_));
-  main.variable(observer("viewof backgroundColor")).define("viewof backgroundColor", ["Inputs"], function(Inputs){return(
+)}
+
+function _backgroundColor(Inputs){return(
 Inputs.text({label: "Background color", type: "color", value: "#ffffff"})
-)});
-  main.variable(observer("backgroundColor")).define("backgroundColor", ["Generators", "viewof backgroundColor"], (G, _) => G.input(_));
-  main.variable(observer("viewof transparentBackground")).define("viewof transparentBackground", ["Inputs"], function(Inputs){return(
+)}
+
+function _transparentBackground(Inputs){return(
 Inputs.toggle({label: "Transparent background", value: true})
-)});
-  main.variable(observer("transparentBackground")).define("transparentBackground", ["Generators", "viewof transparentBackground"], (G, _) => G.input(_));
-  main.variable(observer("backgroundColorFinal")).define("backgroundColorFinal", ["transparentBackground","backgroundColor"], function(transparentBackground,backgroundColor)
+)}
+
+function _backgroundColorFinal(transparentBackground,backgroundColor)
 {
   if (transparentBackground) {
     return "transparent"
@@ -149,20 +158,25 @@ Inputs.toggle({label: "Transparent background", value: true})
     return backgroundColor
   }
 }
-);
-  main.variable(observer("logoNativeX")).define("logoNativeX", function(){return(
+
+
+function _logoNativeX(){return(
 21.92930030822754
-)});
-  main.variable(observer("logoNativeY")).define("logoNativeY", function(){return(
+)}
+
+function _logoNativeY(){return(
 22.68549919128418
-)});
-  main.variable(observer("logoRatio")).define("logoRatio", ["logoNativeX","logoNativeY"], function(logoNativeX,logoNativeY){return(
+)}
+
+function _logoRatio(logoNativeX,logoNativeY){return(
 logoNativeX/logoNativeY
-)});
-  main.variable(observer("logoSvgWidth")).define("logoSvgWidth", ["logoWidth"], function(logoWidth){return(
+)}
+
+function _logoSvgWidth(logoWidth){return(
 logoWidth
-)});
-  main.variable(observer("logoSvgHeight")).define("logoSvgHeight", ["logoMaintainRatio","logoSvgWidth","logoRatio","logoHeight","logoGraphicHeight"], function(logoMaintainRatio,logoSvgWidth,logoRatio,logoHeight,logoGraphicHeight)
+)}
+
+function _logoSvgHeight(logoMaintainRatio,logoSvgWidth,logoRatio,logoHeight,logoGraphicHeight)
 {
   if (logoMaintainRatio) {
     return Math.round(logoSvgWidth / logoRatio)
@@ -176,32 +190,41 @@ logoWidth
     }
   }
 }
-);
-  main.variable(observer("logoGraphicWidth")).define("logoGraphicWidth", ["logoWidth","logoPadding"], function(logoWidth,logoPadding){return(
+
+
+function _logoGraphicWidth(logoWidth,logoPadding){return(
 logoWidth - (logoWidth / 100) * (logoPadding * 2)
-)});
-  main.variable(observer("logoGraphicHeight")).define("logoGraphicHeight", ["logoGraphicWidth","logoRatio"], function(logoGraphicWidth,logoRatio){return(
+)}
+
+function _logoGraphicHeight(logoGraphicWidth,logoRatio){return(
 Math.round(logoGraphicWidth / logoRatio)
-)});
-  main.variable(observer("logoGraphicX")).define("logoGraphicX", ["logoSvgWidth","logoGraphicWidth"], function(logoSvgWidth,logoGraphicWidth){return(
+)}
+
+function _logoGraphicX(logoSvgWidth,logoGraphicWidth){return(
 (logoSvgWidth - logoGraphicWidth) / 2
-)});
-  main.variable(observer("logoGraphicY")).define("logoGraphicY", ["logoSvgHeight","logoGraphicHeight"], function(logoSvgHeight,logoGraphicHeight){return(
+)}
+
+function _logoGraphicY(logoSvgHeight,logoGraphicHeight){return(
 (logoSvgHeight - logoGraphicHeight) / 2
-)});
-  main.variable(observer("wordmarkNativeX")).define("wordmarkNativeX", function(){return(
+)}
+
+function _wordmarkNativeX(){return(
 133.7665252685547
-)});
-  main.variable(observer("wordmarkNativeY")).define("wordmarkNativeY", function(){return(
+)}
+
+function _wordmarkNativeY(){return(
 18.749584197998047
-)});
-  main.variable(observer("wordmarkRatio")).define("wordmarkRatio", ["wordmarkNativeX","wordmarkNativeY"], function(wordmarkNativeX,wordmarkNativeY){return(
+)}
+
+function _wordmarkRatio(wordmarkNativeX,wordmarkNativeY){return(
 wordmarkNativeX/wordmarkNativeY
-)});
-  main.variable(observer("wordmarkSvgWidth")).define("wordmarkSvgWidth", ["wordmarkWidth"], function(wordmarkWidth){return(
+)}
+
+function _wordmarkSvgWidth(wordmarkWidth){return(
 wordmarkWidth
-)});
-  main.variable(observer("wordmarkSvgHeight")).define("wordmarkSvgHeight", ["wordmarkMaintainRatio","wordmarkSvgWidth","wordmarkRatio","wordmarkHeight","wordmarkGraphicHeight"], function(wordmarkMaintainRatio,wordmarkSvgWidth,wordmarkRatio,wordmarkHeight,wordmarkGraphicHeight)
+)}
+
+function _wordmarkSvgHeight(wordmarkMaintainRatio,wordmarkSvgWidth,wordmarkRatio,wordmarkHeight,wordmarkGraphicHeight)
 {
   if (wordmarkMaintainRatio) {
     return Math.round(wordmarkSvgWidth / wordmarkRatio)
@@ -215,32 +238,41 @@ wordmarkWidth
     }
   }
 }
-);
-  main.variable(observer("wordmarkGraphicWidth")).define("wordmarkGraphicWidth", ["wordmarkWidth","wordmarkPadding"], function(wordmarkWidth,wordmarkPadding){return(
+
+
+function _wordmarkGraphicWidth(wordmarkWidth,wordmarkPadding){return(
 wordmarkWidth - (wordmarkWidth / 100) * (wordmarkPadding * 2)
-)});
-  main.variable(observer("wordmarkGraphicHeight")).define("wordmarkGraphicHeight", ["wordmarkGraphicWidth","wordmarkRatio"], function(wordmarkGraphicWidth,wordmarkRatio){return(
+)}
+
+function _wordmarkGraphicHeight(wordmarkGraphicWidth,wordmarkRatio){return(
 Math.round(wordmarkGraphicWidth / wordmarkRatio)
-)});
-  main.variable(observer("wordmarkGraphicX")).define("wordmarkGraphicX", ["wordmarkSvgWidth","wordmarkGraphicWidth"], function(wordmarkSvgWidth,wordmarkGraphicWidth){return(
+)}
+
+function _wordmarkGraphicX(wordmarkSvgWidth,wordmarkGraphicWidth){return(
 (wordmarkSvgWidth - wordmarkGraphicWidth) / 2
-)});
-  main.variable(observer("wordmarkGraphicY")).define("wordmarkGraphicY", ["wordmarkSvgHeight","wordmarkGraphicHeight"], function(wordmarkSvgHeight,wordmarkGraphicHeight){return(
+)}
+
+function _wordmarkGraphicY(wordmarkSvgHeight,wordmarkGraphicHeight){return(
 (wordmarkSvgHeight - wordmarkGraphicHeight) / 2
-)});
-  main.variable(observer("combinedNativeX")).define("combinedNativeX", function(){return(
+)}
+
+function _combinedNativeX(){return(
 164.47500610351562
-)});
-  main.variable(observer("combinedNativeY")).define("combinedNativeY", function(){return(
+)}
+
+function _combinedNativeY(){return(
 22.68549919128418
-)});
-  main.variable(observer("combinedRatio")).define("combinedRatio", ["combinedNativeX","combinedNativeY"], function(combinedNativeX,combinedNativeY){return(
+)}
+
+function _combinedRatio(combinedNativeX,combinedNativeY){return(
 combinedNativeX/combinedNativeY
-)});
-  main.variable(observer("combinedSvgWidth")).define("combinedSvgWidth", ["combinedWidth"], function(combinedWidth){return(
+)}
+
+function _combinedSvgWidth(combinedWidth){return(
 combinedWidth
-)});
-  main.variable(observer("combinedSvgHeight")).define("combinedSvgHeight", ["combinedMaintainRatio","combinedSvgWidth","combinedRatio","combinedHeight","combinedGraphicHeight"], function(combinedMaintainRatio,combinedSvgWidth,combinedRatio,combinedHeight,combinedGraphicHeight)
+)}
+
+function _combinedSvgHeight(combinedMaintainRatio,combinedSvgWidth,combinedRatio,combinedHeight,combinedGraphicHeight)
 {
   if (combinedMaintainRatio) {
     return Math.round(combinedSvgWidth / combinedRatio)
@@ -254,48 +286,145 @@ combinedWidth
     }
   }
 }
-);
-  main.variable(observer("combinedGraphicWidth")).define("combinedGraphicWidth", ["combinedWidth","combinedPadding"], function(combinedWidth,combinedPadding){return(
+
+
+function _combinedGraphicWidth(combinedWidth,combinedPadding){return(
 combinedWidth - (combinedWidth / 100) * (combinedPadding * 2)
-)});
-  main.variable(observer("combinedGraphicHeight")).define("combinedGraphicHeight", ["combinedGraphicWidth","combinedRatio"], function(combinedGraphicWidth,combinedRatio){return(
+)}
+
+function _combinedGraphicHeight(combinedGraphicWidth,combinedRatio){return(
 Math.round(combinedGraphicWidth / combinedRatio)
-)});
-  main.variable(observer("combinedGraphicX")).define("combinedGraphicX", ["combinedSvgWidth","combinedGraphicWidth"], function(combinedSvgWidth,combinedGraphicWidth){return(
+)}
+
+function _combinedGraphicX(combinedSvgWidth,combinedGraphicWidth){return(
 (combinedSvgWidth - combinedGraphicWidth) / 2
-)});
-  main.variable(observer("combinedGraphicY")).define("combinedGraphicY", ["combinedSvgHeight","combinedGraphicHeight"], function(combinedSvgHeight,combinedGraphicHeight){return(
+)}
+
+function _combinedGraphicY(combinedSvgHeight,combinedGraphicHeight){return(
 (combinedSvgHeight - combinedGraphicHeight) / 2
-)});
-  main.variable(observer()).define(["htl"], function(htl){return(
+)}
+
+function _57(htl){return(
 htl.html`<style>
   svg {
     outline: 1px dashed #ddd;
   }
 </style>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _58(md){return(
 md`---`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _59(md){return(
 md`## Calculate the viewbox for a given SVG`
-)});
-  main.variable(observer("calculateViewbox")).define("calculateViewbox", function(){return(
+)}
+
+function _calculateViewbox(){return(
 function calculateViewbox(svg) {
   document.body.appendChild(svg);
   const {x, y, width, height} = svg.getBBox();
   document.body.removeChild(svg);
   return [x, y, width, height];
 }
-)});
-  main.variable(observer()).define(["calculateViewbox","tester"], function(calculateViewbox,tester){return(
+)}
+
+function _61(calculateViewbox,tester){return(
 calculateViewbox(tester)
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _62(md){return(
 md`Just replace the \`path\` stuff inside \`tester\`:`
-)});
-  main.variable(observer("tester")).define("tester", ["html"], function(html){return(
+)}
+
+function _tester(html){return(
 html`<svg><path d="M10.9646 18.9046C9.95224 18.9046 9.07507 18.6853 8.33313 18.2467C7.59386 17.8098 7.0028 17.1909 6.62722 16.4604C6.22789 15.7003 5.93558 14.8965 5.75735 14.0684C5.56825 13.1704 5.47613 12.2574 5.48232 11.3427C5.48232 10.6185 5.52984 9.92616 5.62578 9.26408C5.7208 8.60284 5.89715 7.93067 6.15391 7.24843C6.41066 6.56618 6.74143 5.97468 7.14438 5.47308C7.56389 4.9592 8.1063 4.54092 8.72969 4.25059C9.38391 3.93719 10.1277 3.78091 10.9646 3.78091C11.977 3.78091 12.8542 4.00021 13.5962 4.43879C14.3354 4.87564 14.9265 5.49454 15.3021 6.22506C15.6986 6.97704 15.9883 7.7744 16.1719 8.61712C16.3547 9.459 16.447 10.3681 16.447 11.3427C16.447 12.067 16.3995 12.7593 16.3035 13.4214C16.2013 14.1088 16.0206 14.7844 15.7644 15.437C15.4994 16.1193 15.1705 16.7108 14.7739 17.2124C14.3774 17.714 13.8529 18.1215 13.1996 18.4349C12.5463 18.7483 11.8016 18.9046 10.9646 18.9046ZM12.8999 13.3447C13.4242 12.8211 13.7159 12.0966 13.7058 11.3427C13.7058 10.5639 13.4436 9.89654 12.92 9.34074C12.3955 8.78495 11.7441 8.50705 10.9646 8.50705C10.1852 8.50705 9.53376 8.78495 9.00928 9.34074C8.49569 9.87018 8.21207 10.5928 8.22348 11.3427C8.22348 12.1216 8.48572 12.7889 9.00928 13.3447C9.53376 13.9005 10.1852 14.1784 10.9646 14.1784C11.7441 14.1784 12.3891 13.9005 12.8999 13.3447ZM10.9646 22.6855C17.0199 22.6855 21.9293 17.6068 21.9293 11.3427C21.9293 5.07871 17.0199 0 10.9646 0C4.90942 0 0 5.07871 0 11.3427C0 17.6068 4.90942 22.6855 10.9646 22.6855Z"/></svg>`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Screen Shot 2021-07-13 at 1.45.14 PM.png", {url: new URL("./files/f328d3956498a7abe446eebc2ae77d054354219fedd6d24ff4ce4a99aed8c5b49ca2d38d7aa4bcd36a0a2ead200ffd6f1a983e3758bb3a9a7b13b8861026e3fd", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["FileAttachment","md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer("viewof logoWidth")).define("viewof logoWidth", ["Inputs"], _logoWidth);
+  main.variable(observer("logoWidth")).define("logoWidth", ["Generators", "viewof logoWidth"], (G, _) => G.input(_));
+  main.variable(observer("viewof logoPadding")).define("viewof logoPadding", ["Inputs"], _logoPadding);
+  main.variable(observer("logoPadding")).define("logoPadding", ["Generators", "viewof logoPadding"], (G, _) => G.input(_));
+  main.variable(observer("viewof logoHeight")).define("viewof logoHeight", ["Inputs"], _logoHeight);
+  main.variable(observer("logoHeight")).define("logoHeight", ["Generators", "viewof logoHeight"], (G, _) => G.input(_));
+  main.variable(observer("viewof logoMaintainRatio")).define("viewof logoMaintainRatio", ["Inputs"], _logoMaintainRatio);
+  main.variable(observer("logoMaintainRatio")).define("logoMaintainRatio", ["Generators", "viewof logoMaintainRatio"], (G, _) => G.input(_));
+  main.variable(observer("logo")).define("logo", ["html","logoSvgWidth","logoSvgHeight","backgroundColorFinal","graphicColor","logoNativeX","logoNativeY","logoGraphicWidth","logoGraphicHeight","logoGraphicX","logoGraphicY"], _logo);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("viewof wordmarkWidth")).define("viewof wordmarkWidth", ["Inputs"], _wordmarkWidth);
+  main.variable(observer("wordmarkWidth")).define("wordmarkWidth", ["Generators", "viewof wordmarkWidth"], (G, _) => G.input(_));
+  main.variable(observer("viewof wordmarkPadding")).define("viewof wordmarkPadding", ["Inputs"], _wordmarkPadding);
+  main.variable(observer("wordmarkPadding")).define("wordmarkPadding", ["Generators", "viewof wordmarkPadding"], (G, _) => G.input(_));
+  main.variable(observer("viewof wordmarkHeight")).define("viewof wordmarkHeight", ["Inputs"], _wordmarkHeight);
+  main.variable(observer("wordmarkHeight")).define("wordmarkHeight", ["Generators", "viewof wordmarkHeight"], (G, _) => G.input(_));
+  main.variable(observer("viewof wordmarkMaintainRatio")).define("viewof wordmarkMaintainRatio", ["Inputs"], _wordmarkMaintainRatio);
+  main.variable(observer("wordmarkMaintainRatio")).define("wordmarkMaintainRatio", ["Generators", "viewof wordmarkMaintainRatio"], (G, _) => G.input(_));
+  main.variable(observer("wordmark")).define("wordmark", ["html","wordmarkSvgWidth","wordmarkSvgHeight","backgroundColorFinal","graphicColor","wordmarkNativeX","wordmarkNativeY","wordmarkGraphicWidth","wordmarkGraphicHeight","wordmarkGraphicX","wordmarkGraphicY"], _wordmark);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer("viewof combinedWidth")).define("viewof combinedWidth", ["Inputs"], _combinedWidth);
+  main.variable(observer("combinedWidth")).define("combinedWidth", ["Generators", "viewof combinedWidth"], (G, _) => G.input(_));
+  main.variable(observer("viewof combinedPadding")).define("viewof combinedPadding", ["Inputs"], _combinedPadding);
+  main.variable(observer("combinedPadding")).define("combinedPadding", ["Generators", "viewof combinedPadding"], (G, _) => G.input(_));
+  main.variable(observer("viewof combinedHeight")).define("viewof combinedHeight", ["Inputs"], _combinedHeight);
+  main.variable(observer("combinedHeight")).define("combinedHeight", ["Generators", "viewof combinedHeight"], (G, _) => G.input(_));
+  main.variable(observer("viewof combinedMaintainRatio")).define("viewof combinedMaintainRatio", ["Inputs"], _combinedMaintainRatio);
+  main.variable(observer("combinedMaintainRatio")).define("combinedMaintainRatio", ["Generators", "viewof combinedMaintainRatio"], (G, _) => G.input(_));
+  main.variable(observer("logoAndWordmark")).define("logoAndWordmark", ["html","combinedSvgWidth","combinedSvgHeight","backgroundColorFinal","graphicColor","combinedNativeX","combinedNativeY","combinedGraphicWidth","combinedGraphicHeight","combinedGraphicX","combinedGraphicY"], _logoAndWordmark);
+  main.variable(observer("combined")).define("combined", ["logoAndWordmark"], _combined);
+  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("viewof graphicColor")).define("viewof graphicColor", ["Inputs"], _graphicColor);
+  main.variable(observer("graphicColor")).define("graphicColor", ["Generators", "viewof graphicColor"], (G, _) => G.input(_));
+  main.variable(observer("viewof backgroundColor")).define("viewof backgroundColor", ["Inputs"], _backgroundColor);
+  main.variable(observer("backgroundColor")).define("backgroundColor", ["Generators", "viewof backgroundColor"], (G, _) => G.input(_));
+  main.variable(observer("viewof transparentBackground")).define("viewof transparentBackground", ["Inputs"], _transparentBackground);
+  main.variable(observer("transparentBackground")).define("transparentBackground", ["Generators", "viewof transparentBackground"], (G, _) => G.input(_));
+  main.variable(observer("backgroundColorFinal")).define("backgroundColorFinal", ["transparentBackground","backgroundColor"], _backgroundColorFinal);
+  main.variable(observer("logoNativeX")).define("logoNativeX", _logoNativeX);
+  main.variable(observer("logoNativeY")).define("logoNativeY", _logoNativeY);
+  main.variable(observer("logoRatio")).define("logoRatio", ["logoNativeX","logoNativeY"], _logoRatio);
+  main.variable(observer("logoSvgWidth")).define("logoSvgWidth", ["logoWidth"], _logoSvgWidth);
+  main.variable(observer("logoSvgHeight")).define("logoSvgHeight", ["logoMaintainRatio","logoSvgWidth","logoRatio","logoHeight","logoGraphicHeight"], _logoSvgHeight);
+  main.variable(observer("logoGraphicWidth")).define("logoGraphicWidth", ["logoWidth","logoPadding"], _logoGraphicWidth);
+  main.variable(observer("logoGraphicHeight")).define("logoGraphicHeight", ["logoGraphicWidth","logoRatio"], _logoGraphicHeight);
+  main.variable(observer("logoGraphicX")).define("logoGraphicX", ["logoSvgWidth","logoGraphicWidth"], _logoGraphicX);
+  main.variable(observer("logoGraphicY")).define("logoGraphicY", ["logoSvgHeight","logoGraphicHeight"], _logoGraphicY);
+  main.variable(observer("wordmarkNativeX")).define("wordmarkNativeX", _wordmarkNativeX);
+  main.variable(observer("wordmarkNativeY")).define("wordmarkNativeY", _wordmarkNativeY);
+  main.variable(observer("wordmarkRatio")).define("wordmarkRatio", ["wordmarkNativeX","wordmarkNativeY"], _wordmarkRatio);
+  main.variable(observer("wordmarkSvgWidth")).define("wordmarkSvgWidth", ["wordmarkWidth"], _wordmarkSvgWidth);
+  main.variable(observer("wordmarkSvgHeight")).define("wordmarkSvgHeight", ["wordmarkMaintainRatio","wordmarkSvgWidth","wordmarkRatio","wordmarkHeight","wordmarkGraphicHeight"], _wordmarkSvgHeight);
+  main.variable(observer("wordmarkGraphicWidth")).define("wordmarkGraphicWidth", ["wordmarkWidth","wordmarkPadding"], _wordmarkGraphicWidth);
+  main.variable(observer("wordmarkGraphicHeight")).define("wordmarkGraphicHeight", ["wordmarkGraphicWidth","wordmarkRatio"], _wordmarkGraphicHeight);
+  main.variable(observer("wordmarkGraphicX")).define("wordmarkGraphicX", ["wordmarkSvgWidth","wordmarkGraphicWidth"], _wordmarkGraphicX);
+  main.variable(observer("wordmarkGraphicY")).define("wordmarkGraphicY", ["wordmarkSvgHeight","wordmarkGraphicHeight"], _wordmarkGraphicY);
+  main.variable(observer("combinedNativeX")).define("combinedNativeX", _combinedNativeX);
+  main.variable(observer("combinedNativeY")).define("combinedNativeY", _combinedNativeY);
+  main.variable(observer("combinedRatio")).define("combinedRatio", ["combinedNativeX","combinedNativeY"], _combinedRatio);
+  main.variable(observer("combinedSvgWidth")).define("combinedSvgWidth", ["combinedWidth"], _combinedSvgWidth);
+  main.variable(observer("combinedSvgHeight")).define("combinedSvgHeight", ["combinedMaintainRatio","combinedSvgWidth","combinedRatio","combinedHeight","combinedGraphicHeight"], _combinedSvgHeight);
+  main.variable(observer("combinedGraphicWidth")).define("combinedGraphicWidth", ["combinedWidth","combinedPadding"], _combinedGraphicWidth);
+  main.variable(observer("combinedGraphicHeight")).define("combinedGraphicHeight", ["combinedGraphicWidth","combinedRatio"], _combinedGraphicHeight);
+  main.variable(observer("combinedGraphicX")).define("combinedGraphicX", ["combinedSvgWidth","combinedGraphicWidth"], _combinedGraphicX);
+  main.variable(observer("combinedGraphicY")).define("combinedGraphicY", ["combinedSvgHeight","combinedGraphicHeight"], _combinedGraphicY);
+  main.variable(observer()).define(["htl"], _57);
+  main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["md"], _59);
+  main.variable(observer("calculateViewbox")).define("calculateViewbox", _calculateViewbox);
+  main.variable(observer()).define(["calculateViewbox","tester"], _61);
+  main.variable(observer()).define(["md"], _62);
+  main.variable(observer("tester")).define("tester", ["html"], _tester);
   return main;
 }
