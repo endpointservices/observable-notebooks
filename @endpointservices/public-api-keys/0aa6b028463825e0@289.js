@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/public-api-keys@289
-import define1 from "./6eda90668ae03044@803.js";
+import define1 from "./6eda90668ae03044@804.js";
 import define2 from "./f92778131fd76559@1173.js";
-import define3 from "./293899bef371e135@226.js";
+import define3 from "./293899bef371e135@267.js";
 
 function _1(md){return(
 md`# Using Secrets for API keys in public notebooks (Airtable Example)

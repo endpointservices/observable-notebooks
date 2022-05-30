@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/serverless-cells@1711
-import define1 from "./8aac8b2cb06bf434@247.js";
+import define1 from "./8aac8b2cb06bf434@258.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
 async function _1(FileAttachment,width,md){return(
