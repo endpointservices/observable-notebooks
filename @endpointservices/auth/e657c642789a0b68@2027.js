@@ -1,13 +1,13 @@
 // https://observablehq.com/@endpointservices/auth@2027
-import define1 from "./993a0c51ef1175ea@1345.js";
-import define2 from "./698257e86fae4586@367.js";
-import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./6eda90668ae03044@803.js";
+import define1 from "./993a0c51ef1175ea@1362.js";
+import define2 from "./698257e86fae4586@374.js";
+import define3 from "./ef672b935bd480fc@622.js";
+import define4 from "./6eda90668ae03044@804.js";
 import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
 import define8 from "./1131d8b2f152e8a8@463.js";
-import define9 from "./293899bef371e135@225.js";
+import define9 from "./293899bef371e135@267.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("AuthServerBanner@1.png").url(), "Federated IndieAuth Server")
@@ -2121,7 +2121,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["AuthServerBanner@1.png",new URL("./files/c7243676b934e5cf12e7c54b80a7d9d7bf31c90a202edb62c30bf74507106c1f9cb1ba138c1f0c17494c674966ac5f3a7de30a4c1317059c93414153281466cb",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["AuthServerBanner@1.png", {url: new URL("./files/c7243676b934e5cf12e7c54b80a7d9d7bf31c90a202edb62c30bf74507106c1f9cb1ba138c1f0c17494c674966ac5f3a7de30a4c1317059c93414153281466cb", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["bannerImage","FileAttachment"], _1);
   main.variable(observer()).define(["getContext","toc"], _2);

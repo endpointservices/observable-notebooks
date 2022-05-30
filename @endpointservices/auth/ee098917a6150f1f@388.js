@@ -343,7 +343,10 @@ html`<svg><path d="M10.9646 18.9046C9.95224 18.9046 9.07507 18.6853 8.33313 18.2
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["Screen Shot 2021-07-13 at 1.45.14 PM.png",new URL("./files/f328d3956498a7abe446eebc2ae77d054354219fedd6d24ff4ce4a99aed8c5b49ca2d38d7aa4bcd36a0a2ead200ffd6f1a983e3758bb3a9a7b13b8861026e3fd",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Screen Shot 2021-07-13 at 1.45.14 PM.png", {url: new URL("./files/f328d3956498a7abe446eebc2ae77d054354219fedd6d24ff4ce4a99aed8c5b49ca2d38d7aa4bcd36a0a2ead200ffd6f1a983e3758bb3a9a7b13b8861026e3fd", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","md"], _1);
   main.variable(observer()).define(["md"], _2);
