@@ -6,7 +6,7 @@ import define4 from "./1131d8b2f152e8a8@463.js";
 import define5 from "./573e072575f28fb9@454.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./52d808b188b8672b@129.js";
-import define8 from "./293899bef371e135@247.js";
+import define8 from "./293899bef371e135@267.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("Identity.png").url(), "Bring your own Identity with IndieAuth")

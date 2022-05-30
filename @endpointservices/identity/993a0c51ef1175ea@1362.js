@@ -1,6 +1,7 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1345
-import define1 from "./3df1b33bb2cfcd3c@475.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@tomlarkworthy/firebase@1362
+import define1 from "./c7a3b20cec5d4dd9@669.js";
+import define2 from "./3df1b33bb2cfcd3c@475.js";
+import define3 from "./58f3eb7334551ae6@209.js";
 
 function _1(md){return(
 md`# Firebase and Firebase UI
@@ -233,8 +234,8 @@ listen(firebase.firestore().doc("services/testing/example/empty"), {
 })
 )}
 
-function _listenTests(testing){return(
-testing.createSuite()
+function _listenTests(createSuite){return(
+createSuite()
 )}
 
 function _12(listenTests,firebase,expect,listen){return(
@@ -620,41 +621,19 @@ function _30(md){return(
 md`### Testing`
 )}
 
-async function _testing(DocsView,firebase,firebaseui)
-{
-  DocsView, firebase, firebaseui;
-  const [{ Runtime }, { default: define }] = await Promise.all([
-    import(
-      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
-    ),
-    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
-  ]);
-  const module = new Runtime().module(define);
-  return Object.fromEntries(
-    await Promise.all(
-      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
-    )
-  );
-}
-
-
-function _expect(testing){return(
-testing.expect
-)}
-
-function _docsViewTests(testing){return(
-testing.createSuite()
+function _docsViewTests(createSuite){return(
+createSuite()
 )}
 
 function _testView(DocsView,firebase){return(
 new DocsView(firebase.firestore().collection("services/testing/example"))
 )}
 
-function _35(testView){return(
+function _34(testView){return(
 testView
 )}
 
-function _36(docsViewTests,expect,testView){return(
+function _35(docsViewTests,expect,testView){return(
 docsViewTests.test("First value is the result", () => {
   // Well this is a pass but the Runtime won't allow a cell to catch the Runtime error
   console.log("expect?");
@@ -666,7 +645,7 @@ function _permissionDeniedView(DocsView,firebase){return(
 new DocsView(firebase.firestore().collection("hjfkjhfsd/dasdasdas/dasdasdas"))
 )}
 
-function _38(docsViewTests,$0){return(
+function _37(docsViewTests,$0){return(
 docsViewTests.test("Permission errors bubble up", async (done) => {
   // Well this is a pass but the Runtime won't allow a cell to catch the Runtime error
   try {
@@ -677,7 +656,7 @@ docsViewTests.test("Permission errors bubble up", async (done) => {
 })
 )}
 
-function _41(footer){return(
+function _40(footer){return(
 footer
 )}
 
@@ -704,7 +683,7 @@ export default function define(runtime, observer) {
   main.variable(observer("collection_listen")).define("collection_listen", ["listen","firebase"], _collection_listen);
   main.variable(observer("doc_listen")).define("doc_listen", ["listen","firebase"], _doc_listen);
   main.variable(observer("default_value")).define("default_value", ["listen","firebase"], _default_value);
-  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["testing"], _listenTests);
+  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["createSuite"], _listenTests);
   main.variable(observer("listenTests")).define("listenTests", ["Generators", "viewof listenTests"], (G, _) => G.input(_));
   main.variable(observer()).define(["listenTests","firebase","expect","listen"], _12);
   main.variable(observer()).define(["listenTests","firebase","expect","listen"], _13);
@@ -726,21 +705,22 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _28);
   main.variable(observer("DocsView")).define("DocsView", ["View"], _DocsView);
   main.variable(observer()).define(["md"], _30);
-  main.variable(observer("testing")).define("testing", ["DocsView","firebase","firebaseui"], _testing);
-  main.variable(observer("expect")).define("expect", ["testing"], _expect);
-  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["testing"], _docsViewTests);
+  const child1 = runtime.module(define1);
+  main.import("createSuite", child1);
+  main.import("expect", child1);
+  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["createSuite"], _docsViewTests);
   main.variable(observer("docsViewTests")).define("docsViewTests", ["Generators", "viewof docsViewTests"], (G, _) => G.input(_));
   main.variable(observer("viewof testView")).define("viewof testView", ["DocsView","firebase"], _testView);
   main.variable(observer("testView")).define("testView", ["Generators", "viewof testView"], (G, _) => G.input(_));
-  main.variable(observer()).define(["testView"], _35);
-  main.variable(observer()).define(["docsViewTests","expect","testView"], _36);
+  main.variable(observer()).define(["testView"], _34);
+  main.variable(observer()).define(["docsViewTests","expect","testView"], _35);
   main.variable(observer("viewof permissionDeniedView")).define("viewof permissionDeniedView", ["DocsView","firebase"], _permissionDeniedView);
   main.variable(observer("permissionDeniedView")).define("permissionDeniedView", ["Generators", "viewof permissionDeniedView"], (G, _) => G.input(_));
-  main.variable(observer()).define(["docsViewTests","viewof permissionDeniedView"], _38);
-  const child1 = runtime.module(define1);
-  main.import("View", child1);
+  main.variable(observer()).define(["docsViewTests","viewof permissionDeniedView"], _37);
   const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _41);
+  main.import("View", child2);
+  const child3 = runtime.module(define3);
+  main.import("footer", child3);
+  main.variable(observer()).define(["footer"], _40);
   return main;
 }
