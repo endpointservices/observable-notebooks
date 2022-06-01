@@ -75,16 +75,16 @@ Plot.plot({
 )}
 
 function _scaling(Inputs){return(
-Inputs.range([0, 1], { value: 0.21 })
+Inputs.range([0, 1], { value: 0.09 })
 )}
 
 function _offset(Inputs){return(
-Inputs.range([0, 100], { value: 39 })
+Inputs.range([0, 100], { value: 71 })
 )}
 
 function _cutoff(Inputs,data){return(
 Inputs.range([0, data.length], {
-  value: 2,
+  value: 4,
   step: 1,
   label: "cutoff"
 })
