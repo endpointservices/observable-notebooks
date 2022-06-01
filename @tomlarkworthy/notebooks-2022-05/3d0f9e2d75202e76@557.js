@@ -301,12 +301,8 @@ async function _fetchedTags(fetchTags,invalidation,tweets,metadata,fetchp)
 }
 
 
-function _29(tags){return(
-tags[14]
-)}
-
 async function _tags(FileAttachment){return(
-(await FileAttachment("fetchedTags (6).json").json()).map((t) => {
+(await FileAttachment("fetchedTags (7).json").json()).map((t) => {
   let description = undefined;
   if (t?.description) {
     description = t.description;
@@ -322,7 +318,7 @@ async function _tags(FileAttachment){return(
 })
 )}
 
-function _35(footer){return(
+function _34(footer){return(
 footer
 )}
 
@@ -330,11 +326,11 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["fetchedTags (6).json", {url: new URL("./files/d997d66094f59482957c0b42180ea7668d0cb1b38b76c1e67fa6c653c5cfb88c0176ba478d04e8c40668f11bbdc100cc809ddad281cd1662cf90917e71b9c8a7", import.meta.url), mimeType: "application/json", toString}],
     ["tweet_activity_metrics_trendingnotebo2_20220501_20220601_en.csv", {url: new URL("./files/05977de6e91435e6d3661781bd1ff56daf8b49a9bc7d390ca5715809514846fc3cae45eeccf65d7224b3f3c21fdd21820ecc539f3d086c74fa15db36d50f91fc", import.meta.url), mimeType: "text/csv", toString}],
     ["fetchedNotebookURL (5).json", {url: new URL("./files/2ebea91ab2063de8eab668dd9badb4ab6c16758ced8ac1ba9579553bab00c3569e8ac6a6e1938fc489713020678ede39b83a2ddf4634761a57afd88b4da4e0a9", import.meta.url), mimeType: "application/json", toString}],
     ["fetchedMetadata (6).json", {url: new URL("./files/80bb079de24b599bd1f47b0a94cc1976f2c0a58aaf1aa9abf9a85943c766fc327237eb7381e7b09081be782eef73abb73feac001205cfb940dba57d4fd644f11", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedMeta (7).json", {url: new URL("./files/b1672860c46f3b0da18f50caac091c0c6fc5033dd8a63a2294090bfe9b8fc95b35e4ef5bafb69614df90f4e3004578d4c167841a3603a334a934bec765cf3106", import.meta.url), mimeType: "application/json", toString}]
+    ["fetchedMeta (7).json", {url: new URL("./files/b1672860c46f3b0da18f50caac091c0c6fc5033dd8a63a2294090bfe9b8fc95b35e4ef5bafb69614df90f4e3004578d4c167841a3603a334a934bec765cf3106", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedTags (7).json", {url: new URL("./files/23c0b5107c0a3141f49e54a9f3280f77f251ceb623149253e9a18db55783119cf657ea6d3d540ab4c1cdebaaefc0f8e6fa1290f41916830d4b352a0d16147634", import.meta.url), mimeType: "application/json", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["month","md"], _1);
@@ -372,7 +368,6 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof fetchTags")).define("viewof fetchTags", ["Inputs"], _fetchTags);
   main.variable(observer("fetchTags")).define("fetchTags", ["Generators", "viewof fetchTags"], (G, _) => G.input(_));
   main.variable(observer("fetchedTags")).define("fetchedTags", ["fetchTags","invalidation","tweets","metadata","fetchp"], _fetchedTags);
-  main.variable(observer()).define(["tags"], _29);
   main.variable(observer("tags")).define("tags", ["FileAttachment"], _tags);
   const child1 = runtime.module(define1);
   main.import("Plot", child1);
@@ -382,6 +377,6 @@ export default function define(runtime, observer) {
   main.import("fetchp", child3);
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], _35);
+  main.variable(observer()).define(["footer"], _34);
   return main;
 }
