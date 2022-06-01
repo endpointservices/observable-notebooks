@@ -1,3 +1,4 @@
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-05@595
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@622.js";
@@ -30,9 +31,11 @@ function _2(data,htl)
 }
 
 
-function _3(md){return(
-md`This month, our [Trending Notebook Bot](https://twitter.com/trendingnotebo2) saw huge engagement with [Volodymyr Agafonkin
-'s](https://observablehq.com/@mourner) notebook [Visualizing Air Raid Sirens in Ukraine](https://observablehq.com/@mourner/sirens). It's the biggest hit of the year so far.
+function _3(month,md){return(
+md`${month} had 4 times more engagement with the [Trending Notebook Bot](https://twitter.com/trendingnotebo2) than April! This is an unprecedented jump in activity! This I think was due to [@waynesutton](https://twitter.com/waynesutton) returning as community manager for Observable (👋 great to have you back Wayne!) and retweeting us a lot. Thanks Wayne, it makes a big impact for us! I had to rescale all my plots to 
+accommodate!
+
+${month} had four notebooks in particular broke from the pack this month, each gaining many likes and retweets. I would say we are still waiting for a true viral Tweet authored by the [trending bot](https://twitter.com/trendingnotebo2), but we are getting some close calls!
 `
 )}
 
@@ -84,19 +87,24 @@ Inputs.range([0, 100], { value: 71 })
 
 function _cutoff(Inputs,data){return(
 Inputs.range([0, data.length], {
-  value: 4,
+  value: 5,
   step: 1,
   label: "cutoff"
 })
 )}
 
 function _9(month,md){return(
-md`The notebook went viral on Twitter from Volodymyr's own [tweet](https://twitter.com/mourner/status/1512061703227248651). This went viral because it's provides a unique angle to a story people are interested in. Volodymyr collected the data with a bot scraping for regional Telegram air raid alerts. The dataviz makes an emotional connection to the viewer - seeing those alerts visualized gives makes the reader anxious and empathetic to the suffering of those who a receiving those alerts for real. In a sense, the data provides insights into the anxiety level of Ukrainian citizens as this terrible war unfolds.
+md`The very top notebook was [Hello MapLibre](https://observablehq.com/@neocartocnrs/hello-maplibre) which had 18 likes and 6 retweets. [@neocartocnrs](https://observablehq.com/@neocartocnrs) is a familiar name in the Map Dataviz and Observable community. [MapLibre](https://maplibre.org/) is the OSS fork of mapbox-gl-js, and requires a little Observable knowhow to get working properly. Creating a _Hello X_ notebook is an Observablehq community norm when getting a new technology into the ecosystem, and MapLibre is a highly desirable dependency for the mapping community. Thus, getting that library working was a big deal, which was eagerly snapped up by the community. Since publishing, we have seen some other notebooks building on the path cut by [@neocartocnrs](https://observablehq.com/@neocartocnrs), for example, [Terrains with MapLibre](https://observablehq.com/@bert/terrains-with-maplibre) by [@bert](https://observablehq.com/@bert).
 
-As with everything on [Observable](https://observablehq.com/), you have permission to remix the visualization, the data is embedded in the notebook and you can [fork it](https://observablehq.com/@observablehq/fork-suggest-merge). Perhaps you think the data could be visualized in another way, maybe you could create the next viral hit?
+The next big hit of the month was written by me! I can tell your that [Interactive Sequence Diagrams](https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams) was a shower thought that struck me at 1a.m. at night. It's an extremely simple technique for creating user steppable sequence diagrams on Observable, which solved a problem I was having with technical documentation. It only took about 15 mins to code up. I was surprised by how well the notebook did on the trending page, leading me to submit it to Hackernews where it reached the front page. That notebook received more traffic than I ususally get in a whole month over all my notebooks. Clearly, Observable has great potential as a technical documentation host.
 
+Another big notebook of the month was [DarkCideS: Bats in Caves Data](https://observablehq.com/@observablehq/darkcides-bats-in-caves) by the [creators](https://observablehq.com/@observablehq) of Observable. That notebook is simply a stellar example of how to do sophisticated data analysis on the platform. In particular, it makes use of embedded SQL cells to deftly manipulate data and uses Plot to create amazing visualization with very little code. That notebook is my new reference example for canonical Dataviz techniques on Observable. 👏 great work Observble team it is a thing of beauty!  
 
-See you next month! Here are all the [trending](https://twitter.com/trendingnotebo2) notebooks of ${month} in their own words.
+The final notebook of the months big four was [A Sine-Cosine Encoder Experiment](https://observablehq.com/@skybrian/a-sine-cosine-encoder-experiment) by [@skybrian](https://observablehq.com/@skybrian). It's a wonderful example of doing real engineering at home using consumer equipement (LEGO!), that is just a great read. These kinds of projects work quite well in Computational notebooks because you can easily embed pictures and do the mathematics in a single artifact. It lets you get everything down in a single place that you can refer back to at any time. I hope we see more like this!
+
+It did not make quite a big a splash as the other notebooks, but I find it quite amusing that the #5 in ${month} was last months *"best-of"* summary notebook! It had to happen eventually. I did tweet the notebook last month, so for the first time a summary notebook made it into [trending](https://observablehq.com/trending), and actually did really well!
+
+See you next month! Here are the [top trending](https://twitter.com/trendingnotebo2) notebooks of ${month} in their own words.
 `
 )}
 
@@ -335,7 +343,7 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["month","md"], _1);
   main.variable(observer()).define(["data","htl"], _2);
-  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["month","md"], _3);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["Plot","d3","data"], _5);
   main.variable(observer("viewof scaling")).define("viewof scaling", ["Inputs"], _scaling);
