@@ -1,11 +1,11 @@
-// https://observablehq.com/@tomlarkworthy/notebooks-2022-05@596
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-05@599
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@622.js";
 import define4 from "./293899bef371e135@267.js";
 
-function _1(month,md){return(
-md`# Top Observablehq Notebooks of ${month} 2022`
+function _1(md){return(
+md`# Top Observablehq Notebooks of May 2022 `
 )}
 
 function _2(data,htl)
@@ -341,7 +341,7 @@ export default function define(runtime, observer) {
     ["fetchedTags (7).json", {url: new URL("./files/23c0b5107c0a3141f49e54a9f3280f77f251ceb623149253e9a18db55783119cf657ea6d3d540ab4c1cdebaaefc0f8e6fa1290f41916830d4b352a0d16147634", import.meta.url), mimeType: "application/json", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["month","md"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["data","htl"], _2);
   main.variable(observer()).define(["month","md"], _3);
   main.variable(observer()).define(["md"], _4);
