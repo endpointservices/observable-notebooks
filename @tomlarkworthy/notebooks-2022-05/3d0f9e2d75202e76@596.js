@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/notebooks-2022-05@595
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-05@596
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@622.js";
@@ -100,7 +100,7 @@ The next big hit of the month was written by me! I can tell your that [Interacti
 
 Another big notebook of the month was [DarkCideS: Bats in Caves Data](https://observablehq.com/@observablehq/darkcides-bats-in-caves) by the [creators](https://observablehq.com/@observablehq) of Observable. That notebook is simply a stellar example of how to do sophisticated data analysis on the platform. In particular, it makes use of embedded SQL cells to deftly manipulate data and uses Plot to create amazing visualization with very little code. That notebook is my new reference example for canonical Dataviz techniques on Observable. 👏 great work Observble team it is a thing of beauty!  
 
-The final notebook of the months big four was [A Sine-Cosine Encoder Experiment](https://observablehq.com/@skybrian/a-sine-cosine-encoder-experiment) by [@skybrian](https://observablehq.com/@skybrian). It's a wonderful example of doing real engineering at home using consumer equipement (LEGO!), that is just a great read. These kinds of projects work quite well in Computational notebooks because you can easily embed pictures and do the mathematics in a single artifact. It lets you get everything down in a single place that you can refer back to at any time. I hope we see more like this!
+The final notebook of the months big four was [A Sine-Cosine Encoder Experiment](https://observablehq.com/@skybrian/a-sine-cosine-encoder-experiment) by [@skybrian](https://observablehq.com/@skybrian). It's a wonderful example of doing real engineering at home using consumer equipement (LEGO!), that is just a great read with amazing charts of real data. These kinds of projects work quite well in Computational notebooks because you can easily embed pictures and do the mathematics in a single artifact. It lets you get everything down in a single place that you can refer back to at any time. I hope we see more like this!
 
 It did not make quite a big a splash as the other notebooks, but I find it quite amusing that the #5 in ${month} was last months *"best-of"* summary notebook! It had to happen eventually. I did tweet the notebook last month, so for the first time a summary notebook made it into [trending](https://observablehq.com/trending), and actually did really well!
 
