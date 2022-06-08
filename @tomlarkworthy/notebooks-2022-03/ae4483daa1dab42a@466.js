@@ -1,8 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/notebooks-2022-03@466
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
-import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./293899bef371e135@247.js";
+import define3 from "./ef672b935bd480fc@622.js";
+import define4 from "./293899bef371e135@267.js";
 
 function _1(month,md){return(
 md`# Inspiring Notebooks of ${month} 2022`

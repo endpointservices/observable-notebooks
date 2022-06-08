@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/sentry@212
-import define1 from "./fa1f6059e44da1d5@394.js";
+// https://observablehq.com/@endpointservices/sentry@242
+import define1 from "./fa1f6059e44da1d5@408.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
 async function _1(FileAttachment,md){return(
@@ -112,21 +112,21 @@ function _sentry(html,location,Sentry,Tracing,catchAll,invalidation){return(
 )}
 
 function _Sentry(){return(
-import("https://cdn.skypack.dev/@sentry/browser?min")
+import("https://cdn.skypack.dev/@sentry/browser@7.0.0?min")
 )}
 
 function _Tracing(){return(
-import("https://cdn.skypack.dev/@sentry/tracing?min")
+import("https://cdn.skypack.dev/@sentry/tracing@7.0.0?min")
 )}
 
-function _11(md){return(
+function _10(md){return(
 md`### Works with [WEBCode.run](https://webcode.run)
 
 Because the Observable native, functions-as-a-service runtime [webcode.run](https://webcode.run) is run inside a browser, you get reports of server side errors too!
 `
 )}
 
-function _13(footer){return(
+function _12(footer){return(
 footer
 )}
 
@@ -150,9 +150,9 @@ export default function define(runtime, observer) {
   main.variable(observer("Tracing")).define("Tracing", _Tracing);
   const child1 = runtime.module(define1);
   main.import("catchAll", child1);
-  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _10);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _13);
+  main.variable(observer()).define(["footer"], _12);
   return main;
 }
