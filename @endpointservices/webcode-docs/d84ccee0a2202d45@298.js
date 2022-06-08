@@ -1,5 +1,5 @@
-import define1 from "./ef672b935bd480fc@619.js";
-import define2 from "./c7a3b20cec5d4dd9@659.js";
+import define1 from "./c7a3b20cec5d4dd9@669.js";
+import define2 from "./ef672b935bd480fc@622.js";
 import define3 from "./58f3eb7334551ae6@209.js";
 
 function _1(md){return(
@@ -19,7 +19,7 @@ function _suite(createSuite){return(
 createSuite()
 )}
 
-function _4(suite,expect,example){return(
+function _5(suite,expect,example){return(
 suite.test("getComments('https://observablehq.com/@endpointservices/get-comments' has 'Hi I am leaving a comment'", async () => {
   expect(example.length).toBeGreaterThanOrEqual(1);
   const lookup = example.find((el) => el.content === "Hi I am leaving a comment");
@@ -90,19 +90,19 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("example")).define("example", ["getComments"], _example);
+  const child1 = runtime.module(define1);
+  main.import("createSuite", child1);
+  main.import("expect", child1);
   main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["suite","expect","example"], _4);
+  main.variable(observer()).define(["suite","expect","example"], _5);
   main.variable(observer("getComments")).define("getComments", ["fetchp","DOMParser","findComments"], _getComments);
   main.variable(observer("getCommentsAndNamespace")).define("getCommentsAndNamespace", ["fetchp","DOMParser","findComments","findNamespace"], _getCommentsAndNamespace);
   main.variable(observer("findComments")).define("findComments", _findComments);
   main.variable(observer("findNamespace")).define("findNamespace", _findNamespace);
   main.variable(observer("ALLOW_DOMAINS")).define("ALLOW_DOMAINS", _ALLOW_DOMAINS);
-  const child1 = runtime.module(define1).derive(["ALLOW_DOMAINS"], main);
-  main.import("fetchp", child1);
   const child2 = runtime.module(define2);
-  main.import("createSuite", child2);
-  main.import("expect", child2);
+  main.import("fetchp", child2);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
   main.variable(observer()).define(["footer"], _13);

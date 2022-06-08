@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/fetchp@619
+// https://observablehq.com/@tomlarkworthy/fetchp@622
 import define1 from "./dff1e917c89f5e76@1711.js";
 
 function _1(md){return(

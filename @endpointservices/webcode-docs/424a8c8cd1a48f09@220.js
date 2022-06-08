@@ -1,5 +1,5 @@
-import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./293899bef371e135@225.js";
+import define1 from "./6eda90668ae03044@804.js";
+import define2 from "./293899bef371e135@267.js";
 
 function _1(md){return(
 md`# [Webcode](https://webcode.run) API Reference`
@@ -12,7 +12,7 @@ Arg | Type | Description
 ------------ | ------------- | -------------
 **name** | [**String**](string.md) | notebook unique name to identify this endpoint within the notebook. If you name it 'default' the name will not appear in the URL.
 **httpHandler** | [**Function**](.md) | Express 4.0 style HTTP handler 
-**options** | [**Object**](string.md) | Additional deploy options for controlling endpoint
+**options** | [**Object**](string.md) | Additional [DeplyOptions](options) for controlling endpoint
 
 **returns** an object that includes the field "href" which is the public URL of the deployed endpoint`
 )}
@@ -22,11 +22,12 @@ md`## DeployOptions
 
 Field | Type | Description
 ------------ | ------------- | -------------
-**host** | [**String**]() | Domain of runtime (defaults to https://webcode.run) change to self-host
-**hostNotebook** | [**String**]() | Notebook host (defaults to <this> notebook) fix if you want the endpoint to always point to a specific notebook even when forked
+**host** | [**String**]() | Domain of runtime (defaults to https://webcode.run) change to self-host (e.g. https://localhost:8080)
+**hostNotebook** | [**String**]() | Notebook host (defaults to current notebook). Hardcode if you want the endpoint to always point to a specific notebook even when forked
 **secrets** | [**Array(String)**]() | An array of secrets you wish to inject into the execution context.
+**livecode** | [**String** or **Boolean**]() | Set to *true* to enabled developer livecoding. Hardcode to false to disable it. Set to "PUBLIC" to enable public live coding.
 **region** | [**Object**]() | regional host (us-central1, europe-west4, asia-east1)
-**modifiers** | [**Array(String)**]() | Loop prevention flags, by default, endpoints can only be invoked by "external" requests. If a endpoint is marked as "terminal" it may be called by other endpoints. "orchestrator" endpoints can call other endpoints except other "orchistrators".
+**modifiers** | [**Array(String)**]() | Loop prevention flags, by default, endpoints can only be invoked by "external" requests. If a endpoint is marked as "terminal" it may be called by other endpoints. "orchestrator" endpoints can call other endpoints except other "orchestrators".
 
 `
 )}
