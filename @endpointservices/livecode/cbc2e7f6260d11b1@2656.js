@@ -7,7 +7,7 @@ import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./58f3eb7334551ae6@209.js";
 
 function _1(md){return(
-md`# UI Components
+md`# WEBcode UI
 `
 )}
 
@@ -1366,7 +1366,7 @@ publicStatusPane(
 )
 )}
 
-function _publicStatusPane(view,liveCoding,md,firestore,normalizeEndpoint,createChannel,getCorrelation){return(
+function _publicStatusPane(view,liveCoding,md,createChannel,getCorrelation){return(
 (
   { namespace, endpoint, name, user, options = {} } = {},
   invalidation
@@ -1388,12 +1388,6 @@ function _publicStatusPane(view,liveCoding,md,firestore,normalizeEndpoint,create
         </i></p>
       </div>
     </div>`;
-
-  const configDoc = firestore.doc(
-    `/services/http/endpoints/${encodeURIComponent(
-      normalizeEndpoint(endpoint, { excludeCorrelation: true })
-    )}`
-  );
 
   let destroyChannel = undefined;
   let currentLiveMode = undefined;
@@ -1423,9 +1417,10 @@ function _publicStatusPane(view,liveCoding,md,firestore,normalizeEndpoint,create
   }
 
   ui.livecode.singleton.addEventListener("input", () => {
-    console.log("update livemode");
     updateDebugChannel(ui.livecode.singleton.livemode.value);
   });
+  updateDebugChannel(ui.livecode.singleton.livemode.value);
+  invalidation.then(() => updateDebugChannel(false));
 
   return ui;
 }
@@ -1564,17 +1559,17 @@ function _style(html,titleCSS,buttonCSS,textAreaCSS,listSelectorCSS,tabPaneCSS,c
 </style>`
 )}
 
-function _108(md){return(
+function _107(md){return(
 md`## Implementation`
 )}
 
-function _109(normalizeEndpoint){return(
+function _108(normalizeEndpoint){return(
 normalizeEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo;fxd"
 )
 )}
 
-function _110(getCorrelation){return(
+function _109(getCorrelation){return(
 getCorrelation(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo;fxd"
 )
@@ -1608,13 +1603,13 @@ endpoint =>
   )
 )}
 
-function _114(normalizeObservablehqEndpoint){return(
+function _113(normalizeObservablehqEndpoint){return(
 normalizeObservablehqEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo"
 )
 )}
 
-function _115(md){return(
+function _114(md){return(
 md`### Secrets`
 )}
 
@@ -1659,7 +1654,7 @@ async ({ user, namespace, name }) =>
   secretClient(user, `/subdomains/${namespace}/secrets/${name}`, "DELETE")
 )}
 
-function _121(md){return(
+function _120(md){return(
 md`### Live code`
 )}
 
@@ -1756,7 +1751,7 @@ async function createChannel({
 }
 )}
 
-function _123(deploy){return(
+function _122(deploy){return(
 deploy("test", async (request, response) => {
   response
     .header("foo", "bar")
@@ -1780,7 +1775,7 @@ function _database(firebase)
 }
 
 
-function _131(footer){return(
+function _130(footer){return(
 footer
 )}
 
@@ -1901,7 +1896,7 @@ export default function define(runtime, observer) {
   main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel"], _statusPane);
   main.variable(observer()).define(["md"], _92);
   main.variable(observer()).define(["publicStatusPane","invalidation"], _93);
-  main.variable(observer("publicStatusPane")).define("publicStatusPane", ["view","liveCoding","md","firestore","normalizeEndpoint","createChannel","getCorrelation"], _publicStatusPane);
+  main.variable(observer("publicStatusPane")).define("publicStatusPane", ["view","liveCoding","md","createChannel","getCorrelation"], _publicStatusPane);
   main.variable(observer()).define(["md"], _95);
   main.variable(observer("viewof exampleLiveCoding")).define("viewof exampleLiveCoding", ["liveCoding"], _exampleLiveCoding);
   main.variable(observer("exampleLiveCoding")).define("exampleLiveCoding", ["Generators", "viewof exampleLiveCoding"], (G, _) => G.input(_));
@@ -1916,22 +1911,22 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _104);
   main.variable(observer("mobile")).define("mobile", _mobile);
   main.variable(observer("style")).define("style", ["html","titleCSS","buttonCSS","textAreaCSS","listSelectorCSS","tabPaneCSS","colPaneCSS","tabsCSS","headerCSS","colors"], _style);
-  main.variable(observer()).define(["md"], _108);
-  main.variable(observer()).define(["normalizeEndpoint"], _109);
-  main.variable(observer()).define(["getCorrelation"], _110);
+  main.variable(observer()).define(["md"], _107);
+  main.variable(observer()).define(["normalizeEndpoint"], _108);
+  main.variable(observer()).define(["getCorrelation"], _109);
   main.variable(observer("normalizeEndpoint")).define("normalizeEndpoint", _normalizeEndpoint);
   main.variable(observer("getCorrelation")).define("getCorrelation", _getCorrelation);
   main.variable(observer("normalizeObservablehqEndpoint")).define("normalizeObservablehqEndpoint", _normalizeObservablehqEndpoint);
-  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _114);
-  main.variable(observer()).define(["md"], _115);
+  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _113);
+  main.variable(observer()).define(["md"], _114);
   main.variable(observer("SECRET_API")).define("SECRET_API", _SECRET_API);
   main.variable(observer("secretClient")).define("secretClient", ["SECRET_API"], _secretClient);
   main.variable(observer("getStoredSecrets")).define("getStoredSecrets", ["secretClient"], _getStoredSecrets);
   main.variable(observer("setSecret")).define("setSecret", ["secretClient"], _setSecret);
   main.variable(observer("deleteSecret")).define("deleteSecret", ["secretClient"], _deleteSecret);
-  main.variable(observer()).define(["md"], _121);
+  main.variable(observer()).define(["md"], _120);
   main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","getContext","Response"], _createChannel);
-  main.variable(observer()).define(["deploy"], _123);
+  main.variable(observer()).define(["deploy"], _122);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
   const child3 = runtime.module(define3);
@@ -1947,6 +1942,6 @@ export default function define(runtime, observer) {
   main.import("randomId", child6);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _131);
+  main.variable(observer()).define(["footer"], _130);
   return main;
 }
