@@ -26,6 +26,7 @@ endpoint(
   async (req, res) => {
     console.log("Received request", req);
     console.log("Writing to response", res);
+    debugger;
     res.send({
       msg: `Hi! ${req.query.name}`,
       time: Date.now()
@@ -49,7 +50,7 @@ md`### Making a GET
 
 The following UI uses the *fetch* API client-side, to make a simple request to our endpoint. The URL of the endpoint is the *href* parameter of the endpoint.
 
-When public livecoding, the URL of the server contains the session ID, so the server knows which tunnel to route through. **Public livecode endpoints are isolated between participants**.`
+When public livecoding, the URL of the server contains the session ID, so the server knows which tunnel to route through. Public livecode endpoints are isolated between participants.`
 )}
 
 function _name(Inputs){return(
@@ -80,27 +81,29 @@ function _12(response){return(
 response
 )}
 
-function _13(exampleEndpoint,name,md){return(
-md`Updating a value in response to a button press does not seem that impressive until you realize the request is going over the public internet. So you don't need to initiate the request inside the browser, you can also use curl from your console
+function _13(md){return(
+md`Updating a value in response to a button press does not seem that impressive until you realize the request is going over the public internet. So you don't need to initiate the request inside the browser, you can also use curl from your console for instance:`
+)}
 
-\`\`\`
+function _curl_get(exampleEndpoint,name,md){return(
+md`\`\`\`
+
 curl '${exampleEndpoint.href + `?name=${name}`}'
 \`\`\``
 )}
 
-function _14(installCopyCode,curl_example,invalidation){return(
-installCopyCode(curl_example, { invalidation })
-)}
-
-function _15(md){return(
+function _16(md){return(
 md`### Unrolling a server across cells with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)`
 )}
 
-function _curl_example(installCopyCode){return(
-installCopyCode()
-)}
+function _19(installCopyCode,curl_get,invalidation,md)
+{
+  installCopyCode(curl_get, { invalidation });
+  return md`*👈 add the [copy-code](https://observablehq.com/@tomlarkworthy/copy-code) button to examples*`;
+}
 
-function _19(footer){return(
+
+function _20(footer){return(
 footer
 )}
 
@@ -122,14 +125,14 @@ export default function define(runtime, observer) {
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["response"], _12);
-  main.variable(observer()).define(["exampleEndpoint","name","md"], _13);
-  main.variable(observer()).define(["installCopyCode","curl_example","invalidation"], _14);
-  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","name","md"], _curl_get);
+  main.variable(observer()).define(["md"], _16);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer("curl_example")).define("curl_example", ["installCopyCode"], _curl_example);
   const child3 = runtime.module(define3);
   main.import("installCopyCode", child3);
-  main.variable(observer()).define(["footer"], _19);
+  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _19);
+  main.variable(observer()).define(["footer"], _20);
   return main;
 }
