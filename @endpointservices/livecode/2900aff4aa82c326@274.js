@@ -26,16 +26,17 @@ endpoint(
   async (req, res) => {
     console.log("Received request", req);
     console.log("Writing to response", res);
-    debugger;
+    debugger; // 👈 triggers a breakpoint if DevTools is open
     res.send({
       msg: `Hi! ${req.query.name}`,
       time: Date.now()
     });
   },
   {
-    // Never combine secrets and public livecoding!
-    // Any secrets bound to a public livecode endpoint will be exposed.
-    // With normal livecoding secrets are only exposed to authenticated team members.
+    // Never combine secrets and *public* livecoding!
+    // Any secrets bound to a *public* livecode endpoint will be exposed.
+    // In contrast, default livecoding secrets are only exposed to authenticated team members.
+    // who presumably had access by other means anyway.
     livecode: "public"
   }
 )
