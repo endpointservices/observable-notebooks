@@ -111,7 +111,7 @@ md`### Config`
 
 function _host(Inputs,localStorageView){return(
 Inputs.bind(
-  Inputs.select(["webcode.run", "localhost:8080"], {
+  Inputs.select(["webcode.run", "http://localhost:8080"], {
     label: "host"
   }),
   /* localStorageView allows us to persist the value across refreshed */

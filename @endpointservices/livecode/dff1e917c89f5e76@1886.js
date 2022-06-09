@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1870
+// https://observablehq.com/@endpointservices/serverless-cells@1886
 import define1 from "./8aac8b2cb06bf434@258.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -94,7 +94,7 @@ md`### Example`
 )}
 
 function _host(Inputs){return(
-Inputs.select(["webcode.run", "localhost:8080"], {
+Inputs.select(["webcode.run", "http://localhost:8080"], {
   label: "host"
 })
 )}
@@ -172,7 +172,11 @@ function (label, handler, options) {
     secrets: options.secrets
   };
 
-  const host = "https://" + (options.host || `webcode.run`);
+  const host =
+    options.host && /http(s?):\/\//.exec(options.host)
+      ? options.host
+      : "https://" + (options.host || `webcode.run`);
+
   const region = options.region ? `/regions/${options.region}` : "";
   try {
     // Bug fix
