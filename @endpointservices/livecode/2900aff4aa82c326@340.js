@@ -1,6 +1,7 @@
 import define1 from "./6eda90668ae03044@805.js";
-import define2 from "./293899bef371e135@267.js";
+import define2 from "./048a17a165be198d@263.js";
 import define3 from "./509d6b5d1aebf2a1@215.js";
+import define4 from "./293899bef371e135@267.js";
 
 function _1(md){return(
 md`# Livecoding Endpoints with [WEBCode.run](https://webcode.run)
@@ -20,7 +21,7 @@ function _5(md){return(
 md`create an endpoint. For this example, we turn on public livecoding in the options with \`{livecoding: 'public'}\` so anybody can intercept traffic, in production use you would only allow livecoding by a developer.`
 )}
 
-function _exampleEndpoint(endpoint){return(
+function _exampleEndpoint(endpoint,host){return(
 endpoint(
   "example",
   async (req, res) => {
@@ -37,7 +38,8 @@ endpoint(
     // Any secrets bound to a *public* livecode endpoint will be exposed.
     // In contrast, default livecoding secrets are only exposed to authenticated team members.
     // who presumably had access by other means anyway.
-    livecode: "public"
+    livecode: "public",
+    host // WEBCode is a federated compute technology, you can host it yourself on a custom domain
   }
 )
 )}
@@ -93,18 +95,48 @@ curl '${exampleEndpoint.href + `?name=${name}`}'
 \`\`\``
 )}
 
+function _15(md){return(
+md`The story is even more interesting when you pop <a target="_blank" href="https://balsamiq.com/support/faqs/browserconsole">open your developers tools</a>. You should see that the \`console.log\` messages inside the handler have executed, indicating the endpoint code was executed inside your browser.
+
+When you click `
+)}
+
 function _16(md){return(
 md`### Unrolling a server across cells with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)`
 )}
 
-function _19(installCopyCode,curl_get,invalidation,md)
+function _17(md){return(
+md`### Config`
+)}
+
+function _host(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.select(["webcode.run", "localhost:8080"], {
+    label: "host"
+  }),
+  /* localStorageView allows us to persist the value across refreshed */
+  localStorageView("WEBCODE_HOST", {
+    defaultValue: "webcode.run"
+  })
+)
+)}
+
+function _20(md){return(
+md`### Notebook Enhancements`
+)}
+
+function _21(installCopyCode,curl_get,invalidation,md)
 {
   installCopyCode(curl_get, { invalidation });
-  return md`*👈 add the [copy-code](https://observablehq.com/@tomlarkworthy/copy-code) button to examples*`;
+  return md`*👈 [copy-code](https://observablehq.com/@tomlarkworthy/copy-code) button for examples*`;
 }
 
 
-function _20(footer){return(
+function _23(md){return(
+md`##### Notebook Backup, Analytics and monitoring`
+)}
+
+function _25(footer){return(
 footer
 )}
 
@@ -116,8 +148,7 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("endpoint", child1);
   main.variable(observer()).define(["md"], _5);
-  main.variable(observer("viewof exampleEndpoint")).define("viewof exampleEndpoint", ["endpoint"], _exampleEndpoint);
-  main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["Generators", "viewof exampleEndpoint"], (G, _) => G.input(_));
+  main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","host"], _exampleEndpoint);
   main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["md"], _8);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
@@ -128,12 +159,20 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["response"], _12);
   main.variable(observer()).define(["md"], _13);
   main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","name","md"], _curl_get);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.import("localStorageView", child2);
+  main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
+  main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _21);
   const child3 = runtime.module(define3);
   main.import("installCopyCode", child3);
-  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _19);
-  main.variable(observer()).define(["footer"], _20);
+  main.variable(observer()).define(["md"], _23);
+  const child4 = runtime.module(define4);
+  main.import("footer", child4);
+  main.variable(observer()).define(["footer"], _25);
   return main;
 }
