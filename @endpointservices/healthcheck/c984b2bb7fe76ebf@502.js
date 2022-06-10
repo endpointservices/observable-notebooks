@@ -149,7 +149,7 @@ endpoint(
     }, wait * 1000);
   },
   {
-    livecode: false, // Can mess with monitoring if left open by accident
+    livecode: false, // Can affect monitoring if left open by accident
     reusable: false, // This does not support concurrent operations
     modifiers: ["orchistrator"] // This endpoint can call other endpoints
   }
@@ -302,7 +302,7 @@ function _reportMissingErrors(sentry,reportedErrors,errors)
 }
 
 
-function _35(footer){return(
+function _36(footer){return(
 footer
 )}
 
@@ -356,6 +356,6 @@ export default function define(runtime, observer) {
   main.import("footer", child3);
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["footer"], _35);
+  main.variable(observer()).define(["footer"], _36);
   return main;
 }
