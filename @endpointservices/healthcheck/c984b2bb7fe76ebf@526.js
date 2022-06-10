@@ -271,10 +271,14 @@ function _25(md){return(
 md`### Production Debugger`
 )}
 
-function _27(endpoint,notebookSnapshot){return(
+function _trackingVariable_9uEFkhSF43aPddAA(){return(
+true
+)}
+
+function _28(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
-    (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
+    (await notebookSnapshot("trackingVariable_9uEFkhSF43aPddAA")).map(
       (variable) => ({
         state: variable.state,
         name: variable.name,
@@ -286,13 +290,13 @@ endpoint("variables", async (req, res) => {
 })
 )}
 
-function _28(md){return(
+function _29(md){return(
 md`### Sentry.io integration
 
 Sentry SDK is sniffed from dataflow execution and used report all errors`
 )}
 
-function _29(md){return(
+function _30(md){return(
 md`### Discovered Sentry SDK (or null)`
 )}
 
@@ -300,7 +304,7 @@ function _sentry(Inputs){return(
 Inputs.input(undefined)
 )}
 
-function _31(md){return(
+function _32(md){return(
 md`### Report error log
 
 We grow the reportedErrors array to same length as the error array by reporting errors to the SDK.`
@@ -322,7 +326,7 @@ function _reportMissingErrors(sentry,reportedErrors,errors)
 }
 
 
-function _38(footer){return(
+function _39(footer){return(
 footer
 )}
 
@@ -364,12 +368,13 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("notebookSnapshot", child1);
   main.import("modules", child1);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _27);
-  main.variable(observer()).define(["md"], _28);
+  main.variable(observer("trackingVariable_9uEFkhSF43aPddAA")).define("trackingVariable_9uEFkhSF43aPddAA", _trackingVariable_9uEFkhSF43aPddAA);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _28);
   main.variable(observer()).define(["md"], _29);
+  main.variable(observer()).define(["md"], _30);
   main.variable(observer("viewof sentry")).define("viewof sentry", ["Inputs"], _sentry);
   main.variable(observer("sentry")).define("sentry", ["Generators", "viewof sentry"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["md"], _32);
   main.variable(observer("viewof reportedErrors")).define("viewof reportedErrors", ["Inputs"], _reportedErrors);
   main.variable(observer("reportedErrors")).define("reportedErrors", ["Generators", "viewof reportedErrors"], (G, _) => G.input(_));
   main.variable(observer("reportMissingErrors")).define("reportMissingErrors", ["sentry","reportedErrors","errors"], _reportMissingErrors);
@@ -381,6 +386,6 @@ export default function define(runtime, observer) {
   main.import("footer", child4);
   const child5 = runtime.module(define5);
   main.import("localStorageView", child5);
-  main.variable(observer()).define(["footer"], _38);
+  main.variable(observer()).define(["footer"], _39);
   return main;
 }
