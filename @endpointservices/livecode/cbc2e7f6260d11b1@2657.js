@@ -1687,7 +1687,10 @@ async function createChannel({
           .ref(`services/http/debug/${sessionId}`)
           .onDisconnect()
           .remove();
-        database.ref(`services/http/debug/${sessionId}/status`).set("online");
+        database.ref(`services/http/debug/${sessionId}/status`).set({
+          state: "online",
+          started: ".sv/timestamp"
+        });
       }
     });
 
