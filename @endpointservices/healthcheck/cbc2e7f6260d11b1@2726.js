@@ -127,16 +127,19 @@ function _headerCreator(supress,view,style,Inputs,$0,variable,urlTitle,normalize
 }
 )}
 
-function _exampleHeaderNotCreator(headerNotCreator){return(
-headerNotCreator({
-  namespace: "tomlarkworthy",
-  options: {
-    livecode: "PUBLIC"
+function _exampleHeaderNotCreator(headerNotCreator,invalidation){return(
+headerNotCreator(
+  {
+    namespace: "tomlarkworthy",
+    options: {
+      livecode: "PUBLIC"
+    },
+    endpoint:
+      "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint;dh4cs",
+    undefined
   },
-  endpoint:
-    "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint;default;dh4cs",
-  undefined
-})
+  invalidation
+)
 )}
 
 function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0,tabbedPane,publicStatusPane,md){return(
@@ -168,12 +171,15 @@ function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObserva
 }
 )}
 
-function _exampleHeaderLogin(headerLogin){return(
+function _exampleHeaderLogin(headerLogin,invalidation){return(
 headerLogin({
-  namespace: 'tomlarkworthy',
+  namespace: "tomlarkworthy",
   endpoint:
     "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-  undefined
+  options: {
+    livecode: "PUBLIC"
+  },
+  invalidation
 })
 )}
 
@@ -181,20 +187,26 @@ function _16(exampleHeaderLogin){return(
 exampleHeaderLogin
 )}
 
-function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0){return(
+function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,html,createLogin){return(
 (config) =>
   supress(view`
   ${style()}
   <details class="e-header-details">
-  ${["_href", variable(config.endpoint)]}
-  <summary style="width: 100%;">
-    ${urlTitle({
-      url: config.endpoint,
-      text: normalizeObservablehqEndpoint(config.endpoint)
-    })}
-    ${$0}
-  </summary>
-</details>`)
+    ${["_href", variable(config.endpoint)]}
+    <summary style="width: 100%;">
+      ${urlTitle({
+        url: config.endpoint,
+        text: normalizeObservablehqEndpoint(config.endpoint)
+      })}
+    </summary>
+    <p class="e-explain">💡 If you are the host of this endpoint, login to admininister and <a href="https://observablehq.com/@endpointservices/livecode">livecode</a> the endpoint</p>
+    ${
+      config?.options?.livecode === "PUBLIC"
+        ? html`<p class="e-explain">🔥 The owner has enabled public <a href="https://observablehq.com/@endpointservices/livecode">livecoding</a>! anybody can login to start a <a href="https://observablehq.com/@endpointservices/livecode">livecode</a> session</p>`
+        : ""
+    }
+    ${createLogin()}
+  </details>`)
 )}
 
 function _headerCSS(html,colors){return(
@@ -1240,7 +1252,7 @@ function _90(exampleStatusPane){return(
 exampleStatusPane
 )}
 
-function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createChannel){return(
+function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createChannel,getCorrelation){return(
 (
   { namespace, endpoint, name, user, options = {} } = {},
   invalidation
@@ -1277,6 +1289,7 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
           endpoint,
           name,
           namespace,
+          correlation: getCorrelation(endpoint),
           newRequestCallback: (req) => {
             ui.value.livecode.tunnelled++;
           }
@@ -1571,7 +1584,7 @@ normalizeEndpoint(
 
 function _109(getCorrelation){return(
 getCorrelation(
-  "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo;fxd"
+  "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;default"
 )
 )}
 
@@ -1658,7 +1671,7 @@ function _120(md){return(
 md`### Live code`
 )}
 
-function _createChannel(database,randomId,firestore,normalizeEndpoint,getContext,Response){return(
+function _createChannel(database,randomId,firestore,normalizeEndpoint,html,getContext,Response){return(
 async function createChannel({
   endpoint,
   name,
@@ -1687,7 +1700,12 @@ async function createChannel({
           .ref(`services/http/debug/${sessionId}`)
           .onDisconnect()
           .remove();
-        database.ref(`services/http/debug/${sessionId}/status`).set("online");
+        database.ref(`services/http/debug/${sessionId}/status`).set({
+          state: "online",
+          href: html`<a href="">`.href,
+          endpoint,
+          started: { ".sv": "timestamp" }
+        });
       }
     });
 
@@ -1751,18 +1769,6 @@ async function createChannel({
 }
 )}
 
-function _122(deploy){return(
-deploy("test", async (request, response) => {
-  response
-    .header("foo", "bar")
-    .header("foo2", "bar2")
-    .status(400);
-  response.write('chunk1');
-  response.write('chunk2');
-  response.end();
-})
-)}
-
 function _firestore(firebase){return(
 firebase.firestore()
 )}
@@ -1775,7 +1781,7 @@ function _database(firebase)
 }
 
 
-function _130(footer){return(
+function _129(footer){return(
 footer
 )}
 
@@ -1783,6 +1789,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   const child1 = runtime.module(define1);
+  main.import("createLogin", child1);
   main.import("viewof user", child1);
   main.import("user", child1);
   main.import("firebase", child1);
@@ -1801,13 +1808,13 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof exampleHeaderActive")).define("viewof exampleHeaderActive", ["headerCreator","user"], _exampleHeaderActive);
   main.variable(observer("exampleHeaderActive")).define("exampleHeaderActive", ["Generators", "viewof exampleHeaderActive"], (G, _) => G.input(_));
   main.variable(observer("headerCreator")).define("headerCreator", ["supress","view","style","Inputs","viewof user","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","statusPane","secretsPane"], _headerCreator);
-  main.variable(observer("viewof exampleHeaderNotCreator")).define("viewof exampleHeaderNotCreator", ["headerNotCreator"], _exampleHeaderNotCreator);
+  main.variable(observer("viewof exampleHeaderNotCreator")).define("viewof exampleHeaderNotCreator", ["headerNotCreator","invalidation"], _exampleHeaderNotCreator);
   main.variable(observer("exampleHeaderNotCreator")).define("exampleHeaderNotCreator", ["Generators", "viewof exampleHeaderNotCreator"], (G, _) => G.input(_));
   main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user","tabbedPane","publicStatusPane","md"], _headerNotCreator);
-  main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin"], _exampleHeaderLogin);
+  main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin","invalidation"], _exampleHeaderLogin);
   main.variable(observer("exampleHeaderLogin")).define("exampleHeaderLogin", ["Generators", "viewof exampleHeaderLogin"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleHeaderLogin"], _16);
-  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user"], _headerLogin);
+  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","html","createLogin"], _headerLogin);
   main.variable(observer("headerCSS")).define("headerCSS", ["html","colors"], _headerCSS);
   main.variable(observer()).define(["md"], _19);
   main.variable(observer()).define(["externalLinkSVG"], _20);
@@ -1893,7 +1900,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof exampleStatusPane")).define("viewof exampleStatusPane", ["statusPane","invalidation"], _exampleStatusPane);
   main.variable(observer("exampleStatusPane")).define("exampleStatusPane", ["Generators", "viewof exampleStatusPane"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleStatusPane"], _90);
-  main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel"], _statusPane);
+  main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel","getCorrelation"], _statusPane);
   main.variable(observer()).define(["md"], _92);
   main.variable(observer()).define(["publicStatusPane","invalidation"], _93);
   main.variable(observer("publicStatusPane")).define("publicStatusPane", ["view","liveCoding","md","createChannel","getCorrelation"], _publicStatusPane);
@@ -1925,8 +1932,7 @@ export default function define(runtime, observer) {
   main.variable(observer("setSecret")).define("setSecret", ["secretClient"], _setSecret);
   main.variable(observer("deleteSecret")).define("deleteSecret", ["secretClient"], _deleteSecret);
   main.variable(observer()).define(["md"], _120);
-  main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","getContext","Response"], _createChannel);
-  main.variable(observer()).define(["deploy"], _122);
+  main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","html","getContext","Response"], _createChannel);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
   const child3 = runtime.module(define3);
@@ -1942,6 +1948,6 @@ export default function define(runtime, observer) {
   main.import("randomId", child6);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _130);
+  main.variable(observer()).define(["footer"], _129);
   return main;
 }

@@ -119,8 +119,14 @@ endpoint(
   "default", // For a simple URL we use the default name leading to https://webcode.run/observablehq.com/@endpointservices/healthcheck
   async (req, res) => {
     const target = req.query.target; // Read the target notebook.
+
+    if (target.startsWith("@unavco"))
+      return res
+        .status(400)
+        .send("@unavco is sending data too fast, blocked short term");
+
     const wait = req.query.wait || 10;
-    if (!target) return res.send(400);
+    if (!target) return res.status(400);
     const excludes = req.query.excludes || ""; // Read which cells to ignore errors from
     window.rEPseDFzXFSPYkNz = // Inject location.search for notebooks using https://observablehq.com/@tomlarkworthy/url-query-field-view
       "?" +
