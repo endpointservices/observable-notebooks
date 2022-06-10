@@ -1,6 +1,6 @@
 import define1 from "./ab3e70b29c480e6d@83.js";
-import define2 from "./6eda90668ae03044@804.js";
-import define3 from "./293899bef371e135@247.js";
+import define2 from "./6eda90668ae03044@825.js";
+import define3 from "./293899bef371e135@267.js";
 import define4 from "./048a17a165be198d@263.js";
 
 function _1(md){return(
@@ -149,6 +149,7 @@ endpoint(
     }, wait * 1000);
   },
   {
+    livecode: false, // Can mess with monitoring if left open by accident
     reusable: false, // This does not support concurrent operations
     modifiers: ["orchistrator"] // This endpoint can call other endpoints
   }
