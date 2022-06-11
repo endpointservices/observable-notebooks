@@ -117,11 +117,12 @@ endpoint(
   async (req, res) => {
     const target = req.query.target; // Read the target notebook.
 
+    /*
     if (target.startsWith("@unavco"))
       return res
         .status(400)
         .send("@unavco is sending data too fast, blocked short term");
-
+    */
     const wait = req.query.wait || 10;
     if (!target) return res.status(400);
     const excludes = req.query.excludes || ""; // Read which cells to ignore errors from
