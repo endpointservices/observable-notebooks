@@ -1,8 +1,9 @@
-import define1 from "./0e0b35a92c819d94@418.js";
-import define2 from "./ab3e70b29c480e6d@83.js";
-import define3 from "./6eda90668ae03044@825.js";
-import define4 from "./293899bef371e135@267.js";
+import define1 from "./374124b361974cb3@259.js";
+import define2 from "./0e0b35a92c819d94@418.js";
+import define3 from "./ab3e70b29c480e6d@83.js";
+import define4 from "./6eda90668ae03044@825.js";
 import define5 from "./048a17a165be198d@263.js";
+import define6 from "./293899bef371e135@267.js";
 
 function _1(md){return(
 md`# Generic Notebook Health Check
@@ -369,6 +370,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _23);
   main.variable(observer("module")).define("module", ["settings","viewof events","Event","viewof sentry","viewof excludes","viewof errors"], _module);
   main.variable(observer()).define(["md"], _25);
+  const child1 = runtime.module(define1);
+  main.import("notebookSnapshot", child1);
+  main.import("modules", child1);
   main.variable(observer("trackingVariable_9uEFkhSF43aPddAA")).define("trackingVariable_9uEFkhSF43aPddAA", _trackingVariable_9uEFkhSF43aPddAA);
   main.variable(observer()).define(["endpoint","notebookSnapshot"], _28);
   main.variable(observer()).define(["md"], _29);
@@ -379,16 +383,16 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof reportedErrors")).define("viewof reportedErrors", ["Inputs"], _reportedErrors);
   main.variable(observer("reportedErrors")).define("reportedErrors", ["Generators", "viewof reportedErrors"], (G, _) => G.input(_));
   main.variable(observer("reportMissingErrors")).define("reportMissingErrors", ["sentry","reportedErrors","errors"], _reportMissingErrors);
-  const child1 = runtime.module(define1);
-  main.import("flowQueue", child1);
   const child2 = runtime.module(define2);
-  main.import("copy", child2);
+  main.import("flowQueue", child2);
   const child3 = runtime.module(define3);
-  main.import("endpoint", child3);
+  main.import("copy", child3);
   const child4 = runtime.module(define4);
-  main.import("footer", child4);
+  main.import("endpoint", child4);
   const child5 = runtime.module(define5);
   main.import("localStorageView", child5);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
   main.variable(observer()).define(["footer"], _40);
   return main;
 }

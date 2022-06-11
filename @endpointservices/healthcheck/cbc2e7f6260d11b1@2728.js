@@ -187,7 +187,7 @@ function _16(exampleHeaderLogin){return(
 exampleHeaderLogin
 )}
 
-function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,html,createLogin){return(
+function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,html,$0){return(
 (config) =>
   supress(view`
   ${style()}
@@ -205,7 +205,9 @@ function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehq
         ? html`<p class="e-explain">🔥 The owner has enabled public <a href="https://observablehq.com/@endpointservices/livecode">livecoding</a>! anybody can login to start a <a href="https://observablehq.com/@endpointservices/livecode">livecode</a> session</p>`
         : ""
     }
-    ${createLogin()}
+    ${
+      /*caused memory leak in healthcheck but needed createLogin()*/ $0
+    }
   </details>`)
 )}
 
@@ -1814,7 +1816,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin","invalidation"], _exampleHeaderLogin);
   main.variable(observer("exampleHeaderLogin")).define("exampleHeaderLogin", ["Generators", "viewof exampleHeaderLogin"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleHeaderLogin"], _16);
-  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","html","createLogin"], _headerLogin);
+  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","html","viewof user"], _headerLogin);
   main.variable(observer("headerCSS")).define("headerCSS", ["html","colors"], _headerCSS);
   main.variable(observer()).define(["md"], _19);
   main.variable(observer()).define(["externalLinkSVG"], _20);
