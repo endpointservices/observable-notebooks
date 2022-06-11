@@ -1,4 +1,4 @@
-import define1 from "./374124b361974cb3@259.js";
+import define1 from "./0e0b35a92c819d94@418.js";
 import define2 from "./ab3e70b29c480e6d@83.js";
 import define3 from "./6eda90668ae03044@825.js";
 import define4 from "./293899bef371e135@267.js";
@@ -48,6 +48,12 @@ md`### Manual Trigger
 Test a notebook by entering a text input`
 )}
 
+function _host(Inputs){return(
+Inputs.select(["webcode.run", "http://localhost:8080"], {
+  label: "host"
+})
+)}
+
 function _manualTarget(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.text({
@@ -78,7 +84,7 @@ Inputs.bind(
 )
 )}
 
-function _11(Inputs,run,$0,$1){return(
+function _12(Inputs,run,$0,$1){return(
 Inputs.button("Go!", {
   reduce: () => {
     run($0.value, $1.value);
@@ -86,35 +92,25 @@ Inputs.button("Go!", {
 })
 )}
 
-function _permLink(URLSearchParams,location,manualTarget,manualExcludes,wait)
+function _permLink(URLSearchParams,location,manualTarget,manualExcludes,wait,healthcheckEndpoint)
 {
   const params = new URLSearchParams(location.search);
   params.set("target", manualTarget);
   params.set("excludes", manualExcludes);
   params.set("wait", wait);
 
-  return `https://webcode.run/observablehq.com/@endpointservices/healthcheck?${params.toString()}`;
+  return `${healthcheckEndpoint.href}?${params.toString()}`;
 }
 
 
-function _13(permLink,copy,htl){return(
+function _14(permLink,copy,htl){return(
 htl.html`Your settings as a <a target="_blank"
   href=${permLink}>http endpoint</a>
 
 <button onclick=${() => copy(permLink)}>Copy to clipboard</button>`
 )}
 
-function _14(md){return(
-md`### HTTP Trigger
-
-Test a notebook by sending a HTTP request to
-
-~~~
-https://webcode.run/observablehq.com/@endpointservices/notebook-availability?notebook=<notebook path>
-~~~`
-)}
-
-function _15(endpoint,run,$0,$1){return(
+function _healthcheckEndpoint(endpoint,run,$0,$1,host){return(
 endpoint(
   "default", // For a simple URL we use the default name leading to https://webcode.run/observablehq.com/@endpointservices/healthcheck
   async (req, res) => {
@@ -156,6 +152,7 @@ endpoint(
     }, wait * 1000);
   },
   {
+    host,
     livecode: false, // Can affect monitoring if left open by accident
     reusable: false, // This does not support concurrent operations
     modifiers: ["orchistrator"] // This endpoint can call other endpoints
@@ -332,7 +329,7 @@ function _reportMissingErrors(sentry,reportedErrors,errors)
 }
 
 
-function _39(footer){return(
+function _40(footer){return(
 footer
 )}
 
@@ -346,17 +343,18 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["settings","md"], _5);
   main.variable(observer()).define(["Inputs","events"], _6);
   main.variable(observer()).define(["md"], _7);
+  main.variable(observer("viewof host")).define("viewof host", ["Inputs"], _host);
+  main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   main.variable(observer("viewof manualTarget")).define("viewof manualTarget", ["Inputs","localStorageView"], _manualTarget);
   main.variable(observer("manualTarget")).define("manualTarget", ["Generators", "viewof manualTarget"], (G, _) => G.input(_));
   main.variable(observer("viewof manualExcludes")).define("viewof manualExcludes", ["Inputs","localStorageView"], _manualExcludes);
   main.variable(observer("manualExcludes")).define("manualExcludes", ["Generators", "viewof manualExcludes"], (G, _) => G.input(_));
   main.variable(observer("viewof wait")).define("viewof wait", ["Inputs","localStorageView"], _wait);
   main.variable(observer("wait")).define("wait", ["Generators", "viewof wait"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], _11);
-  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes","wait"], _permLink);
-  main.variable(observer()).define(["permLink","copy","htl"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["endpoint","run","viewof errors","viewof settings"], _15);
+  main.variable(observer()).define(["Inputs","run","viewof manualTarget","viewof manualExcludes"], _12);
+  main.variable(observer("permLink")).define("permLink", ["URLSearchParams","location","manualTarget","manualExcludes","wait","healthcheckEndpoint"], _permLink);
+  main.variable(observer()).define(["permLink","copy","htl"], _14);
+  main.variable(observer("healthcheckEndpoint")).define("healthcheckEndpoint", ["endpoint","run","viewof errors","viewof settings","host"], _healthcheckEndpoint);
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("run")).define("run", ["viewof excludes","Event","viewof errors","viewof events","viewof settings"], _run);
   main.variable(observer()).define(["md"], _18);
@@ -371,9 +369,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _23);
   main.variable(observer("module")).define("module", ["settings","viewof events","Event","viewof sentry","viewof excludes","viewof errors"], _module);
   main.variable(observer()).define(["md"], _25);
-  const child1 = runtime.module(define1);
-  main.import("notebookSnapshot", child1);
-  main.import("modules", child1);
   main.variable(observer("trackingVariable_9uEFkhSF43aPddAA")).define("trackingVariable_9uEFkhSF43aPddAA", _trackingVariable_9uEFkhSF43aPddAA);
   main.variable(observer()).define(["endpoint","notebookSnapshot"], _28);
   main.variable(observer()).define(["md"], _29);
@@ -384,6 +379,8 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof reportedErrors")).define("viewof reportedErrors", ["Inputs"], _reportedErrors);
   main.variable(observer("reportedErrors")).define("reportedErrors", ["Generators", "viewof reportedErrors"], (G, _) => G.input(_));
   main.variable(observer("reportMissingErrors")).define("reportMissingErrors", ["sentry","reportedErrors","errors"], _reportMissingErrors);
+  const child1 = runtime.module(define1);
+  main.import("flowQueue", child1);
   const child2 = runtime.module(define2);
   main.import("copy", child2);
   const child3 = runtime.module(define3);
@@ -392,6 +389,6 @@ export default function define(runtime, observer) {
   main.import("footer", child4);
   const child5 = runtime.module(define5);
   main.import("localStorageView", child5);
-  main.variable(observer()).define(["footer"], _39);
+  main.variable(observer()).define(["footer"], _40);
   return main;
 }
