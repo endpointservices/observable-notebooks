@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@185
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@186
 import define1 from "./293899bef371e135@267.js";
 
 function _1(md){return(
@@ -6,7 +6,7 @@ md`# Interactive Sequence Diagrams
 
 I am pleased to discover the Mermaid diagrams animate quite well. This lets the reader walk through the sequence at their own pace, and provides additional opportunity for the author to explain steps in details.
 
-Yes the example is weird but it comes from the Mermaid [documentation](https://mermaid-js.github.io/mermaid/#/sequenceDiagram)`
+Yes the example is weird but it comes from the Mermaid [documentation](https://mermaid-js.github.io/mermaid/#/sequenceDiagram?id=sequencenumbers)`
 )}
 
 function _step(Inputs){return(
