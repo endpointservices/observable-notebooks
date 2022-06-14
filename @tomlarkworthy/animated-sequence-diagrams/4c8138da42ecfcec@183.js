@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@182
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@183
 import define1 from "./293899bef371e135@267.js";
 
 function _1(md){return(
@@ -62,7 +62,7 @@ function steppedMermaid(index, markup) {
 )}
 
 function _7(md){return(
-md`However, don't get hung up on the specifics of the helper. I imagine most deployments of this effect will need their set of own abstraction to help mutate the mermaid source, so don't feel restricted by it. You can highlight whatever boxes you like with rect!`
+md`However, don't get hung up on the specifics of the helper. I imagine most deployments of this effect will need their set of own abstraction to help mutate the mermaid source, so don't feel restricted by it. You can highlight whatever boxes you like with rect! It's just string manipulation.`
 )}
 
 function _9(footer){return(
