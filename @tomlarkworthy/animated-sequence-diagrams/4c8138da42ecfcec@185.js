@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@183
+// https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@185
 import define1 from "./293899bef371e135@267.js";
 
 function _1(md){return(
@@ -49,7 +49,7 @@ sequenceDiagram
 )}
 
 function _5(md){return(
-md`The original version of this notebook justed used the \`?\` operator against the \`step\` value on the mermaid source code to create the animation effect. This annoyed people because the source was very messy, but then [@mootari](/@mootari) helpfully donated the following helper: `
+md`The [original version](https://observablehq.com/@tomlarkworthy/animated-sequence-diagrams@109) of this notebook just used the \`?\` operator against the \`step\` value on the mermaid source code to create the animation effect. This annoyed people because the source was very messy, but then [@mootari](/@mootari) helpfully donated the following helper: `
 )}
 
 function _steppedMermaid(mermaid){return(
