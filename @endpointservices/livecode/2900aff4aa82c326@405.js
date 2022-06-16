@@ -1,4 +1,4 @@
-import define1 from "./6eda90668ae03044@825.js";
+import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./048a17a165be198d@263.js";
 import define3 from "./509d6b5d1aebf2a1@215.js";
 import define4 from "./293899bef371e135@267.js";
@@ -10,20 +10,14 @@ md`# Livecoding Endpoints with [WEBCode.run](https://webcode.run)
 )}
 
 function _2(md){return(
-md`TODO
-- live tunnel does not work on initial page fresh (repeatable)
-- anon live code?`
+md`## Query Example`
 )}
 
 function _3(md){return(
-md`## Example`
-)}
-
-function _4(md){return(
 md`import the [webcode](https://observablehq.com/@endpointservices/webcode) dependency:`
 )}
 
-function _6(md){return(
+function _5(md){return(
 md`create an endpoint. For this example, we turn on public livecoding in the options with \`{livecoding: 'public'}\` so anybody can intercept traffic, in production use you would only allow livecoding by a developer.`
 )}
 
@@ -51,11 +45,11 @@ endpoint(
 )
 )}
 
-function _8(md){return(
+function _7(md){return(
 md`Our implementation does a *console.log* of the inbound [request](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#request) payload, and sends an object to the [response](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#response). The response is computed based on the value of an incoming HTTP URL parameter *name*.`
 )}
 
-function _9(md){return(
+function _8(md){return(
 md`### Making a GET
 
 The following UI uses the *fetch* API client-side, to make a simple request to our endpoint. The URL of the endpoint is the *href* parameter of the endpoint.
@@ -87,32 +81,42 @@ Inputs.button("Make request", {
 })
 )}
 
-function _12(md){return(
+function _11(md){return(
 md`After clicking the button we can render what the response was (after JSON deserialization). Try changing the name value sent and making more requests.`
 )}
 
-function _13(response){return(
+function _12(response){return(
 response
 )}
 
-function _14(md){return(
+function _13(md){return(
 md`Updating a value in response to a button press does not seem that impressive until you realize the request is going over the public internet. So you don't need to initiate the request inside the browser, you can also use curl from your console for instance:`
 )}
 
-function _curl_get(exampleEndpoint,name,md){return(
+function _curl_get(exampleEndpoint,md){return(
 md`\`\`\`
 
-curl '${exampleEndpoint.href + `?name=${name}`}'
+curl '${exampleEndpoint.href + `?name=fromcurl`}'
 \`\`\``
 )}
 
-function _16(md){return(
+function _15(md){return(
 md`The story is even more interesting when you pop <a target="_blank" href="https://balsamiq.com/support/faqs/browserconsole">open your developers tools</a>. You should see that the \`console.log\` messages inside the handler have executed, indicating the endpoint code was executed inside your browser.
 
 We also write to a \`mutable seversideLog\` inside the request handler you can confirm the request was handled in *your* notebook session.`
 )}
 
-function _seversideLog(){return(
+function _16(Inputs,handlerLog){return(
+Inputs.table(
+  handlerLog.map((d) => ({
+    ...d,
+    query: JSON.stringify(d.query),
+    headers: JSON.stringify(d.headers)
+  }))
+)
+)}
+
+function _handlerLog(){return(
 []
 )}
 
@@ -123,7 +127,11 @@ Inputs.button("clear log", {
 )}
 
 function _19(md){return(
-md`### Unrolling a server across cells with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)`
+md`## Unrolling request processing across cells
+
+with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)
+
+The handler in an endpoint is passed as a callback, `
 )}
 
 function _20(md){return(
@@ -166,26 +174,26 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer()).define(["md"], _4);
   const child1 = runtime.module(define1);
   main.import("endpoint", child1);
-  main.variable(observer()).define(["md"], _6);
-  main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","mutable seversideLog","host"], _exampleEndpoint);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","mutable handlerLog","host"], _exampleEndpoint);
+  main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["md"], _8);
-  main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
   main.variable(observer("viewof response")).define("viewof response", ["Inputs","name","exampleEndpoint"], _response);
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["response"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","name","md"], _curl_get);
-  main.variable(observer()).define(["md"], _16);
-  main.define("initial seversideLog", _seversideLog);
-  main.variable(observer("mutable seversideLog")).define("mutable seversideLog", ["Mutable", "initial seversideLog"], (M, _) => new M(_));
-  main.variable(observer("seversideLog")).define("seversideLog", ["mutable seversideLog"], _ => _.generator);
-  main.variable(observer()).define(["Inputs","mutable seversideLog"], _18);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["response"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","md"], _curl_get);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["Inputs","handlerLog"], _16);
+  main.define("initial handlerLog", _handlerLog);
+  main.variable(observer("mutable handlerLog")).define("mutable handlerLog", ["Mutable", "initial handlerLog"], (M, _) => new M(_));
+  main.variable(observer("handlerLog")).define("handlerLog", ["mutable handlerLog"], _ => _.generator);
+  main.variable(observer()).define(["Inputs","mutable handlerLog"], _18);
   main.variable(observer()).define(["md"], _19);
   main.variable(observer()).define(["md"], _20);
   const child2 = runtime.module(define2);

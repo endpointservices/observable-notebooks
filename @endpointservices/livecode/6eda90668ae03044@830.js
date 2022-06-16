@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/webcode@825
-import define1 from "./cbc2e7f6260d11b1@2657.js";
+// https://observablehq.com/@endpointservices/webcode@830
+import define1 from "./cbc2e7f6260d11b1@2758.js";
 import define2 from "./dff1e917c89f5e76@1886.js";
 import define3 from "./58f3eb7334551ae6@209.js";
 
@@ -125,7 +125,10 @@ deploy
 function _deploy(baseDeploy,serverlessCellUI,subdomain){return(
 (name, handler, options = {}) => {
   const resolveUid = "uiilwqbmonujdnfv" + name;
-  if (window[resolveUid]) window[resolveUid]();
+  if (window[resolveUid]) {
+    console.log(`Serverless cells, invalidating ${name}`);
+    window[resolveUid]();
+  }
   const link = baseDeploy(name, handler, {
     reusable: true,
     ...options,
@@ -138,7 +141,7 @@ function _deploy(baseDeploy,serverlessCellUI,subdomain){return(
       endpoint: link.href,
       options
     },
-    new Promise((resolve) => (window[resolveUid] = resolve))
+    new Promise((resolve) => (window[resolveUid] = resolve)) // Our invlidation promise
   );
   ui.href = link.href;
   return ui;
