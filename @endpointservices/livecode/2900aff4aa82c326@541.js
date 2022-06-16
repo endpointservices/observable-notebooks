@@ -11,14 +11,19 @@ md`# Livecoding Endpoints with [WEBCode.run](https://webcode.run)
 )}
 
 function _2(md){return(
+md`TODO
+- Live codes share same tunnel sessionId`
+)}
+
+function _3(md){return(
 md`import the [webcode](https://observablehq.com/@endpointservices/webcode) dependency:`
 )}
 
-function _4(md){return(
+function _5(md){return(
 md`## Clientside Fetch Example`
 )}
 
-function _5(md){return(
+function _6(md){return(
 md`create an endpoint. For this example, we turn on public livecoding in the options with \`{livecoding: 'public'}\` so anybody can intercept traffic, in production use you would only allow livecoding by a developer.`
 )}
 
@@ -46,11 +51,11 @@ endpoint(
 )
 )}
 
-function _7(md){return(
+function _8(md){return(
 md`Our implementation does a *console.log* of the inbound [request](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#request) payload, and sends an object to the [response](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#response). The response is computed based on the value of an incoming HTTP URL parameter *name*.`
 )}
 
-function _8(md){return(
+function _9(md){return(
 md`### Making a GET
 
 The following UI uses the *fetch* API client-side, to make a simple request to our endpoint. The URL of the endpoint is the *href* parameter of the endpoint.
@@ -82,15 +87,15 @@ Inputs.button("Make request", {
 })
 )}
 
-function _11(md){return(
+function _12(md){return(
 md`After clicking the button we can render what the response was (after JSON deserialization). Try changing the name value sent and making more requests.`
 )}
 
-function _12(response){return(
+function _13(response){return(
 response
 )}
 
-function _13(md){return(
+function _14(md){return(
 md`Updating a value in response to a button press does not seem that impressive until you realize the request is going over the public internet. So you don't need to initiate the request inside the browser, you can also use curl from your console for instance:`
 )}
 
@@ -101,13 +106,13 @@ curl '${exampleEndpoint.href + `?name=fromcurl`}'
 \`\`\``
 )}
 
-function _15(md){return(
+function _16(md){return(
 md`The story is even more interesting when you pop <a target="_blank" href="https://balsamiq.com/support/faqs/browserconsole">open your developers tools</a>. You should see that the \`console.log\` messages inside the handler have executed, indicating the endpoint code was executed inside your browser.
 
 We also write to a \`mutable seversideLog\` inside the request handler you can confirm the request was handled in *your* notebook session.`
 )}
 
-function _16(Inputs,handlerLog){return(
+function _17(Inputs,handlerLog){return(
 Inputs.table(
   handlerLog.map((d) => ({
     ...d,
@@ -121,17 +126,17 @@ function _handlerLog(){return(
 []
 )}
 
-function _18(Inputs,$0){return(
+function _19(Inputs,$0){return(
 Inputs.button("clear log", {
   reduce: () => ($0.value = [])
 })
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`you can change the handler code and the **changes will be reflected instantly**, no need to deploy!`
 )}
 
-function _20(md){return(
+function _21(md){return(
 md`## Livecode a webpage
 
 Endpoint changes are **instantly** visible to livecode. When combined with Observable hot-code reload we can build ergonomic developer reactive workflows. For example, if we put a dataflow dependency of a client on the server, if the server handler changes, the client will refresh automatically, using the very latest deployed code. **livecode propagates serverside code changes at the speed of Observable's reactive dataflow**. 
@@ -140,7 +145,7 @@ Endpoint changes are **instantly** visible to livecode. When combined with Obser
 In this example the client will be an iframe, and the server with be a webserver definition. In this arrangement, we can reactively develop a server, and always be viewing the latest webpage on the client`
 )}
 
-function _21(md){return(
+function _22(md){return(
 md`### Sidequest: Unrolling request processing across cells
 
 with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)
@@ -175,13 +180,13 @@ function _webRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _25(md){return(
+function _26(md){return(
 md`### flowQueue Request processing pipeline
 
 "viewof webRequest" refers the flowQueue, whereas "webRequest" refers to the current task. When live coding is turned on "webRequest"'s value will be the last seen incoming request to that endpoint.`
 )}
 
-function _26(webRequest){return(
+function _27(webRequest){return(
 webRequest
 )}
 
@@ -209,11 +214,11 @@ function _webserverResponder(webRequest,$0,content)
 }
 
 
-function _29(webserver,htl){return(
+function _30(webserver,htl){return(
 htl.html`<iframe src=${webserver.href}></iframe>`
 )}
 
-function _30(md){return(
+function _31(md){return(
 md`### Config`
 )}
 
@@ -229,22 +234,22 @@ Inputs.bind(
 )
 )}
 
-function _33(md){return(
+function _34(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _34(installCopyCode,curl_get,invalidation,md)
+function _35(installCopyCode,curl_get,invalidation,md)
 {
   installCopyCode(curl_get, { invalidation });
   return md`*👈 [copy-code](https://observablehq.com/@tomlarkworthy/copy-code) button for examples*`;
 }
 
 
-function _36(md){return(
+function _37(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _38(footer){return(
+function _39(footer){return(
 footer
 )}
 
@@ -252,52 +257,53 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["md"], _3);
   const child1 = runtime.module(define1);
   main.import("endpoint", child1);
-  main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
   main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","mutable handlerLog","host"], _exampleEndpoint);
-  main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
   main.variable(observer("viewof response")).define("viewof response", ["Inputs","name","exampleEndpoint"], _response);
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _11);
-  main.variable(observer()).define(["response"], _12);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["response"], _13);
+  main.variable(observer()).define(["md"], _14);
   main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","md"], _curl_get);
-  main.variable(observer()).define(["md"], _15);
-  main.variable(observer()).define(["Inputs","handlerLog"], _16);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["Inputs","handlerLog"], _17);
   main.define("initial handlerLog", _handlerLog);
   main.variable(observer("mutable handlerLog")).define("mutable handlerLog", ["Mutable", "initial handlerLog"], (M, _) => new M(_));
   main.variable(observer("handlerLog")).define("handlerLog", ["mutable handlerLog"], _ => _.generator);
-  main.variable(observer()).define(["Inputs","mutable handlerLog"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["Inputs","mutable handlerLog"], _19);
   main.variable(observer()).define(["md"], _20);
   main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _22);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
   main.variable(observer("webserver")).define("webserver", ["endpoint","viewof webRequest","host"], _webserver);
   main.variable(observer("viewof webRequest")).define("viewof webRequest", ["flowQueue"], _webRequest);
   main.variable(observer("webRequest")).define("webRequest", ["Generators", "viewof webRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _25);
-  main.variable(observer()).define(["webRequest"], _26);
+  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["webRequest"], _27);
   main.variable(observer("content")).define("content", ["md"], _content);
   main.variable(observer("webserverResponder")).define("webserverResponder", ["webRequest","viewof webRequest","content"], _webserverResponder);
-  main.variable(observer()).define(["webserver","htl"], _29);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["webserver","htl"], _30);
+  main.variable(observer()).define(["md"], _31);
   const child3 = runtime.module(define3);
   main.import("localStorageView", child3);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _33);
-  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _34);
+  main.variable(observer()).define(["md"], _34);
+  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _35);
   const child4 = runtime.module(define4);
   main.import("installCopyCode", child4);
-  main.variable(observer()).define(["md"], _36);
+  main.variable(observer()).define(["md"], _37);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _38);
+  main.variable(observer()).define(["footer"], _39);
   return main;
 }
