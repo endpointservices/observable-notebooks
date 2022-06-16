@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1711
+// https://observablehq.com/@endpointservices/serverless-cells@1886
 import define1 from "./8aac8b2cb06bf434@258.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -90,14 +90,64 @@ Come hang out with us on the [d3 Zulip server](https://d3js.zulipchat.com/#narro
 )}
 
 function _2(md){return(
+md`### Example`
+)}
+
+function _host(Inputs){return(
+Inputs.select(["webcode.run", "http://localhost:8080"], {
+  label: "host"
+})
+)}
+
+function _region(Inputs){return(
+Inputs.select(
+  ["nearest", "us-central1", "europe-west1", "asia-east1"],
+  {
+    label: "region"
+  }
+)
+)}
+
+function _livecode(Inputs){return(
+Inputs.radio(["unspecified", "false", "public"], {
+  label: "livecode?"
+})
+)}
+
+function _6(deploy,host,region,livecode){return(
+deploy(
+  "default",
+  async (req, res) => {
+    res.send(req);
+  },
+  {
+    host: host,
+    ...((region !== "nearest") & { region }),
+    livecode
+  }
+)
+)}
+
+function _7(md){return(
 md`### Implementation`
 )}
 
-function _deploy(onVersionPublished,Response,subdomain,getContext,html){return(
+function _deploy(onVersionPublished,sessionId,Response,subdomain,getContext,html){return(
 function (label, handler, options) {
   onVersionPublished; // Ensure all users of this have the onPublish hook installed
+  if (typeof label !== "string")
+    throw new Error(
+      "The first parameter 'name' must be a unique string to disambiguate different endpoints, using'default' will exclude it from the URL"
+    );
+
   options = options || {};
   const modifiers = options.modifiers || ["external"];
+  const session = // We have to generate sessions if we are live coding
+    typeof options.livecode === "string" &&
+    options.livecode.toUpperCase() === "PUBLIC"
+      ? sessionId
+      : undefined;
+
   const isExternal = modifiers.includes("external");
   const isTerminal = modifiers.includes("terminal");
   const isOrchestrator = modifiers.includes("orchestrator");
@@ -122,7 +172,11 @@ function (label, handler, options) {
     secrets: options.secrets
   };
 
-  const host = "https://" + (options.host || `webcode.run`);
+  const host =
+    options.host && /http(s?):\/\//.exec(options.host)
+      ? options.host
+      : "https://" + (options.host || `webcode.run`);
+
   const region = options.region ? `/regions/${options.region}` : "";
   try {
     // Bug fix
@@ -132,13 +186,14 @@ function (label, handler, options) {
     const notebook = options.hostNotebook
       ? options.hostNotebook.split("/")[1]
       : getContext().notebook;
-    const name = label === "default" ? "" : `;${label}`;
+    const name = label === "default" && !session ? "" : `;${label}`;
+    const correlation = session ? `;${session}` : "";
     const link =
       `${host}${region}/observablehq.com` +
       (options.hostNotebook ||
         `${notebook.startsWith("d/") ? "" : `/@${namespace}`}/${notebook}`) +
-      `${name}`;
-    return html`<a href="${link}" target="_blank">${label}</a>`;
+      `${name}${correlation}`;
+    return html`<a href="${link}" target="_blank">${link}</a>`;
   } catch (err) {
     console.error("Links don't work when embedded, but the deployed code does");
     return Object.defineProperty({}, "href", {
@@ -269,7 +324,7 @@ class {
 }
 )}
 
-function _7(md){return(
+function _12(md){return(
 md`
 ### Change Log
   - 2021-08-07
@@ -302,7 +357,7 @@ md`
 `
 )}
 
-function _8(md){return(
+function _13(md){return(
 md`
 
 # API Reference
@@ -409,12 +464,24 @@ By default Serverless cells cannot be called by other Serverless cells and can o
 `
 )}
 
-function _9(md){return(
+function _14(md){return(
 md`## Express Routing
 
 You can attached an Express router to allow fine grained path based responses. Find out more [here](https://observablehq.com/@tomlarkworthy/api-hosting-with-express).
 
 `
+)}
+
+function _chars(){return(
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+)}
+
+function _sessionId(chars){return(
+window.crypto
+  // ~6 bits per selection, we need 120
+  .getRandomValues(new Uint32Array(Math.ceil(120.0 / 5.9)))
+  .reduce((acc, n) => acc.concat(chars[n % chars.length]), [])
+  .join("")
 )}
 
 function _subdomain(html,location){return(
@@ -440,6 +507,10 @@ function _notebook(html){return(
 }
 )}
 
+function _21(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -450,18 +521,29 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","width","md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","Response","subdomain","getContext","html"], _deploy);
+  main.variable(observer("viewof host")).define("viewof host", ["Inputs"], _host);
+  main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
+  main.variable(observer("viewof region")).define("viewof region", ["Inputs"], _region);
+  main.variable(observer("region")).define("region", ["Generators", "viewof region"], (G, _) => G.input(_));
+  main.variable(observer("viewof livecode")).define("viewof livecode", ["Inputs"], _livecode);
+  main.variable(observer("livecode")).define("livecode", ["Generators", "viewof livecode"], (G, _) => G.input(_));
+  main.variable(observer()).define(["deploy","host","region","livecode"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","sessionId","Response","subdomain","getContext","html"], _deploy);
   main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], _onVersionPublished);
   main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], _getContext);
   main.variable(observer("Response")).define("Response", _Response);
-  main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("chars")).define("chars", _chars);
+  main.variable(observer("sessionId")).define("sessionId", ["chars"], _sessionId);
   main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
   main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
+  main.variable(observer()).define(["footer"], _21);
   return main;
 }
