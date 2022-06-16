@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1886
+// https://observablehq.com/@endpointservices/serverless-cells@1939
 import define1 from "./8aac8b2cb06bf434@258.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -132,7 +132,7 @@ function _7(md){return(
 md`### Implementation`
 )}
 
-function _deploy(onVersionPublished,sessionId,Response,subdomain,getContext,html){return(
+function _deploy(onVersionPublished,generateSessionId,Response,subdomain,getContext,html){return(
 function (label, handler, options) {
   onVersionPublished; // Ensure all users of this have the onPublish hook installed
   if (typeof label !== "string")
@@ -142,11 +142,12 @@ function (label, handler, options) {
 
   options = options || {};
   const modifiers = options.modifiers || ["external"];
-  const session = // We have to generate sessions if we are live coding
-    typeof options.livecode === "string" &&
-    options.livecode.toUpperCase() === "PUBLIC"
-      ? sessionId
-      : undefined;
+  if (typeof options.livecode === "string") {
+    options.livecode = options.livecode.toUpperCase();
+  }
+  // We have to generate sessions if we are live coding
+  const session =
+    options.livecode === "PUBLIC" ? generateSessionId(label) : undefined;
 
   const isExternal = modifiers.includes("external");
   const isTerminal = modifiers.includes("terminal");
@@ -476,12 +477,22 @@ function _chars(){return(
 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )}
 
-function _sessionId(chars){return(
+function _salt(){return(
 window.crypto
   // ~6 bits per selection, we need 120
   .getRandomValues(new Uint32Array(Math.ceil(120.0 / 5.9)))
-  .reduce((acc, n) => acc.concat(chars[n % chars.length]), [])
-  .join("")
+)}
+
+function _generateSessionId(salt,chars){return(
+(name) => {
+  const letters = new Uint32Array(salt);
+  for (let i = 0; i < name.length; i++) {
+    letters[i] = salt[i] ^ name.charCodeAt(i % name.length);
+  }
+  return letters
+    .reduce((acc, n) => acc.concat(chars[n % chars.length]), [])
+    .join("");
+}
 )}
 
 function _subdomain(html,location){return(
@@ -507,7 +518,7 @@ function _notebook(html){return(
 }
 )}
 
-function _21(footer){return(
+function _22(footer){return(
 footer
 )}
 
@@ -529,7 +540,7 @@ export default function define(runtime, observer) {
   main.variable(observer("livecode")).define("livecode", ["Generators", "viewof livecode"], (G, _) => G.input(_));
   main.variable(observer()).define(["deploy","host","region","livecode"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","sessionId","Response","subdomain","getContext","html"], _deploy);
+  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","generateSessionId","Response","subdomain","getContext","html"], _deploy);
   main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], _onVersionPublished);
   main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], _getContext);
   main.variable(observer("Response")).define("Response", _Response);
@@ -537,13 +548,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _13);
   main.variable(observer()).define(["md"], _14);
   main.variable(observer("chars")).define("chars", _chars);
-  main.variable(observer("sessionId")).define("sessionId", ["chars"], _sessionId);
+  main.variable(observer("salt")).define("salt", _salt);
+  main.variable(observer("generateSessionId")).define("generateSessionId", ["salt","chars"], _generateSessionId);
   main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
   main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _21);
+  main.variable(observer()).define(["footer"], _22);
   return main;
 }
