@@ -1,8 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@335
-import define1 from "./293899bef371e135@225.js";
+// https://observablehq.com/@tomlarkworthy/flow-queue@429
+import define1 from "./293899bef371e135@267.js";
 
 async function _1(FileAttachment,md){return(
-md`# Wrap Dataflow in a promise with Flow Queue
+md`# How to convert dataflow to a promise using *flowQueue*
 
 
 ~~~js
@@ -11,7 +11,7 @@ import {flowQueue} from '@tomlarkworthy/flow-queue'
 
 ${await FileAttachment("flowQuery@1.svg").image({style: 'width:640px; max-width:100%'})}
 
-A flow queue emits values one-at-a-time onto a Dataflow graph, and collects a response before emitting another. A *flowQueue* wraps Dataflow with a *promise*. It allows you to *unroll* a function body across dataflow cells, which is sometimes better for code layout and explanation.  
+A flow queue releases values one-at-a-time onto a Dataflow graph, and collects a response before releasing the next. A *flowQueue* wraps Dataflow with a *promise*. It allows you to *unroll* a function body across dataflow cells, which is sometimes better for code layout and explanation.  
 
 In other words, __*flowQueue* provides dataflow programming a functional interface__. Consider the following
 
@@ -44,32 +44,33 @@ The next step *r2* depends on the previous step.
 r2 = step2(r1)
 ~~~
 
-To return a result, we call *respond* to the *flowQueue*. This will resolve the *send* promise earlier, and allow the next  to run. (note: viewof)
+To return a result, we call *resolve* to the *flowQueue*. This will resolve the *send* promise earlier, and allow the next  to run. (note: viewof)
 ~~~js
 {
-  viewof head.respond(r2)
+  viewof head.resolve(r2)
 }
 ~~~
 
 ### Optimizations
 
-The *flowQueue* will unblock immediately when *respond* is passed a *promise*.
+The *flowQueue* will unblock immediately when *resolve* is passed a *promise*.
 
 
 ### Errors
 
-Every *send* should lead to a call to *respond*. If you call *respond* an extra time it will throw an Error. If *respond* is not called within *timeout_ms* (1000ms) the promise will reject. 
+Every *send* should lead to a call to *resolve*. If you call *resolve* an extra time it will throw an Error. If *resolve* is not called within *timeout_ms* (1000ms) the promise will reject. 
 `
 )}
 
 function _2(md){return(
-md`## TODO
+md`## Changelog
 
-⚠️ flowQueue does not recover after error? Seems to seize queue`
+2022-05-16 API: resolve changed to *resolve*, as it ends up looking like a promise anyway
+2022-04-13 Bugfix: queue was not recovering after timeout properly.`
 )}
 
 function _flowQueue(htl,Event){return(
-({ timeout_ms = 1000 } = {}) => {
+({ name, timeout_ms = 1000 } = {}) => {
   let runningResolve = undefined;
   let runningReject = undefined;
   const q = [];
@@ -89,7 +90,10 @@ function _flowQueue(htl,Event){return(
     };
 
     timer = setTimeout(
-      () => runningReject(new Error("Timeout (maybe increase timeout_ms?)")),
+      () =>
+        ui.reject(
+          new Error(`Timeout (maybe increase timeout_ms?) ${name || ""}`)
+        ),
       timeout_ms
     );
 
@@ -104,7 +108,7 @@ function _flowQueue(htl,Event){return(
     });
 
   ui.reject = async (err) => {
-    if (!runningReject) throw new Error("No task executing!");
+    if (!runningReject) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -113,8 +117,8 @@ function _flowQueue(htl,Event){return(
     if (q.length > 0) run();
   };
 
-  ui.respond = async (value) => {
-    if (!runningResolve) throw new Error("No task executing!");
+  ui.resolve = async (value) => {
+    if (!runningResolve) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
     runningResolve = undefined;
@@ -128,6 +132,8 @@ function _flowQueue(htl,Event){return(
     }
   };
 
+  ui.respond = ui.resolve; // old name
+
   return ui;
 }
 )}
@@ -139,12 +145,12 @@ md`## Uses
 - Testing, as you can write clear expected starting and ending criteria on a dataflow subgraph.`
 )}
 
-function _square(flowQueue){return(
+function _sqrt(flowQueue){return(
 flowQueue()
 )}
 
-function _6($0,square){return(
-$0.respond(square * square)
+function _6($0,sqrt){return(
+$0.resolve(Math.sqrt(sqrt))
 )}
 
 async function _testing(flowQueue)
@@ -172,77 +178,109 @@ testing.createSuite({
 )}
 
 function _9(suite,flowQueue,testing){return(
-suite.test("respond after send resolves", async () => {
+suite.test("resolve after send resolves", async () => {
   const q = flowQueue();
   const prom = q.send("send val");
   testing.expect(q.value).toBe("send val");
-  q.respond("respond val");
+  q.resolve("resolve val");
   const response = await prom;
-  testing.expect(response).toBe("respond val");
+  testing.expect(response).toBe("resolve val");
 })
 )}
 
-function _10(suite,flowQueue,testing){return(
-suite.test("respond with promise", async () => {
+function _maybeReply(flowQueue){return(
+flowQueue({ timeout_ms: 100 })
+)}
+
+function _maybeReplyReplier(maybeReply,$0)
+{
+  debugger;
+  if (maybeReply === "reply") $0.resolve("reply");
+}
+
+
+function _12(suite,$0,testing){return(
+suite.test("Unreplied queues recover after timeout_ms", async (done) => {
+  try {
+    debugger;
+    await $0.send("no reply");
+  } catch (err) {
+    debugger;
+    const result = await $0.send("reply");
+    testing.expect(result).toEqual("reply");
+    done();
+  }
+})
+)}
+
+function _13(suite,flowQueue,testing){return(
+suite.test("resolve with promise", async () => {
   const q = flowQueue();
   const prom = q.send();
-  q.respond(new Promise((resolve) => resolve("respond val")));
+  q.resolve(new Promise((resolve) => resolve("resolve val")));
   const response = await prom;
-  testing.expect(response).toBe("respond val");
+  testing.expect(response).toBe("resolve val");
 })
 )}
 
-function _11(suite,flowQueue,testing){return(
-suite.test("respond without send throws", async () => {
+function _14(suite,flowQueue,testing){return(
+suite.test("resolve without send throws", async () => {
   const q = flowQueue();
   await testing
-    .expect(q.respond())
-    .rejects.toEqual(Error("No task executing!"));
+    .expect(q.resolve())
+    .rejects.toEqual(Error("No task executing! "));
 })
 )}
 
-function _12(suite,flowQueue,testing){return(
-suite.test("missing respond rejects with timout", async () => {
+function _15(suite,flowQueue,testing){return(
+suite.test("missing resolve rejects with timout", async () => {
   const q = flowQueue({ timeout_ms: 1 });
   await testing
     .expect(q.send())
-    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?)"));
+    .rejects.toEqual(Error("Timeout (maybe increase timeout_ms?) "));
 })
 )}
 
-function _13(suite,$0,testing){return(
+function _16(suite,$0,testing){return(
 suite.test("works in a real notebook", async () => {
   // Here we call a flowQueue that resides in the cells underneath, and collect the result.
   const result = $0.send(4);
-  await testing.expect(result).resolves.toBe(16);
+  await testing.expect(result).resolves.toBe(2);
 })
 )}
 
-function _15(footer){return(
+function _18(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["flowQuery@1.svg",new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("flowQueue")).define("flowQueue", ["htl","Event"], _flowQueue);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer("viewof square")).define("viewof square", ["flowQueue"], _square);
-  main.variable(observer("square")).define("square", ["Generators", "viewof square"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof square","square"], _6);
+  main.variable(observer("viewof sqrt")).define("viewof sqrt", ["flowQueue"], _sqrt);
+  main.variable(observer("sqrt")).define("sqrt", ["Generators", "viewof sqrt"], (G, _) => G.input(_));
+  main.variable(observer()).define(["viewof sqrt","sqrt"], _6);
   main.variable(observer("testing")).define("testing", ["flowQueue"], _testing);
   main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
   main.variable(observer()).define(["suite","flowQueue","testing"], _9);
-  main.variable(observer()).define(["suite","flowQueue","testing"], _10);
-  main.variable(observer()).define(["suite","flowQueue","testing"], _11);
-  main.variable(observer()).define(["suite","flowQueue","testing"], _12);
-  main.variable(observer()).define(["suite","viewof square","testing"], _13);
+  main.variable(observer("viewof maybeReply")).define("viewof maybeReply", ["flowQueue"], _maybeReply);
+  main.variable(observer("maybeReply")).define("maybeReply", ["Generators", "viewof maybeReply"], (G, _) => G.input(_));
+  main.variable(observer("maybeReplyReplier")).define("maybeReplyReplier", ["maybeReply","viewof maybeReply"], _maybeReplyReplier);
+  main.variable(observer()).define(["suite","viewof maybeReply","testing"], _12);
+  main.variable(observer()).define(["suite","flowQueue","testing"], _13);
+  main.variable(observer()).define(["suite","flowQueue","testing"], _14);
+  main.variable(observer()).define(["suite","flowQueue","testing"], _15);
+  main.variable(observer()).define(["suite","viewof sqrt","testing"], _16);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _15);
+  main.variable(observer()).define(["footer"], _18);
   return main;
 }
