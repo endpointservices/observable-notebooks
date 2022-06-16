@@ -191,8 +191,10 @@ md`# My cool Webpage
 I like writing my content in markdown.`
 )}
 
-function _webserverResponder($0,content){return(
-$0.resolve(`<!DOCTYPE html>
+function _webserverResponder(webRequest,$0,content)
+{
+  webRequest;
+  $0.resolve(`<!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="utf-8">
@@ -203,8 +205,9 @@ $0.resolve(`<!DOCTYPE html>
         <body>
           ${content.outerHTML}
         </body>
-      </html>`)
-)}
+      </html>`);
+}
+
 
 function _29(webserver,htl){return(
 htl.html`<iframe src=${webserver.href}></iframe>`
@@ -281,7 +284,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _25);
   main.variable(observer()).define(["webRequest"], _26);
   main.variable(observer("content")).define("content", ["md"], _content);
-  main.variable(observer("webserverResponder")).define("webserverResponder", ["viewof webRequest","content"], _webserverResponder);
+  main.variable(observer("webserverResponder")).define("webserverResponder", ["webRequest","viewof webRequest","content"], _webserverResponder);
   main.variable(observer()).define(["webserver","htl"], _29);
   main.variable(observer()).define(["md"], _30);
   const child3 = runtime.module(define3);
