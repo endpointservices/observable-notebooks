@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/meetups",
+  "main": "ac2d8dc9041d3373@68.js",
+  "version": "68.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/meetups",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
