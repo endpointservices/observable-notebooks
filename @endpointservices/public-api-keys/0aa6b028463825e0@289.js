@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/public-api-keys@289
-import define1 from "./6eda90668ae03044@804.js";
+import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./f92778131fd76559@1173.js";
-import define3 from "./293899bef371e135@267.js";
+import define3 from "./293899bef371e135@268.js";
 
 function _1(md){return(
 md`# Using Secrets for API keys in public notebooks (Airtable Example)
@@ -173,7 +173,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image.png", {url: new URL("./files/5da8ca843c387a17b54a870c67205952093a9d5d724c1da41935faf2c3e6984f8fdde74a50a43e70b2ce2b3d7f3a7d50966ccbbe65ad2386562958574de35664", import.meta.url), mimeType: "image/png", toString}]
+    ["image.png", {url: new URL("./files/5da8ca843c387a17b54a870c67205952093a9d5d724c1da41935faf2c3e6984f8fdde74a50a43e70b2ce2b3d7f3a7d50966ccbbe65ad2386562958574de35664.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
