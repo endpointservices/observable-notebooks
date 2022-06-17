@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/metaprogramming@586
-import define1 from "./c7a3b20cec5d4dd9@659.js";
+import define1 from "./c7a3b20cec5d4dd9@669.js";
 import define2 from "./3d9d1394d858ca97@553.js";
 
 function _1(md){return(

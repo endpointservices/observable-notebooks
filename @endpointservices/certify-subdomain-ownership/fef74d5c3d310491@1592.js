@@ -3,12 +3,12 @@ import define1 from "./65d33fe44849cfde@586.js";
 import define2 from "./698257e86fae4586@374.js";
 import define3 from "./52d808b188b8672b@129.js";
 import define4 from "./87deeb645328fb3b@223.js";
-import define5 from "./dff1e917c89f5e76@1711.js";
+import define5 from "./dff1e917c89f5e76@1939.js";
 import define6 from "./11a5ab8b1b3a51db@1161.js";
-import define7 from "./c7a3b20cec5d4dd9@659.js";
+import define7 from "./c7a3b20cec5d4dd9@669.js";
 import define8 from "./cb60908738c3dabe@152.js";
 import define9 from "./ab3e70b29c480e6d@83.js";
-import define10 from "./293899bef371e135@226.js";
+import define10 from "./293899bef371e135@268.js";
 
 function _1(md){return(
 md`
@@ -355,7 +355,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/cf69b517437593b34a97ecf99c6a0677045fe92bf69bdbeb6a03e1087223074c642396c2b0815e1377da42b0aa022e99bd8f0f64d6c603f1b0cff4540fa2ac11",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/cf69b517437593b34a97ecf99c6a0677045fe92bf69bdbeb6a03e1087223074c642396c2b0815e1377da42b0aa022e99bd8f0f64d6c603f1b0cff4540fa2ac11.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("certified_domains")).define("certified_domains", ["subdomain_certificates"], _certified_domains);
