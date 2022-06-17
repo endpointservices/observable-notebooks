@@ -1,13 +1,13 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1429
+// https://observablehq.com/@endpointservices/login-with-comment@1436
 import define1 from "./993a0c51ef1175ea@1362.js";
-import define2 from "./d84ccee0a2202d45@298.js";
+import define2 from "./d84ccee0a2202d45@337.js";
 import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
-import define5 from "./dff1e917c89f5e76@1711.js";
+import define5 from "./dff1e917c89f5e76@1939.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./698257e86fae4586@374.js";
 import define8 from "./ab3e70b29c480e6d@83.js";
-import define9 from "./b8a500058f806a6b@10.js";
+import define9 from "./b8a500058f806a6b@11.js";
 import define10 from "./58f3eb7334551ae6@209.js";
 
 async function _1(md,FileAttachment){return(
@@ -744,10 +744,6 @@ Finds a username of a person commenting something containing a code on a given n
 `
 )}
 
-function _56(getCommentsAndNamespace){return(
-getCommentsAndNamespace('https://observablehq.com/d/f063d0526c1317ca')
-)}
-
 function _findLoginCommentingCode(getCommentsAndNamespace){return(
 async (notebookURL, code) => {
   const { comments, namespace } = await getCommentsAndNamespace(notebookURL);
@@ -757,7 +753,7 @@ async (notebookURL, code) => {
 }
 )}
 
-async function _58(html,FileAttachment){return(
+async function _57(html,FileAttachment){return(
 html`<img width=300px src="${await FileAttachment(
   "ezgif.com-gif-maker.webp"
 ).url()}"></img>`
@@ -791,7 +787,7 @@ suite.test(
 )
 )}
 
-function _61(md){return(
+function _60(md){return(
 md`#### verify
 
 Veryify takes a **private key**, SHA256 it, then looks for it in the comments of a provided notebook URL, if found, signs a token that can be used to initiate a Firebase auth session.
@@ -1040,7 +1036,7 @@ function checkIsURL(arg, name) {
 }
 )}
 
-function _78(footer){return(
+function _77(footer){return(
 footer
 )}
 
@@ -1048,7 +1044,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2", import.meta.url), mimeType: "image/webp", toString}]
+    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
@@ -1116,12 +1112,11 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _54);
   const child3 = runtime.module(define2);
   main.import("getCommentsAndNamespace", child3);
-  main.variable(observer()).define(["getCommentsAndNamespace"], _56);
   main.variable(observer("findLoginCommentingCode")).define("findLoginCommentingCode", ["getCommentsAndNamespace"], _findLoginCommentingCode);
-  main.variable(observer()).define(["html","FileAttachment"], _58);
+  main.variable(observer()).define(["html","FileAttachment"], _57);
   main.variable(observer("findLoginCommentingCodeTest")).define("findLoginCommentingCodeTest", ["suite","expect","findLoginCommentingCode"], _findLoginCommentingCodeTest);
   main.variable(observer("findLoginCommentingCodeTest2")).define("findLoginCommentingCodeTest2", ["suite","expect","findLoginCommentingCode","randomId"], _findLoginCommentingCodeTest2);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["md"], _60);
   main.variable(observer("verify_backend")).define("verify_backend", ["deploy","checkIsURL","hash","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","findLoginCommentingCode","AUTH_CHECK","findObservablehqAccounts","createCustomToken","TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET","HOST_NOTEBOOK"], _verify_backend);
   main.variable(observer("verify")).define("verify", ["verify_backend"], _verify);
   main.variable(observer("findObservablehqAccounts")).define("findObservablehqAccounts", ["randomId","promiseRecursive"], _findObservablehqAccounts);
@@ -1154,6 +1149,6 @@ export default function define(runtime, observer) {
   main.import("promiseRecursive", child10);
   const child11 = runtime.module(define10);
   main.import("footer", child11);
-  main.variable(observer()).define(["footer"], _78);
+  main.variable(observer()).define(["footer"], _77);
   return main;
 }
