@@ -1,12 +1,12 @@
 // https://observablehq.com/@endpointservices/logs@1920
 import define1 from "./165e9411d1af7e86@1398.js";
 import define2 from "./698257e86fae4586@374.js";
-import define3 from "./993a0c51ef1175ea@1345.js";
+import define3 from "./993a0c51ef1175ea@1362.js";
 import define4 from "./11a5ab8b1b3a51db@1161.js";
-import define5 from "./c7a3b20cec5d4dd9@661.js";
+import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./cb60908738c3dabe@152.js";
 import define7 from "./777fe85658e39c55@470.js";
-import define8 from "./293899bef371e135@247.js";
+import define8 from "./293899bef371e135@268.js";
 
 function _1(md){return(
 md`# Logs Manager
@@ -468,7 +468,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["robert-larsson-UsET4S0ginw-unsplash@1.jpg", {url: new URL("./files/80f385bd757c2b37181f93d4a6f341849a0a28ccbdb21b28535a6dba3a52fb889d3ac52918d2849edbd76ae90fb8b732fa23821baebed742cb58f515ef67316b", import.meta.url), mimeType: "image/jpeg", toString}]
+    ["robert-larsson-UsET4S0ginw-unsplash@1.jpg", {url: new URL("./files/80f385bd757c2b37181f93d4a6f341849a0a28ccbdb21b28535a6dba3a52fb889d3ac52918d2849edbd76ae90fb8b732fa23821baebed742cb58f515ef67316b.jpeg", import.meta.url), mimeType: "image/jpeg", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

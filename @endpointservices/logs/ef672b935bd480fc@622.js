@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/fetchp@619
-import define1 from "./dff1e917c89f5e76@1711.js";
+// https://observablehq.com/@tomlarkworthy/fetchp@622
+import define1 from "./dff1e917c89f5e76@1939.js";
 
 function _1(md){return(
 md`# CORS Proxy _fetchp_
