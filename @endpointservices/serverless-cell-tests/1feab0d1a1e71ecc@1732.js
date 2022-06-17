@@ -1,7 +1,7 @@
-import define1 from "./6eda90668ae03044@803.js";
+import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
-import define3 from "./c7a3b20cec5d4dd9@660.js";
-import define4 from "./293899bef371e135@226.js";
+import define3 from "./c7a3b20cec5d4dd9@669.js";
+import define4 from "./293899bef371e135@268.js";
 
 async function _1(md,FileAttachment){return(
 md`
@@ -628,10 +628,10 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["logo.png", {url: new URL("./files/f66616596d81ff0717d6e08454566d311c636aae5f2383f8599e3767ab5c91f0ee2ceb3e1244872b703708f02177ca74c707e6c422db21ec208e03075855df12", import.meta.url), mimeType: "image/png", toString}],
-    ["PreviewServerlessCells.png", {url: new URL("./files/0b797b66fdbead75a0a4046e1d201066e13151c42dff566cc70e8045d307a601567bb41aa7a2e35de2948aa02e7d1edea836d049cbfa220e5491f3486ac962ef", import.meta.url), mimeType: "image/png", toString}],
-    ["ServersideCells.png", {url: new URL("./files/dfb3314f7289de45d0b83cb4455c0a7cdc3aacbf3b79f7b7d608b5b2959ee436931198f212c6a74386e019b616383dec98fe801601c551493686ce482789e433", import.meta.url), mimeType: "image/png", toString}],
-    ["PreviewServerlessCells@1.png", {url: new URL("./files/60d4ca69fed9f57d135d2784c0afeba63568ab00be1304592966277256857787c9b9dd4dc7049b81be32369d69c4a2a60cc258fb252fc171b72ae298d04a63f7", import.meta.url), mimeType: "image/png", toString}]
+    ["logo.png", {url: new URL("./files/f66616596d81ff0717d6e08454566d311c636aae5f2383f8599e3767ab5c91f0ee2ceb3e1244872b703708f02177ca74c707e6c422db21ec208e03075855df12.png", import.meta.url), mimeType: "image/png", toString}],
+    ["PreviewServerlessCells.png", {url: new URL("./files/0b797b66fdbead75a0a4046e1d201066e13151c42dff566cc70e8045d307a601567bb41aa7a2e35de2948aa02e7d1edea836d049cbfa220e5491f3486ac962ef.png", import.meta.url), mimeType: "image/png", toString}],
+    ["ServersideCells.png", {url: new URL("./files/dfb3314f7289de45d0b83cb4455c0a7cdc3aacbf3b79f7b7d608b5b2959ee436931198f212c6a74386e019b616383dec98fe801601c551493686ce482789e433.png", import.meta.url), mimeType: "image/png", toString}],
+    ["PreviewServerlessCells@1.png", {url: new URL("./files/60d4ca69fed9f57d135d2784c0afeba63568ab00be1304592966277256857787c9b9dd4dc7049b81be32369d69c4a2a60cc258fb252fc171b72ae298d04a63f7.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
