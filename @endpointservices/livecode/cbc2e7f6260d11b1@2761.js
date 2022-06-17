@@ -1783,7 +1783,6 @@ async function createChannel({
       const context = getContext();
       context.secrets = req?.context?.secrets || {}; // Copy secrets over wire
       try {
-        debugger;
         const res = await window["deployments"][name](req.request, context);
         snap.child("response").ref.set(JSON.stringify(res));
       } catch (err) {

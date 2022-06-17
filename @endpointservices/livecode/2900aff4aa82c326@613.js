@@ -1,8 +1,9 @@
 import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./0e0b35a92c819d94@429.js";
-import define3 from "./048a17a165be198d@263.js";
-import define4 from "./509d6b5d1aebf2a1@215.js";
-import define5 from "./293899bef371e135@268.js";
+import define3 from "./3347cdaa75bccd52@205.js";
+import define4 from "./048a17a165be198d@263.js";
+import define5 from "./509d6b5d1aebf2a1@215.js";
+import define6 from "./293899bef371e135@268.js";
 
 function _1(md){return(
 md`# Livecoding Endpoints with [WEBCode.run](https://webcode.run)
@@ -177,7 +178,9 @@ endpoint(
 )}
 
 function _webRequest(flowQueue){return(
-flowQueue()
+flowQueue({
+  timeout_ms: 10000
+})
 )}
 
 function _26(md){return(
@@ -190,35 +193,80 @@ function _27(webRequest){return(
 webRequest
 )}
 
-function _content(md){return(
-md`# My cool Webpage
+function _29(md){return(
+md`## Content
 
-I like writing my content in markdown.`
+A rendered plot, based on incoming query parameters`
 )}
 
-function _webserverResponder(webRequest,$0,content)
+function _chart(Plot,wind){return(
+Plot.plot({
+  inset: 10,
+  width: 1152,
+  height: 870, // for a rougly equirectangular projection
+  color: {
+    scheme: "viridis",
+    label: "Speed (m/s)",
+    zero: true,
+    legend: true
+  },
+  marks: [
+    Plot.vector(wind, {
+      x: "longitude",
+      y: "latitude",
+      rotate: ({ u, v }) => (Math.atan2(u, v) * 180) / Math.PI,
+      length: ({ u, v }) => Math.hypot(u, v),
+      stroke: ({ u, v }) => Math.hypot(u, v)
+    })
+  ]
+})
+)}
+
+function _frame(){return(
+(content) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>title</title>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+</head>
+<body>
+${content.outerHTML || content}
+</body>
+</html>`
+)}
+
+async function _webserverResponder(webRequest,$0,frame,chart,$1)
 {
   webRequest;
-  $0.resolve(`<!DOCTYPE html>
-      <html lang="en">
-        <head>
-          <meta charset="utf-8">
-          <title>title</title>
-          <link rel="stylesheet" href="style.css">
-          <script src="script.js"></script>
-        </head>
-        <body>
-          ${content.outerHTML}
-        </body>
-      </html>`);
+  try {
+    await $0.resolve(frame(chart));
+  } catch (err) {
+    $1.value += 1;
+  }
 }
 
 
-function _30(webserver,htl){return(
-htl.html`<iframe src=${webserver.href}></iframe>`
+function _refresh(){return(
+0
 )}
 
-function _31(md){return(
+function _34(refresh,width,webserver,htl){return(
+htl.html`${refresh && ''}
+<iframe width="${width}" height="640px" src=${webserver.href}></iframe>`
+)}
+
+function* _35(Promises)
+{
+  while (true) {
+    console.log("ping");
+    yield Promises.delay(1000, "OK");
+  }
+}
+
+
+function _36(md){return(
 md`### Config`
 )}
 
@@ -234,22 +282,22 @@ Inputs.bind(
 )
 )}
 
-function _34(md){return(
+function _39(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _35(installCopyCode,curl_get,invalidation,md)
+function _40(installCopyCode,curl_get,invalidation,md)
 {
   installCopyCode(curl_get, { invalidation });
   return md`*👈 [copy-code](https://observablehq.com/@tomlarkworthy/copy-code) button for examples*`;
 }
 
 
-function _37(md){return(
+function _42(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _39(footer){return(
+function _44(footer){return(
 footer
 )}
 
@@ -289,21 +337,29 @@ export default function define(runtime, observer) {
   main.variable(observer("webRequest")).define("webRequest", ["Generators", "viewof webRequest"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _26);
   main.variable(observer()).define(["webRequest"], _27);
-  main.variable(observer("content")).define("content", ["md"], _content);
-  main.variable(observer("webserverResponder")).define("webserverResponder", ["webRequest","viewof webRequest","content"], _webserverResponder);
-  main.variable(observer()).define(["webserver","htl"], _30);
-  main.variable(observer()).define(["md"], _31);
   const child3 = runtime.module(define3);
-  main.import("localStorageView", child3);
+  main.import("wind", child3);
+  main.variable(observer()).define(["md"], _29);
+  main.variable(observer("chart")).define("chart", ["Plot","wind"], _chart);
+  main.variable(observer("frame")).define("frame", _frame);
+  main.variable(observer("webserverResponder")).define("webserverResponder", ["webRequest","viewof webRequest","frame","chart","mutable refresh"], _webserverResponder);
+  main.define("initial refresh", _refresh);
+  main.variable(observer("mutable refresh")).define("mutable refresh", ["Mutable", "initial refresh"], (M, _) => new M(_));
+  main.variable(observer("refresh")).define("refresh", ["mutable refresh"], _ => _.generator);
+  main.variable(observer()).define(["refresh","width","webserver","htl"], _34);
+  main.variable(observer()).define(["Promises"], _35);
+  main.variable(observer()).define(["md"], _36);
+  const child4 = runtime.module(define4);
+  main.import("localStorageView", child4);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _34);
-  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _35);
-  const child4 = runtime.module(define4);
-  main.import("installCopyCode", child4);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["installCopyCode","curl_get","invalidation","md"], _40);
   const child5 = runtime.module(define5);
-  main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _39);
+  main.import("installCopyCode", child5);
+  main.variable(observer()).define(["md"], _42);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
+  main.variable(observer()).define(["footer"], _44);
   return main;
 }

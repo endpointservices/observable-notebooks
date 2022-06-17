@@ -257,7 +257,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da", import.meta.url), mimeType: "image/svg+xml", toString}]
+    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","md"], _1);

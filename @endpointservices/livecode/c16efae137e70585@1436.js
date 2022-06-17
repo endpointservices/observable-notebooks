@@ -1044,7 +1044,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2", import.meta.url), mimeType: "image/webp", toString}]
+    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
