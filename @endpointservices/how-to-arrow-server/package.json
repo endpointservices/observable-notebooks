@@ -1,0 +1,14 @@
+{
+  "name": "@endpointservices/how-to-arrow-server",
+  "main": "a66997db084f1047@91.js",
+  "version": "91.0.0",
+  "homepage": "https://observablehq.com/@endpointservices/how-to-arrow-server",
+  "author": {
+    "name": "Endpoint Services",
+    "url": "https://observablehq.com/@endpointservices"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
