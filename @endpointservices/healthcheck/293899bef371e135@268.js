@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@267
+// https://observablehq.com/@endpointservices/footer-with-backups@268
 import define1 from "./a81f2a20664080d3@243.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@631.js";
@@ -126,8 +126,8 @@ md`### Backups`
 function _backups(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
-  repo: "observable-notebooks",
-  debugProxy: true
+  repo: "observable-notebooks"
+  /*debugProxy: true*/
 })
 )}
 
