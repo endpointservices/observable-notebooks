@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/catch-all@408
 import define1 from "./e1c39d41e8e944b0@378.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@210.js";
 
 function _1(md){return(
 md`# Detect notebook runtime errors with *catchAll((cellName, reason) => {...})*
