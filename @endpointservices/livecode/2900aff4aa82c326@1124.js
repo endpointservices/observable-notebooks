@@ -50,7 +50,7 @@ endpoint(
   async (req, res) => {
     console.log(`Received request from '${req.query.name}'`, req);
     console.log("Writing to response", res);
-    $0.value = $0.value.concat(req);
+    $0.value = $0.value.concat(Date.now());
     debugger; // 👈 triggers a breakpoint if DevTools is open
     res.send({
       msg: `Hi! ${req.query.name}`,
@@ -172,13 +172,14 @@ with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)
 As server gets complex, visibility into its request processing pipeline becomes important. We can a [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue) to lay processing steps across cells in the _dataflow_ style. You call *send* to add a task to the [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue). The next task will not be loaded until the notebook calls resolve/rejects on the flowQueue *view* for the previous task.`
 )}
 
-function _webserver(endpoint,$0,host){return(
+function _webserver(endpoint,$0,$1,host){return(
 endpoint(
   "webserver",
   async (req, res, ctx) => {
     try {
+      $0.value = $0.value.concat(req);
       // Forward to a flowQueue for (async) processing
-      const response = await $0.send({
+      const response = await $1.send({
         req,
         res,
         ctx
@@ -243,13 +244,21 @@ md`You can define routes using [express](https://observablehq.com/@tomlarkworthy
 We will have a default route to handle our random requests, and a most specific ones we will go back to later`
 )}
 
-function _router(webRequest,$0,$1,$2)
+function _router(webRequest,$0,$1,$2,$3)
 {
   switch (webRequest.req.url) {
     default:
       return $0.resolve($1.send(webRequest));
+
+    // Form handling example
     case "/form.html":
       return $0.resolve($2.send(webRequest));
+
+    // Image serving (SVG and PNG)
+    case "/requests.svg":
+      return $0.resolve($3.send(webRequest));
+    case "/random.png":
+      return $0.resolve($3.send(webRequest));
   }
 }
 
@@ -354,7 +363,7 @@ md`### Automated Preview Refreshing
 
 If we are a little clever with our dataflow, we can get the iframe to auto refresh on changes. Recall that in a flowQueue, a single request must processed before the next is exposed. If we see the same request more than once, that means intermediate cells have refreshed for reasons *other* than a new request arriving. This is likely a code change so we can tell the preview to refresh when the request the same as the previous one.
 
-With this little bit of code we can edit the source of the formHandler and the preview updates automatically.`
+With this little bit of code we can edit the source of the formHandler and the preview updates automatically. Every request has a unique id associated with it (the id) so we can use this to track for repeated exposure to the same request.`
 )}
 
 function _refreshForm(webserver,Promises){return(
@@ -363,7 +372,7 @@ webserver, Promises.delay(2000, 0)
 
 function _formResponder(formRequest,formResponseContent,$0)
 {
-  if (formRequest.req.id !== this) {
+  if (formRequest.req.id !== /* previous value of cell */ this) {
     // New request, respond to it
     formRequest.res.status(200).send(formResponseContent);
   } else {
@@ -409,7 +418,7 @@ function _formData(decodedFormData){return(
 Object.fromEntries(decodedFormData.entries())
 )}
 
-function _formPostRequestResolve(formPostRequest,$0,formData)
+function _formPostRequestResolver(formPostRequest,$0,formData)
 {
   formPostRequest;
   $0.resolve(
@@ -419,6 +428,40 @@ function _formPostRequestResolve(formPostRequest,$0,formData)
 
 
 function _64(md){return(
+md`## Serving Images
+
+To server images (or video) you must return the data along with the correct [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) in the [\`content-type\` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).
+
+Let's show how this works by serving an Observable Plot (SVG) and a random png. `
+)}
+
+function _imgRequest(flowQueue){return(
+flowQueue()
+)}
+
+function _66(imgRequest){return(
+imgRequest
+)}
+
+function _67(md){return(
+md`Lets visualize what requests the webserver has seen in its history. When _livecoding_ the log will be just your session, when not _livecoding_, this will scoped to the shared serverside session (!)`
+)}
+
+function _weblog(){return(
+[]
+)}
+
+function _69(Plot,weblob){return(
+Plot.plot({
+  marks: [Plot.tickX(weblob, { x: "", y: "year" })]
+})
+)}
+
+function _70(width,webserver,htl){return(
+htl.html`<img width="${width}" src=${webserver.href + "/requests.svg"}></img>`
+)}
+
+function _71(md){return(
 md`### Config`
 )}
 
@@ -434,11 +477,11 @@ Inputs.bind(
 )
 )}
 
-function _67(md){return(
+function _74(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _68(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _75(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -454,11 +497,11 @@ function _68(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _70(md){return(
+function _77(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _72(footer){return(
+function _79(footer){return(
 footer
 )}
 
@@ -493,7 +536,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _22);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
-  main.variable(observer("webserver")).define("webserver", ["endpoint","viewof webRequest","host"], _webserver);
+  main.variable(observer("webserver")).define("webserver", ["endpoint","mutable weblog","viewof webRequest","host"], _webserver);
   main.variable(observer()).define(["md"], _25);
   main.variable(observer("viewof webRequest")).define("viewof webRequest", ["flowQueue"], _webRequest);
   main.variable(observer("webRequest")).define("webRequest", ["Generators", "viewof webRequest"], (G, _) => G.input(_));
@@ -505,7 +548,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _31);
   main.variable(observer()).define(["webRequest"], _32);
   main.variable(observer()).define(["md"], _33);
-  main.variable(observer("router")).define("router", ["webRequest","viewof webRequest","viewof defaultRequest","viewof formRequest"], _router);
+  main.variable(observer("router")).define("router", ["webRequest","viewof webRequest","viewof defaultRequest","viewof formRequest","viewof imgRequest"], _router);
   main.variable(observer()).define(["md"], _35);
   main.variable(observer("viewof defaultRequest")).define("viewof defaultRequest", ["flowQueue"], _defaultRequest);
   main.variable(observer("defaultRequest")).define("defaultRequest", ["Generators", "viewof defaultRequest"], (G, _) => G.input(_));
@@ -539,19 +582,29 @@ export default function define(runtime, observer) {
   main.variable(observer("decodedFormData")).define("decodedFormData", ["URLSearchParams","formDataRaw"], _decodedFormData);
   main.variable(observer()).define(["md"], _61);
   main.variable(observer("formData")).define("formData", ["decodedFormData"], _formData);
-  main.variable(observer("formPostRequestResolve")).define("formPostRequestResolve", ["formPostRequest","viewof formPostRequest","formData"], _formPostRequestResolve);
+  main.variable(observer("formPostRequestResolver")).define("formPostRequestResolver", ["formPostRequest","viewof formPostRequest","formData"], _formPostRequestResolver);
   main.variable(observer()).define(["md"], _64);
-  const child3 = runtime.module(define3);
-  main.import("localStorageView", child3);
+  main.variable(observer("viewof imgRequest")).define("viewof imgRequest", ["flowQueue"], _imgRequest);
+  main.variable(observer("imgRequest")).define("imgRequest", ["Generators", "viewof imgRequest"], (G, _) => G.input(_));
+  main.variable(observer()).define(["imgRequest"], _66);
+  main.variable(observer()).define(["md"], _67);
+  main.define("initial weblog", _weblog);
+  main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
+  main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
+  main.variable(observer()).define(["Plot","weblob"], _69);
+  main.variable(observer()).define(["width","webserver","htl"], _70);
+  main.variable(observer()).define(["md"], _71);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _67);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _68);
+  const child3 = runtime.module(define3);
+  main.import("localStorageView", child3);
+  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _75);
   const child4 = runtime.module(define4);
   main.import("installCopyCode", child4);
-  main.variable(observer()).define(["md"], _70);
+  main.variable(observer()).define(["md"], _77);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _72);
+  main.variable(observer()).define(["footer"], _79);
   return main;
 }
