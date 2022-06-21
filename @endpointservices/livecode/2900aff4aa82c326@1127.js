@@ -177,7 +177,7 @@ endpoint(
   "webserver",
   async (req, res, ctx) => {
     try {
-      $0.value = $0.value.concat(new Date.now());
+      $0.value = $0.value.concat(Date.now());
       // Forward to a flowQueue for (async) processing
       const response = await $1.send({
         req,
