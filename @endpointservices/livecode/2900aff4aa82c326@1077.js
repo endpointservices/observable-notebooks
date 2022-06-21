@@ -17,7 +17,7 @@ In this article some live coding examples are presented, which  how to get the m
 
 function _2(md){return(
 md`## Prerequisites: Observable Basics
-To reap the benefit of *livecoding*, you should understand [Observable]()'s non-linear reactive cells execution model. Firstly, Observable's runtime is framework around **normal javascript**, so you can do normal Javascript things. _Hell, you can store shit in the global window if you want_. Secondly, the runtime organises a program into **named code cells**, which can read and emit values. Cells reevaluate primarily for two reasons, 1, if their inputs are dirty *or, 2, you change their code definition*.
+To reap the benefit of *livecoding*, you should understand [Observable]()'s non-linear reactive cells execution model. Firstly, Observable's runtime is framework around **normal javascript**, so you can do normal Javascript things. _Hell, you can store shit in the global window if you want_. Secondly, the runtime organises a program into **named code cells**, which can read and emit values. Together cells Cells reevaluate primarily for two reasons, 1, if their inputs are dirty *or, 2, you change their code definition*.
 
 So when you code, only the dependant computational graph is recomputed. It's significantly less disruptive than a full restart. React developers might have experienced _Hot Module Reload (HMR)_ before, this is like that but more reliable as its baked into the runtime. 
 
@@ -219,6 +219,7 @@ You can server multiple pages from the webserver by inspecting the \`url\` param
 
 function _randomResponse(Inputs,webserver){return(
 Inputs.button("Make request with random path", {
+  value: { text: () => "" },
   reduce: () =>
     fetch(webserver.href + "/" + Math.random().toString(16).substring(3))
 })
@@ -281,7 +282,7 @@ function _40(md){return(
 md`We end the processing by resolving the flowQueue`
 )}
 
-function _41(defaultRequestHandler,$0)
+function _defaultRequestResolver(defaultRequestHandler,$0)
 {
   defaultRequestHandler; // triggered after defaultRequestHandler has run
   $0.resolve();
@@ -312,36 +313,21 @@ function _46(formRequest){return(
 formRequest
 )}
 
-function _formResponseContent(formRequest)
+async function _formResponseContent(formRequest,$0)
 {
   if (formRequest.req.method === "GET") {
     return `<form method="post" style="border:1px solid #ccc">
-              <div class="container">
-                <h1>Sign Up</h1>
-                <p>Please fill in this form to create an account.</p>
-                <hr>
-            
-                <label for="email"><b>Email</b></label>
-                <input type="text" placeholder="Enter Email" name="email" required>
-            
-                <label for="psw"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" name="psw" required>
-            
-                <label for="psw-repeat"><b>Repeat Password</b></label>
-                <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
-            
-                <label>
-                  <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
-                </label>
-            
-                <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
-            
-                <div class="clearfix">
-                  <button type="button" class="cancelbtn">Cancel</button>
-                  <button type="submit" class="signupbtn">Sign Up</button>
+                <div>
+                  <label name="note">Note:</label>
                 </div>
-              </div>
+                <textarea id="note" name="note"
+                          rows="5" cols="40"></textarea>
+                <div>
+                  <button type="submit">Submit</button>
+                </div>
             </form>`;
+  } else if (formRequest.req.method === "POST") {
+    return await $0.send(formRequest);
   }
 }
 
@@ -352,21 +338,27 @@ md`### Preview Result
 We can of course put the rendered form in our own iframe so we can see the result`
 )}
 
-function _49(refreshForm,width,webserver,htl){return(
-htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (refreshForm, '')}
-<iframe width="${width}" height="300px" src=${webserver.href + "/form.html"}></iframe>`
+function _49(Inputs,$0){return(
+Inputs.button("refresh preview", {
+  reduce: () => $0.value++
+})
 )}
 
-function _50(md){return(
+function _50(refreshForm,width,webserver,htl){return(
+htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (refreshForm, '')}
+<iframe width="${width}" height="150px" src=${webserver.href + "/form.html"}></iframe>`
+)}
+
+function _51(md){return(
 md`### Automated Preview Refreshing
 
 If we are a little clever with our dataflow, we can get the iframe to auto refresh on changes. Recall that in a flowQueue, a single request must processed before the next is exposed. If we see the same request more than once, that means intermediate cells have refreshed for reasons *other* than a new request arriving. This is likely a code change so we can tell the preview to refresh when the request the same as the previous one.
 
-With this little bit of code we can edit the source of the formHandler and the preview updates automatically`
+With this little bit of code we can edit the source of the formHandler and the preview updates automatically.`
 )}
 
-function _refreshForm(){return(
-0
+function _refreshForm(webserver,Promises){return(
+webserver, Promises.delay(2000, 0)
 )}
 
 function _formResponder(formRequest,formResponseContent,$0)
@@ -381,42 +373,52 @@ function _formResponder(formRequest,formResponseContent,$0)
 }
 
 
-function _frame(){return(
-(content) => `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<title>title</title>
-<link rel="stylesheet" href="style.css">
-<script src="script.js"></script>
-</head>
-<body>
-${content.outerHTML || content}
-</body>
-</html>`
+function _54(md){return(
+md`## Form handling`
 )}
 
-async function _webserverResponder(webRequest,$0,frame,chart,$1)
+function _formPostRequest(flowQueue){return(
+flowQueue()
+)}
+
+function _56(formPostRequest){return(
+formPostRequest
+)}
+
+function _57(md){return(
+md`Form data, when using the POST action, is URL encoded in the body.`
+)}
+
+function _formDataRaw(formPostRequest){return(
+formPostRequest.req.body
+)}
+
+function _59(md){return(
+md`The modern way to decode it is with URLSearchParams...`
+)}
+
+function _decodedFormData(URLSearchParams,formDataRaw){return(
+new URLSearchParams(formDataRaw)
+)}
+
+function _61(md){return(
+md`a URLSearchParams object is not very inspectible on its own, so I often convert into an ordinary data object, which is easier to work with`
+)}
+
+function _formData(decodedFormData){return(
+Object.fromEntries(decodedFormData.entries())
+)}
+
+function _formPostRequestResolve(formPostRequest,$0,formData)
 {
-  webRequest;
-  try {
-    await $0.resolve(frame(chart));
-  } catch (err) {
-    $1.value += 1;
-  }
+  formPostRequest;
+  $0.resolve(
+    `<h2>Thanks, your note was:</h2><p>${formData.note}</p>`
+  );
 }
 
 
-function* _55(Promises)
-{
-  while (true) {
-    console.log("ping");
-    yield Promises.delay(1000, "OK");
-  }
-}
-
-
-function _56(md){return(
+function _64(md){return(
 md`### Config`
 )}
 
@@ -432,11 +434,11 @@ Inputs.bind(
 )
 )}
 
-function _59(md){return(
+function _67(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _60(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _68(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -452,11 +454,11 @@ function _60(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _62(md){return(
+function _70(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _64(footer){return(
+function _72(footer){return(
 footer
 )}
 
@@ -511,36 +513,45 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _38);
   main.variable(observer("defaultRequestHandler")).define("defaultRequestHandler", ["defaultRequest"], _defaultRequestHandler);
   main.variable(observer()).define(["md"], _40);
-  main.variable(observer()).define(["defaultRequestHandler","viewof defaultRequest"], _41);
+  main.variable(observer("defaultRequestResolver")).define("defaultRequestResolver", ["defaultRequestHandler","viewof defaultRequest"], _defaultRequestResolver);
   main.variable(observer()).define(["randomResponse"], _42);
   main.variable(observer()).define(["Inputs","viewof randomResponse"], _43);
   main.variable(observer()).define(["md"], _44);
   main.variable(observer("viewof formRequest")).define("viewof formRequest", ["flowQueue"], _formRequest);
   main.variable(observer("formRequest")).define("formRequest", ["Generators", "viewof formRequest"], (G, _) => G.input(_));
   main.variable(observer()).define(["formRequest"], _46);
-  main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest"], _formResponseContent);
+  main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest","viewof formPostRequest"], _formResponseContent);
   main.variable(observer()).define(["md"], _48);
-  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _49);
-  main.variable(observer()).define(["md"], _50);
-  main.define("initial refreshForm", _refreshForm);
+  main.variable(observer()).define(["Inputs","mutable refreshForm"], _49);
+  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _50);
+  main.variable(observer()).define(["md"], _51);
+  main.define("initial refreshForm", ["webserver","Promises"], _refreshForm);
   main.variable(observer("mutable refreshForm")).define("mutable refreshForm", ["Mutable", "initial refreshForm"], (M, _) => new M(_));
   main.variable(observer("refreshForm")).define("refreshForm", ["mutable refreshForm"], _ => _.generator);
   main.variable(observer("formResponder")).define("formResponder", ["formRequest","formResponseContent","mutable refreshForm"], _formResponder);
-  main.variable(observer("frame")).define("frame", _frame);
-  main.variable(observer("webserverResponder")).define("webserverResponder", ["webRequest","viewof webRequest","frame","chart","mutable refresh"], _webserverResponder);
-  main.variable(observer()).define(["Promises"], _55);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _54);
+  main.variable(observer("viewof formPostRequest")).define("viewof formPostRequest", ["flowQueue"], _formPostRequest);
+  main.variable(observer("formPostRequest")).define("formPostRequest", ["Generators", "viewof formPostRequest"], (G, _) => G.input(_));
+  main.variable(observer()).define(["formPostRequest"], _56);
+  main.variable(observer()).define(["md"], _57);
+  main.variable(observer("formDataRaw")).define("formDataRaw", ["formPostRequest"], _formDataRaw);
+  main.variable(observer()).define(["md"], _59);
+  main.variable(observer("decodedFormData")).define("decodedFormData", ["URLSearchParams","formDataRaw"], _decodedFormData);
+  main.variable(observer()).define(["md"], _61);
+  main.variable(observer("formData")).define("formData", ["decodedFormData"], _formData);
+  main.variable(observer("formPostRequestResolve")).define("formPostRequestResolve", ["formPostRequest","viewof formPostRequest","formData"], _formPostRequestResolve);
+  main.variable(observer()).define(["md"], _64);
   const child3 = runtime.module(define3);
   main.import("localStorageView", child3);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _59);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _60);
+  main.variable(observer()).define(["md"], _67);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _68);
   const child4 = runtime.module(define4);
   main.import("installCopyCode", child4);
-  main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["md"], _70);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _64);
+  main.variable(observer()).define(["footer"], _72);
   return main;
 }
