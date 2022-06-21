@@ -177,7 +177,7 @@ endpoint(
   "webserver",
   async (req, res, ctx) => {
     try {
-      $0.value = $0.value.concat(req);
+      $0.value = $0.value.concat(new Date.now());
       // Forward to a flowQueue for (async) processing
       const response = await $1.send({
         req,
@@ -451,9 +451,9 @@ function _weblog(){return(
 []
 )}
 
-function _69(Plot,weblob){return(
+function _69(Plot,weblog){return(
 Plot.plot({
-  marks: [Plot.tickX(weblob, { x: "", y: "year" })]
+  marks: [Plot.tickX(weblog, { x: "", y: "year" })]
 })
 )}
 
@@ -591,7 +591,7 @@ export default function define(runtime, observer) {
   main.define("initial weblog", _weblog);
   main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
   main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
-  main.variable(observer()).define(["Plot","weblob"], _69);
+  main.variable(observer()).define(["Plot","weblog"], _69);
   main.variable(observer()).define(["width","webserver","htl"], _70);
   main.variable(observer()).define(["md"], _71);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
