@@ -1,6 +1,6 @@
-# How to convert dataflow to a promise using flowQueue
+# Unroll a promise over dataflow cells using flowQueue
 
-https://observablehq.com/@tomlarkworthy/flow-queue@429
+https://observablehq.com/@tomlarkworthy/flow-queue@431
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/0e0b35a92c819d94@429.tgz?v=3
+npm install https://api.observablehq.com/d/0e0b35a92c819d94@431.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

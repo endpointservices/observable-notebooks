@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/catch-all@408
 import define1 from "./e1c39d41e8e944b0@378.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@210.js";
 
 function _1(md){return(
 md`# Detect notebook runtime errors with *catchAll((cellName, reason) => {...})*
@@ -156,7 +156,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image@1.png", {url: new URL("./files/367dfd8bc3670f94f64604ca4a5d0bfc2a68bd4aed2ce1f4ebe9a6d422fabfde19a4498d6ecbe63d351bcb2bf4541fc2f17d04c1849bd1384e36628b9d4b9b44", import.meta.url), mimeType: "image/png", toString}]
+    ["image@1.png", {url: new URL("./files/367dfd8bc3670f94f64604ca4a5d0bfc2a68bd4aed2ce1f4ebe9a6d422fabfde19a4498d6ecbe63d351bcb2bf4541fc2f17d04c1849bd1384e36628b9d4b9b44.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

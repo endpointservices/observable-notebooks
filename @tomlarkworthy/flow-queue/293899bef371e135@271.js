@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@267
+// https://observablehq.com/@endpointservices/footer-with-backups@271
 import define1 from "./a81f2a20664080d3@243.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@631.js";
@@ -16,11 +16,14 @@ footer
 \`\`\``
 )}
 
-function _graphic(md){return(
+function _graphic(md,width){return(
 md`<small>
 [WEBCode.run](https://webcode.run) makes building fully encapsulated services within Observable notebooks possible.
 
-*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>`
+*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
+
+<iframe src="https://webcode.substack.com/embed" width="${width}" height="250" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+`
 )}
 
 function _footer($0,plausible_analytics,sentry,graphic)
@@ -126,15 +129,15 @@ md`### Backups`
 function _backups(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
-  repo: "observable-notebooks",
-  debugProxy: true
+  repo: "observable-notebooks"
+  /*debugProxy: true*/
 })
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
+  main.variable(observer("graphic")).define("graphic", ["md","width"], _graphic);
   main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
