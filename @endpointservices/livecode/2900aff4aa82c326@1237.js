@@ -1,8 +1,9 @@
 import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./0e0b35a92c819d94@429.js";
-import define3 from "./048a17a165be198d@263.js";
-import define4 from "./509d6b5d1aebf2a1@215.js";
-import define5 from "./293899bef371e135@271.js";
+import define3 from "./576f8943dbfbd395@114.js";
+import define4 from "./048a17a165be198d@263.js";
+import define5 from "./509d6b5d1aebf2a1@215.js";
+import define6 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# *Livecode* you a webserver
@@ -261,7 +262,7 @@ function _router(webRequest,$0,$1,$2,$3)
     // Image serving (SVG and PNG)
     case "/requests.svg":
       return $0.resolve($3.send(webRequest));
-    case "/random.png":
+    case "/requests.png":
       return $0.resolve($3.send(webRequest));
   }
 }
@@ -455,7 +456,7 @@ function _weblog(){return(
 []
 )}
 
-function _70(Plot,weblog){return(
+function _weblogDataviz(Plot,weblog){return(
 Plot.plot({
   x: {
     type: "time",
@@ -465,11 +466,86 @@ Plot.plot({
 })
 )}
 
-function _71(width,webserver,htl){return(
-htl.html`<img width="${width}" src=${webserver.href + "/requests.svg"}></img>`
+function _71(md){return(
+md`To serve an image (and other media), you need to set the correct MIME type and send the data in an arrayBuffer. Step one is converting it to a blob. Mike Bostock has an [excellent notebook on the topic](https://observablehq.com/@mbostock/saving-svg), so we can reuse his work to convert an SVG to a Blob `
 )}
 
-function _72(md){return(
+function _imageData(imgRequest,serialize,weblogDataviz,rasterize,$0)
+{
+  if (imgRequest.req.url.endsWith(".svg")) {
+    return serialize(weblogDataviz);
+  } else if (imgRequest.req.url.endsWith(".png")) {
+    return rasterize(weblogDataviz);
+  } else {
+    const error = new Error(
+      `Unrecognised image extension ${imgRequest.req.url}`
+    );
+    error.code = 400;
+    $0.reject(error);
+    throw error;
+  }
+}
+
+
+function _74(md){return(
+md`A correctly constructed blob has the MIME type in the type field:-`
+)}
+
+function _75(imageData){return(
+imageData.type
+)}
+
+function _76(md){return(
+md`The binary data can also be extracted with '.arrayBuffer()'. Passing an buffer to the response object will send binary data.`
+)}
+
+async function _imgRequestResponder(imgRequest,imageData)
+{
+  imgRequest.res.header("content-type", imageData.type);
+  imgRequest.res.send(await imageData.arrayBuffer());
+}
+
+
+function _78(md){return(
+md`After sending the data we can unlock the flowQueue task so the next can be handled. Again, we can look for duplicate requests to trigger refreshing the preview too (see above) because that means there was a code change in the request pipeline.`
+)}
+
+function _imgRequestResolve(imgRequestResponder,imgRequest,$0,$1)
+{
+  imgRequestResponder;
+  if (imgRequest.req.id !== this) {
+    $0.resolve("OK");
+    return imgRequest.req.id;
+  } else {
+    $1.value++;
+    return this;
+  }
+}
+
+
+function _80(md){return(
+md`If we are serving SVG correctly, we can use it as the src of an image.`
+)}
+
+function _81(refreshDashboardImage,width,webserver,htl){return(
+htl.html`${(refreshDashboardImage, '')}
+<img width="${Math.min(width, 640)}" src=${webserver.href + "/requests.svg"}></img>`
+)}
+
+function _82(md){return(
+md`If we are serving PNG correctly, we can also use it as the src of an image.`
+)}
+
+function _83(refreshDashboardImage,width,webserver,htl){return(
+htl.html`${(refreshDashboardImage, '')}
+<img width="${Math.min(width, 640)}" src=${webserver.href + "/requests.png"}></img>`
+)}
+
+function _refreshDashboardImage(){return(
+0
+)}
+
+function _85(md){return(
 md`### Config`
 )}
 
@@ -485,11 +561,11 @@ Inputs.bind(
 )
 )}
 
-function _75(md){return(
+function _88(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _76(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _89(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -505,11 +581,11 @@ function _76(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _78(md){return(
+function _91(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _80(footer){return(
+function _93(footer){return(
 footer
 )}
 
@@ -600,20 +676,37 @@ export default function define(runtime, observer) {
   main.define("initial weblog", _weblog);
   main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
   main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
-  main.variable(observer()).define(["Plot","weblog"], _70);
-  main.variable(observer()).define(["width","webserver","htl"], _71);
-  main.variable(observer()).define(["md"], _72);
+  main.variable(observer("weblogDataviz")).define("weblogDataviz", ["Plot","weblog"], _weblogDataviz);
+  main.variable(observer()).define(["md"], _71);
+  const child3 = runtime.module(define3);
+  main.import("rasterize", child3);
+  main.import("serialize", child3);
+  main.variable(observer("imageData")).define("imageData", ["imgRequest","serialize","weblogDataviz","rasterize","viewof imgRequest"], _imageData);
+  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["imageData"], _75);
+  main.variable(observer()).define(["md"], _76);
+  main.variable(observer("imgRequestResponder")).define("imgRequestResponder", ["imgRequest","imageData"], _imgRequestResponder);
+  main.variable(observer()).define(["md"], _78);
+  main.variable(observer("imgRequestResolve")).define("imgRequestResolve", ["imgRequestResponder","imgRequest","viewof imgRequest","mutable refreshDashboardImage"], _imgRequestResolve);
+  main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _81);
+  main.variable(observer()).define(["md"], _82);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _83);
+  main.define("initial refreshDashboardImage", _refreshDashboardImage);
+  main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
+  main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
+  main.variable(observer()).define(["md"], _85);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  const child3 = runtime.module(define3);
-  main.import("localStorageView", child3);
-  main.variable(observer()).define(["md"], _75);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _76);
   const child4 = runtime.module(define4);
-  main.import("installCopyCode", child4);
-  main.variable(observer()).define(["md"], _78);
+  main.import("localStorageView", child4);
+  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _89);
   const child5 = runtime.module(define5);
-  main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _80);
+  main.import("installCopyCode", child5);
+  main.variable(observer()).define(["md"], _91);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
+  main.variable(observer()).define(["footer"], _93);
   return main;
 }
