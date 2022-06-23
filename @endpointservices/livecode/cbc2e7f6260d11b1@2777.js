@@ -937,13 +937,13 @@ Also contains the logic
 `
 )}
 
-function _exampleSecretsPane(secretsPane,testUser,invalidation){return(
+function _exampleSecretsPane(secretsPane,$0,invalidation){return(
 secretsPane(
   {
     namespace: "endpointservices",
     endpoint:
       "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-    user: testUser
+    userView: $0
   },
   invalidation
 )
@@ -954,7 +954,8 @@ exampleSecretsPane
 )}
 
 function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,normalizeEndpoint,firebase,setSecret,deleteSecret,getStoredSecrets){return(
-({ namespace, endpoint, user } = {}, invalidation) => {
+({ namespace, endpoint, userView } = {}, invalidation) => {
+  const user = userView.value;
   const ui = view`<div class='e-main-box'>
       ${["bindings", boundSecrets({ namespace, endpoint })]}
       ${["stored", storedSecrets({ namespace, endpoint })]}
@@ -1920,7 +1921,7 @@ export default function define(runtime, observer) {
   main.variable(observer("exampleListSelector")).define("exampleListSelector", ["Generators", "viewof exampleListSelector"], (G, _) => G.input(_));
   main.variable(observer("listSelectorCSS")).define("listSelectorCSS", ["htl","colors"], _listSelectorCSS);
   main.variable(observer()).define(["md"], _71);
-  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","testUser","invalidation"], _exampleSecretsPane);
+  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","viewof testUser","invalidation"], _exampleSecretsPane);
   main.variable(observer("exampleSecretsPane")).define("exampleSecretsPane", ["Generators", "viewof exampleSecretsPane"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleSecretsPane"], _73);
   main.variable(observer("secretsPane")).define("secretsPane", ["view","boundSecrets","storedSecrets","editSecret","firestore","normalizeEndpoint","firebase","setSecret","deleteSecret","getStoredSecrets"], _secretsPane);

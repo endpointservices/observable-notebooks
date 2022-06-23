@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/webcode@830
-import define1 from "./cbc2e7f6260d11b1@2775.js";
+import define1 from "./cbc2e7f6260d11b1@2777.js";
 import define2 from "./dff1e917c89f5e76@1939.js";
 import define3 from "./58f3eb7334551ae6@210.js";
 
