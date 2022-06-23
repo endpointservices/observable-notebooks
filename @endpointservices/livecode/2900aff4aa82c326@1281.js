@@ -8,21 +8,18 @@ import define6 from "./293899bef371e135@271.js";
 function _1(md){return(
 md`# *Livecode* you a webserver
 
-[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard image server and webapps in a literate coding style. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**.
+[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**.
 
-In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can be used to leave an execution trace, so you can actually see how the server processes HTTP requests. Of course, being able to implement a webserver within a browser is an extremely powerful technique.
-
-
-`
+In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can leave an execution trace across cells, so you can actually visualize the steps in the request processing. `
 )}
 
 function _2(md){return(
 md`## Prerequisites: Observable Basics
-To reap the benefit of *livecoding*, you should understand [Observable]()'s non-linear reactive cells execution model. Firstly, Observable's runtime is framework around **normal javascript**, so you can do normal Javascript things. _Hell, you can store shit in the global window if you want_. Secondly, the runtime organises a program into **named code cells**, which can read and emit values. Together cells Cells reevaluate primarily for two reasons, 1, if their inputs are dirty *or, 2, you change their code definition*.
+To reap the benefit of *livecoding*, you should understand [Observable]()'s non-linear reactive cells execution model. Firstly, Observable's runtime is framework around **normal javascript**, so you can do normal Javascript things. _Hell, you can store your crap in the global window if you want_. Secondly, the runtime organises a program into **named code cells**, which can read and emit values. Together cells Cells reevaluate primarily for two reasons, 1, if their inputs are dirty *or, 2, you change their code definition*.
 
 So when you code, only the dependant computational graph is recomputed. It's significantly less disruptive than a full restart. React developers might have experienced _Hot Module Reload (HMR)_ before, this is like that but more reliable as its baked into the runtime. 
 
-Non-linear, reactive execution is *so* ergonomic for development, that it deserves (and needs) support at runtime if it is to be reliable and intuitive. **Reactive hot code reload is a better way to program**.
+Non-linear, reactive execution is *so* ergonomic for development, that it deserves (and needs) support at runtime if it is to be reliable and intuitive. **Reactive hot code reload is simply a better way to program**.
 `
 )}
 
@@ -39,9 +36,9 @@ md`## Clientside Fetch Example`
 )}
 
 function _6(md){return(
-md`Declare an endpoint with \`endpoint(<name>, <handler>, <options>)\`. 
+md`WEBCode's API is declarative. You can simply declare an endpoint with \`endpoint(<name>, <handler>, <options>)\`. There is no deploy step, this is pure *infra-as-code*.
 
-**This will be immediately live on the internet** if *livecode* is enabled, otherwise, if nobody is *livecoding*, the request will be handled by *the last **published** version of the notebook*. If the notebook has never been published, the endpoint will \`404\`.`
+**Endpoints will be instantaneously live on the internet**, if *livecode* is enabled, otherwise, if nobody is *livecoding*, the request will be handled by *the last **published** version of the notebook*. If the notebook has never been published, the endpoint will \`404\`.`
 )}
 
 function _exampleEndpoint(endpoint,$0,host){return(
@@ -51,7 +48,7 @@ endpoint(
   async (req, res) => {
     console.log(`Received request from '${req.query.name}'`, req);
     console.log("Writing to response", res);
-    $0.value = $0.value.concat(Date.now());
+    $0.value = $0.value.concat(req);
     debugger; // 👈 triggers a breakpoint if DevTools is open
     res.send({
       msg: `Hi! ${req.query.name}`,
@@ -90,12 +87,12 @@ Inputs.text({
 })
 )}
 
-function _11(response){return(
-response
+function _11(response,html){return(
+response || html``
 )}
 
 function _response(Inputs,name,exampleEndpoint){return(
-Inputs.button("Make request", {
+Inputs.button("Make random request (press me!)", {
   reduce: async () => {
     try {
       console.log(`Sending request with name parameter '${name}'`);
@@ -115,8 +112,8 @@ function _13(md){return(
 md`After clicking the button we can render what the response was (after JSON deserialization). Try changing the name value sent and making more requests.`
 )}
 
-function _14(response){return(
-response
+function _14(response,html){return(
+response || html``
 )}
 
 function _15(md){return(
@@ -260,9 +257,9 @@ function _router(webRequest,$0,$1,$2,$3)
       return $0.resolve($2.send(webRequest));
 
     // Image serving (SVG and PNG)
-    case "/requests.svg":
+    case "/weblog.svg":
       return $0.resolve($3.send(webRequest));
-    case "/requests.png":
+    case "/weblog.png":
       return $0.resolve($3.send(webRequest));
   }
 }
@@ -529,7 +526,7 @@ md`If we are serving SVG correctly, we can use it as the src of an image.`
 
 function _81(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
-<img width="${Math.min(width, 640)}" src=${webserver.href + "/requests.svg"}></img>`
+<img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.svg"}></img>`
 )}
 
 function _82(md){return(
@@ -538,7 +535,7 @@ md`If we are serving PNG correctly, we can also use it as the src of an image.`
 
 function _83(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
-<img width="${Math.min(width, 640)}" src=${webserver.href + "/requests.png"}></img>`
+<img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.png"}></img>`
 )}
 
 function _refreshDashboardImage(){return(
@@ -603,11 +600,11 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
-  main.variable(observer()).define(["response"], _11);
+  main.variable(observer()).define(["response","html"], _11);
   main.variable(observer("viewof response")).define("viewof response", ["Inputs","name","exampleEndpoint"], _response);
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _13);
-  main.variable(observer()).define(["response"], _14);
+  main.variable(observer()).define(["response","html"], _14);
   main.variable(observer()).define(["md"], _15);
   main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","md"], _curl_get);
   main.variable(observer()).define(["md"], _17);
