@@ -1,5 +1,5 @@
 import define1 from "./6eda90668ae03044@830.js";
-import define2 from "./0e0b35a92c819d94@429.js";
+import define2 from "./0e0b35a92c819d94@434.js";
 import define3 from "./576f8943dbfbd395@114.js";
 import define4 from "./048a17a165be198d@263.js";
 import define5 from "./509d6b5d1aebf2a1@215.js";
@@ -327,15 +327,10 @@ formRequest
 async function _formResponseContent(formRequest,$0)
 {
   if (formRequest.req.method === "GET") {
-    return `<form method="post" style="border:1px solid #ccc">
-                <div>
-                  <label name="note">Note:</label>
-                </div>
+    return `<form method="post">
                 <textarea id="note" name="note"
                           rows="5" cols="40"></textarea>
-                <div>
-                  <button type="submit">Submit</button>
-                </div>
+                <button type="submit">Submit</button>
             </form>`;
   } else if (formRequest.req.method === "POST") {
     return await $0.send(formRequest);
@@ -543,6 +538,10 @@ function _refreshDashboardImage(){return(
 )}
 
 function _85(md){return(
+md`---`
+)}
+
+function _86(md){return(
 md`### Config`
 )}
 
@@ -558,11 +557,11 @@ Inputs.bind(
 )
 )}
 
-function _88(md){return(
+function _89(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _89(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _90(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -578,11 +577,11 @@ function _89(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _91(md){return(
+function _92(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _93(footer){return(
+function _94(footer){return(
 footer
 )}
 
@@ -693,17 +692,18 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
   main.variable(observer()).define(["md"], _85);
+  main.variable(observer()).define(["md"], _86);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _88);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _89);
+  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _90);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
-  main.variable(observer()).define(["md"], _91);
+  main.variable(observer()).define(["md"], _92);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], _93);
+  main.variable(observer()).define(["footer"], _94);
   return main;
 }
