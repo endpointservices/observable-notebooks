@@ -6,11 +6,11 @@ import define5 from "./509d6b5d1aebf2a1@215.js";
 import define6 from "./293899bef371e135@271.js";
 
 function _1(md){return(
-md`# *Livecode* you a webserver
+md`# *Livecode* a webserver in a browser
 
-[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**.
+[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**. This is only possible because serverside and development are both browser based, and therefore can be swapped freely. 
 
-In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can leave an execution trace across cells, so you can actually visualize the steps in the request processing. `
+In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can be shaped to leave an execution trace across cells. This trace is useful for inspecting the steps in the request processing, and furthermore, thanks to Observable hot-code reloading, can be used to develop incrementally based off the memoized data. `
 )}
 
 function _2(md){return(
