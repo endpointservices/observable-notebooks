@@ -15,9 +15,9 @@ md`# *Livecode* a webserver in a browser
 function _2(width,md){return(
 md`## 10 second demo
 
-In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can be shaped to leave an execution trace across cells. This trace is useful for inspecting the steps in the request processing, and furthermore, thanks to Observable hot-code reloading, can be used to develop incrementally based off the memoized data. 
+In this article we demo some interactive live coding examples around the theme of building a webserver. Livecoding can be shaped to leave an execution trace across cells. This trace is useful for inspecting the steps in the request processing, and furthermore, thanks to Observable hot-code reloading, can be used to develop incrementally based off the memoized data. 
 
-Here is what it looks like in practice when building a webhook integration. Live events from 2rd party systems cascade through the notebook, and code changes *are instantly applied* enabling a super tight feedback loop:
+Here is what it looks like in practice when building a webhook integration. Live events from a WhatsApp cascade through the notebook. Code changes *are instantly applied* enabling a super tight feedback loop. That's right! Webhook development with a tight feedback loop!
 
 <video controls="controls" width="${Math.min(width, 640)}" height="400" loop name="Video Name">
   <source src="https://storage.googleapis.com/publicartifacts/blogimages/notebookwebhook.mov">
@@ -47,7 +47,7 @@ In the notebook we will explore how to get the most out of **livecode**. But fir
 )}
 
 function _7(md){return(
-md`## Clientside Fetch Example`
+md`## Basic Example`
 )}
 
 function _8(md){return(
