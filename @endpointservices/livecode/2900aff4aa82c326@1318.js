@@ -9,16 +9,26 @@ import define7 from "./293899bef371e135@271.js";
 function _1(md){return(
 md`# *Livecode* a webserver in a browser
 
-[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**. This is only possible because serverside and development are both browser based, and therefore can be swapped freely. 
-
-In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can be shaped to leave an execution trace across cells. This trace is useful for inspecting the steps in the request processing, and furthermore, thanks to Observable hot-code reloading, can be used to develop incrementally based off the memoized data. `
+[WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**. This is only possible because serverside and development are both browser based, and therefore can be swapped freely. `
 )}
 
-function _2(toc){return(
+function _2(width,md){return(
+md`## 10 second demo
+
+In this article we demo some interactive live coding examples around a theme of building a webserver. Livecoding can be shaped to leave an execution trace across cells. This trace is useful for inspecting the steps in the request processing, and furthermore, thanks to Observable hot-code reloading, can be used to develop incrementally based off the memoized data. 
+
+Here is what it looks like in practice when building a webhook integration. Live events from 2rd party systems cascade through the notebook, and code changes *are instantly applied* enabling a super tight feedback loop:
+
+<video controls="controls" width="${Math.min(width, 640)}" height="400" loop name="Video Name">
+  <source src="https://storage.googleapis.com/publicartifacts/blogimages/notebookwebhook.mov">
+</video>`
+)}
+
+function _3(toc){return(
 toc("h2,h3")
 )}
 
-function _3(md){return(
+function _4(md){return(
 md`## Prerequisites: Observable Basics
 To reap the benefit of *livecoding*, you should understand [Observable]()'s non-linear reactive cells execution model. Firstly, Observable's runtime is framework around **normal javascript**, so you can do normal Javascript things. _Hell, you can store your crap in the global window if you want_. Secondly, the runtime organises a program into **named code cells**, which can read and emit values. Together cells Cells reevaluate primarily for two reasons, 1, if their inputs are dirty *or, 2, you change their code definition*.
 
@@ -28,7 +38,7 @@ Non-linear, reactive execution is *so* ergonomic for development, that it deserv
 `
 )}
 
-function _4(md){return(
+function _5(md){return(
 md`### Extended to Serverless
 
 WEBCode takes Observable's ergonomic reactive programming model, and extends it to serverless, so you can *develop* serverside code in an explorative way too. To get the full reactive programming experience, *your* browser session is put on critical path of the server when in **livecode** mode.
@@ -36,11 +46,11 @@ WEBCode takes Observable's ergonomic reactive programming model, and extends it 
 In the notebook we will explore how to get the most out of **livecode**. But first, you will need the **webcode** dependency:`
 )}
 
-function _6(md){return(
+function _7(md){return(
 md`## Clientside Fetch Example`
 )}
 
-function _7(md){return(
+function _8(md){return(
 md`WEBCode's API is declarative. You can simply declare an endpoint with \`endpoint(<name>, <handler>, <options>)\`. There is no deploy step, this is pure *infra-as-code*.
 
 **Endpoints will be instantaneously live on the internet**, if *livecode* is enabled, otherwise, if nobody is *livecoding*, the request will be handled by *the last **published** version of the notebook*. If the notebook has never been published, the endpoint will \`404\`.`
@@ -73,11 +83,11 @@ endpoint(
 )
 )}
 
-function _9(md){return(
+function _10(md){return(
 md`Our implementation does a *console.log* of the inbound [request](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#request) payload, and sends an object to the [response](https://observablehq.com/@endpointservices/webcode-docs?collection=@endpointservices/webcode-run#response). The response is computed based on the value of an incoming HTTP URL parameter *name*.`
 )}
 
-function _10(md){return(
+function _11(md){return(
 md`### Making a GET
 
 The following UI uses the *fetch* API client-side, to make a simple request to our endpoint. The URL of the endpoint is the *href* parameter of the endpoint.
@@ -92,7 +102,7 @@ Inputs.text({
 })
 )}
 
-function _12(response,html){return(
+function _13(response,html){return(
 response || html``
 )}
 
@@ -113,15 +123,15 @@ Inputs.button("Make random request (press me!)", {
 })
 )}
 
-function _14(md){return(
+function _15(md){return(
 md`After clicking the button we can render what the response was (after JSON deserialization). Try changing the name value sent and making more requests.`
 )}
 
-function _15(response,html){return(
+function _16(response,html){return(
 response || html``
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`Updating a value in response to a button press does not seem that impressive until you realize the request is going over the public internet. So you don't need to initiate the request inside the browser, you can also use curl from your console for instance:`
 )}
 
@@ -132,13 +142,13 @@ curl '${exampleEndpoint.href + `?name=fromcurl`}'
 \`\`\``
 )}
 
-function _18(md){return(
+function _19(md){return(
 md`The story is even more interesting when you pop <a target="_blank" href="https://balsamiq.com/support/faqs/browserconsole">open your developers tools</a>. You should see that the \`console.log\` messages inside the handler have executed, indicating the endpoint code was executed inside your browser.
 
 We also write to a \`mutable seversideLog\` inside the request handler you can confirm the request was handled in *your* notebook session.`
 )}
 
-function _19(Inputs,handlerLog){return(
+function _20(Inputs,handlerLog){return(
 Inputs.table(
   handlerLog.map((d) => ({
     ...d,
@@ -152,17 +162,17 @@ function _handlerLog(){return(
 []
 )}
 
-function _21(Inputs,$0){return(
+function _22(Inputs,$0){return(
 Inputs.button("clear log", {
   reduce: () => ($0.value = [])
 })
 )}
 
-function _22(md){return(
+function _23(md){return(
 md`you can change the handler code and the **changes will be reflected instantly**, no need to deploy!`
 )}
 
-function _23(md){return(
+function _24(md){return(
 md`## Livecode a webpage
 
 Endpoint changes are **instantly** visible to livecode. When combined with Observable hot-code reload we can build ergonomic developer reactive workflows. For example, if we put a dataflow dependency of a client on the server, if the server handler changes, the client will refresh automatically, using the very latest deployed code. **livecode propagates serverside code changes at the speed of Observable's reactive dataflow**. 
@@ -171,7 +181,7 @@ Endpoint changes are **instantly** visible to livecode. When combined with Obser
 In this example the client will be an iframe, and the server with be a webserver definition. In this arrangement, we can reactively develop a server, and always be viewing the latest webpage on the client`
 )}
 
-function _24(md){return(
+function _25(md){return(
 md`### Sidequest: Unrolling request processing across cells
 
 with [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)
@@ -202,7 +212,7 @@ endpoint(
 )
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`### flowQueue Request processing pipeline
 
 "viewof webRequest" refers the flowQueue, whereas "webRequest" refers to the current task. When live coding is turned on "webRequest"'s value will be the last seen incoming request to that endpoint. **We can exploit Observable's runtime to leave a trace of server execution**.`
@@ -214,11 +224,11 @@ flowQueue({
 })
 )}
 
-function _29(webRequest){return(
+function _30(webRequest){return(
 webRequest
 )}
 
-function _30(md){return(
+function _31(md){return(
 md`### Multiple routes
 
 You can server multiple pages from the webserver by inspecting the \`url\` param. Of course, you can self-discover this by making random requests, and looking at the \`webRequest\` payload at the head of the \`flowQueue\`
@@ -233,19 +243,19 @@ Inputs.button("Make request with random path", {
 })
 )}
 
-function _32(webRequest){return(
+function _33(webRequest){return(
 webRequest.req.url
 )}
 
-function _33(md){return(
+function _34(md){return(
 md`The \`req\` payload contains all the incoming HTTP information, including the HTTP verb, headers and query parameters!`
 )}
 
-function _34(webRequest){return(
+function _35(webRequest){return(
 webRequest.req
 )}
 
-function _35(md){return(
+function _36(md){return(
 md`You can define routes using [express](https://observablehq.com/@tomlarkworthy/api-hosting-with-express) syntax, but it is easier to develop incrementally and if we use a flowQueue for each route.
 
 We will have a default route to handle our random requests, and a most specific ones we will go back to later`
@@ -270,7 +280,7 @@ function _router(webRequest,$0,$1,$2,$3)
 }
 
 
-function _37(md){return(
+function _38(md){return(
 md`### defaultRequest`
 )}
 
@@ -278,11 +288,11 @@ function _defaultRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _39(defaultRequest){return(
+function _40(defaultRequest){return(
 defaultRequest
 )}
 
-function _40(md){return(
+function _41(md){return(
 md`The appropriate response to a random request is to return status code 404`
 )}
 
@@ -294,7 +304,7 @@ function _defaultRequestHandler(defaultRequest)
 }
 
 
-function _42(md){return(
+function _43(md){return(
 md`We end the processing by resolving the flowQueue`
 )}
 
@@ -305,17 +315,17 @@ function _defaultRequestResolver(defaultRequestHandler,$0)
 }
 
 
-function _44(randomResponse){return(
+function _45(randomResponse){return(
 randomResponse.text()
 )}
 
-function _45(Inputs,$0){return(
+function _46(Inputs,$0){return(
 Inputs.button("Make request with random path", {
   reduce: () => $0.querySelector("button").click()
 })
 )}
 
-function _46(md){return(
+function _47(md){return(
 md`### formRequest
 
 WEBCode is ideal for creating little utilities that can slot in other websites. For example, handling a form data or displaying a chart.`
@@ -325,7 +335,7 @@ function _formRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _48(formRequest){return(
+function _49(formRequest){return(
 formRequest
 )}
 
@@ -343,24 +353,24 @@ async function _formResponseContent(formRequest,$0)
 }
 
 
-function _50(md){return(
+function _51(md){return(
 md`### Preview Result
 
 We can of course put the rendered form in our own iframe so we can see the result`
 )}
 
-function _51(Inputs,$0){return(
+function _52(Inputs,$0){return(
 Inputs.button("refresh preview", {
   reduce: () => $0.value++
 })
 )}
 
-function _52(refreshForm,width,webserver,htl){return(
+function _53(refreshForm,width,webserver,htl){return(
 htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (refreshForm, '')}
 <iframe width="${width}" height="150px" src=${webserver.href + "/form.html"}></iframe>`
 )}
 
-function _53(md){return(
+function _54(md){return(
 md`### Automated Preview Refreshing
 
 If we are a little clever with our dataflow, we can get the iframe to auto refresh on changes. Recall that in a flowQueue, a single request must processed before the next is exposed. If we see the same request more than once, that means intermediate cells have refreshed for reasons *other* than a new request arriving. This is likely a code change so we can tell the preview to refresh when the request the same as the previous one.
@@ -384,7 +394,7 @@ function _formResponder(formRequest,formResponseContent,$0)
 }
 
 
-function _56(md){return(
+function _57(md){return(
 md`## Form handling`
 )}
 
@@ -392,11 +402,11 @@ function _formPostRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _58(formPostRequest){return(
+function _59(formPostRequest){return(
 formPostRequest
 )}
 
-function _59(md){return(
+function _60(md){return(
 md`Form data, when using the POST action, is URL encoded in the body.`
 )}
 
@@ -404,7 +414,7 @@ function _formDataRaw(formPostRequest){return(
 formPostRequest.req.body
 )}
 
-function _61(md){return(
+function _62(md){return(
 md`The modern way to decode it is with URLSearchParams...`
 )}
 
@@ -412,7 +422,7 @@ function _decodedFormData(URLSearchParams,formDataRaw){return(
 new URLSearchParams(formDataRaw)
 )}
 
-function _63(md){return(
+function _64(md){return(
 md`a URLSearchParams object is not very inspectible on its own, so I often convert into an ordinary data object, which is easier to work with`
 )}
 
@@ -429,7 +439,7 @@ function _formPostRequestResolver(formPostRequest,$0,formData)
 }
 
 
-function _66(md){return(
+function _67(md){return(
 md`## Serving Images
 
 To server images (or video) you must return the data along with the correct [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) in the [\`content-type\` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).
@@ -441,11 +451,11 @@ function _imgRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _68(imgRequest){return(
+function _69(imgRequest){return(
 imgRequest
 )}
 
-function _69(md){return(
+function _70(md){return(
 md`Lets visualize what requests the webserver has seen in its history. When _livecoding_ the log will be just your session, when not _livecoding_, this will scoped to the shared serverside session (!)`
 )}
 
@@ -463,7 +473,7 @@ Plot.plot({
 })
 )}
 
-function _72(md){return(
+function _73(md){return(
 md`To serve an image (and other media), you need to set the correct MIME type and send the data in an arrayBuffer. Step one is converting it to a blob. Mike Bostock has an [excellent notebook on the topic](https://observablehq.com/@mbostock/saving-svg), so we can reuse his work to convert an SVG to a Blob `
 )}
 
@@ -484,15 +494,15 @@ function _imageData(imgRequest,serialize,weblogDataviz,rasterize,$0)
 }
 
 
-function _75(md){return(
+function _76(md){return(
 md`A correctly constructed blob has the MIME type in the type field:-`
 )}
 
-function _76(imageData){return(
+function _77(imageData){return(
 imageData.type
 )}
 
-function _77(md){return(
+function _78(md){return(
 md`The binary data can also be extracted with '.arrayBuffer()'. Passing an buffer to the response object will send binary data.`
 )}
 
@@ -503,7 +513,7 @@ async function _imgRequestResponder(imgRequest,imageData)
 }
 
 
-function _79(md){return(
+function _80(md){return(
 md`After sending the data we can unlock the flowQueue task so the next can be handled. Again, we can look for duplicate requests to trigger refreshing the preview too (see above) because that means there was a code change in the request pipeline.`
 )}
 
@@ -520,20 +530,20 @@ function _imgRequestResolve(imgRequestResponder,imgRequest,$0,$1)
 }
 
 
-function _81(md){return(
+function _82(md){return(
 md`If we are serving SVG correctly, we can use it as the src of an image.`
 )}
 
-function _82(refreshDashboardImage,width,webserver,htl){return(
+function _83(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.svg"}></img>`
 )}
 
-function _83(md){return(
+function _84(md){return(
 md`If we are serving PNG correctly, we can also use it as the src of an image.`
 )}
 
-function _84(refreshDashboardImage,width,webserver,htl){return(
+function _85(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.png"}></img>`
 )}
@@ -542,11 +552,11 @@ function _refreshDashboardImage(){return(
 0
 )}
 
-function _86(md){return(
+function _87(md){return(
 md`---`
 )}
 
-function _87(md){return(
+function _88(md){return(
 md`### Config`
 )}
 
@@ -562,11 +572,11 @@ Inputs.bind(
 )
 )}
 
-function _90(md){return(
+function _91(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _91(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _92(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -582,136 +592,137 @@ function _91(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _94(md){return(
+function _95(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _96(footer){return(
+function _97(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["toc"], _2);
-  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["width","md"], _2);
+  main.variable(observer()).define(["toc"], _3);
   main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
   const child1 = runtime.module(define1);
   main.import("endpoint", child1);
-  main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","mutable handlerLog","host"], _exampleEndpoint);
-  main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
-  main.variable(observer()).define(["response","html"], _12);
+  main.variable(observer()).define(["response","html"], _13);
   main.variable(observer("viewof response")).define("viewof response", ["Inputs","name","exampleEndpoint"], _response);
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["response","html"], _15);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["response","html"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("curl_get")).define("curl_get", ["exampleEndpoint","md"], _curl_get);
-  main.variable(observer()).define(["md"], _18);
-  main.variable(observer()).define(["Inputs","handlerLog"], _19);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["Inputs","handlerLog"], _20);
   main.define("initial handlerLog", _handlerLog);
   main.variable(observer("mutable handlerLog")).define("mutable handlerLog", ["Mutable", "initial handlerLog"], (M, _) => new M(_));
   main.variable(observer("handlerLog")).define("handlerLog", ["mutable handlerLog"], _ => _.generator);
-  main.variable(observer()).define(["Inputs","mutable handlerLog"], _21);
-  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["Inputs","mutable handlerLog"], _22);
   main.variable(observer()).define(["md"], _23);
   main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   const child2 = runtime.module(define2);
   main.import("flowQueue", child2);
   main.variable(observer("webserver")).define("webserver", ["endpoint","mutable weblog","viewof webRequest","host"], _webserver);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("viewof webRequest")).define("viewof webRequest", ["flowQueue"], _webRequest);
   main.variable(observer("webRequest")).define("webRequest", ["Generators", "viewof webRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["webRequest"], _29);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["webRequest"], _30);
+  main.variable(observer()).define(["md"], _31);
   main.variable(observer("viewof randomResponse")).define("viewof randomResponse", ["Inputs","webserver"], _randomResponse);
   main.variable(observer("randomResponse")).define("randomResponse", ["Generators", "viewof randomResponse"], (G, _) => G.input(_));
-  main.variable(observer()).define(["webRequest"], _32);
-  main.variable(observer()).define(["md"], _33);
-  main.variable(observer()).define(["webRequest"], _34);
-  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["webRequest"], _33);
+  main.variable(observer()).define(["md"], _34);
+  main.variable(observer()).define(["webRequest"], _35);
+  main.variable(observer()).define(["md"], _36);
   main.variable(observer("router")).define("router", ["webRequest","viewof webRequest","viewof defaultRequest","viewof formRequest","viewof imgRequest"], _router);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _38);
   main.variable(observer("viewof defaultRequest")).define("viewof defaultRequest", ["flowQueue"], _defaultRequest);
   main.variable(observer("defaultRequest")).define("defaultRequest", ["Generators", "viewof defaultRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["defaultRequest"], _39);
-  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["defaultRequest"], _40);
+  main.variable(observer()).define(["md"], _41);
   main.variable(observer("defaultRequestHandler")).define("defaultRequestHandler", ["defaultRequest"], _defaultRequestHandler);
-  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["md"], _43);
   main.variable(observer("defaultRequestResolver")).define("defaultRequestResolver", ["defaultRequestHandler","viewof defaultRequest"], _defaultRequestResolver);
-  main.variable(observer()).define(["randomResponse"], _44);
-  main.variable(observer()).define(["Inputs","viewof randomResponse"], _45);
-  main.variable(observer()).define(["md"], _46);
+  main.variable(observer()).define(["randomResponse"], _45);
+  main.variable(observer()).define(["Inputs","viewof randomResponse"], _46);
+  main.variable(observer()).define(["md"], _47);
   main.variable(observer("viewof formRequest")).define("viewof formRequest", ["flowQueue"], _formRequest);
   main.variable(observer("formRequest")).define("formRequest", ["Generators", "viewof formRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["formRequest"], _48);
+  main.variable(observer()).define(["formRequest"], _49);
   main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest","viewof formPostRequest"], _formResponseContent);
-  main.variable(observer()).define(["md"], _50);
-  main.variable(observer()).define(["Inputs","mutable refreshForm"], _51);
-  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _52);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _51);
+  main.variable(observer()).define(["Inputs","mutable refreshForm"], _52);
+  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _53);
+  main.variable(observer()).define(["md"], _54);
   main.define("initial refreshForm", ["webserver","Promises"], _refreshForm);
   main.variable(observer("mutable refreshForm")).define("mutable refreshForm", ["Mutable", "initial refreshForm"], (M, _) => new M(_));
   main.variable(observer("refreshForm")).define("refreshForm", ["mutable refreshForm"], _ => _.generator);
   main.variable(observer("formResponder")).define("formResponder", ["formRequest","formResponseContent","mutable refreshForm"], _formResponder);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _57);
   main.variable(observer("viewof formPostRequest")).define("viewof formPostRequest", ["flowQueue"], _formPostRequest);
   main.variable(observer("formPostRequest")).define("formPostRequest", ["Generators", "viewof formPostRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["formPostRequest"], _58);
-  main.variable(observer()).define(["md"], _59);
+  main.variable(observer()).define(["formPostRequest"], _59);
+  main.variable(observer()).define(["md"], _60);
   main.variable(observer("formDataRaw")).define("formDataRaw", ["formPostRequest"], _formDataRaw);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["md"], _62);
   main.variable(observer("decodedFormData")).define("decodedFormData", ["URLSearchParams","formDataRaw"], _decodedFormData);
-  main.variable(observer()).define(["md"], _63);
+  main.variable(observer()).define(["md"], _64);
   main.variable(observer("formData")).define("formData", ["decodedFormData"], _formData);
   main.variable(observer("formPostRequestResolver")).define("formPostRequestResolver", ["formPostRequest","viewof formPostRequest","formData"], _formPostRequestResolver);
-  main.variable(observer()).define(["md"], _66);
+  main.variable(observer()).define(["md"], _67);
   main.variable(observer("viewof imgRequest")).define("viewof imgRequest", ["flowQueue"], _imgRequest);
   main.variable(observer("imgRequest")).define("imgRequest", ["Generators", "viewof imgRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["imgRequest"], _68);
-  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["imgRequest"], _69);
+  main.variable(observer()).define(["md"], _70);
   main.define("initial weblog", _weblog);
   main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
   main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
   main.variable(observer("weblogDataviz")).define("weblogDataviz", ["Plot","weblog"], _weblogDataviz);
-  main.variable(observer()).define(["md"], _72);
+  main.variable(observer()).define(["md"], _73);
   const child3 = runtime.module(define3);
   main.import("rasterize", child3);
   main.import("serialize", child3);
   main.variable(observer("imageData")).define("imageData", ["imgRequest","serialize","weblogDataviz","rasterize","viewof imgRequest"], _imageData);
-  main.variable(observer()).define(["md"], _75);
-  main.variable(observer()).define(["imageData"], _76);
-  main.variable(observer()).define(["md"], _77);
+  main.variable(observer()).define(["md"], _76);
+  main.variable(observer()).define(["imageData"], _77);
+  main.variable(observer()).define(["md"], _78);
   main.variable(observer("imgRequestResponder")).define("imgRequestResponder", ["imgRequest","imageData"], _imgRequestResponder);
-  main.variable(observer()).define(["md"], _79);
+  main.variable(observer()).define(["md"], _80);
   main.variable(observer("imgRequestResolve")).define("imgRequestResolve", ["imgRequestResponder","imgRequest","viewof imgRequest","mutable refreshDashboardImage"], _imgRequestResolve);
-  main.variable(observer()).define(["md"], _81);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _82);
-  main.variable(observer()).define(["md"], _83);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _84);
+  main.variable(observer()).define(["md"], _82);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _83);
+  main.variable(observer()).define(["md"], _84);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _85);
   main.define("initial refreshDashboardImage", _refreshDashboardImage);
   main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
-  main.variable(observer()).define(["md"], _86);
   main.variable(observer()).define(["md"], _87);
+  main.variable(observer()).define(["md"], _88);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _90);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _91);
+  main.variable(observer()).define(["md"], _91);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _92);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _94);
+  main.variable(observer()).define(["md"], _95);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _96);
+  main.variable(observer()).define(["footer"], _97);
   return main;
 }
