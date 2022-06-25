@@ -7,7 +7,7 @@ import define6 from "./9bed702f80a3797e@402.js";
 import define7 from "./293899bef371e135@271.js";
 
 function _1(md){return(
-md`# *Livecode* a webserver in a browser
+md`# *Livecode* a webserver *in a browser*
 
 [WEBcode.run](https://webcode.run) lets you create serverless endpoints within Observable notebooks, so you can implement webhooks, dashboard servers and webapps without leaving your browser. *The* defining feature of [WEBCode.run](https://webcode.run) over other serverless platforms is **livecoding**. Livecoding routes production traffic to your browser, so live traffic is served in realtime with the very latest code without a deploy step. **It transfers Observable's reactive development workflow to server side development**, and it allows **browser tools to debug, intercept and reply-to production traffic**. This is only possible because serverside and development are both browser based, and therefore can be swapped freely. `
 )}
@@ -47,7 +47,7 @@ In the notebook we will explore how to get the most out of **livecode**. But fir
 )}
 
 function _7(md){return(
-md`## Basic Example`
+md`## Declarative Endpoints`
 )}
 
 function _8(md){return(
@@ -345,7 +345,7 @@ async function _formResponseContent(formRequest,$0)
     return `<form method="post">
                 <textarea id="note" name="note"
                           rows="5" cols="40"></textarea>
-                <button type="submit">Submit</button>
+                <button type="submit">Submit</button> Cool
             </form>`;
   } else if (formRequest.req.method === "POST") {
     return await $0.send(formRequest);
