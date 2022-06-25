@@ -173,7 +173,7 @@ md`you can change the handler code and the **changes will be reflected instantly
 )}
 
 function _24(md){return(
-md`## Livecode a webpage
+md`## Livecode a webserver
 
 Endpoint changes are **instantly** visible to livecode. When combined with Observable hot-code reload we can build ergonomic developer reactive workflows. For example, if we put a dataflow dependency of a client on the server, if the server handler changes, the client will refresh automatically, using the very latest deployed code. **livecode propagates serverside code changes at the speed of Observable's reactive dataflow**. 
 
@@ -395,7 +395,7 @@ function _formResponder(formRequest,formResponseContent,$0)
 
 
 function _57(md){return(
-md`## Form handling`
+md`### Form Response handling`
 )}
 
 function _formPostRequest(flowQueue){return(
@@ -440,7 +440,7 @@ function _formPostRequestResolver(formPostRequest,$0,formData)
 
 
 function _67(md){return(
-md`## Serving Images
+md`### Serving Images
 
 To server images (or video) you must return the data along with the correct [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) in the [\`content-type\` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).
 
@@ -553,10 +553,14 @@ function _refreshDashboardImage(){return(
 )}
 
 function _87(md){return(
-md`---`
+md`### Streaming Responses`
 )}
 
 function _88(md){return(
+md`---`
+)}
+
+function _89(md){return(
 md`### Config`
 )}
 
@@ -572,11 +576,11 @@ Inputs.bind(
 )
 )}
 
-function _91(md){return(
+function _92(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _92(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _93(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -592,11 +596,11 @@ function _92(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _95(md){return(
+function _96(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _97(footer){return(
+function _98(footer){return(
 footer
 )}
 
@@ -710,19 +714,20 @@ export default function define(runtime, observer) {
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
   main.variable(observer()).define(["md"], _87);
   main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["md"], _89);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _91);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _92);
+  main.variable(observer()).define(["md"], _92);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _93);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _95);
+  main.variable(observer()).define(["md"], _96);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _97);
+  main.variable(observer()).define(["footer"], _98);
   return main;
 }
