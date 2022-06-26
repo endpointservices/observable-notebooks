@@ -213,7 +213,7 @@ endpoint(
 )}
 
 function _28(md){return(
-md`### flowQueue Request processing pipeline
+md`### \`webRequest\`, request processing in the dataflow style 
 
 "viewof webRequest" refers the flowQueue, whereas "webRequest" refers to the current task. When live coding is turned on "webRequest"'s value will be the last seen incoming request to that endpoint. **We can exploit Observable's runtime to leave a trace of server execution**.`
 )}
@@ -229,9 +229,11 @@ webRequest
 )}
 
 function _31(md){return(
-md`### Multiple routes
+md`### Creating multiple routes
 
-You can server multiple pages from the webserver by inspecting the \`url\` param. Of course, you can self-discover this by making random requests, and looking at the \`webRequest\` payload at the head of the \`flowQueue\`
+You can server multiple pages from the webserver by inspecting the \`url\` param. 
+
+You can discover the \`url\` param without reading documentation, by making a random request (click below), and expanding the \`webRequest\` value (above).
 `
 )}
 
@@ -256,12 +258,12 @@ webRequest.req
 )}
 
 function _36(md){return(
-md`You can define routes using [express](https://observablehq.com/@tomlarkworthy/api-hosting-with-express) syntax, but it is easier to develop incrementally and if we use a flowQueue for each route.
+md`You can define routes in the [express](https://observablehq.com/@tomlarkworthy/api-hosting-with-express) style if you want, but it is easier to develop incrementally if we use a \`flowQueue\` for each route.
 
-We will have a default route to handle our random requests, and a most specific ones we will go back to later`
+We will need a \`default\` route to handle our random requests, and a most specific ones we will go back to later`
 )}
 
-function _router(webRequest,$0,$1,$2,$3)
+function _router(webRequest,$0,$1,$2,$3,$4)
 {
   switch (webRequest.req.url) {
     default:
@@ -276,12 +278,16 @@ function _router(webRequest,$0,$1,$2,$3)
       return $0.resolve($3.send(webRequest));
     case "/weblog.png":
       return $0.resolve($3.send(webRequest));
+
+    // HTML streaming
+    case "/stream.html":
+      return $0.resolve($4.send(webRequest));
   }
 }
 
 
 function _38(md){return(
-md`### defaultRequest`
+md`### Responding to a request: \`defaultRequest\``
 )}
 
 function _defaultRequest(flowQueue){return(
@@ -326,7 +332,7 @@ Inputs.button("Make request with random path", {
 )}
 
 function _47(md){return(
-md`### formRequest
+md`### Responding with HTML \`formRequest\`
 
 WEBCode is ideal for creating little utilities that can slot in other websites. For example, handling a form data or displaying a chart.`
 )}
@@ -354,7 +360,7 @@ async function _formResponseContent(formRequest,$0)
 
 
 function _51(md){return(
-md`### Preview Result
+md`### Preview a HTML response in an \`iframe\`
 
 We can of course put the rendered form in our own iframe so we can see the result`
 )}
@@ -371,7 +377,7 @@ htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (
 )}
 
 function _54(md){return(
-md`### Automated Preview Refreshing
+md`### Automated preview refreshing
 
 If we are a little clever with our dataflow, we can get the iframe to auto refresh on changes. Recall that in a flowQueue, a single request must processed before the next is exposed. If we see the same request more than once, that means intermediate cells have refreshed for reasons *other* than a new request arriving. This is likely a code change so we can tell the preview to refresh when the request the same as the previous one.
 
@@ -395,7 +401,9 @@ function _formResponder(formRequest,formResponseContent,$0)
 
 
 function _57(md){return(
-md`### Form Response handling`
+md`### Handling a Form POST response
+
+When a user clicks the submit button on a form, and the form action is 'POST', the browser makes a POST request to an endpoint with the data in the form encoded in the body. This is the original way of enable a user to pass data to a webserver.`
 )}
 
 function _formPostRequest(flowQueue){return(
@@ -440,7 +448,7 @@ function _formPostRequestResolver(formPostRequest,$0,formData)
 
 
 function _67(md){return(
-md`### Serving Images
+md`### Serving media (e.g. images)
 
 To server images (or video) you must return the data along with the correct [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) in the [\`content-type\` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).
 
@@ -553,14 +561,53 @@ function _refreshDashboardImage(){return(
 )}
 
 function _87(md){return(
-md`### Streaming Responses`
+md`### Streamed Responses
+
+So far we have explored a few of the request/response idioms of webservers. Webservers can also stream data, which can be useful for realtime applications or [high performance websites/progressive rendering](https://dev.to/tigt/the-weirdly-obscure-art-of-streamed-html-4gc2).`
 )}
 
-function _88(md){return(
+function _streamRequest(flowQueue){return(
+flowQueue()
+)}
+
+function _89(streamRequest){return(
+streamRequest
+)}
+
+function _streamRequestResponse($0,streamRequest,$1)
+{
+  $0.resolve(); // unblock queue, so next request can be handled
+  const res = streamRequest.res;
+  // Run the streaming outside of the cell so this can cell can resolve
+  new Promise(async () => {
+    res.write(`<body>`);
+    while (true) {
+      console.log("write");
+      res.write(`<li>${$1.value}</li>
+                <script>document.querySelector("li").remove()</script>`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  });
+}
+
+
+function _value(Inputs){return(
+Inputs.range([0, 1], { step: 0.001, value: 0, label: "wiggle me" })
+)}
+
+function _92(width,webserver,htl){return(
+htl.html`<iframe width="${width}" height="150px" src=${webserver.href + "/stream.html"}></iframe>`
+)}
+
+function _streamUrl(webserver){return(
+webserver.href + "/stream.html"
+)}
+
+function _94(md){return(
 md`---`
 )}
 
-function _89(md){return(
+function _95(md){return(
 md`### Config`
 )}
 
@@ -576,11 +623,11 @@ Inputs.bind(
 )
 )}
 
-function _92(md){return(
+function _98(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _93(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _99(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -596,11 +643,11 @@ function _93(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _96(md){return(
+function _102(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _98(footer){return(
+function _104(footer){return(
 footer
 )}
 
@@ -650,7 +697,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _34);
   main.variable(observer()).define(["webRequest"], _35);
   main.variable(observer()).define(["md"], _36);
-  main.variable(observer("router")).define("router", ["webRequest","viewof webRequest","viewof defaultRequest","viewof formRequest","viewof imgRequest"], _router);
+  main.variable(observer("router")).define("router", ["webRequest","viewof webRequest","viewof defaultRequest","viewof formRequest","viewof imgRequest","viewof streamRequest"], _router);
   main.variable(observer()).define(["md"], _38);
   main.variable(observer("viewof defaultRequest")).define("viewof defaultRequest", ["flowQueue"], _defaultRequest);
   main.variable(observer("defaultRequest")).define("defaultRequest", ["Generators", "viewof defaultRequest"], (G, _) => G.input(_));
@@ -713,21 +760,29 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
   main.variable(observer()).define(["md"], _87);
-  main.variable(observer()).define(["md"], _88);
-  main.variable(observer()).define(["md"], _89);
+  main.variable(observer("viewof streamRequest")).define("viewof streamRequest", ["flowQueue"], _streamRequest);
+  main.variable(observer("streamRequest")).define("streamRequest", ["Generators", "viewof streamRequest"], (G, _) => G.input(_));
+  main.variable(observer()).define(["streamRequest"], _89);
+  main.variable(observer("streamRequestResponse")).define("streamRequestResponse", ["viewof streamRequest","streamRequest","viewof value"], _streamRequestResponse);
+  main.variable(observer("viewof value")).define("viewof value", ["Inputs"], _value);
+  main.variable(observer("value")).define("value", ["Generators", "viewof value"], (G, _) => G.input(_));
+  main.variable(observer()).define(["width","webserver","htl"], _92);
+  main.variable(observer("streamUrl")).define("streamUrl", ["webserver"], _streamUrl);
+  main.variable(observer()).define(["md"], _94);
+  main.variable(observer()).define(["md"], _95);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _92);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _93);
+  main.variable(observer()).define(["md"], _98);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _99);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _96);
+  main.variable(observer()).define(["md"], _102);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _98);
+  main.variable(observer()).define(["footer"], _104);
   return main;
 }
