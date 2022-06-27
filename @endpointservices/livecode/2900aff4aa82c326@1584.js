@@ -471,46 +471,52 @@ function _weblog(){return(
 []
 )}
 
-function _weblogDataviz(Plot,weblog){return(
-Plot.plot({
-  x: {
-    type: "time",
-    label: "time"
-  },
-  marks: [Plot.tickX(weblog)]
-})
+function _72($0,Plot,weblog)
+{
+  $0.value = Plot.plot({
+    x: {
+      type: "time",
+      label: "time"
+    },
+    marks: [Plot.tickX(weblog)]
+  });
+}
+
+
+function _weblogDataviz(){return(
+undefined
 )}
 
-function _73(md){return(
+function _74(md){return(
 md`To serve an image (and other media), you need to set the correct MIME type and send the data in an arrayBuffer. Step one is converting it to a blob. Mike Bostock has an [excellent notebook on the topic](https://observablehq.com/@mbostock/saving-svg), so we can reuse his work to convert an SVG to a Blob `
 )}
 
-function _imageData(imgRequest,serialize,weblogDataviz,rasterize,$0)
+function _imageData(imgRequest,serialize,$0,rasterize,$1)
 {
   if (imgRequest.req.url.endsWith(".svg")) {
-    return serialize(weblogDataviz);
+    return serialize($0.value);
   } else if (imgRequest.req.url.endsWith(".png")) {
-    return rasterize(weblogDataviz);
+    return rasterize($0.value);
   } else {
     const error = new Error(
       `Unrecognised image extension ${imgRequest.req.url}`
     );
     error.code = 400;
-    $0.reject(error);
+    $1.reject(error);
     throw error;
   }
 }
 
 
-function _76(md){return(
+function _77(md){return(
 md`A correctly constructed blob has the MIME type in the type field:-`
 )}
 
-function _77(imageData){return(
+function _78(imageData){return(
 imageData.type
 )}
 
-function _78(md){return(
+function _79(md){return(
 md`The binary data can also be extracted with '.arrayBuffer()'. Passing an buffer to the response object will send binary data.`
 )}
 
@@ -521,7 +527,7 @@ async function _imgRequestResponder(imgRequest,imageData)
 }
 
 
-function _80(md){return(
+function _81(md){return(
 md`After sending the data we can unlock the flowQueue task so the next can be handled. Again, we can look for duplicate requests to trigger refreshing the preview too (see above) because that means there was a code change in the request pipeline.`
 )}
 
@@ -538,29 +544,29 @@ function _imgRequestResolve(imgRequestResponder,imgRequest,$0,$1)
 }
 
 
-function _82(md){return(
+function _83(md){return(
 md`If we are serving SVG correctly, we can use it as the src of an image.`
 )}
 
-function _83(refreshDashboardImage,width,webserver,htl){return(
+function _84(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.svg"}></img>`
 )}
 
-function _84(md){return(
+function _85(md){return(
 md`If we are serving PNG correctly, we can also use it as the src of an image.`
 )}
 
-function _85(refreshDashboardImage,width,webserver,htl){return(
+function _86(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.png"}></img>`
 )}
 
-function _refreshDashboardImage(){return(
-0
+function _refreshDashboardImage(Promises){return(
+Promises.delay(3000, 0)
 )}
 
-function _87(md){return(
+function _88(md){return(
 md`### Streamed Responses
 
 So far we have explored a few of the request/response idioms of webservers. Webservers can also stream data, which can be useful for realtime applications or [high performance websites/progressive rendering](https://dev.to/tigt/the-weirdly-obscure-art-of-streamed-html-4gc2).`
@@ -570,8 +576,12 @@ function _streamRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _89(streamRequest){return(
+function _90(streamRequest){return(
 streamRequest
+)}
+
+function _91(md){return(
+md`In this example every time a control changes we HTML that includes a Javascript snippet to scrub the previous value, so we can have a page displaying the latest value of a control.`
 )}
 
 function* _streamRequestResponse(streamRequest,$0,invalidation)
@@ -580,18 +590,24 @@ function* _streamRequestResponse(streamRequest,$0,invalidation)
 
   // Run the streaming outside of the runtime with event listeners
   // Its not easily possible to handle concurrent long lived requests using dataflow
-  streamRequest.res.write(`<body>`);
-
+  const res = streamRequest.res;
+  const req = streamRequest.req;
   const changeHandler = () => {
-    streamRequest.res.write(
+    console.log(`change ${req.id}`);
+    res.write(
       `<script>document.querySelector("pre")?.remove()</script>` +
         `<pre>latest: ${$0.value}</pre>`
     );
   };
+  console.log(`opening ${req.id}`);
+  res.write(`<body>Streaming for request ${req.id}`);
+  changeHandler();
+
   $0.addEventListener("input", changeHandler);
   invalidation.then(() => {
+    console.log(`close ${req.id}`);
     $0.removeEventListener("input", changeHandler);
-    streamRequest.res.end();
+    res.end();
   });
 }
 
@@ -600,7 +616,7 @@ function _streamRequestResolver(streamRequestResponse,streamRequest,$0,$1)
 {
   streamRequestResponse;
   if (this !== streamRequest.req.id) {
-    $0.resolve();
+    $0.resolve("ok");
   } else {
     $1.value++;
   }
@@ -614,14 +630,33 @@ Inputs.toggle({
 })
 )}
 
+function _95(Inputs,$0){return(
+Inputs.button("refresh streaming", {
+  reduce: () => $0.value++
+})
+)}
+
 function _streamValue(Inputs){return(
 Inputs.range([0, 1], { step: 0.001, value: 0, label: "wiggle me" })
 )}
 
-function _94(runStreamingPreview,streamingPreviewRefresh,width,webserver,htl){return(
+function _97(runStreamingPreview,streamingPreviewRefresh,width,link,htl){return(
 htl.html`${runStreamingPreview && streamingPreviewRefresh}
-<iframe width="${width}" height="150px" src=${webserver.href + "/stream.html"}></iframe>
+<iframe width="${width}" height="100px" src=${link}></iframe>
 `
+)}
+
+function _streamingCurl(link,md){return(
+md`You can read streaming responses in \`curl\` but you need to turn buffering off
+
+\`\`\`
+ curl --no-buffer '${link}' 
+
+\`\`\``
+)}
+
+function _link(webserver){return(
+webserver.href + "/stream.html"
 )}
 
 function _runStreamingPreview(streamingPreview,invalidation){return(
@@ -632,11 +667,17 @@ function _streamingPreviewRefresh(){return(
 0
 )}
 
-function _97(md){return(
+function _102(md){return(
+md`## Ideas for more Livecoding/Webserver examples?
+
+Leave a comment if you want to see how to livecode up something else `
+)}
+
+function _103(md){return(
 md`---`
 )}
 
-function _98(md){return(
+function _104(md){return(
 md`### Config`
 )}
 
@@ -652,14 +693,14 @@ Inputs.bind(
 )
 )}
 
-function _101(md){return(
+function _107(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _102(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _108(webserver,exampleEndpoint,streamingCurl,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
-  /* Upstream */ webserver, exampleEndpoint;
+  /* Upstream */ webserver, exampleEndpoint, streamingCurl;
   {
     [...document.querySelectorAll("pre")].forEach((el) =>
       installCopyCode(el, { invalidation })
@@ -672,11 +713,11 @@ function _102(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md
 }
 
 
-function _105(md){return(
+function _111(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _107(footer){return(
+function _113(footer){return(
 footer
 )}
 
@@ -769,55 +810,63 @@ export default function define(runtime, observer) {
   main.define("initial weblog", _weblog);
   main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
   main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
-  main.variable(observer("weblogDataviz")).define("weblogDataviz", ["Plot","weblog"], _weblogDataviz);
-  main.variable(observer()).define(["md"], _73);
+  main.variable(observer()).define(["mutable weblogDataviz","Plot","weblog"], _72);
+  main.define("initial weblogDataviz", _weblogDataviz);
+  main.variable(observer("mutable weblogDataviz")).define("mutable weblogDataviz", ["Mutable", "initial weblogDataviz"], (M, _) => new M(_));
+  main.variable(observer("weblogDataviz")).define("weblogDataviz", ["mutable weblogDataviz"], _ => _.generator);
+  main.variable(observer()).define(["md"], _74);
   const child3 = runtime.module(define3);
   main.import("rasterize", child3);
   main.import("serialize", child3);
-  main.variable(observer("imageData")).define("imageData", ["imgRequest","serialize","weblogDataviz","rasterize","viewof imgRequest"], _imageData);
-  main.variable(observer()).define(["md"], _76);
-  main.variable(observer()).define(["imageData"], _77);
-  main.variable(observer()).define(["md"], _78);
+  main.variable(observer("imageData")).define("imageData", ["imgRequest","serialize","mutable weblogDataviz","rasterize","viewof imgRequest"], _imageData);
+  main.variable(observer()).define(["md"], _77);
+  main.variable(observer()).define(["imageData"], _78);
+  main.variable(observer()).define(["md"], _79);
   main.variable(observer("imgRequestResponder")).define("imgRequestResponder", ["imgRequest","imageData"], _imgRequestResponder);
-  main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["md"], _81);
   main.variable(observer("imgRequestResolve")).define("imgRequestResolve", ["imgRequestResponder","imgRequest","viewof imgRequest","mutable refreshDashboardImage"], _imgRequestResolve);
-  main.variable(observer()).define(["md"], _82);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _83);
-  main.variable(observer()).define(["md"], _84);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _85);
-  main.define("initial refreshDashboardImage", _refreshDashboardImage);
+  main.variable(observer()).define(["md"], _83);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _84);
+  main.variable(observer()).define(["md"], _85);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _86);
+  main.define("initial refreshDashboardImage", ["Promises"], _refreshDashboardImage);
   main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
-  main.variable(observer()).define(["md"], _87);
+  main.variable(observer()).define(["md"], _88);
   main.variable(observer("viewof streamRequest")).define("viewof streamRequest", ["flowQueue"], _streamRequest);
   main.variable(observer("streamRequest")).define("streamRequest", ["Generators", "viewof streamRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["streamRequest"], _89);
+  main.variable(observer()).define(["streamRequest"], _90);
+  main.variable(observer()).define(["md"], _91);
   main.variable(observer("streamRequestResponse")).define("streamRequestResponse", ["streamRequest","viewof streamValue","invalidation"], _streamRequestResponse);
   main.variable(observer("streamRequestResolver")).define("streamRequestResolver", ["streamRequestResponse","streamRequest","viewof streamRequest","mutable streamingPreviewRefresh"], _streamRequestResolver);
   main.variable(observer("viewof streamingPreview")).define("viewof streamingPreview", ["Inputs"], _streamingPreview);
   main.variable(observer("streamingPreview")).define("streamingPreview", ["Generators", "viewof streamingPreview"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","mutable streamingPreviewRefresh"], _95);
   main.variable(observer("viewof streamValue")).define("viewof streamValue", ["Inputs"], _streamValue);
   main.variable(observer("streamValue")).define("streamValue", ["Generators", "viewof streamValue"], (G, _) => G.input(_));
-  main.variable(observer()).define(["runStreamingPreview","streamingPreviewRefresh","width","webserver","htl"], _94);
+  main.variable(observer()).define(["runStreamingPreview","streamingPreviewRefresh","width","link","htl"], _97);
+  main.variable(observer("streamingCurl")).define("streamingCurl", ["link","md"], _streamingCurl);
+  main.variable(observer("link")).define("link", ["webserver"], _link);
   main.variable(observer("runStreamingPreview")).define("runStreamingPreview", ["streamingPreview","invalidation"], _runStreamingPreview);
   main.define("initial streamingPreviewRefresh", _streamingPreviewRefresh);
   main.variable(observer("mutable streamingPreviewRefresh")).define("mutable streamingPreviewRefresh", ["Mutable", "initial streamingPreviewRefresh"], (M, _) => new M(_));
   main.variable(observer("streamingPreviewRefresh")).define("streamingPreviewRefresh", ["mutable streamingPreviewRefresh"], _ => _.generator);
-  main.variable(observer()).define(["md"], _97);
-  main.variable(observer()).define(["md"], _98);
+  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["md"], _103);
+  main.variable(observer()).define(["md"], _104);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _101);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _102);
+  main.variable(observer()).define(["md"], _107);
+  main.variable(observer()).define(["webserver","exampleEndpoint","streamingCurl","installCopyCode","invalidation","curl_get","md"], _108);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _105);
+  main.variable(observer()).define(["md"], _111);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _107);
+  main.variable(observer()).define(["footer"], _113);
   return main;
 }
