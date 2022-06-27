@@ -95,15 +95,15 @@ The following UI uses the *fetch* API client-side, to make a simple request to o
 When public livecoding, the URL of the server contains the session ID, so the server knows which tunnel to route through. Public livecode endpoints are isolated between participants.`
 )}
 
+function _12(response,html){return(
+response || html``
+)}
+
 function _name(Inputs){return(
 Inputs.text({
   label: "name",
   placeholder: "Please enter your name (or don't)"
 })
-)}
-
-function _13(response,html){return(
-response || html``
 )}
 
 function _response(Inputs,name,exampleEndpoint){return(
@@ -743,9 +743,9 @@ export default function define(runtime, observer) {
   main.variable(observer("exampleEndpoint")).define("exampleEndpoint", ["endpoint","mutable handlerLog","host"], _exampleEndpoint);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["response","html"], _12);
   main.variable(observer("viewof name")).define("viewof name", ["Inputs"], _name);
   main.variable(observer("name")).define("name", ["Generators", "viewof name"], (G, _) => G.input(_));
-  main.variable(observer()).define(["response","html"], _13);
   main.variable(observer("viewof response")).define("viewof response", ["Inputs","name","exampleEndpoint"], _response);
   main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _15);
