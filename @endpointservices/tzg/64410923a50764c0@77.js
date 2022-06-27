@@ -21,7 +21,7 @@ notebook.replaceAll(/(https:\/\/)?observablehq.com\//g, "").replaceAll(".tgz", "
 )}
 
 function _link(cleanedNotebook,notebook,htl){return(
-htl.html`<a href=\`https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz\`>${notebook}.tgz</a>`
+htl.html`<a href=${`https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz`}>${notebook}.tgz</a>`
 )}
 
 function _backend(deploy){return(
