@@ -1,5 +1,5 @@
-import define1 from "./dff1e917c89f5e76@1711.js";
-import define2 from "./293899bef371e135@247.js";
+import define1 from "./dff1e917c89f5e76@1948.js";
+import define2 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# Get CORS tgz link (v=3)
@@ -20,12 +20,9 @@ function _cleanedNotebook(notebook){return(
 notebook.replaceAll(/(https:\/\/)?observablehq.com\//g, "").replaceAll(".tgz", "")
 )}
 
-function _link(cleanedNotebook,htl)
-{
-  const href = `https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz`
-  return htl.html`Here is a CORS enabled link to that zip: <a href="${href}" target="_blank">${href}</a>`;
-}
-
+function _link(cleanedNotebook,notebook,htl){return(
+htl.html`<a href=\`https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz\`>${notebook}.tgz</a>`
+)}
 
 function _backend(deploy){return(
 deploy("default", async (req, res) => {
@@ -73,7 +70,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof notebook")).define("viewof notebook", ["Inputs"], _notebook);
   main.variable(observer("notebook")).define("notebook", ["Generators", "viewof notebook"], (G, _) => G.input(_));
   main.variable(observer("cleanedNotebook")).define("cleanedNotebook", ["notebook"], _cleanedNotebook);
-  main.variable(observer("link")).define("link", ["cleanedNotebook","htl"], _link);
+  main.variable(observer("link")).define("link", ["cleanedNotebook","notebook","htl"], _link);
   main.variable(observer("backend")).define("backend", ["deploy"], _backend);
   const child1 = runtime.module(define1);
   main.import("deploy", child1);

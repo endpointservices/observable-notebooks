@@ -1,6 +1,6 @@
 # Get CORS tgz link (v=3)
 
-https://observablehq.com/@endpointservices/tzg@71
+https://observablehq.com/@endpointservices/tzg@76
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/64410923a50764c0@71.tgz?v=3
+npm install https://api.observablehq.com/d/64410923a50764c0@76.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
