@@ -574,40 +574,69 @@ function _89(streamRequest){return(
 streamRequest
 )}
 
-function _streamRequestResponse($0,streamRequest,$1)
+function* _streamRequestResponse(streamRequest,$0,invalidation)
 {
-  $0.resolve(); // unblock queue, so next request can be handled
-  const res = streamRequest.res;
-  // Run the streaming outside of the cell so this can cell can resolve
-  new Promise(async () => {
-    res.write(`<body>`);
-    while (true) {
-      console.log("write");
-      res.write(`<li>${$1.value}</li>
-                <script>document.querySelector("li").remove()</script>`);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    }
+  yield "ok"; // Yeild a value so request processing can proceed dowstream
+
+  // Run the streaming outside of the runtime with event listeners
+  // Its not easily possible to handle concurrent long lived requests using dataflow
+  streamRequest.res.write(`<body>`);
+
+  const changeHandler = () => {
+    streamRequest.res.write(
+      `<script>document.querySelector("pre")?.remove()</script>` +
+        `<pre>latest: ${$0.value}</pre>`
+    );
+  };
+  $0.addEventListener("input", changeHandler);
+  invalidation.then(() => {
+    $0.removeEventListener("input", changeHandler);
+    streamRequest.res.end();
   });
 }
 
 
-function _value(Inputs){return(
+function _streamRequestResolver(streamRequestResponse,streamRequest,$0,$1)
+{
+  streamRequestResponse;
+  if (this !== streamRequest.req.id) {
+    $0.resolve();
+  } else {
+    $1.value++;
+  }
+  return streamRequest.req.id;
+}
+
+
+function _streamingPreview(Inputs){return(
+Inputs.toggle({
+  label: "turn on streaming preview"
+})
+)}
+
+function _streamValue(Inputs){return(
 Inputs.range([0, 1], { step: 0.001, value: 0, label: "wiggle me" })
 )}
 
-function _92(width,webserver,htl){return(
-htl.html`<iframe width="${width}" height="150px" src=${webserver.href + "/stream.html"}></iframe>`
+function _94(runStreamingPreview,streamingPreviewRefresh,width,webserver,htl){return(
+htl.html`${runStreamingPreview && streamingPreviewRefresh}
+<iframe width="${width}" height="150px" src=${webserver.href + "/stream.html"}></iframe>
+`
 )}
 
-function _streamUrl(webserver){return(
-webserver.href + "/stream.html"
+function _runStreamingPreview(streamingPreview,invalidation){return(
+streamingPreview ? "" : invalidation
 )}
 
-function _94(md){return(
+function _streamingPreviewRefresh(){return(
+0
+)}
+
+function _97(md){return(
 md`---`
 )}
 
-function _95(md){return(
+function _98(md){return(
 md`### Config`
 )}
 
@@ -623,11 +652,11 @@ Inputs.bind(
 )
 )}
 
-function _98(md){return(
+function _101(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _99(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
+function _102(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint;
@@ -643,11 +672,11 @@ function _99(webserver,exampleEndpoint,installCopyCode,invalidation,curl_get,md)
 }
 
 
-function _102(md){return(
+function _105(md){return(
 md`##### Notebook Backup, Analytics and monitoring`
 )}
 
-function _104(footer){return(
+function _107(footer){return(
 footer
 )}
 
@@ -763,26 +792,32 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof streamRequest")).define("viewof streamRequest", ["flowQueue"], _streamRequest);
   main.variable(observer("streamRequest")).define("streamRequest", ["Generators", "viewof streamRequest"], (G, _) => G.input(_));
   main.variable(observer()).define(["streamRequest"], _89);
-  main.variable(observer("streamRequestResponse")).define("streamRequestResponse", ["viewof streamRequest","streamRequest","viewof value"], _streamRequestResponse);
-  main.variable(observer("viewof value")).define("viewof value", ["Inputs"], _value);
-  main.variable(observer("value")).define("value", ["Generators", "viewof value"], (G, _) => G.input(_));
-  main.variable(observer()).define(["width","webserver","htl"], _92);
-  main.variable(observer("streamUrl")).define("streamUrl", ["webserver"], _streamUrl);
-  main.variable(observer()).define(["md"], _94);
-  main.variable(observer()).define(["md"], _95);
+  main.variable(observer("streamRequestResponse")).define("streamRequestResponse", ["streamRequest","viewof streamValue","invalidation"], _streamRequestResponse);
+  main.variable(observer("streamRequestResolver")).define("streamRequestResolver", ["streamRequestResponse","streamRequest","viewof streamRequest","mutable streamingPreviewRefresh"], _streamRequestResolver);
+  main.variable(observer("viewof streamingPreview")).define("viewof streamingPreview", ["Inputs"], _streamingPreview);
+  main.variable(observer("streamingPreview")).define("streamingPreview", ["Generators", "viewof streamingPreview"], (G, _) => G.input(_));
+  main.variable(observer("viewof streamValue")).define("viewof streamValue", ["Inputs"], _streamValue);
+  main.variable(observer("streamValue")).define("streamValue", ["Generators", "viewof streamValue"], (G, _) => G.input(_));
+  main.variable(observer()).define(["runStreamingPreview","streamingPreviewRefresh","width","webserver","htl"], _94);
+  main.variable(observer("runStreamingPreview")).define("runStreamingPreview", ["streamingPreview","invalidation"], _runStreamingPreview);
+  main.define("initial streamingPreviewRefresh", _streamingPreviewRefresh);
+  main.variable(observer("mutable streamingPreviewRefresh")).define("mutable streamingPreviewRefresh", ["Mutable", "initial streamingPreviewRefresh"], (M, _) => new M(_));
+  main.variable(observer("streamingPreviewRefresh")).define("streamingPreviewRefresh", ["mutable streamingPreviewRefresh"], _ => _.generator);
+  main.variable(observer()).define(["md"], _97);
+  main.variable(observer()).define(["md"], _98);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _98);
-  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _99);
+  main.variable(observer()).define(["md"], _101);
+  main.variable(observer()).define(["webserver","exampleEndpoint","installCopyCode","invalidation","curl_get","md"], _102);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["md"], _105);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _104);
+  main.variable(observer()).define(["footer"], _107);
   return main;
 }
