@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/livecode@1628
+// https://observablehq.com/@endpointservices/livecode@1629
 import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./0e0b35a92c819d94@434.js";
 import define3 from "./576f8943dbfbd395@114.js";
@@ -342,6 +342,10 @@ function _formRequest(flowQueue){return(
 flowQueue()
 )}
 
+function _49(formRequest){return(
+formRequest
+)}
+
 async function _formResponseContent(formRequest,$0)
 {
   if (formRequest.req.method === "POST") {
@@ -355,10 +359,6 @@ async function _formResponseContent(formRequest,$0)
   }
 }
 
-
-function _50(formRequest){return(
-formRequest
-)}
 
 function _51(md){return(
 md`### Preview a HTML response in an \`iframe\`
@@ -790,8 +790,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _47);
   main.variable(observer("viewof formRequest")).define("viewof formRequest", ["flowQueue"], _formRequest);
   main.variable(observer("formRequest")).define("formRequest", ["Generators", "viewof formRequest"], (G, _) => G.input(_));
+  main.variable(observer()).define(["formRequest"], _49);
   main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest","viewof formPostRequest"], _formResponseContent);
-  main.variable(observer()).define(["formRequest"], _50);
   main.variable(observer()).define(["md"], _51);
   main.variable(observer()).define(["Inputs","mutable refreshForm"], _52);
   main.variable(observer()).define(["refreshForm","width","webserver","htl"], _53);
