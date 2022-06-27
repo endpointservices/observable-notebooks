@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@433
+// https://observablehq.com/@tomlarkworthy/flow-queue@434
 import define1 from "./293899bef371e135@271.js";
 
 async function _1(FileAttachment,width,md){return(
@@ -15,7 +15,7 @@ A flow queue releases values one-at-a-time onto a Dataflow graph, and collects a
 
 The following video demonstrates its use during development of a webhook. Note a number of cells update as data passes through the system. 
 
-<video controls="controls" width="${Math.min(width, 640)}" height="200" loop name="Video Name">
+<video controls="controls" width="${Math.min(width, 640)}" height="400" loop name="Video Name">
   <source src="https://storage.googleapis.com/publicartifacts/blogimages/notebookwebhook.mov">
 </video>
 
