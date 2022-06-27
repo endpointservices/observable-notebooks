@@ -341,42 +341,47 @@ function _formRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _49(formRequest){return(
-formRequest
-)}
-
-async function _formResponseContent(formRequest,$0)
+async function _formResponseContent(formRequest,$0,formHTML)
 {
-  if (formRequest.req.method === "GET") {
-    return `<form method="post">
-                <textarea id="note" name="note"
-                          rows="5" cols="40"></textarea>
-                <button type="submit">Submit</button> Cool
-            </form>`;
-  } else if (formRequest.req.method === "POST") {
+  if (formRequest.req.method === "POST") {
     return await $0.send(formRequest);
+  } else if (formRequest.req.method === "GET") {
+    return formHTML.outerHTML;
   }
 }
 
 
-function _51(md){return(
+function _formHTML(htl){return(
+htl.html`<blink>Please post your note!</blink>
+<form method="post">
+  <textarea id="note" name="note"
+    rows="5" cols="40"></textarea>
+  <div><button type="submit">Submit</button></div>
+</form>`
+)}
+
+function _51(formRequest){return(
+formRequest
+)}
+
+function _52(refreshForm,width,webserver,htl){return(
+htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (refreshForm, '')}
+<iframe width="${width}" height="170px" src=${webserver.href + "/form.html"}></iframe>`
+)}
+
+function _53(md){return(
 md`### Preview a HTML response in an \`iframe\`
 
 We can of course put the rendered form in our own iframe so we can see the result`
 )}
 
-function _52(Inputs,$0){return(
+function _54(Inputs,$0){return(
 Inputs.button("refresh preview", {
   reduce: () => $0.value++
 })
 )}
 
-function _53(refreshForm,width,webserver,htl){return(
-htl.html`${/* Programatically refresh this cell by incrementing refreshForm */ (refreshForm, '')}
-<iframe width="${width}" height="150px" src=${webserver.href + "/form.html"}></iframe>`
-)}
-
-function _54(md){return(
+function _55(md){return(
 md`### Automated preview refreshing
 
 If we are a little clever with our dataflow, we can get the iframe to auto refresh on changes. Recall that in a flowQueue, a single request must processed before the next is exposed. If we see the same request more than once, that means intermediate cells have refreshed for reasons *other* than a new request arriving. This is likely a code change so we can tell the preview to refresh when the request the same as the previous one.
@@ -400,7 +405,7 @@ function _formResponder(formRequest,formResponseContent,$0)
 }
 
 
-function _57(md){return(
+function _58(md){return(
 md`### Handling a Form POST response
 
 When a user clicks the submit button on a form, and the form action is 'POST', the browser makes a POST request to an endpoint with the data in the form encoded in the body. This is the original way of enable a user to pass data to a webserver.`
@@ -410,11 +415,11 @@ function _formPostRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _59(formPostRequest){return(
+function _60(formPostRequest){return(
 formPostRequest
 )}
 
-function _60(md){return(
+function _61(md){return(
 md`Form data, when using the POST action, is URL encoded in the body.`
 )}
 
@@ -422,7 +427,7 @@ function _formDataRaw(formPostRequest){return(
 formPostRequest.req.body
 )}
 
-function _62(md){return(
+function _63(md){return(
 md`The modern way to decode it is with URLSearchParams...`
 )}
 
@@ -430,7 +435,7 @@ function _decodedFormData(URLSearchParams,formDataRaw){return(
 new URLSearchParams(formDataRaw)
 )}
 
-function _64(md){return(
+function _65(md){return(
 md`a URLSearchParams object is not very inspectible on its own, so I often convert into an ordinary data object, which is easier to work with`
 )}
 
@@ -447,7 +452,7 @@ function _formPostRequestResolver(formPostRequest,$0,formData)
 }
 
 
-function _67(md){return(
+function _68(md){return(
 md`### Serving media (e.g. images)
 
 To server images (or video) you must return the data along with the correct [MIME type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types) in the [\`content-type\` header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type).
@@ -459,11 +464,11 @@ function _imgRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _69(imgRequest){return(
+function _70(imgRequest){return(
 imgRequest
 )}
 
-function _70(md){return(
+function _71(md){return(
 md`Lets visualize what requests the webserver has seen in its history. When _livecoding_ the log will be just your session, when not _livecoding_, this will scoped to the shared serverside session (!)`
 )}
 
@@ -471,7 +476,7 @@ function _weblog(){return(
 []
 )}
 
-function _72(md){return(
+function _73(md){return(
 md`We have to decouple dataflow from weblog updates so the \`imgRequest\` pipeline is not triggered by \`weblog\` changes. We can use a \`mutable\` for this.`
 )}
 
@@ -491,7 +496,7 @@ function _weblogDataviz(){return(
 undefined
 )}
 
-function _75(md){return(
+function _76(md){return(
 md`To serve an image (and other media), you need to set the correct MIME type and send the data in an arrayBuffer. Step one is converting it to a blob. Mike Bostock has an [excellent notebook on the topic](https://observablehq.com/@mbostock/saving-svg), so we can reuse his work to convert an SVG to a Blob `
 )}
 
@@ -512,15 +517,15 @@ function _imageData(imgRequest,serialize,$0,rasterize,$1)
 }
 
 
-function _78(md){return(
+function _79(md){return(
 md`A correctly constructed blob has the MIME type in the type field:-`
 )}
 
-function _79(imageData){return(
+function _80(imageData){return(
 imageData.type
 )}
 
-function _80(md){return(
+function _81(md){return(
 md`The binary data can also be extracted with '.arrayBuffer()'. Passing an buffer to the response object will send binary data.`
 )}
 
@@ -531,7 +536,7 @@ async function _imgRequestResponder(imgRequest,imageData)
 }
 
 
-function _82(md){return(
+function _83(md){return(
 md`After sending the data we can unlock the flowQueue task so the next can be handled. Again, we can look for duplicate requests to trigger refreshing the preview too (see above) because that means there was a code change in the request pipeline.`
 )}
 
@@ -548,20 +553,20 @@ function _imgRequestResolve(imgRequestResponder,imgRequest,$0,$1)
 }
 
 
-function _84(md){return(
+function _85(md){return(
 md`If we are serving SVG correctly, we can use it as the src of an image.`
 )}
 
-function _85(refreshDashboardImage,width,webserver,htl){return(
+function _86(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.svg"}></img>`
 )}
 
-function _86(md){return(
+function _87(md){return(
 md`If we are serving PNG correctly, we can also use it as the src of an image.`
 )}
 
-function _87(refreshDashboardImage,width,webserver,htl){return(
+function _88(refreshDashboardImage,width,webserver,htl){return(
 htl.html`${(refreshDashboardImage, '')}
 <img width="${Math.min(width, 640)}" src=${webserver.href + "/weblog.png"}></img>`
 )}
@@ -570,7 +575,7 @@ function _refreshDashboardImage(Promises){return(
 Promises.delay(3000, 0)
 )}
 
-function _89(md){return(
+function _90(md){return(
 md`### Streamed Responses
 
 So far we have explored a few of the request/response idioms of webservers. Webservers can also stream data, which can be useful for realtime applications or [high performance websites/progressive rendering](https://dev.to/tigt/the-weirdly-obscure-art-of-streamed-html-4gc2).`
@@ -580,11 +585,11 @@ function _streamRequest(flowQueue){return(
 flowQueue()
 )}
 
-function _91(streamRequest){return(
+function _92(streamRequest){return(
 streamRequest
 )}
 
-function _92(md){return(
+function _93(md){return(
 md`In this example every time a control changes we HTML that includes a Javascript snippet to scrub the previous value, so we can have a page displaying the latest value of a control.`
 )}
 
@@ -634,7 +639,7 @@ Inputs.toggle({
 })
 )}
 
-function _96(Inputs,$0){return(
+function _97(Inputs,$0){return(
 Inputs.button("refresh streaming", {
   reduce: () => $0.value++
 })
@@ -644,7 +649,7 @@ function _streamValue(Inputs){return(
 Inputs.range([0, 1], { step: 0.001, value: 0, label: "wiggle me" })
 )}
 
-function _98(runStreamingPreview,streamingPreviewRefresh,width,link,htl){return(
+function _99(runStreamingPreview,streamingPreviewRefresh,width,link,htl){return(
 htl.html`${runStreamingPreview && streamingPreviewRefresh}
 <iframe width="${width}" height="100px" src=${link}></iframe>
 `
@@ -671,21 +676,21 @@ function _streamingPreviewRefresh(){return(
 0
 )}
 
-function _103(md){return(
+function _104(md){return(
 md`## Ideas for more Livecoding/Webserver examples?
 
 Leave a comment if you want to see how to livecode up other webserver functionality`
 )}
 
-function _104(md){return(
+function _105(md){return(
 md`---`
 )}
 
-function _105(md){return(
+function _106(md){return(
 md`## Supporting notebook functionality`
 )}
 
-function _106(md){return(
+function _107(md){return(
 md`### Config`
 )}
 
@@ -701,11 +706,11 @@ Inputs.bind(
 )
 )}
 
-function _109(md){return(
+function _110(md){return(
 md`### Notebook Enhancements`
 )}
 
-function _110(webserver,exampleEndpoint,streamingCurl,installCopyCode,invalidation,curl_get,md)
+function _111(webserver,exampleEndpoint,streamingCurl,installCopyCode,invalidation,curl_get,md)
 {
   // After import {endpoint} from 'webcode' snippet is the use of the keyword 'endpoint'
   /* Upstream */ webserver, exampleEndpoint, streamingCurl;
@@ -721,11 +726,11 @@ function _110(webserver,exampleEndpoint,streamingCurl,installCopyCode,invalidati
 }
 
 
-function _113(md){return(
+function _114(md){return(
 md`### Notebook Backup, Analytics and monitoring`
 )}
 
-function _115(footer){return(
+function _116(footer){return(
 footer
 )}
 
@@ -789,94 +794,95 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _47);
   main.variable(observer("viewof formRequest")).define("viewof formRequest", ["flowQueue"], _formRequest);
   main.variable(observer("formRequest")).define("formRequest", ["Generators", "viewof formRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["formRequest"], _49);
-  main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest","viewof formPostRequest"], _formResponseContent);
-  main.variable(observer()).define(["md"], _51);
-  main.variable(observer()).define(["Inputs","mutable refreshForm"], _52);
-  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _53);
-  main.variable(observer()).define(["md"], _54);
+  main.variable(observer("formResponseContent")).define("formResponseContent", ["formRequest","viewof formPostRequest","formHTML"], _formResponseContent);
+  main.variable(observer("formHTML")).define("formHTML", ["htl"], _formHTML);
+  main.variable(observer()).define(["formRequest"], _51);
+  main.variable(observer()).define(["refreshForm","width","webserver","htl"], _52);
+  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["Inputs","mutable refreshForm"], _54);
+  main.variable(observer()).define(["md"], _55);
   main.define("initial refreshForm", ["webserver","Promises"], _refreshForm);
   main.variable(observer("mutable refreshForm")).define("mutable refreshForm", ["Mutable", "initial refreshForm"], (M, _) => new M(_));
   main.variable(observer("refreshForm")).define("refreshForm", ["mutable refreshForm"], _ => _.generator);
   main.variable(observer("formResponder")).define("formResponder", ["formRequest","formResponseContent","mutable refreshForm"], _formResponder);
-  main.variable(observer()).define(["md"], _57);
+  main.variable(observer()).define(["md"], _58);
   main.variable(observer("viewof formPostRequest")).define("viewof formPostRequest", ["flowQueue"], _formPostRequest);
   main.variable(observer("formPostRequest")).define("formPostRequest", ["Generators", "viewof formPostRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["formPostRequest"], _59);
-  main.variable(observer()).define(["md"], _60);
+  main.variable(observer()).define(["formPostRequest"], _60);
+  main.variable(observer()).define(["md"], _61);
   main.variable(observer("formDataRaw")).define("formDataRaw", ["formPostRequest"], _formDataRaw);
-  main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["md"], _63);
   main.variable(observer("decodedFormData")).define("decodedFormData", ["URLSearchParams","formDataRaw"], _decodedFormData);
-  main.variable(observer()).define(["md"], _64);
+  main.variable(observer()).define(["md"], _65);
   main.variable(observer("formData")).define("formData", ["decodedFormData"], _formData);
   main.variable(observer("formPostRequestResolver")).define("formPostRequestResolver", ["formPostRequest","viewof formPostRequest","formData"], _formPostRequestResolver);
-  main.variable(observer()).define(["md"], _67);
+  main.variable(observer()).define(["md"], _68);
   main.variable(observer("viewof imgRequest")).define("viewof imgRequest", ["flowQueue"], _imgRequest);
   main.variable(observer("imgRequest")).define("imgRequest", ["Generators", "viewof imgRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["imgRequest"], _69);
-  main.variable(observer()).define(["md"], _70);
+  main.variable(observer()).define(["imgRequest"], _70);
+  main.variable(observer()).define(["md"], _71);
   main.define("initial weblog", _weblog);
   main.variable(observer("mutable weblog")).define("mutable weblog", ["Mutable", "initial weblog"], (M, _) => new M(_));
   main.variable(observer("weblog")).define("weblog", ["mutable weblog"], _ => _.generator);
-  main.variable(observer()).define(["md"], _72);
+  main.variable(observer()).define(["md"], _73);
   main.variable(observer("visualizationUpdater")).define("visualizationUpdater", ["mutable weblogDataviz","Plot","weblog"], _visualizationUpdater);
   main.define("initial weblogDataviz", _weblogDataviz);
   main.variable(observer("mutable weblogDataviz")).define("mutable weblogDataviz", ["Mutable", "initial weblogDataviz"], (M, _) => new M(_));
   main.variable(observer("weblogDataviz")).define("weblogDataviz", ["mutable weblogDataviz"], _ => _.generator);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["md"], _76);
   const child3 = runtime.module(define3);
   main.import("rasterize", child3);
   main.import("serialize", child3);
   main.variable(observer("imageData")).define("imageData", ["imgRequest","serialize","mutable weblogDataviz","rasterize","viewof imgRequest"], _imageData);
-  main.variable(observer()).define(["md"], _78);
-  main.variable(observer()).define(["imageData"], _79);
-  main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["md"], _79);
+  main.variable(observer()).define(["imageData"], _80);
+  main.variable(observer()).define(["md"], _81);
   main.variable(observer("imgRequestResponder")).define("imgRequestResponder", ["imgRequest","imageData"], _imgRequestResponder);
-  main.variable(observer()).define(["md"], _82);
+  main.variable(observer()).define(["md"], _83);
   main.variable(observer("imgRequestResolve")).define("imgRequestResolve", ["imgRequestResponder","imgRequest","viewof imgRequest","mutable refreshDashboardImage"], _imgRequestResolve);
-  main.variable(observer()).define(["md"], _84);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _85);
-  main.variable(observer()).define(["md"], _86);
-  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _87);
+  main.variable(observer()).define(["md"], _85);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _86);
+  main.variable(observer()).define(["md"], _87);
+  main.variable(observer()).define(["refreshDashboardImage","width","webserver","htl"], _88);
   main.define("initial refreshDashboardImage", ["Promises"], _refreshDashboardImage);
   main.variable(observer("mutable refreshDashboardImage")).define("mutable refreshDashboardImage", ["Mutable", "initial refreshDashboardImage"], (M, _) => new M(_));
   main.variable(observer("refreshDashboardImage")).define("refreshDashboardImage", ["mutable refreshDashboardImage"], _ => _.generator);
-  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["md"], _90);
   main.variable(observer("viewof streamRequest")).define("viewof streamRequest", ["flowQueue"], _streamRequest);
   main.variable(observer("streamRequest")).define("streamRequest", ["Generators", "viewof streamRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["streamRequest"], _91);
-  main.variable(observer()).define(["md"], _92);
+  main.variable(observer()).define(["streamRequest"], _92);
+  main.variable(observer()).define(["md"], _93);
   main.variable(observer("streamRequestResponse")).define("streamRequestResponse", ["streamRequest","viewof streamValue","invalidation"], _streamRequestResponse);
   main.variable(observer("streamRequestResolver")).define("streamRequestResolver", ["streamRequestResponse","streamRequest","viewof streamRequest","mutable streamingPreviewRefresh"], _streamRequestResolver);
   main.variable(observer("viewof streamingPreview")).define("viewof streamingPreview", ["Inputs"], _streamingPreview);
   main.variable(observer("streamingPreview")).define("streamingPreview", ["Generators", "viewof streamingPreview"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","mutable streamingPreviewRefresh"], _96);
+  main.variable(observer()).define(["Inputs","mutable streamingPreviewRefresh"], _97);
   main.variable(observer("viewof streamValue")).define("viewof streamValue", ["Inputs"], _streamValue);
   main.variable(observer("streamValue")).define("streamValue", ["Generators", "viewof streamValue"], (G, _) => G.input(_));
-  main.variable(observer()).define(["runStreamingPreview","streamingPreviewRefresh","width","link","htl"], _98);
+  main.variable(observer()).define(["runStreamingPreview","streamingPreviewRefresh","width","link","htl"], _99);
   main.variable(observer("streamingCurl")).define("streamingCurl", ["link","md"], _streamingCurl);
   main.variable(observer("link")).define("link", ["webserver"], _link);
   main.variable(observer("runStreamingPreview")).define("runStreamingPreview", ["streamingPreview","invalidation"], _runStreamingPreview);
   main.define("initial streamingPreviewRefresh", _streamingPreviewRefresh);
   main.variable(observer("mutable streamingPreviewRefresh")).define("mutable streamingPreviewRefresh", ["Mutable", "initial streamingPreviewRefresh"], (M, _) => new M(_));
   main.variable(observer("streamingPreviewRefresh")).define("streamingPreviewRefresh", ["mutable streamingPreviewRefresh"], _ => _.generator);
-  main.variable(observer()).define(["md"], _103);
   main.variable(observer()).define(["md"], _104);
   main.variable(observer()).define(["md"], _105);
   main.variable(observer()).define(["md"], _106);
+  main.variable(observer()).define(["md"], _107);
   main.variable(observer("viewof host")).define("viewof host", ["Inputs","localStorageView"], _host);
   main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("localStorageView", child4);
-  main.variable(observer()).define(["md"], _109);
-  main.variable(observer()).define(["webserver","exampleEndpoint","streamingCurl","installCopyCode","invalidation","curl_get","md"], _110);
+  main.variable(observer()).define(["md"], _110);
+  main.variable(observer()).define(["webserver","exampleEndpoint","streamingCurl","installCopyCode","invalidation","curl_get","md"], _111);
   const child5 = runtime.module(define5);
   main.import("installCopyCode", child5);
   const child6 = runtime.module(define6);
   main.import("toc", child6);
-  main.variable(observer()).define(["md"], _113);
+  main.variable(observer()).define(["md"], _114);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _115);
+  main.variable(observer()).define(["footer"], _116);
   return main;
 }
