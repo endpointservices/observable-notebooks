@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/flow-queue@418
-import define1 from "./293899bef371e135@268.js";
+import define1 from "./293899bef371e135@271.js";
 
 async function _1(FileAttachment,md){return(
 md`# How to convert dataflow to a promise using *flowQueue*

@@ -1,14 +1,14 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1436
+// https://observablehq.com/@endpointservices/login-with-comment@1438
 import define1 from "./993a0c51ef1175ea@1362.js";
 import define2 from "./d84ccee0a2202d45@337.js";
 import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
-import define5 from "./dff1e917c89f5e76@1939.js";
+import define5 from "./dff1e917c89f5e76@1948.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./698257e86fae4586@374.js";
 import define8 from "./ab3e70b29c480e6d@83.js";
 import define9 from "./b8a500058f806a6b@11.js";
-import define10 from "./58f3eb7334551ae6@209.js";
+import define10 from "./58f3eb7334551ae6@210.js";
 
 async function _1(md,FileAttachment){return(
 md`# Login with comment
@@ -46,6 +46,7 @@ a minimal working example in a 3rd party notebook is [here](https://observablehq
 function _2(md){return(
 md`### Change Log
 
+- 2022-07-24: Syncronize independant login states using authStateListener, so logout on one buttons propogates to all log-with-comments
 - 2021-08-29: Scan for team mebership feature. Looks at profile URLs and adds to JWT's additionalClaims`
 )}
 
@@ -53,7 +54,7 @@ function _3(md){return(
 md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color: var(--syntax_keyword)">viewof</span> user</span>`
 )}
 
-function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
+function _createLogin(userFirebase,html,viewroutine,$0,screen,Event,ask,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
 () => {
   // When no-one is logged in we want don't want the cell to resolve, so we return a promise
   // We want that promise to be resolved next time we get a value
@@ -103,17 +104,28 @@ function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,ha
         updateResult();
 
         if (!userFirebase.auth().currentUser) {
-          response = yield* ask(
-            screen({
-              actions: ["login"]
-            })
-          );
+          const loginUi = screen({
+            actions: ["login"]
+          });
+
+          // We need to see if someone logs in via a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (user)
+              loginUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(loginUi);
+          unsubscribe();
         } else {
-          response = yield* ask(
-            screen({
-              actions: ["logout"]
-            })
-          );
+          const logoutUi = screen({
+            actions: ["logout"]
+          });
+          // We need to see if someone logout ivia a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (!user)
+              logoutUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(logoutUi);
+          unsubscribe();
         }
 
         if (actionWas("logout")) {
@@ -1050,7 +1062,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","ask","screen","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
+  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","screen","Event","ask","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
   main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
   main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _6);

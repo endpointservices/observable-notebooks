@@ -3,7 +3,7 @@ import define2 from "./0e0b35a92c819d94@418.js";
 import define3 from "./ab3e70b29c480e6d@83.js";
 import define4 from "./6eda90668ae03044@830.js";
 import define5 from "./048a17a165be198d@263.js";
-import define6 from "./293899bef371e135@268.js";
+import define6 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# Generic Notebook Health Check
@@ -13,6 +13,7 @@ This notebook executes other notebooks through an embedded [runtime](https://obs
 To use, first fill in the manual trigger fields to get a feel of the events and errors. Then copy and paste the link your endpoint monitoring service of choice.
 
 Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".
+
 
 This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.
 `
