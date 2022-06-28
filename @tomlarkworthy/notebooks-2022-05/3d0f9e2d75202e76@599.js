@@ -1,8 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/notebooks-2022-05@599
 import define1 from "./67d1b2c32f1883c4@565.js";
 import define2 from "./55bed46f68a80641@366.js";
-import define3 from "./ef672b935bd480fc@622.js";
-import define4 from "./293899bef371e135@267.js";
+import define3 from "./ef672b935bd480fc@623.js";
+import define4 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# Top Observablehq Notebooks of May 2022 `
@@ -334,11 +334,11 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["tweet_activity_metrics_trendingnotebo2_20220501_20220601_en.csv", {url: new URL("./files/05977de6e91435e6d3661781bd1ff56daf8b49a9bc7d390ca5715809514846fc3cae45eeccf65d7224b3f3c21fdd21820ecc539f3d086c74fa15db36d50f91fc", import.meta.url), mimeType: "text/csv", toString}],
-    ["fetchedNotebookURL (5).json", {url: new URL("./files/2ebea91ab2063de8eab668dd9badb4ab6c16758ced8ac1ba9579553bab00c3569e8ac6a6e1938fc489713020678ede39b83a2ddf4634761a57afd88b4da4e0a9", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedMetadata (6).json", {url: new URL("./files/80bb079de24b599bd1f47b0a94cc1976f2c0a58aaf1aa9abf9a85943c766fc327237eb7381e7b09081be782eef73abb73feac001205cfb940dba57d4fd644f11", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedMeta (7).json", {url: new URL("./files/b1672860c46f3b0da18f50caac091c0c6fc5033dd8a63a2294090bfe9b8fc95b35e4ef5bafb69614df90f4e3004578d4c167841a3603a334a934bec765cf3106", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedTags (7).json", {url: new URL("./files/23c0b5107c0a3141f49e54a9f3280f77f251ceb623149253e9a18db55783119cf657ea6d3d540ab4c1cdebaaefc0f8e6fa1290f41916830d4b352a0d16147634", import.meta.url), mimeType: "application/json", toString}]
+    ["tweet_activity_metrics_trendingnotebo2_20220501_20220601_en.csv", {url: new URL("./files/05977de6e91435e6d3661781bd1ff56daf8b49a9bc7d390ca5715809514846fc3cae45eeccf65d7224b3f3c21fdd21820ecc539f3d086c74fa15db36d50f91fc.csv", import.meta.url), mimeType: "text/csv", toString}],
+    ["fetchedNotebookURL (5).json", {url: new URL("./files/2ebea91ab2063de8eab668dd9badb4ab6c16758ced8ac1ba9579553bab00c3569e8ac6a6e1938fc489713020678ede39b83a2ddf4634761a57afd88b4da4e0a9.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMetadata (6).json", {url: new URL("./files/80bb079de24b599bd1f47b0a94cc1976f2c0a58aaf1aa9abf9a85943c766fc327237eb7381e7b09081be782eef73abb73feac001205cfb940dba57d4fd644f11.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMeta (7).json", {url: new URL("./files/b1672860c46f3b0da18f50caac091c0c6fc5033dd8a63a2294090bfe9b8fc95b35e4ef5bafb69614df90f4e3004578d4c167841a3603a334a934bec765cf3106.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedTags (7).json", {url: new URL("./files/23c0b5107c0a3141f49e54a9f3280f77f251ceb623149253e9a18db55783119cf657ea6d3d540ab4c1cdebaaefc0f8e6fa1290f41916830d4b352a0d16147634.json", import.meta.url), mimeType: "application/json", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
