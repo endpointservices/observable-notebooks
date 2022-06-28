@@ -1,5 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/fetchp@622
-import define1 from "./dff1e917c89f5e76@1939.js";
+// https://observablehq.com/@tomlarkworthy/fetchp@623
+import define1 from "./dff1e917c89f5e76@1948.js";
 
 function _1(md){return(
 md`# CORS Proxy _fetchp_
@@ -42,8 +42,9 @@ You can ask fetchp to add headers to the response, e.g. to set cache control, by
 
 To see some executable examples check out the [tests](https://observablehq.com/@tomlarkworthy/fetchp-tests)
 
-### Open Issues
- - does not work with HTTP content
+### Known Issues
+ - does not work with insecure HTTP content (HTTPS only)
+ - does not work inside Observable's thumbnailer process
 
 ### Change log
 - 2020-10-01 fetchp updated to take advantage of page reuse for much faster warm latencies
