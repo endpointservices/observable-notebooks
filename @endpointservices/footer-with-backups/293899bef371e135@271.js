@@ -1,6 +1,7 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@208
-import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./1d309dbd9697e042@631.js";
+// https://observablehq.com/@endpointservices/footer-with-backups@271
+import define1 from "./a81f2a20664080d3@243.js";
+import define2 from "./c2dae147641e012a@46.js";
+import define3 from "./1d309dbd9697e042@631.js";
 
 function _1(md){return(
 md`# Endpoint Services Footer
@@ -15,19 +16,26 @@ footer
 \`\`\``
 )}
 
-function _graphic(md){return(
+function _graphic(md,width){return(
 md`<small>
 [WEBCode.run](https://webcode.run) makes building fully encapsulated services within Observable notebooks possible.
 
-*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>`
+*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
+
+<iframe src="https://webcode.substack.com/embed" width="${width}" height="250" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+`
 )}
 
-function _footer(plausible_analytics,sentry,backups,graphic)
+function _footer($0,plausible_analytics,sentry,graphic)
 {
+  $0;
   plausible_analytics;
-  sentry;
-  backups;
-  graphic.sentry = sentry;
+  const Sentry = sentry({
+    DSN:
+      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
+    namespaces: ["endpointservices", "tomlarkworthy"]
+  });
+  graphic.sentry = Sentry;
   return graphic;
 }
 
@@ -114,41 +122,7 @@ md`### Error Monitoring: Sentry
 Sentry alerts me to errors in notebooks`
 )}
 
-function _sentry(html,location,Sentry,Tracing)
-{
-  const selfUrl = html`<a href="?">`.href;
-  if (
-    !(
-      selfUrl.includes("@endpointservices") ||
-      selfUrl.includes("@tomlarkworthy") ||
-      location.origin.includes("https://endpointservices") ||
-      location.origin.includes("https://tomlarkworthy")
-    )
-  )
-    return;
-  Sentry.init({
-    dsn:
-      "https://f9a89df07acc4958843e8bd2dca8794b@o518834.ingest.sentry.io/5628336",
-    beforeSend: (event) => {
-      event.request.url = selfUrl.split("?")[0];
-      return event;
-    },
-    integrations: [new Tracing.Integrations.BrowserTracing()],
-    tracesSampleRate: 1.0
-  });
-  return Sentry;
-}
-
-
-async function _Sentry(require,FileAttachment){return(
-require(await FileAttachment("browser-6.1.0").url())
-)}
-
-async function _Tracing(require,FileAttachment){return(
-require(await FileAttachment("tracing-6.1.0").url())
-)}
-
-function _11(md){return(
+function _9(md){return(
 md`### Backups`
 )}
 
@@ -156,26 +130,27 @@ function _backups(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
   repo: "observable-notebooks"
+  /*debugProxy: true*/
 })
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
-  main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","backups","graphic"], _footer);
+  main.variable(observer("graphic")).define("graphic", ["md","width"], _graphic);
+  main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
   main.variable(observer()).define(["md"], _6);
-  main.variable(observer("sentry")).define("sentry", ["html","location","Sentry","Tracing"], _sentry);
-  main.variable(observer("Sentry")).define("Sentry", ["require","FileAttachment"], _Sentry);
-  main.variable(observer("Tracing")).define("Tracing", ["require","FileAttachment"], _Tracing);
   const child1 = runtime.module(define1);
-  main.import("localStorage", child1);
-  main.variable(observer()).define(["md"], _11);
+  main.import("sentry", child1);
+  const child2 = runtime.module(define2);
+  main.import("localStorage", child2);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], _backups);
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
-  const child2 = runtime.module(define2);
-  main.import("enableGithubBackups", child2);
+  const child3 = runtime.module(define3);
+  main.import("enableGithubBackups", child3);
+  main.import("backupNowButton", child3);
   return main;
 }
