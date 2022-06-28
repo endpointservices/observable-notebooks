@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/realtime-request-log@434
-import define1 from "./6eda90668ae03044@803.js";
+import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./bb2055d580bbbab2@106.js";
-import define3 from "./293899bef371e135@225.js";
+import define3 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# Networking Tools: Realtime Request log

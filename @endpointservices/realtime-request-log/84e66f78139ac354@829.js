@@ -1,6 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@814
-import define1 from "./11a5ab8b1b3a51db@1161.js";
-
+// https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@829
 async function _1(md,FileAttachment){return(
 md`
 # Hypertext literal reconciliation with nanomorph
@@ -40,18 +38,18 @@ We can create a very simple chat UI using the hypertext literal to change this e
 `
 )}
 
-function _5(msgs,$0,html)
+function _5(msgs,$0,htl)
 {
   async function sendMsg(evt) {
     if (evt.keyCode === 13) {
-      console.log(msgs)
+      console.log(msgs);
       $0.value = msgs.concat([evt.target.value]);
     }
   }
-  return html`
-    ${msgs.map(msg => html`<p>${msg}</p>`)}
+  return htl.html`
+    ${msgs.map((msg) => htl.html`<p>${msg}</p>`)}
     <input class="text" onkeydown=${sendMsg}></input>
-    <button onclick=${() => $0.value = []}>clear</button>
+    <button onclick=${() => ($0.value = [])}>clear</button>
   `;
 }
 
@@ -82,19 +80,22 @@ The reconciliation algorithm will use the "id" attribute to guide matching.
 `
 )}
 
-function _8(msgs,$0,reconcile,html)
+function _8(msgs,$0,reconcile,htl)
 {
   function sendMsg(evt) {
     if (evt.keyCode === 13) {
-      console.log(msgs)
+      console.log(msgs);
       $0.value = msgs.concat([evt.target.value]);
     }
   }
-  return reconcile(this, html`
-    ${msgs.map(msg => html`<p>${msg}</p>`)}
+  return reconcile(
+    this,
+    htl.html`
+    ${msgs.map((msg) => htl.html`<p>${msg}</p>`)}
     <input id="chat" class="text" onkeydown=${sendMsg}></input>
-    <button onclick=${() => $0.value = []}>clear</button> 
-  `);
+    <button onclick=${() => ($0.value = [])}>clear</button> 
+  `
+  );
 }
 
 
@@ -143,38 +144,38 @@ function _13(md){return(
 md `# Tests`
 )}
 
-function _attributeCreate(html,reconcile)
+function _attributeCreate(htl,reconcile)
 {
-  const current = html`<div></div>`;
-  const target = html`<div foo="1"></div>`;
+  const current = htl.html`<div></div>`;
+  const target = htl.html`<div foo="1"></div>`;
   const reconciled = reconcile(current, target);
   console.log(reconciled);
   return reconciled.getAttribute("foo") == "1";
 }
 
 
-function _attributeRemoved(html,reconcile)
+function _attributeRemoved(htl,reconcile)
 {
-  const current = html`<div foo="1"></div>`
-  const target = html`<div></div>`
+  const current = htl.html`<div foo="1"></div>`;
+  const target = htl.html`<div></div>`;
   const reconciled = reconcile(current, target);
-  return reconciled.getAttribute("foo") === null
+  return reconciled.getAttribute("foo") === null;
 }
 
 
-function _attributeUpdate(html,reconcile)
+function _attributeUpdate(htl,reconcile)
 {
-  const current = html`<div foo="2"></div>`;
-  const target = html`<div foo="1"></div>`;
+  const current = htl.html`<div foo="2"></div>`;
+  const target = htl.html`<div foo="1"></div>`;
   const reconciled = reconcile(current, target);
   return reconciled.getAttribute("foo") == "1";
 }
 
 
-function _attributesCRUD(html,reconcile)
+function _attributesCRUD(htl,reconcile)
 {
-  const current = html`<div foo="2" bar="1"></div>`;
-  const target = html`<div bar="2" baz="3"></div>`;
+  const current = htl.html`<div foo="2" bar="1"></div>`;
+  const target = htl.html`<div bar="2" baz="3"></div>`;
   const reconciled = reconcile(current, target);
   return (
     reconciled.getAttribute("foo") == null &&
@@ -184,47 +185,49 @@ function _attributesCRUD(html,reconcile)
 }
 
 
-function _childUpdateInPlace(html,reconcile)
+function _childUpdateInPlace(htl,reconcile)
 {
-  const current = html`<ul><li id="t1"> </li></ul>`
-  const target  = html`<ul><li id="t1">1</li></ul>`
-  const beforeReconciliation = current.firstChild
+  const current = htl.html`<ul><li id="t1"> </li></ul>`;
+  const target = htl.html`<ul><li id="t1">1</li></ul>`;
+  const beforeReconciliation = current.firstChild;
   const reconciled = reconcile(current, target);
-  return reconciled.firstChild === beforeReconciliation &&
+  return (
+    reconciled.firstChild === beforeReconciliation &&
     reconciled.firstChild.firstChild.wholeText === "1"
+  );
 }
 
 
-function _childAdded(html,reconcile)
+function _childAdded(htl,reconcile)
 {
-  const current = html`<ul></ul>`
-  const target = html`<ul><li id="t1">1</li></ul>`
+  const current = htl.html`<ul></ul>`;
+  const target = htl.html`<ul><li id="t1">1</li></ul>`;
   const reconciled = reconcile(current, target);
-  return reconciled.firstChild.firstChild.wholeText === "1"
+  return reconciled.firstChild.firstChild.wholeText === "1";
 }
 
 
-function _childRemoved(html,reconcile)
+function _childRemoved(htl,reconcile)
 {
-  const current = html`<ul><li id="t1">1</li></ul>`
-  const target = html`<ul></ul>`
+  const current = htl.html`<ul><li id="t1">1</li></ul>`;
+  const target = htl.html`<ul></ul>`;
   const reconciled = reconcile(current, target);
-  return reconciled.firstChild == null
+  return reconciled.firstChild == null;
 }
 
 
-function _keyedChildUpdateInPlace(html,reconcile)
+function _keyedChildUpdateInPlace(htl,reconcile)
 {
-  const current = html`<ul><li id="t1"></li></ul>`
-  const target = html`<ul><li></li><li id="t1"></li></ul>`
-  const beforeReconciliation = current.firstChild
+  const current = htl.html`<ul><li id="t1"></li></ul>`;
+  const target = htl.html`<ul><li></li><li id="t1"></li></ul>`;
+  const beforeReconciliation = current.firstChild;
   const reconciled = reconcile(current, target);
-  return reconciled.firstChild.nextSibling === beforeReconciliation
+  return reconciled.firstChild.nextSibling === beforeReconciliation;
 }
 
 
-function _DOMUpdateInPlaceDOM(html){return(
-html`
+function _DOMUpdateInPlaceDOM(htl){return(
+htl.html`
 <div id="DOMUpdateInPlace"> 
 </div>
 `
@@ -263,7 +266,10 @@ function _NestedDOMUpdateInPlace(NestedDOMUpdateInPlaceDOM,html,reconcile)
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@2.png",new URL("./files/1e6766eb5b51f7ed85aa21b737387bc2e18aca58a04a76e6f07a5a587c038d2708285d4edc129b3d7156ae936b95076455802c406e0831d038c869d1149bd970",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image@2.png", {url: new URL("./files/1e6766eb5b51f7ed85aa21b737387bc2e18aca58a04a76e6f07a5a587c038d2708285d4edc129b3d7156ae936b95076455802c406e0831d038c869d1149bd970.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
@@ -271,28 +277,26 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable msgs")).define("mutable msgs", ["Mutable", "initial msgs"], (M, _) => new M(_));
   main.variable(observer("msgs")).define("msgs", ["mutable msgs"], _ => _.generator);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["msgs","mutable msgs","html"], _5);
+  main.variable(observer()).define(["msgs","mutable msgs","htl"], _5);
   main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["msgs","mutable msgs","reconcile","html"], _8);
+  main.variable(observer()).define(["msgs","mutable msgs","reconcile","htl"], _8);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer("morph")).define("morph", ["require"], _morph);
   main.variable(observer("reconcile")).define("reconcile", ["morph"], _reconcile);
   main.variable(observer()).define(["md"], _13);
-  main.variable(observer("attributeCreate")).define("attributeCreate", ["html","reconcile"], _attributeCreate);
-  main.variable(observer("attributeRemoved")).define("attributeRemoved", ["html","reconcile"], _attributeRemoved);
-  main.variable(observer("attributeUpdate")).define("attributeUpdate", ["html","reconcile"], _attributeUpdate);
-  main.variable(observer("attributesCRUD")).define("attributesCRUD", ["html","reconcile"], _attributesCRUD);
-  main.variable(observer("childUpdateInPlace")).define("childUpdateInPlace", ["html","reconcile"], _childUpdateInPlace);
-  main.variable(observer("childAdded")).define("childAdded", ["html","reconcile"], _childAdded);
-  main.variable(observer("childRemoved")).define("childRemoved", ["html","reconcile"], _childRemoved);
-  main.variable(observer("keyedChildUpdateInPlace")).define("keyedChildUpdateInPlace", ["html","reconcile"], _keyedChildUpdateInPlace);
-  main.variable(observer("DOMUpdateInPlaceDOM")).define("DOMUpdateInPlaceDOM", ["html"], _DOMUpdateInPlaceDOM);
+  main.variable(observer("attributeCreate")).define("attributeCreate", ["htl","reconcile"], _attributeCreate);
+  main.variable(observer("attributeRemoved")).define("attributeRemoved", ["htl","reconcile"], _attributeRemoved);
+  main.variable(observer("attributeUpdate")).define("attributeUpdate", ["htl","reconcile"], _attributeUpdate);
+  main.variable(observer("attributesCRUD")).define("attributesCRUD", ["htl","reconcile"], _attributesCRUD);
+  main.variable(observer("childUpdateInPlace")).define("childUpdateInPlace", ["htl","reconcile"], _childUpdateInPlace);
+  main.variable(observer("childAdded")).define("childAdded", ["htl","reconcile"], _childAdded);
+  main.variable(observer("childRemoved")).define("childRemoved", ["htl","reconcile"], _childRemoved);
+  main.variable(observer("keyedChildUpdateInPlace")).define("keyedChildUpdateInPlace", ["htl","reconcile"], _keyedChildUpdateInPlace);
+  main.variable(observer("DOMUpdateInPlaceDOM")).define("DOMUpdateInPlaceDOM", ["htl"], _DOMUpdateInPlaceDOM);
   main.variable(observer("DOMUpdateInPlace")).define("DOMUpdateInPlace", ["DOMUpdateInPlaceDOM","html","reconcile"], _DOMUpdateInPlace);
   main.variable(observer("NestedDOMUpdateInPlaceDOM")).define("NestedDOMUpdateInPlaceDOM", ["html"], _NestedDOMUpdateInPlaceDOM);
   main.variable(observer("NestedDOMUpdateInPlace")).define("NestedDOMUpdateInPlace", ["NestedDOMUpdateInPlaceDOM","html","reconcile"], _NestedDOMUpdateInPlace);
-  const child1 = runtime.module(define1);
-  main.import("html", child1);
   return main;
 }
