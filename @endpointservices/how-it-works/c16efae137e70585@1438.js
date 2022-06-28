@@ -1,21 +1,16 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1416
-import define1 from "./993a0c51ef1175ea@1317.js";
-import define2 from "./d84ccee0a2202d45@255.js";
-import define3 from "./f92778131fd76559@1169.js";
+// https://observablehq.com/@endpointservices/login-with-comment@1438
+import define1 from "./993a0c51ef1175ea@1362.js";
+import define2 from "./d84ccee0a2202d45@337.js";
+import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
-import define5 from "./dff1e917c89f5e76@1709.js";
+import define5 from "./dff1e917c89f5e76@1948.js";
 import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./698257e86fae4586@346.js";
-import define8 from "./c7a3b20cec5d4dd9@659.js";
-import define9 from "./ab3e70b29c480e6d@83.js";
-import define10 from "./b8a500058f806a6b@6.js";
-import define11 from "./58f3eb7334551ae6@187.js";
+import define7 from "./698257e86fae4586@374.js";
+import define8 from "./ab3e70b29c480e6d@83.js";
+import define9 from "./b8a500058f806a6b@11.js";
+import define10 from "./58f3eb7334551ae6@210.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["ezgif.com-gif-maker.webp",new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Login with comment
 
 The simplest way to securely discover the currently logged in user. Furthermore, the result generates a token you can externally verify for use in backend services.
@@ -46,16 +41,20 @@ Instanciate the login prompt with
 
 a minimal working example in a 3rd party notebook is [here](https://observablehq.com/@tdlgkjfhdljovtttqrzu/login-with-comment-example)
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`### Change Log
 
+- 2022-07-24: Syncronize independant login states using authStateListener, so logout on one buttons propogates to all log-with-comments
 - 2021-08-29: Scan for team mebership feature. Looks at profile URLs and adds to JWT's additionalClaims`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color: var(--syntax_keyword)">viewof</span> user</span>`
-)});
-  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","ask","screen","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], function(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
+)}
+
+function _createLogin(userFirebase,html,viewroutine,$0,screen,Event,ask,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
 () => {
   // When no-one is logged in we want don't want the cell to resolve, so we return a promise
   // We want that promise to be resolved next time we get a value
@@ -105,17 +104,28 @@ md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color
         updateResult();
 
         if (!userFirebase.auth().currentUser) {
-          response = yield* ask(
-            screen({
-              actions: ["login"]
-            })
-          );
+          const loginUi = screen({
+            actions: ["login"]
+          });
+
+          // We need to see if someone logs in via a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (user)
+              loginUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(loginUi);
+          unsubscribe();
         } else {
-          response = yield* ask(
-            screen({
-              actions: ["logout"]
-            })
-          );
+          const logoutUi = screen({
+            actions: ["logout"]
+          });
+          // We need to see if someone logout ivia a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (!user)
+              logoutUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(logoutUi);
+          unsubscribe();
         }
 
         if (actionWas("logout")) {
@@ -212,12 +222,13 @@ md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color
 
   return userUi;
 }
-)});
-  main.variable(observer("viewof user")).define("viewof user", ["createLogin"], function(createLogin){return(
+)}
+
+function _user(createLogin){return(
 createLogin()
-)});
-  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`
 #### Security Features
 - the published auth code is a hash of a private verification code => the auth code in isolation is not useful.
@@ -225,22 +236,24 @@ md`
 
 #### Current issues
 - logout does not return to undefined state (Observablehq bug? see https://talk.observablehq.com/t/unresolving-a-viewof-after-it-has-resolved-once/5450), for now we return undefined`
-)});
-  main.define("initial authStateKnown", function(){return(
+)}
+
+function _authStateKnown(){return(
 false
-)});
-  main.variable(observer("mutable authStateKnown")).define("mutable authStateKnown", ["Mutable", "initial authStateKnown"], (M, _) => new M(_));
-  main.variable(observer("authStateKnown")).define("authStateKnown", ["mutable authStateKnown"], _ => _.generator);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`### <span style="font: var(--mono_fonts); font-size: 25px;">user</span>
 
 The cell resolves to the *currentUser* or a promise if not logged in. See below for the value in action
 `
-)});
-  main.variable(observer()).define(["user"], function(user){return(
+)}
+
+function _9(user){return(
 user
-)});
-  main.variable(observer()).define(["md","user","verifyIdToken","userFirebase"], async function(md,user,verifyIdToken,userFirebase){return(
+)}
+
+async function _10(md,user,verifyIdToken,userFirebase){return(
 md`Hi **${user.uid}** you have an id_token 
 
 ~~~ 
@@ -258,8 +271,9 @@ ${JSON.stringify(
 ~~~
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`## Team support
 
 If the scan of team feature is checked, the verifier will look for cross-linked observablehq profile accounts stemming from the user's profile. 
@@ -293,32 +307,39 @@ In Firebase Realtime Database complex tokens are not supported so we encode the 
 
 (note the claim key is different too)
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`### Config`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`Host notebook fixes the URL of the backend.`
-)});
-  main.variable(observer("HOST_NOTEBOOK")).define("HOST_NOTEBOOK", function(){return(
+)}
+
+function _HOST_NOTEBOOK(){return(
 "@endpointservices/login-with-comment"
-)});
-  main.variable(observer("AUTH_CHECK")).define("AUTH_CHECK", function(){return(
+)}
+
+function _AUTH_CHECK(){return(
 ({
   login, // Observable user id
   namespace // namespace being used
 } = {}) => true
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`#### Infra Firebase
 
 The infra Firebase hosts the login state on a Realtime Database (e.g. the the challenge codes)
 `
-)});
-  main.variable(observer("SERVICE_ACCOUNT_SECRET")).define("SERVICE_ACCOUNT_SECRET", function(){return(
+)}
+
+function _SERVICE_ACCOUNT_SECRET(){return(
 "endpointservices_secretadmin_service_account_key"
-)});
-  main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", function(){return(
+)}
+
+function _FIREBASE_CONFIG(){return(
 {
   databaseURL: "https://endpointservice-eu.europe-west1.firebasedatabase.app/",
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
@@ -326,24 +347,24 @@ The infra Firebase hosts the login state on a Realtime Database (e.g. the the ch
   projectId: "endpointservice",
   appId: "1:1986724398:web:9b8bc33895b45dd2e095bf"
 }
-)});
-  const child1 = runtime.module(define1).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
-  main.import("firebase", child1);
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _20(md){return(
 md`#### User Firebase
 
 The user Firebase hosts the Firebase Auth data, it can be the same as the infra Firebase.
 `
-)});
-  const child2 = runtime.module(define1).derive([{name: "TOKEN_FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
-  main.import("firebase", "userFirebase", child2);
-  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", function(){return(
+)}
+
+function _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET(){return(
 "endpointservices_minter"
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _23(md){return(
 md`The token Firebase is used to verify tokens and must be in same project as TOKEN_SIGNER_SERVICE_ACCOUNT`
-)});
-  main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", function(){return(
+)}
+
+function _TOKEN_FIREBASE_CONFIG(){return(
 {
   apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
   authDomain: "endpointserviceusers.firebaseapp.com",
@@ -352,11 +373,13 @@ md`The token Firebase is used to verify tokens and must be in same project as TO
   databaseURL:
     "https://endpointserviceusers-default-rtdb.europe-west1.firebasedatabase.app/"
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _25(md){return(
 md`## Design`
-)});
-  main.variable(observer("chatIcon")).define("chatIcon", ["svg"], function(svg){return(
+)}
+
+function _chatIcon(svg){return(
 svg`<svg width="29px" height="23px" viewBox="0 0 29 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Serverless-cells" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="login-with-comment" transform="translate(-48.000000, -108.000000)" stroke="#FDF7E6" stroke-width="3">
@@ -368,8 +391,9 @@ svg`<svg width="29px" height="23px" viewBox="0 0 29 23" version="1.1" xmlns="htt
         </g>
     </g>
 </svg>`
-)});
-  main.variable(observer("copyIcon")).define("copyIcon", ["svg"], function(svg){return(
+)}
+
+function _copyIcon(svg){return(
 svg`<svg width="18px" height="22px" viewBox="0 0 18 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <g id="Serverless-cells" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="login-with-comment" transform="translate(-299.000000, -107.000000)" stroke="#FDF7E6" stroke-width="2">
@@ -383,8 +407,9 @@ svg`<svg width="18px" height="22px" viewBox="0 0 18 22" version="1.1" xmlns="htt
         </g>
     </g>
 </svg>`
-)});
-  main.variable(observer("colors")).define("colors", function(){return(
+)}
+
+function _colors(){return(
 {
   dark: "#4A44C4",
   dark_darker: "#3933A3", 
@@ -402,26 +427,29 @@ svg`<svg width="18px" height="22px" viewBox="0 0 18 22" version="1.1" xmlns="htt
   alt_darker: "#DE5E90",
   alt_darkest: "#D53472",
 }
-)});
-  main.variable(observer()).define(["button","chatIcon"], function(button,chatIcon){return(
+)}
+
+function _29(button,chatIcon){return(
 button({
   action: "login",
   label: "Comment signin",
   icon: chatIcon
 })
-)});
-  main.variable(observer("viewof copyExample")).define("viewof copyExample", ["button","copyIcon"], function(button,copyIcon){return(
+)}
+
+function _copyExample(button,copyIcon){return(
 button({
   action: "copy",
   label: "Copy",
   icon: copyIcon
 })
-)});
-  main.variable(observer("copyExample")).define("copyExample", ["Generators", "viewof copyExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["copyExample"], function(copyExample){return(
+)}
+
+function _31(copyExample){return(
 copyExample
-)});
-  main.variable(observer("button")).define("button", ["html","Event"], function(html,Event){return(
+)}
+
+function _button(html,Event){return(
 ({
   action,
   label,
@@ -434,16 +462,19 @@ copyExample
   }
   return btn;
 }
-)});
-  main.variable(observer("container")).define("container", ["view","style"], function(view,style){return(
+)}
+
+function _container(view,style){return(
 (inner) => {
   return view`<div class='es-frame'>${style()}${['...', inner()]}</div>`
 }
-)});
-  main.variable(observer()).define(["screen"], function(screen){return(
+)}
+
+function _34(screen){return(
 screen
-)});
-  main.variable(observer("style")).define("style", ["html","colors"], function(html,colors){return(
+)}
+
+function _style(html,colors){return(
 () => html`<style>
   .es-frame {
     font-size: 18px;
@@ -498,8 +529,9 @@ screen
     padding-left: 4px;
   }
 </style>`
-)});
-  main.variable(observer()).define(["container","htl","button","chatIcon","copyIcon"], function(container,htl,button,chatIcon,copyIcon){return(
+)}
+
+function _36(container,htl,button,chatIcon,copyIcon){return(
 container(() => htl.html`<div style="width: 400px"> 
   <span class="e-btns">
     ${button({
@@ -516,8 +548,9 @@ container(() => htl.html`<div style="width: 400px">
   <p class="e-info" style="font-size: 14px;">write a comment containing code <i>'dasdasdasdas'</i> in a comment<br>
   ⚠️ comment not found (try again?)</p>
 </span>`)
-)});
-  main.variable(observer("content")).define("content", ["userFirebase","copyIcon","chatIcon"], function(userFirebase,copyIcon,chatIcon){return(
+)}
+
+function _content(userFirebase,copyIcon,chatIcon){return(
 {
   labels: {
     copy: "Copy to clipboard",
@@ -533,11 +566,13 @@ container(() => htl.html`<div style="width: 400px">
     login: chatIcon
   }
 }
-)});
-  main.variable(observer("expandContent")).define("expandContent", function(){return(
+)}
+
+function _expandContent(){return(
 (val) => typeof val === 'function' ? val() : val
-)});
-  main.variable(observer("viewof testScreen")).define("viewof testScreen", ["screen","html","md"], function(screen,html,md){return(
+)}
+
+function _testScreen(screen,html,md){return(
 screen({
   info: "Please copy code",
   actions: ["login", "verify"],
@@ -552,12 +587,13 @@ screen({
     }
   ]
 })
-)});
-  main.variable(observer("testScreen")).define("testScreen", ["Generators", "viewof testScreen"], (G, _) => G.input(_));
-  main.variable(observer()).define(["testScreen"], function(testScreen){return(
+)}
+
+function _40(testScreen){return(
 testScreen
-)});
-  main.variable(observer("screen")).define("screen", ["container","view","button","expandContent","content","html","stopPropagation","Inputs"], function(container,view,button,expandContent,content,html,stopPropagation,Inputs){return(
+)}
+
+function _screen(container,view,button,expandContent,content,html,stopPropagation,Inputs){return(
 ({ info, actions = [], toggles = [] } = {}) =>
   container(
     () => view`<div> 
@@ -595,33 +631,55 @@ ${[
 ]}
 </span>`
   )
-)});
-  main.variable(observer("stopPropagation")).define("stopPropagation", ["view"], function(view){return(
+)}
+
+function _stopPropagation(view){return(
 _view => {
   _view.addEventListener('input', evt => {
     if (evt?.detail?.user === undefined) evt.stopPropagation();
   });
   return view`<span>${['...', _view]}`;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _43(md){return(
 md`## Code`
-)});
-  main.variable(observer("viewof runTestsSelector")).define("viewof runTestsSelector", ["Inputs"], function(Inputs){return(
+)}
+
+function _runTestsSelector(Inputs){return(
 Inputs.toggle({
   label: "run tests?",
   value: window["@endpointservices/healthcheck"]
 })
-)});
-  main.variable(observer("runTestsSelector")).define("runTestsSelector", ["Generators", "viewof runTestsSelector"], (G, _) => G.input(_));
-  main.variable(observer("runTests")).define("runTests", ["runTestsSelector","invalidation"], function(runTestsSelector,invalidation){return(
-runTestsSelector ? true: invalidation
-)});
-  main.variable(observer("viewof suite")).define("viewof suite", ["runTests","createSuite"], function(runTests,createSuite){return(
-runTests && createSuite()
-)});
-  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+async function _testing(runTestsSelector,invalidation)
+{
+  if (!runTestsSelector) return invalidation;
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+
+
+function _expect(testing){return(
+testing.expect
+)}
+
+function _suite(testing){return(
+testing.createSuite()
+)}
+
+function _48(md){return(
 md`### Sketch of operation
 
 - ask: Login with comment?
@@ -634,14 +692,16 @@ md`### Sketch of operation
 - verify success: show logged in (login name)
 - ask: logout?
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _49(md){return(
 md`#### prepare
 
 Client sends the server the public key, so the server can record the clients intent to initiate a comment login. Client keeps private key secret, so only it can obtain credentials later on.
 `
-)});
-  main.variable(observer("prepare_backend")).define("prepare_backend", ["deploy","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","HOST_NOTEBOOK"], function(deploy,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,HOST_NOTEBOOK){return(
+)}
+
+function _prepare_backend(deploy,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,HOST_NOTEBOOK){return(
 deploy("prepare", async (req, res, ctx) => {
   if (!req.query.code) return res.status(400).send("Code must be set");
   const code = req.query.code
@@ -658,8 +718,9 @@ deploy("prepare", async (req, res, ctx) => {
   hostNotebook: HOST_NOTEBOOK, 
   secrets: [SERVICE_ACCOUNT_SECRET]
 })
-)});
-  main.variable(observer("prepare")).define("prepare", ["prepare_backend"], function(prepare_backend){return(
+)}
+
+function _prepare(prepare_backend){return(
 async publicCode => {
   if (!publicCode) throw new Error("public code required");
   const response = await fetch(`${prepare_backend.href}?code=${publicCode}`);
@@ -667,14 +728,16 @@ async publicCode => {
     throw new Error(`Err ${response.status}, ${await response.text()}`);
   return await response.text();
 }
-)});
-  main.variable(observer("prepareOK")).define("prepareOK", ["suite","randomId","expect","prepare"], function(suite,randomId,expect,prepare){return(
+)}
+
+function _prepareOK(suite,randomId,expect,prepare){return(
 suite.test("prepare returns 200", async () => {
   const code = randomId(16);
   expect(await prepare(code)).toBe("OK");
 })
-)});
-  main.variable(observer("prepareCodeResuse")).define("prepareCodeResuse", ["suite","randomId","prepare"], function(suite,randomId,prepare){return(
+)}
+
+function _prepareCodeResuse(suite,randomId,prepare){return(
 suite.test("prepare codes cannot be reused", async (done) => {
   try {
     const code = randomId(16);
@@ -684,32 +747,31 @@ suite.test("prepare codes cannot be reused", async (done) => {
     done() // Test will only resolve it error thrown
   }
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _54(md){return(
 md`#### findLoginCommentingCode
 
 Finds a username of a person commenting something containing a code on a given notebook URL
 `
-)});
-  const child3 = runtime.module(define2);
-  main.import("getCommentsAndNamespace", child3);
-  main.variable(observer()).define(["getCommentsAndNamespace"], function(getCommentsAndNamespace){return(
-getCommentsAndNamespace('https://observablehq.com/d/f063d0526c1317ca')
-)});
-  main.variable(observer("findLoginCommentingCode")).define("findLoginCommentingCode", ["getCommentsAndNamespace"], function(getCommentsAndNamespace){return(
+)}
+
+function _findLoginCommentingCode(getCommentsAndNamespace){return(
 async (notebookURL, code) => {
   const { comments, namespace } = await getCommentsAndNamespace(notebookURL);
   if (!comments) return {login: undefined, namespace};
   const comment = comments.find(comment => comment.content.includes(code));
   return { login: comment?.user?.login, namespace };
 }
-)});
-  main.variable(observer()).define(["html","FileAttachment"], async function(html,FileAttachment){return(
+)}
+
+async function _57(html,FileAttachment){return(
 html`<img width=300px src="${await FileAttachment(
   "ezgif.com-gif-maker.webp"
 ).url()}"></img>`
-)});
-  main.variable(observer("findLoginCommentingCodeTest")).define("findLoginCommentingCodeTest", ["suite","expect","findLoginCommentingCode"], function(suite,expect,findLoginCommentingCode){return(
+)}
+
+function _findLoginCommentingCodeTest(suite,expect,findLoginCommentingCode){return(
 suite.test(
   "findLoginCommentingCode finds a login",
   async () => {
@@ -721,8 +783,9 @@ suite.test(
     ).toEqual({ login: "tomlarkworthy", namespace: "endpointservices" });
   }
 )
-)});
-  main.variable(observer("findLoginCommentingCodeTest2")).define("findLoginCommentingCodeTest2", ["suite","expect","findLoginCommentingCode","randomId"], function(suite,expect,findLoginCommentingCode,randomId){return(
+)}
+
+function _findLoginCommentingCodeTest2(suite,expect,findLoginCommentingCode,randomId){return(
 suite.test(
   "findLoginCommentingCode returns undefined for no find",
   async () => {
@@ -734,16 +797,18 @@ suite.test(
     ).toEqual({ login: undefined, namespace: "endpointservices" });
   }
 )
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _60(md){return(
 md`#### verify
 
 Veryify takes a **private key**, SHA256 it, then looks for it in the comments of a provided notebook URL, if found, signs a token that can be used to initiate a Firebase auth session.
 
 Additionally, if *relmeauth* flag is set it also scanes the users profiles pages for backlinked team accounts.
 `
-)});
-  main.variable(observer("verify_backend")).define("verify_backend", ["deploy","checkIsURL","hash","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","findLoginCommentingCode","AUTH_CHECK","findObservablehqAccounts","createCustomToken","TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET","HOST_NOTEBOOK"], function(deploy,checkIsURL,hash,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,findLoginCommentingCode,AUTH_CHECK,findObservablehqAccounts,createCustomToken,TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET,HOST_NOTEBOOK){return(
+)}
+
+function _verify_backend(deploy,checkIsURL,hash,getAccessTokenFromServiceAccount,SERVICE_ACCOUNT_SECRET,signinWithAccessToken,firebase,findLoginCommentingCode,AUTH_CHECK,findObservablehqAccounts,createCustomToken,TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET,HOST_NOTEBOOK){return(
 deploy(
   "verify",
   async (req, res, ctx) => {
@@ -846,8 +911,9 @@ deploy(
     secrets: [SERVICE_ACCOUNT_SECRET, TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET]
   }
 )
-)});
-  main.variable(observer("verify")).define("verify", ["verify_backend"], function(verify_backend){return(
+)}
+
+function _verify(verify_backend){return(
 async ({ notebookURL, privateCode, relmeauth = false } = {}) => {
   if (!privateCode) throw new Error("privateCode required");
   if (!notebookURL) throw new Error("notebookURL required");
@@ -863,8 +929,9 @@ async ({ notebookURL, privateCode, relmeauth = false } = {}) => {
   else if (response.status !== 200) throw new Error(`${await response.text()}`);
   return await response.json();
 }
-)});
-  main.variable(observer("findObservablehqAccounts")).define("findObservablehqAccounts", ["randomId","promiseRecursive"], function(randomId,promiseRecursive){return(
+)}
+
+function _findObservablehqAccounts(randomId,promiseRecursive){return(
 async function findObservablehqAccounts(login) {
   // Returns and array of links, including the users self-profile
   // {
@@ -907,15 +974,17 @@ async function findObservablehqAccounts(login) {
     .filter((verification) => verification.verified)
     .map((link) => /^https:\/\/observablehq.com\/@(.*)$/.exec(link.profile)[1]);
 }
-)});
-  main.variable(observer("teamScan")).define("teamScan", ["suite","expect","findObservablehqAccounts"], function(suite,expect,findObservablehqAccounts){return(
+)}
+
+function _teamScan(suite,expect,findObservablehqAccounts){return(
 suite.test("team scan runs", async () => {
   expect(await findObservablehqAccounts("tomlarkworthy")).toContain(
     "tomlarkworthy"
   );
 })
-)});
-  main.variable(observer("verifyWithoutPrepare")).define("verifyWithoutPrepare", ["suite","verify","randomId","expect"], function(suite,verify,randomId,expect){return(
+)}
+
+function _verifyWithoutPrepare(suite,verify,randomId,expect){return(
 suite.test(
   "verify 401 when not prepared",
   async (done) => {
@@ -931,8 +1000,9 @@ suite.test(
     }
   }
 )
-)});
-  main.variable(observer("verifyWithoutComment")).define("verifyWithoutComment", ["suite","randomId","hash","prepare","verify","expect"], function(suite,randomId,hash,prepare,verify,expect){return(
+)}
+
+function _verifyWithoutComment(suite,randomId,hash,prepare,verify,expect){return(
 suite.test(
   "verify 401 for missing comment",
   async (done) => {
@@ -955,8 +1025,9 @@ suite.test(
     throw new Error(result);
   }
 )
-)});
-  main.variable(observer("hash")).define("hash", function(){return(
+)}
+
+function _hash(){return(
 async function hash(str) {
   // Similar to b64S256 but smaller and double click only copyable characters
   const encoder = new TextEncoder();
@@ -965,8 +1036,9 @@ async function hash(str) {
   const b64 = btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer))).split('=')[0];
   return b64.replaceAll('+', /*difference*/ '_').replaceAll('/', '_').substring(0, 20)
 }
-)});
-  main.variable(observer("checkIsURL")).define("checkIsURL", function(){return(
+)}
+
+function _checkIsURL(){return(
 function checkIsURL(arg, name) {
   try {
     return new URL(arg).toString()
@@ -974,7 +1046,97 @@ function checkIsURL(arg, name) {
     throw new Error(`${name || 'arg'} is not a URL`)
   } 
 }
-)});
+)}
+
+function _77(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","screen","Event","ask","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
+  main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
+  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _6);
+  main.define("initial authStateKnown", _authStateKnown);
+  main.variable(observer("mutable authStateKnown")).define("mutable authStateKnown", ["Mutable", "initial authStateKnown"], (M, _) => new M(_));
+  main.variable(observer("authStateKnown")).define("authStateKnown", ["mutable authStateKnown"], _ => _.generator);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["user"], _9);
+  main.variable(observer()).define(["md","user","verifyIdToken","userFirebase"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer("HOST_NOTEBOOK")).define("HOST_NOTEBOOK", _HOST_NOTEBOOK);
+  main.variable(observer("AUTH_CHECK")).define("AUTH_CHECK", _AUTH_CHECK);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("SERVICE_ACCOUNT_SECRET")).define("SERVICE_ACCOUNT_SECRET", _SERVICE_ACCOUNT_SECRET);
+  main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", _FIREBASE_CONFIG);
+  const child1 = runtime.module(define1).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
+  main.import("firebase", child1);
+  main.variable(observer()).define(["md"], _20);
+  const child2 = runtime.module(define1).derive([{name: "TOKEN_FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
+  main.import("firebase", "userFirebase", child2);
+  main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET);
+  main.variable(observer()).define(["md"], _23);
+  main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", _TOKEN_FIREBASE_CONFIG);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("chatIcon")).define("chatIcon", ["svg"], _chatIcon);
+  main.variable(observer("copyIcon")).define("copyIcon", ["svg"], _copyIcon);
+  main.variable(observer("colors")).define("colors", _colors);
+  main.variable(observer()).define(["button","chatIcon"], _29);
+  main.variable(observer("viewof copyExample")).define("viewof copyExample", ["button","copyIcon"], _copyExample);
+  main.variable(observer("copyExample")).define("copyExample", ["Generators", "viewof copyExample"], (G, _) => G.input(_));
+  main.variable(observer()).define(["copyExample"], _31);
+  main.variable(observer("button")).define("button", ["html","Event"], _button);
+  main.variable(observer("container")).define("container", ["view","style"], _container);
+  main.variable(observer()).define(["screen"], _34);
+  main.variable(observer("style")).define("style", ["html","colors"], _style);
+  main.variable(observer()).define(["container","htl","button","chatIcon","copyIcon"], _36);
+  main.variable(observer("content")).define("content", ["userFirebase","copyIcon","chatIcon"], _content);
+  main.variable(observer("expandContent")).define("expandContent", _expandContent);
+  main.variable(observer("viewof testScreen")).define("viewof testScreen", ["screen","html","md"], _testScreen);
+  main.variable(observer("testScreen")).define("testScreen", ["Generators", "viewof testScreen"], (G, _) => G.input(_));
+  main.variable(observer()).define(["testScreen"], _40);
+  main.variable(observer("screen")).define("screen", ["container","view","button","expandContent","content","html","stopPropagation","Inputs"], _screen);
+  main.variable(observer("stopPropagation")).define("stopPropagation", ["view"], _stopPropagation);
+  main.variable(observer()).define(["md"], _43);
+  main.variable(observer("viewof runTestsSelector")).define("viewof runTestsSelector", ["Inputs"], _runTestsSelector);
+  main.variable(observer("runTestsSelector")).define("runTestsSelector", ["Generators", "viewof runTestsSelector"], (G, _) => G.input(_));
+  main.variable(observer("testing")).define("testing", ["runTestsSelector","invalidation"], _testing);
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
+  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
+  main.variable(observer("prepare_backend")).define("prepare_backend", ["deploy","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","HOST_NOTEBOOK"], _prepare_backend);
+  main.variable(observer("prepare")).define("prepare", ["prepare_backend"], _prepare);
+  main.variable(observer("prepareOK")).define("prepareOK", ["suite","randomId","expect","prepare"], _prepareOK);
+  main.variable(observer("prepareCodeResuse")).define("prepareCodeResuse", ["suite","randomId","prepare"], _prepareCodeResuse);
+  main.variable(observer()).define(["md"], _54);
+  const child3 = runtime.module(define2);
+  main.import("getCommentsAndNamespace", child3);
+  main.variable(observer("findLoginCommentingCode")).define("findLoginCommentingCode", ["getCommentsAndNamespace"], _findLoginCommentingCode);
+  main.variable(observer()).define(["html","FileAttachment"], _57);
+  main.variable(observer("findLoginCommentingCodeTest")).define("findLoginCommentingCodeTest", ["suite","expect","findLoginCommentingCode"], _findLoginCommentingCodeTest);
+  main.variable(observer("findLoginCommentingCodeTest2")).define("findLoginCommentingCodeTest2", ["suite","expect","findLoginCommentingCode","randomId"], _findLoginCommentingCodeTest2);
+  main.variable(observer()).define(["md"], _60);
+  main.variable(observer("verify_backend")).define("verify_backend", ["deploy","checkIsURL","hash","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","findLoginCommentingCode","AUTH_CHECK","findObservablehqAccounts","createCustomToken","TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET","HOST_NOTEBOOK"], _verify_backend);
+  main.variable(observer("verify")).define("verify", ["verify_backend"], _verify);
+  main.variable(observer("findObservablehqAccounts")).define("findObservablehqAccounts", ["randomId","promiseRecursive"], _findObservablehqAccounts);
+  main.variable(observer("teamScan")).define("teamScan", ["suite","expect","findObservablehqAccounts"], _teamScan);
+  main.variable(observer("verifyWithoutPrepare")).define("verifyWithoutPrepare", ["suite","verify","randomId","expect"], _verifyWithoutPrepare);
+  main.variable(observer("verifyWithoutComment")).define("verifyWithoutComment", ["suite","randomId","hash","prepare","verify","expect"], _verifyWithoutComment);
+  main.variable(observer("hash")).define("hash", _hash);
+  main.variable(observer("checkIsURL")).define("checkIsURL", _checkIsURL);
   const child4 = runtime.module(define3);
   main.import("view", child4);
   main.import("cautious", child4);
@@ -994,16 +1156,11 @@ function checkIsURL(arg, name) {
   main.import("signinWithAccessToken", child8);
   main.import("getAccessTokenFromServiceAccount", child8);
   const child9 = runtime.module(define8);
-  main.import("createSuite", child9);
-  main.import("expect", child9);
+  main.import("pbcopy", child9);
   const child10 = runtime.module(define9);
-  main.import("pbcopy", child10);
+  main.import("promiseRecursive", child10);
   const child11 = runtime.module(define10);
-  main.import("promiseRecursive", child11);
-  const child12 = runtime.module(define11);
-  main.import("footer", child12);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.import("footer", child11);
+  main.variable(observer()).define(["footer"], _77);
   return main;
 }

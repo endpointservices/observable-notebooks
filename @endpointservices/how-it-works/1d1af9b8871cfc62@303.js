@@ -1,11 +1,7 @@
 import define1 from "./9bed702f80a3797e@402.js";
-import define2 from "./293899bef371e135@216.js";
+import define2 from "./293899bef371e135@271.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/e2dd63f1534603fb2a771d36d8ee0dfd2ffc6127bcf991856298cf79c5bd6faaca8ffd566628a50b9cf8d53c1674b2b2bc9752c2a47122cd2efec6621b2e26a4",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# A Day in the life of a [WEBcode.run](https://webcode.run) request
 
 With [WEBCode.run](webcode.run) you can build secure backend services using just Observable notebooks. [WEBCode.run](webcode.run) hosts multi-tenancy cross-region serverless infrastructure endpoints that forwards web traffic to handler code defined in Observable notebooks.
@@ -13,13 +9,15 @@ With [WEBCode.run](webcode.run) you can build secure backend services using just
 Because code is looked up dynamically, and because WEBCode.run's fabric is multi-tenancy, there is no deploy step even for new customers. WEBCode.run provides Observable users with a tamper-proof remote runtime, where secrets can be used to access other services security (e.g. database).
 
 This document explains the steps taken in details to serve a request, an in particular, explains how customer isolation is achieved in a multi-tenancy environment, and how secrets remain secret.`
-)});
-  main.variable(observer()).define(["toc"], function(toc){return(
+)}
+
+function _2(toc){return(
 toc({
   headers: "h2,h3,h4"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`## Preliminaries
 
 ### Namespace
@@ -38,8 +36,9 @@ WEBCode keys its resources by the same identifiers and enforces one namespace ca
 
 **WEBCode.run does not handle any sensitive PII**, all resources and access control is keyed by **namespace**.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`## A Day In the Life of a WEBCode.run request.
 
 Something (a user or a machine), somewhere (browser, or CLI) initiates a HTTP request to 
@@ -69,8 +68,9 @@ The container image is the WEBCode.run runtime ([Dockerfile](https://github.com/
 Inbound requests are decoded by an Express server in the container (the [route](https://github.com/endpointservices/webcode.run/blob/5f04058c4d961cb86925e1bcc690d10ec1ee40ec/index.mjs#L86)). The URL is parsed ([source](https://github.com/endpointservices/webcode.run/blob/5f04058c4d961cb86925e1bcc690d10ec1ee40ec/observable.mjs#L3)). \`
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`### Request Decoder
 
 From a URL like \`https://webcode.run/observablehq/@example/mynotebook;api/subpath?arg=1\` the parser tries to discover the following information
@@ -84,13 +84,15 @@ There is some extra information like user subpaths, headers, and query args but 
 
 A unique id is generated for each request.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`### Protection Rate limits
 
 Early in the request processing, we apply some rate-limiting by IP address and the endpoint being accessed. This rate limit is for primarily protecting against mistakes.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`### Dynamic config subscription
 
 Developer configuration set in the Webcode Endpoint UI is subscribed to (if not already). Note config changes are pushed in realtime to interested WEBCode servers for immediate responsiveness to changes. Some things held in dynamic configuration include
@@ -106,8 +108,9 @@ The runtime makes a decision on whether to handle the request using a headless b
 
 For this example we assume there is no live-coding session open so the request is handled using a headless browser
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`
 ### **Namespaced** Browser
 
@@ -144,8 +147,9 @@ As the page loads the runtime can obtain the authoritative namespace from the if
 
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`### Secrets Loader
 
 Secrets are scoped at the namespace level. In fact, in the backend, all secrets are prefixed by the owning namespace, so it's very easy to validate permissions.
@@ -174,8 +178,9 @@ WEBCode.run response invocations typically call the equivalent method on the nod
 
 After the handler returns, the request will be closed, or an error occurs. Regardless, the request is finished and resources are tidied, and the system logs record the duration.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
 md`## Discussion
 
 ### WEBCode offers private untamperable execution traces for Observable users
@@ -184,14 +189,16 @@ When a request is run, the source code is fetched with TLS from Observablehq.com
 
 - Private information, such as system secrets, can be handled.
 - You can trust code is executed correctly, such as access control checks and calls to privileged backend APIs.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`### Only Notebook Owners can change the source code
 
 Because WEBCode.run reads the handler source from Observable. The only way the code for a handler can be changed is by a person with write access to the notebook.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`### Secrets are securely scoped
 
 WEBCode.run knows the *namespace* of an executing notebook, and secrets are stored in a *namespace*. WEBCode.run enforces that only notebooks can access secrets of the same notebooks. The code that retrieves secrets (from any namespace) is part of the node.js runtime, and thus not accessible from userspace.   
@@ -200,8 +207,9 @@ Userspace HTTP handlers are always in a *namespace*, and thus, can only access s
 
 Developers from other namespaces cannot write code to access a specific namespace's secrets, because they cannot publish code to a notebook in that namespace, or set up a live-coding tunnel under that that namespace. 
 `
-)});
-  main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
+)}
+
+async function _13(FileAttachment,md){return(
 md`### Live-coding sessions
 
 When a live-coding tunnel is active, requests are forwarded through a Realtime Database to a developer's open notebook. This means the latest source code can be used against the request, or the developer can intercept and inspect the request using a debugger.
@@ -257,13 +265,36 @@ JWTs are signed with Observable login IDs, not emails. This is what the Firebase
 As a result, **WEBCode.run does not handle any sensitive PII**, all resources and access control are keyed by **namespace**.
 
 `
-)});
+)}
+
+function _16(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/e2dd63f1534603fb2a771d36d8ee0dfd2ffc6127bcf991856298cf79c5bd6faaca8ffd566628a50b9cf8d53c1674b2b2bc9752c2a47122cd2efec6621b2e26a4.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["toc"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["FileAttachment","md"], _13);
   const child1 = runtime.module(define1);
   main.import("toc", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _16);
   return main;
 }
