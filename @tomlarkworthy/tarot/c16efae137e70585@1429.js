@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/login-with-comment@1429
-import define1 from "./993a0c51ef1175ea@1345.js";
+import define1 from "./993a0c51ef1175ea@1362.js";
 import define2 from "./d84ccee0a2202d45@265.js";
 import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
@@ -7,7 +7,7 @@ import define5 from "./dff1e917c89f5e76@1711.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./698257e86fae4586@374.js";
 import define8 from "./ab3e70b29c480e6d@83.js";
-import define9 from "./b8a500058f806a6b@10.js";
+import define9 from "./b8a500058f806a6b@11.js";
 import define10 from "./58f3eb7334551ae6@209.js";
 
 async function _1(md,FileAttachment){return(
@@ -1048,7 +1048,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2", import.meta.url), mimeType: "image/webp", toString}]
+    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);

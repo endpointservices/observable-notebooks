@@ -64,7 +64,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image.png", {url: new URL("./files/fb520994ff7d4b4c03533b716352aaf85b802b3033a00cc2f6c5f0ad59a310ee1c9a009ceacdbd24e67ad102075b95a1906beb2f4a7b3f7cf576569e0d3c911b", import.meta.url), mimeType: "image/png", toString}]
+    ["image.png", {url: new URL("./files/fb520994ff7d4b4c03533b716352aaf85b802b3033a00cc2f6c5f0ad59a310ee1c9a009ceacdbd24e67ad102075b95a1906beb2f4a7b3f7cf576569e0d3c911b.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer("app")).define("app", ["transitions","viewof display"], _app);
