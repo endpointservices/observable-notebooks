@@ -1,8 +1,8 @@
-// https://observablehq.com/@endpointservices/word2vec@680
-import define1 from "./6eda90668ae03044@803.js";
+// https://observablehq.com/@endpointservices/word2vec@683
+import define1 from "./6eda90668ae03044@830.js";
 import define2 from "./777fe85658e39c55@470.js";
-import define3 from "./b8a500058f806a6b@10.js";
-import define4 from "./293899bef371e135@226.js";
+import define3 from "./b8a500058f806a6b@11.js";
+import define4 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# word2vec`
@@ -75,7 +75,9 @@ curl 'https://webcode.run/observablehq.com/@endpointservices/word2vec?from=Serva
 )}
 
 function _4(md){return(
-md`## Examples`
+md`## Examples
+
+The following examples are only run when requested`
 )}
 
 function _runSamples(Inputs)

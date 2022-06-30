@@ -1,6 +1,6 @@
 # word2vec
 
-https://observablehq.com/@endpointservices/word2vec@680
+https://observablehq.com/@endpointservices/word2vec@683
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/d9e3bb2e667beb4d@680.tgz?v=3
+npm install https://api.observablehq.com/d/d9e3bb2e667beb4d@683.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
