@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/encapsulated-monitoring@216
-import define1 from "./293899bef371e135@247.js";
+// https://observablehq.com/@endpointservices/encapsulated-monitoring@229
+import define1 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# The Fully Encapsulated Monitoring Notebook
@@ -48,17 +48,23 @@ Monitoring solutions often need APIs, so they can respond to external services (
 function _7(md){return(
 md`## Example Monitoring Notebooks
 
-I have built two notebooks so far that are self-enclosed systems, and they have both provided *immense* value to me. I intend to do many more.`
+I have built two notebooks so far that are self-enclosed systems, and they have provided *immense* value. I intend to do many more.`
 )}
 
 function _8(md){return(
+md`### 1. [Building a SMART FARM](https://observablehq.com/@tomlarkworthy/firebase-to-duckdb?collection=@tomlarkworthy/livecoding)
+The video and notebook series [Building a SMART FARM](https://observablehq.com/@tomlarkworthy/firebase-to-duckdb?collection=@tomlarkworthy/livecoding) displays data streamed from IoT devices in Colombia to the notebook, and allows ad hoc SQL analysis, without managing any servers! Other episoes allow dashboards to be request for delivery over WhatsApp to field workers.
+`
+)}
+
+function _9(md){return(
 md`### 1. [Realtime Inbound Request Log](https://observablehq.com/@endpointservices/realtime-request-log)
 The [Realtime Inbound Request Log](https://observablehq.com/@endpointservices/realtime-request-log) notebook hosts an endpoint and puts all inbound requests in a log. When you view the notebook the log entries are queried and some summaries are provided.
 This notebook was developed to help me sniff request headers on a remote machine not under my control, by scripting the remote machine to query the instrumented endpoint.
 `
 )}
 
-function _9(md){return(
+function _10(md){return(
 md`### 2. [Latency Monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor)
 
 The [Latency Monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor) notebook is a full end-to-end prober solution. It periodically schedules traffic to a system, measures the latency, and summarizes the results in a dashboard.
@@ -67,7 +73,7 @@ This has been in operation for nearly a1 year and helped quantify latency perfor
 `
 )}
 
-function _10(md){return(
+function _11(md){return(
 md`## Everything in one end-to-end environment.
 
 I am delighted that everything is in a single artifact that can be shared with a URL. This is not some low code compromise either, all the parts work together providing the end-user with a state-of-the-art experience. *Realtime* data dashboards using state-of-the-art DataViz libraries, stitched together with a modern language using tools that support version control, step debuggers, *etc.*
@@ -77,14 +83,14 @@ By having the tools to modify the monitoring pipeline next to the technical docu
 Overall it is a joyful development experience and operationally simple.`
 )}
 
-function _11(md){return(
+function _12(md){return(
 md`#### Credits
 - Article hosted on [Observable](https://observablehq.com/@tomlarkworthy/encapsulated-monitoring) and syndicated with [Blogify](https://observablehq.com/@tomlarkworthy/blogify)
 - Photo by <a href="https://unsplash.com/@mjessier?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Myriam Jessier</a> on <a href="https://unsplash.com/s/photos/data?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
   `
 )}
 
-function _13(footer,md){return(
+function _14(footer,md){return(
 footer, md``
 )}
 
@@ -101,8 +107,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer","md"], _13);
+  main.variable(observer()).define(["footer","md"], _14);
   return main;
 }
