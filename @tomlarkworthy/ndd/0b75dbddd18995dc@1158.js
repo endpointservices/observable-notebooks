@@ -4,13 +4,13 @@ import define2 from "./293899bef371e135@271.js";
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
 
-A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow events in [Observable](https://observablehq.com/) ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread).
+A [moldable](https://moldabledevelopment.com/) development tool to help debug dataflow problems ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread).
 
 \`\`\`js
 import {_ndd} from '@tomlarkworthy/ndd'
 \`\`\`
 
-So that the debugger does not trigger off itself, you must name its cell \`ndd\` after import i.e.
+So that the debugger does not trigger off itself, you must name its containing cell \`ndd\` after import i.e.
 
 \`\`\`js
 ndd = _ndd
