@@ -10,7 +10,7 @@ A [moldable](https://moldabledevelopment.com/) development tool to help debug da
 import {_ndd} from '@tomlarkworthy/ndd'
 \`\`\`
 
-So that the debugger does not trigger off itself, you must name its containing cell \`ndd\` after import i.e.
+So that the debugger does not trigger off itself, you must name its containing cell \`ndd\` after import _i.e._
 
 \`\`\`js
 ndd = _ndd
@@ -37,10 +37,10 @@ function _clicker(Inputs){return(
 Inputs.button("Click me!")
 )}
 
-async function _clickerDelay(clicker,Promises,uid)
+async function _delayedDependentAsyncComputation(clicker,Promises,uid)
 {
-  clicker;
-  await Promises.delay(1000);
+  clicker; // create dependancy on clicker cell.
+  await Promises.delay(1000); // slow to resolve a value
   return uid();
 }
 
@@ -62,8 +62,8 @@ function* _periodicFulfilled(runPeriodics,Promises)
 
 function _periodicThrow(periodicFulfilled)
 {
-  periodicFulfilled;
-  throw new Error();
+  periodicFulfilled; // depends on periodicFulfilled's clock
+  throw new Error(); // throw an error, errors are shown in red
 }
 
 
@@ -367,7 +367,7 @@ export default function define(runtime, observer) {
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
   main.variable(observer("clicker")).define("clicker", ["Generators", "viewof clicker"], (G, _) => G.input(_));
-  main.variable(observer("clickerDelay")).define("clickerDelay", ["clicker","Promises","uid"], _clickerDelay);
+  main.variable(observer("delayedDependentAsyncComputation")).define("delayedDependentAsyncComputation", ["clicker","Promises","uid"], _delayedDependentAsyncComputation);
   main.variable(observer("viewof runPeriodics")).define("viewof runPeriodics", ["Inputs"], _runPeriodics);
   main.variable(observer("runPeriodics")).define("runPeriodics", ["Generators", "viewof runPeriodics"], (G, _) => G.input(_));
   main.variable(observer("periodicFulfilled")).define("periodicFulfilled", ["runPeriodics","Promises"], _periodicFulfilled);
