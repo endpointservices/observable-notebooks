@@ -275,9 +275,11 @@ function _interceptVariables(mainVariables,interceptVariable,invalidation)
 }
 
 
-function _notify($0,$1,$2){return(
+function _notify($0,WATCHER_PREFIX,excludes,$1,$2){return(
 function notify(name, type, value) {
   if ($0.value) return;
+  // Exclude the display when we discover its anonymized name
+  if (typeof value === "object" && [WATCHER_PREFIX]) excludes.push(name);
   const datum = {
     t: Date.now(),
     name: name || "unknown",
@@ -402,7 +404,7 @@ export default function define(runtime, observer) {
   main.variable(observer("mainVariables")).define("mainVariables", ["reset","Generators","runtime","main","WATCHER_PREFIX","_","invalidation"], _mainVariables);
   main.variable(observer("mainVariableNames")).define("mainVariableNames", ["mainVariables"], _mainVariableNames);
   main.variable(observer("interceptVariables")).define("interceptVariables", ["mainVariables","interceptVariable","invalidation"], _interceptVariables);
-  main.variable(observer("notify")).define("notify", ["viewof pause","mutable events","viewof breakpoint"], _notify);
+  main.variable(observer("notify")).define("notify", ["viewof pause","WATCHER_PREFIX","excludes","mutable events","viewof breakpoint"], _notify);
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
