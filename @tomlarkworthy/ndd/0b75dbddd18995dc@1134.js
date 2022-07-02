@@ -11,16 +11,21 @@ import {ndd, vizUpdater} from '@tomlarkworthy/ndd'
 \`\`\``
 )}
 
-function _ndd(htl,$0,$1,$2,vizHolder){return(
-htl.html`
+function _ndd(htl,$0,$1,$2,vizUpdater,vizHolder,WATCHER_PREFIX)
+{
+  if (this) return this;
+  const ui = htl.html`
       <div style="display:flex;flex-wrap:wrap">
       ${$0}
       ${$1}
       ${$2}
       </div>
-      ${vizHolder}
-      `
-)}
+      ${(vizUpdater, vizHolder)}
+      `;
+  ui[WATCHER_PREFIX] = true;
+  return ui;
+}
+
 
 function _slider2(Inputs){return(
 Inputs.range([0, 1], { label: "slide me!" })
@@ -350,7 +355,7 @@ footer
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("ndd")).define("ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizHolder"], _ndd);
+  main.variable(observer("ndd")).define("ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizUpdater","vizHolder","WATCHER_PREFIX"], _ndd);
   main.variable(observer("viewof slider2")).define("viewof slider2", ["Inputs"], _slider2);
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
