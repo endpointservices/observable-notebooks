@@ -4,7 +4,7 @@ import define2 from "./293899bef371e135@271.js";
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
 
-A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow events in [Observable](https://observablehq.com/). Discussion on [Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752).
+A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow events in [Observable](https://observablehq.com/) ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread).
 
 \`\`\`js
 import {ndd} from '@tomlarkworthy/ndd'
