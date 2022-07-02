@@ -10,7 +10,7 @@ A [moldable](https://moldabledevelopment.com/) development tool to help debug da
 import {_ndd} from '@tomlarkworthy/ndd'
 \`\`\`
 
-So that the debugger does not trigger off itself, you must name its containing cell \`ndd\` after import _i.e._
+So that the debugger does not trigger itself, you must name its containing cell \`ndd\`:
 
 \`\`\`js
 ndd = _ndd
