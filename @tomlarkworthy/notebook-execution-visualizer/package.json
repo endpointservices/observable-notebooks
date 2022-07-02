@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-execution-visualizer",
+  "main": "0b75dbddd18995dc@1110.js",
+  "version": "1110.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-execution-visualizer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
