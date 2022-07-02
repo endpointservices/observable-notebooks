@@ -7,18 +7,18 @@ md`# Notebook Dataflow Debugger (ndd)
 A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow events in [Observable](https://observablehq.com/) ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread).
 
 \`\`\`js
-import {ndd} from '@tomlarkworthy/ndd'
+import {ndd, vizUpdater} from '@tomlarkworthy/ndd'
 \`\`\``
 )}
 
-function _ndd(htl,$0,$1,$2,vizUpdater,vizHolder){return(
+function _ndd(htl,$0,$1,$2,vizHolder){return(
 htl.html`
 <div style="display:flex;flex-wrap:wrap">
 ${$0}
 ${$1}
 ${$2}
 </div>
-${(vizUpdater, vizHolder)}
+${vizHolder}
 `
 )}
 
@@ -348,7 +348,7 @@ footer
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("ndd")).define("ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizUpdater","vizHolder"], _ndd);
+  main.variable(observer("ndd")).define("ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizHolder"], _ndd);
   main.variable(observer("viewof slider2")).define("viewof slider2", ["Inputs"], _slider2);
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
