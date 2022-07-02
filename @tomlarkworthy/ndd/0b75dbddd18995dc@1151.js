@@ -72,7 +72,7 @@ md`## State`
 )}
 
 function _excludes(){return(
-["events", "timeline", "viz", "vizUpdater", "ndd", "_ndd"]
+["events", "viz", "vizUpdater", "ndd", "_ndd"]
 )}
 
 function _events(reset,WATCHER_PREFIX)
