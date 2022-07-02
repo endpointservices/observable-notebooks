@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/offline@352
+// https://observablehq.com/@tomlarkworthy/offline@355
 import define1 from "./dff1e917c89f5e76@1948.js";
 import define2 from "./a2e58f97fd5e8d7c@736.js";
 import define3 from "./64410923a50764c0@77.js";
@@ -7,7 +7,9 @@ import define4 from "./293899bef371e135@271.js";
 function _1(md){return(
 md`# Offline notebooks
 
-Serves a readonly notebook from a notebook link. It installs a service worker, unzips the notebook, and saves it into browser cache for use offline. It then uses request rewriting to serve the contents of the archive on logical URL paths.
+Serves a read-only notebook from a notebook link. It installs a service worker, unzips the notebook, and saves it into the browser cache for use offline. It then uses request rewriting to serve the archive's contents on logical URL paths.
+
+There are many hardcoded URLs and URL parsing regexes, forks will need to adjust the paths.
 `
 )}
 
@@ -89,10 +91,6 @@ function () {
     "https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.3/pako.es5.min.js",
     "./untar.js"
   );
-
-  self.addEventListener("install", function (event) {
-    console.log("service worker has been installed");
-  });
 
   self.addEventListener("install", function (event) {
     console.log("service worker has been installed");

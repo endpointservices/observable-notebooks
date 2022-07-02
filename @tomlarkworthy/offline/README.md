@@ -1,6 +1,6 @@
 # Offline notebooks
 
-https://observablehq.com/@tomlarkworthy/offline@352
+https://observablehq.com/@tomlarkworthy/offline@355
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/66ebad76a718a81f@352.tgz?v=3
+npm install https://api.observablehq.com/d/66ebad76a718a81f@355.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
