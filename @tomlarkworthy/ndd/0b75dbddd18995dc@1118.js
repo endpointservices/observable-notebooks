@@ -124,14 +124,8 @@ function _viz(endTime,now,windowSecs,reset,events,Plot)
           text: "name",
           textAnchor: "end",
           dx: -10,
-          fill: (d) => {
-            debugger;
-            return d.type === "pending"
-              ? "pending"
-              : end - d.t < 500
-              ? d.type
-              : "idle";
-          }
+          fill: (d) =>
+            d.type === "pending" ? "pending" : end - d.t < 500 ? d.type : "idle"
         })
       ),
       Plot.tickX(windowedEvents, {
