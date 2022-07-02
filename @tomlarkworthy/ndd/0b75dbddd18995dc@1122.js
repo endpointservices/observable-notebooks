@@ -160,8 +160,9 @@ function _vizHolder(){return(
 document.createElement("div")
 )}
 
-function _vizUpdater(vizHolder,viz)
+function _vizUpdater(interceptVariables,vizHolder,viz)
 {
+  interceptVariables;
   vizHolder.firstChild?.remove();
   vizHolder.appendChild(viz);
 }
@@ -370,7 +371,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viz")).define("viz", ["endTime","now","windowSecs","reset","events","Plot"], _viz);
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("vizHolder")).define("vizHolder", _vizHolder);
-  main.variable(observer("vizUpdater")).define("vizUpdater", ["vizHolder","viz"], _vizUpdater);
+  main.variable(observer("vizUpdater")).define("vizUpdater", ["interceptVariables","vizHolder","viz"], _vizUpdater);
   main.variable(observer()).define(["md"], _19);
   main.variable(observer("viewof reset")).define("viewof reset", ["Inputs"], _reset);
   main.variable(observer("reset")).define("reset", ["Generators", "viewof reset"], (G, _) => G.input(_));
