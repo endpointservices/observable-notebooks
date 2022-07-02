@@ -10,7 +10,7 @@ A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow 
 import {_ndd} from '@tomlarkworthy/ndd'
 \`\`\`
 
-So that the debugger does not track itself, you must name its cell \`ndd\` after import i.e.
+So that the debugger does not trigger off itself, you must name its cell \`ndd\` after import i.e.
 
 \`\`\`js
 ndd = _ndd
