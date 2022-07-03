@@ -14,7 +14,9 @@ So that the debugger does not trigger itself, you must name its containing cell 
 
 \`\`\`js
 ndd = _ndd
-\`\`\``
+\`\`\`
+
+Thanks to [\`@mootari/access-runtime\`](https://observablehq.com/@mootari/access-runtime) on which this tool builds upon.`
 )}
 
 function __ndd(htl,$0,$1,$2,vizUpdater,vizHolder){return(
