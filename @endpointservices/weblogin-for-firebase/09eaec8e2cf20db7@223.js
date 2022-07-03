@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/logo@223
 import define1 from "./11a5ab8b1b3a51db@1161.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# Endpoint Services Logo
@@ -96,7 +96,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image.png", {url: new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e", import.meta.url), mimeType: "image/png", toString}]
+    ["image.png", {url: new URL("./files/ecc59a281521628992c0d5de8207e9003802be7b508cefcbfecb1a10e0fa55e442c8dd3298585d729fcc6ee47b54b9c0f715c185e03c4845af3a8dba6106030e.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

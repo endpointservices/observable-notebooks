@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/utils@10
+// https://observablehq.com/@tomlarkworthy/utils@11
 function _1(md){return(
 md`# Utils`
 )}
@@ -26,14 +26,9 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _3(){return(
-Object.keys([1, 2])
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(_3);
   return main;
 }
