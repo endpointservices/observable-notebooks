@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/firebase@1362
 import define1 from "./c7a3b20cec5d4dd9@669.js";
 import define2 from "./3df1b33bb2cfcd3c@475.js";
-import define3 from "./58f3eb7334551ae6@210.js";
+import define3 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# Firebase and Firebase UI

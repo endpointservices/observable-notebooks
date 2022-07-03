@@ -3,12 +3,16 @@ import define2 from "./0e0b35a92c819d94@418.js";
 import define3 from "./ab3e70b29c480e6d@83.js";
 import define4 from "./6eda90668ae03044@830.js";
 import define5 from "./048a17a165be198d@263.js";
-import define6 from "./293899bef371e135@271.js";
+import define6 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# Generic Notebook Health Check
 
-This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. You do not need to modify the original notebook in any way! It exposes its functionality as an endpoint, which can be connected to uptime monitors such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/). If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is also used report those errors (Sentry logs include context and source code line numbers).
+
+You can use this notebook to actively detect errors in any of your notebook quickly. Read more about the process of productionizing notebooks [here](https://observablehq.com/@tomlarkworthy/howto-monitoring).
+
+This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. You do not need to modify the original notebook in any way! It exposes its functionality as an endpoint, which can be connected to uptime monitors such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/). If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is also used report those errors (Sentry logs include context and source code line numbers). 
+
 
 To use, first fill in the manual trigger fields to get a feel of the events and errors. Then copy and paste the link your endpoint monitoring service of choice.
 

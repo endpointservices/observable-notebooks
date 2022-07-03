@@ -4,7 +4,7 @@ import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
 import define5 from "./9bed702f80a3797e@402.js";
 import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./58f3eb7334551ae6@210.js";
+import define7 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# WEBcode UI
@@ -1506,6 +1506,7 @@ function _liveCoding(columnPane,view,textNodeView,Inputs){return(
   const ui = columnPane({
     content: view`<div class="e-col-title">Livecoding</div>
       <p class="e-explain"><i><a target="_blank" href="https://observablehq.com/@endpointservices/livecode">Livecoding</a> tunnels production traffic to <b>your</b> browser so you can run and debug the latest serverside code reactively.</i></p>
+      <p class="e-explain">⚠️ tab must be in <a target="_blank" href="https://github.com/observablehq/feedback/issues/458">foreground</a> to livecode</p>
       <p class="e-explain"><b>tunnelled: ${[
         "tunnelled",
         textNodeView(0)
