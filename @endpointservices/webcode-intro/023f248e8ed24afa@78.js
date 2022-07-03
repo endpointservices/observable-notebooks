@@ -1,5 +1,5 @@
-import define1 from "./6eda90668ae03044@804.js";
-import define2 from "./293899bef371e135@247.js";
+import define1 from "./6eda90668ae03044@830.js";
+import define2 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# My First Webcode Endpoint`
