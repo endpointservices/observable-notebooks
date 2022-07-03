@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/onversion@258
-import define1 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@endpointservices/onversion@261
+import define1 from "./58f3eb7334551ae6@211.js";
 
 function _1(onVersion,md){return(
 md`# On Version Notebook Hook 
@@ -110,7 +110,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image@1.png", {url: new URL("./files/4729a9f274ae2604cf10e1384d5e582d108eb74e56765e26c57dd37a5ef88ddb7850c71291fe021eb33869eb10af413facd2d13d2c332bf325574c61213d5c64", import.meta.url), mimeType: "image/png", toString}]
+    ["image@1.png", {url: new URL("./files/4729a9f274ae2604cf10e1384d5e582d108eb74e56765e26c57dd37a5ef88ddb7850c71291fe021eb33869eb10af413facd2d13d2c332bf325574c61213d5c64.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["onVersion","md"], _1);
