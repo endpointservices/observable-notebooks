@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook@109
-import define1 from "./dff1e917c89f5e76@1711.js";
-import define2 from "./293899bef371e135@247.js";
+import define1 from "./dff1e917c89f5e76@1948.js";
+import define2 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# How To Keep an API key secret in a Public Notebook
@@ -107,7 +107,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image@1.png", {url: new URL("./files/d5654fa8fc805df282a4ae6cbb5027f47e1bc44de10de639869ba77eb130ca96c7f842b8776e23d586baa3dc26c3f5e04e5ad5eaea8f4cd14f013bfab0920141", import.meta.url), mimeType: "image/png", toString}]
+    ["image@1.png", {url: new URL("./files/d5654fa8fc805df282a4ae6cbb5027f47e1bc44de10de639869ba77eb130ca96c7f842b8776e23d586baa3dc26c3f5e04e5ad5eaea8f4cd14f013bfab0920141.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
