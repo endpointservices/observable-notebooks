@@ -1,16 +1,12 @@
 // https://observablehq.com/@tomlarkworthy/saas-tutorial@953
-import define1 from "./993a0c51ef1175ea@1317.js";
-import define2 from "./11a5ab8b1b3a51db@1160.js";
-import define3 from "./84e66f78139ac354@814.js";
-import define4 from "./44969094bf0290d0@239.js";
+import define1 from "./993a0c51ef1175ea@1373.js";
+import define2 from "./11a5ab8b1b3a51db@1161.js";
+import define3 from "./84e66f78139ac354@829.js";
+import define4 from "./44969094bf0290d0@240.js";
 import define5 from "./1bef71e497eda5fc@189.js";
-import define6 from "./293899bef371e135@216.js";
+import define6 from "./293899bef371e135@278.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/c790c0f2fb7a58f85643628807609a43486cad0a6e4bb2aec1e32931111f3878d86a626bf4e893ec481945ed9148045ef2adea75e940ae83cbf14c45217fef6e",import.meta.url)],["image@1.png",new URL("./files/bd743aa81fb2b71fde23187d69adb59472763d712b954c5b933bf1efed3a9edd720b95209a1f8acc96b302b5d62d41e76668fc018a281184f7a94a1f5751c257",import.meta.url)],["image@2.png",new URL("./files/7199ac3fa403ef0da9974f380e7463ff6c4b89880a929c2fa552ff2b1a27ac22b4c66258546273343d30024eccac863bf6355e7e5a65bf9857e042751136f583",import.meta.url)],["image@3.png",new URL("./files/1168ec6a37b4850a1fd3e4c5e603c62f0f39ca106b4c1d0320d826494abc6d8cdbc5701f578789931196794acdd6d35b89949b5decb926a581ec98df9ea207bf",import.meta.url)],["image@4.png",new URL("./files/96bdbcea4968de70a3e01967dcb436f8d3fcc09443fedd518535a4128b282eed152382193bf1ef762fd0129285241db7ecfc9c5c6a55a253d8d0fcfa396fbe67",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+function _1(html,md){return(
 html`<div class="content">${md`
 # Ridiculously Rapid Software-as-a-Service (SaaS) development with Observable, Firebase and Stripe
 
@@ -22,8 +18,9 @@ As it turns out, it is possible to make money, right inside Observable. In this 
 
 <center><img width="70%" src="https://media.giphy.com/media/26BRzQS5HXcEWM7du/giphy.gif"></img></center>
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _2(html,md,FileAttachment){return(
 html`<div class="content">${md`
 ## Setup Firebase
 We will need Firebase for login and backend services. Create a Firebase account at http://console.firebase.google.com
@@ -34,8 +31,9 @@ You will need to create a Web App and grab a copy of its *Project Settings* from
 
 If you drop the const, and the object with \( \) you can copy and paste into Observable. You will need to add an additional "uiConfig" block for login customization
 `}</div>`
-)});
-  main.variable(observer("firebaseConfig")).define("firebaseConfig", function(){return(
+)}
+
+function _firebaseConfig(){return(
 {
   apiKey: "AIzaSyD882c8YEgeYpNkX01fhpUDfioWl_ETQyQ",
   authDomain: "endpointservice.firebaseapp.com",
@@ -49,13 +47,15 @@ If you drop the const, and the object with \( \) you can copy and paste into Obs
     signInOptions: ["google.com", "facebook.com", "phone", "anonymous"]
   }
 }
-)});
-  main.variable(observer("note_api_keys")).define("note_api_keys", ["md"], function(md){return(
+)}
+
+function _note_api_keys(md){return(
 md`
 *sidenote: Unlike some APIs, Firebase API Keys are not [secrets](https://twitter.com/tomlarkworthy/status/1329365181907005440).* (thanks [@oleksandr_now](https://twitter.com/oleksandr_now))
 `
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _5(html,md){return(
 html`<div class="content">${md`
 ## Customer Signin
 
@@ -63,33 +63,30 @@ It is useful for customers to be able to signin to your service using existing i
 
 Import the FirebaseUI *viewof* into your notebook but redirect it *firebaseConfig* dependency we setup earlier in the hosting notebook
 `}</div>`
-)});
-  const child1 = runtime.module(define1).derive(["firebaseConfig"], main);
-  main.import("firebase", child1);
-  main.import("viewof user", child1);
-  main.import("user", child1);
-  main.import("DocView", child1);
-  main.import("DocsView", child1);
-  main.import("listen", child1);
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _7(html,md){return(
 html`<div class="content">${md`
 
 Next we place the component somewhere in our notebook as a UI control to a user variable. 
 `}</div>`
-)});
-  main.variable(observer("viewof exampleUI")).define("viewof exampleUI", ["viewof user"], function($0){return(
+)}
+
+function _exampleUI($0){return(
 $0
-)});
-  main.variable(observer("exampleUI")).define("exampleUI", ["Generators", "viewof exampleUI"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _9(html,md){return(
 html`<div class="content">${md`
 The FirebaseUI component embraces the reactive programming model of Observable, __the user variable is not resolved until a user signs in__. This means you can have cells depend on the user variable and they are not evaluated until the user logs in. An important user field is the *uid*. Note the following cell does not display a UID until you login.
 `}</div>`
-)});
-  main.variable(observer("uidExample")).define("uidExample", ["user"], function(user){return(
+)}
+
+function _uidExample(user){return(
 `Your uid is ${user.uid}`
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _11(html,md,FileAttachment){return(
 html`<div class="content">${md`
 You will need to register apps and OAuth 2.0 domains for each login provider. Instructions are in the [Firebase Authentication Web documentation](https://firebase.google.com/docs/auth/web/start). Under the hood, Observable serves cells from the domain. You often need to allowlist this domain in the configuration of identity providers 
 
@@ -99,46 +96,54 @@ Configuring Google login is very easy as it can be done from within the Firebase
 
 ![Autherorized domain](${await FileAttachment("image@1.png").url()})
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _12(html,md){return(
 html`<div class="content">${md`
 ## Persisting Customer Data
 
 To safely store customer data, we need a database. There are some additional tools in [firebase](https://observablehq.com/@tomlarkworthy/firebaseui) to help combining Firestore wih Observable.
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _14(html,md){return(
 html`<div class="content">${md`
 
 *firebase* is the core SDK which can do many things. *DocView* and *DocsView* are helpers for creating reactive views of Firestore documents and query results.
 
 To shorten the amount of typing I do I usually map the variable *db* to the Firestore service.
 `}</div>`
-)});
-  main.variable(observer("db")).define("db", ["firebase"], function(firebase){return(
+)}
+
+function _db(firebase){return(
 firebase.firestore()
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _16(html,md){return(
 html`<div class="content">${md`
 ## Reading data
 
 We can bind a Firestore location, or query, to an Observable cell value, which will update in realtime, if that location is written to.
 `}</div>`
-)});
-  main.variable(observer("msgs")).define("msgs", ["listen","db"], function(listen,db){return(
+)}
+
+function _msgs(listen,db){return(
 listen(
   db.collection("apps").doc("saas").collection("msgs").limit(5).orderBy("time", "desc")
 )
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _18(html,md){return(
 html`<div class="content">${md`
 The returned value of a listen (e.g. *msgs*) is an array of normal Javascript objects. The contents will update to all writes made locally or by other users.
 `}</div>`
-)});
-  main.variable(observer("msgsAsString")).define("msgsAsString", ["msgs"], function(msgs){return(
+)}
+
+function _msgsAsString(msgs){return(
 JSON.stringify(msgs.map(entry => entry.msg).reverse(), null, 2)
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _20(html,md){return(
 html`<div class="content">${md`
 ## Writing data
 
@@ -149,12 +154,9 @@ db.collection("collection").doc("doc").set({...})
 
 For our demo we will create a mini chat interface. To make it easy to bind functions to HTML, we use the amazing [hypertext literal](/@observablehq/htl) from Observable. To ensure the UI tracks state across renders we use a react-like reconciliation algorithm.
 `}</div>`
-)});
-  const child2 = runtime.module(define2);
-  main.import("html", child2);
-  const child3 = runtime.module(define3);
-  main.import("reconcile", child3);
-  main.variable(observer()).define(["html","md","msgs"], function(html,md,msgs){return(
+)}
+
+function _23(html,md,msgs){return(
 html`<div class="content">${md`
 Now we can create a simple input that saves the text into the *msgs* collection when enter is pressed. 
 
@@ -162,8 +164,9 @@ Note how the view automatically updates, and everything dependent on it does too
 
 Try it out...
 `}</div>`
-)});
-  main.variable(observer("viewof ui")).define("viewof ui", ["db","firebase","reconcile","html","msgs"], function(db,firebase,reconcile,html,msgs)
+)}
+
+function _ui(db,firebase,reconcile,html,msgs)
 {
   async function sendMsg(evt) {
     if (evt.keyCode === 13) {
@@ -184,9 +187,9 @@ Try it out...
     <input class="text" onkeydown=${sendMsg}></input> <-- enter text`
   );
 }
-);
-  main.variable(observer("ui")).define("ui", ["Generators", "viewof ui"], (G, _) => G.input(_));
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _25(html,md){return(
 html`<div class="content">${md`
 
 Note how you can open another browser on another devices and see the results! Also the reactive updates works with the data admin console at https://console.firebase.google.com data viewer too!
@@ -229,8 +232,9 @@ Our mini chat demo we implemented with publicly readable data. You can store pri
 
 There are many more examples in the Firestore Rules [documentation](https://firebase.google.com/docs/firestore/security/rules-conditions) 
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _26(html,md){return(
 html`<div class="content">${md`
 ## Adding a Backend API
 
@@ -257,8 +261,9 @@ firebase emulators:start
 ~~~
 
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _27(html,md){return(
 html`<div class="content">${md`
 ### Calling Remote Backend Functions
 
@@ -283,8 +288,9 @@ exports.api = functions.region("europe-west1").https
 
 See the [callables](https://firebase.google.com/docs/functions/callable) documention
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _28(html,md){return(
 html`<div class="content">${md`
 ### Periodic work
 
@@ -301,8 +307,9 @@ exports.per_day = functions.region("europe-west1").pubsub.schedule('every 1 days
 
 See the [scheduling functions](https://firebase.google.com/docs/functions/schedule-functions) documentation.
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _29(html,md){return(
 html`<div class="content">${md`
 ### On Firestore Writes
 
@@ -323,8 +330,9 @@ exports.msgWrite = functions.region("europe-west1").firestore
   });
 ~~~
 `}</div>`
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _30(html,md,FileAttachment){return(
 html`<div class="content">${md`
 ## Making Money with Stripe
 
@@ -341,13 +349,13 @@ And you need this to initialize a Stripe SDK wrapper for Observable.
 
 
 `}</div>`
-)});
-  const child4 = runtime.module(define4);
-  main.import("Stripe", child4);
-  main.variable(observer("stripe")).define("stripe", ["Stripe"], function(Stripe){return(
+)}
+
+function _stripe(Stripe){return(
 Stripe("pk_live_51HbQzcHGNosi6Ft0JM18AKCtG3cIs707E1ft1B5ePvpptHb5yoLnXHXLWkyBbDjHgtlPMOT0233jrcfvWAGj6AYp00RxIZdaky")
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _33(html,md,FileAttachment){return(
 html`<div class="content">${md`
 ### Unverified Payments 
 
@@ -358,8 +366,9 @@ For very simple use cases like collecting a donation, you don't need to do very 
 The price code is used in a widget attached to a button to trigger the checkout process for that item. It's *that* simple:
 
 `}</div>`
-)});
-  main.variable(observer("buy")).define("buy", ["html","stripe"], function(html,stripe){return(
+)}
+
+function _buy(html,stripe){return(
 html`<center>
   <button class="button is-primary" onclick=${() => { 
       stripe.redirectToCheckout({
@@ -375,8 +384,9 @@ html`<center>
     ☕ Buy Tom a coffee...
   </button>
 </center>`
-)});
-  main.variable(observer()).define(["html","md","FileAttachment"], async function(html,md,FileAttachment){return(
+)}
+
+async function _35(html,md,FileAttachment){return(
 html`<div class="content">${md`
 ### Acting on Payments 
 
@@ -463,8 +473,9 @@ This is 'ok' for MVPs. The risk is that users will discover the URL somehow and 
 For simple services where users buy credit you don't need line items. Here is a simple interface that allows customers to purchase credit. 
 
 `}</div>`
-)});
-  main.variable(observer("buyCredit")).define("buyCredit", ["stripe","user","html"], function(stripe,user,html)
+)}
+
+function _buyCredit(stripe,user,html)
 {
   function buy(price) {
     stripe.redirectToCheckout({
@@ -497,8 +508,9 @@ For simple services where users buy credit you don't need line items. Here is a 
     </div>
   `
 }
-);
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+
+
+function _37(html,md){return(
 html`<div class="content">${md`
 # And That's how you SaaS in Observable!
 
@@ -514,8 +526,9 @@ BTW, I was one of the original Firebase Realtime Database engineers before Googl
 
 If you enjoyed this article, please share it, like it or discuss it, or, Lol, buy me a coffee! Even better, use the knowledge to build something magnificent!
 `}</div>`
-)});
-  main.variable(observer("buy2")).define("buy2", ["html","stripe"], function(html,stripe){return(
+)}
+
+function _buy2(html,stripe){return(
 html`<center>
   <button class="button is-primary" onclick=${() => { 
       stripe.redirectToCheckout({
@@ -531,23 +544,27 @@ html`<center>
     ☕ Buy Tom a coffee...
   </button>
 </center>`
-)});
-  main.variable(observer()).define(["html","md"], function(html,md){return(
+)}
+
+function _39(html,md){return(
 html`<div class="content">${md`
 Cheers! have a poke around at some of my other Observable experiments as well, I have quite a collation of [apps](https://observablehq.com/collection/@tomlarkworthy/apps) and [libraries](https://observablehq.com/collection/@tomlarkworthy/libraries) these days. __*I am all in on Observable*__ as you may have noticed...
 `}</div>`
-)});
-  main.variable(observer("credits")).define("credits", ["html","md"], function(html,md){return(
+)}
+
+function _credits(html,md){return(
 html`<div class="content">${md`
 ### Credits
 
 Thanks to Observable's [@Fil](https://observablehq.com/@fil) (Twitter [@recifs](https://twitter.com/recifs)) for the PRs fixing some of the many typographical errors in this tutorial.
 `}</div><br>`
-)});
-  main.variable(observer()).define(["futurice_profile_bulma"], function(futurice_profile_bulma){return(
+)}
+
+function _41(futurice_profile_bulma){return(
 futurice_profile_bulma
-)});
-  main.variable(observer("style")).define("style", ["html"], function(html){return(
+)}
+
+function _style(html){return(
 html`<style>
 
 .katex-display,p,h1,h2,h3,table,li
@@ -556,13 +573,79 @@ html`<style>
 }
 
 </style>`
-)});
+)}
+
+function _45(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/c790c0f2fb7a58f85643628807609a43486cad0a6e4bb2aec1e32931111f3878d86a626bf4e893ec481945ed9148045ef2adea75e940ae83cbf14c45217fef6e.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@1.png", {url: new URL("./files/bd743aa81fb2b71fde23187d69adb59472763d712b954c5b933bf1efed3a9edd720b95209a1f8acc96b302b5d62d41e76668fc018a281184f7a94a1f5751c257.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@2.png", {url: new URL("./files/7199ac3fa403ef0da9974f380e7463ff6c4b89880a929c2fa552ff2b1a27ac22b4c66258546273343d30024eccac863bf6355e7e5a65bf9857e042751136f583.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@3.png", {url: new URL("./files/1168ec6a37b4850a1fd3e4c5e603c62f0f39ca106b4c1d0320d826494abc6d8cdbc5701f578789931196794acdd6d35b89949b5decb926a581ec98df9ea207bf.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@4.png", {url: new URL("./files/96bdbcea4968de70a3e01967dcb436f8d3fcc09443fedd518535a4128b282eed152382193bf1ef762fd0129285241db7ecfc9c5c6a55a253d8d0fcfa396fbe67.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["html","md"], _1);
+  main.variable(observer()).define(["html","md","FileAttachment"], _2);
+  main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
+  main.variable(observer("note_api_keys")).define("note_api_keys", ["md"], _note_api_keys);
+  main.variable(observer()).define(["html","md"], _5);
+  const child1 = runtime.module(define1).derive(["firebaseConfig"], main);
+  main.import("firebase", child1);
+  main.import("viewof user", child1);
+  main.import("user", child1);
+  main.import("DocView", child1);
+  main.import("DocsView", child1);
+  main.import("listen", child1);
+  main.variable(observer()).define(["html","md"], _7);
+  main.variable(observer("viewof exampleUI")).define("viewof exampleUI", ["viewof user"], _exampleUI);
+  main.variable(observer("exampleUI")).define("exampleUI", ["Generators", "viewof exampleUI"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","md"], _9);
+  main.variable(observer("uidExample")).define("uidExample", ["user"], _uidExample);
+  main.variable(observer()).define(["html","md","FileAttachment"], _11);
+  main.variable(observer()).define(["html","md"], _12);
+  main.variable(observer()).define(["html","md"], _14);
+  main.variable(observer("db")).define("db", ["firebase"], _db);
+  main.variable(observer()).define(["html","md"], _16);
+  main.variable(observer("msgs")).define("msgs", ["listen","db"], _msgs);
+  main.variable(observer()).define(["html","md"], _18);
+  main.variable(observer("msgsAsString")).define("msgsAsString", ["msgs"], _msgsAsString);
+  main.variable(observer()).define(["html","md"], _20);
+  const child2 = runtime.module(define2);
+  main.import("html", child2);
+  const child3 = runtime.module(define3);
+  main.import("reconcile", child3);
+  main.variable(observer()).define(["html","md","msgs"], _23);
+  main.variable(observer("viewof ui")).define("viewof ui", ["db","firebase","reconcile","html","msgs"], _ui);
+  main.variable(observer("ui")).define("ui", ["Generators", "viewof ui"], (G, _) => G.input(_));
+  main.variable(observer()).define(["html","md"], _25);
+  main.variable(observer()).define(["html","md"], _26);
+  main.variable(observer()).define(["html","md"], _27);
+  main.variable(observer()).define(["html","md"], _28);
+  main.variable(observer()).define(["html","md"], _29);
+  main.variable(observer()).define(["html","md","FileAttachment"], _30);
+  const child4 = runtime.module(define4);
+  main.import("Stripe", child4);
+  main.variable(observer("stripe")).define("stripe", ["Stripe"], _stripe);
+  main.variable(observer()).define(["html","md","FileAttachment"], _33);
+  main.variable(observer("buy")).define("buy", ["html","stripe"], _buy);
+  main.variable(observer()).define(["html","md","FileAttachment"], _35);
+  main.variable(observer("buyCredit")).define("buyCredit", ["stripe","user","html"], _buyCredit);
+  main.variable(observer()).define(["html","md"], _37);
+  main.variable(observer("buy2")).define("buy2", ["html","stripe"], _buy2);
+  main.variable(observer()).define(["html","md"], _39);
+  main.variable(observer("credits")).define("credits", ["html","md"], _credits);
+  main.variable(observer()).define(["futurice_profile_bulma"], _41);
+  main.variable(observer("style")).define("style", ["html"], _style);
   const child5 = runtime.module(define5);
   main.import("futurice_profile_bulma", child5);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _45);
   return main;
 }

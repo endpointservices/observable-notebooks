@@ -1,12 +1,8 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1709
-import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+// https://observablehq.com/@endpointservices/serverless-cells@1948
+import define1 from "./8aac8b2cb06bf434@261.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["PreviewServerlessCells@2.png",new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9",import.meta.url)],["webcodeURL@1.svg",new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["FileAttachment","width","md"], async function(FileAttachment,width,md){return(
+async function _1(FileAttachment,width,md){return(
 md`# Serverless Cells
 
 ** The next iteration of serverless cells is called [webcode](https://observablehq.com/@endpointservices/webcode). Webcode improves by adding live coding, instant deploys and production debugging, as well as a UI, new projects should probably use [webcode](https://observablehq.com/@endpointservices/webcode) rather than this one (though they are compatible)**
@@ -91,15 +87,68 @@ Get up and running with the [quickstart](https://observablehq.com/@endpointservi
 
 Come hang out with us on the [d3 Zulip server](https://d3js.zulipchat.com/#narrow/stream/289603-serverless-cells/topic/Welcome.20to.20Serverless.20Cells)
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
+md`### Example`
+)}
+
+function _host(Inputs){return(
+Inputs.select(["webcode.run", "http://localhost:8080"], {
+  label: "host"
+})
+)}
+
+function _region(Inputs){return(
+Inputs.select(
+  ["nearest", "us-central1", "europe-west1", "asia-east1"],
+  {
+    label: "region"
+  }
+)
+)}
+
+function _livecode(Inputs){return(
+Inputs.radio(["unspecified", "false", "public"], {
+  label: "livecode?"
+})
+)}
+
+function _6(deploy,host,region,livecode){return(
+deploy(
+  "default",
+  async (req, res) => {
+    res.send(req);
+  },
+  {
+    host: host,
+    ...((region !== "nearest") & { region }),
+    livecode
+  }
+)
+)}
+
+function _7(md){return(
 md`### Implementation`
-)});
-  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","Response","subdomain","getContext","html"], function(onVersionPublished,Response,subdomain,getContext,html){return(
+)}
+
+function _deploy(onVersionPublished,generateSessionId,Response,subdomain,getContext,html){return(
 function (label, handler, options) {
   onVersionPublished; // Ensure all users of this have the onPublish hook installed
+  if (typeof label !== "string")
+    throw new Error(
+      "The first parameter 'name' must be a unique string to disambiguate different endpoints, using'default' will exclude it from the URL"
+    );
+
   options = options || {};
   const modifiers = options.modifiers || ["external"];
+  if (typeof options.livecode === "string") {
+    options.livecode = options.livecode.toUpperCase();
+  }
+  // We have to generate sessions if we are live coding
+  const session =
+    options.livecode === "PUBLIC" ? generateSessionId(label) : undefined;
+
   const isExternal = modifiers.includes("external");
   const isTerminal = modifiers.includes("terminal");
   const isOrchestrator = modifiers.includes("orchestrator");
@@ -124,34 +173,42 @@ function (label, handler, options) {
     secrets: options.secrets
   };
 
-  const host = "https://" + (options.host || `webcode.run`);
+  const host =
+    options.host && /http(s?):\/\//.exec(options.host)
+      ? options.host
+      : "https://" + (options.host || `webcode.run`);
+
   const region = options.region ? `/regions/${options.region}` : "";
   try {
     // Bug fix
     if (options.hostNotebook) options.hostNotebook = "/" + options.hostNotebook;
 
     const namespace = subdomain();
-    const notebook = getContext().notebook;
-    const name = label === "default" ? "" : `;${label}`;
+    const notebook = options.hostNotebook
+      ? options.hostNotebook.split("/")[1]
+      : getContext().notebook;
+    const name = label === "default" && !session ? "" : `;${label}`;
+    const correlation = session ? `;${session}` : "";
     const link =
       `${host}${region}/observablehq.com` +
       (options.hostNotebook ||
         `${notebook.startsWith("d/") ? "" : `/@${namespace}`}/${notebook}`) +
-      `${name}`;
-    return html`<a href="${link}" target="_blank">${label}</a>`;
+      `${name}${correlation}`;
+    return html`<a href="${link}" target="_blank">${link}</a>`;
   } catch (err) {
     console.error("Links don't work when embedded, but the deployed code does");
     return Object.defineProperty({}, "href", {
       get: () => {
         throw new Error(
-          "Serverless cells do not work on embedded or unshared pages"
+          "Serverless cells do not work on embedded or unshared pages, unless you set the hostNotebook option"
         );
       }
     });
   }
 }
-)});
-  main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], function(onVersion){return(
+)}
+
+function _onVersionPublished(onVersion){return(
 onVersion((metadata) => {
   // Run the cache invlidation routines when a new version is published
   // See https://observablehq.com/@endpointservices/webcode-onpublish
@@ -159,16 +216,18 @@ onVersion((metadata) => {
     `https://webcode.run/observablehq.com/@endpointservices/webcode-onpublish;onpublish?id=${metadata.id}`
   );
 })
-)});
-  main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], function(subdomain,notebook){return(
+)}
+
+function _getContext(subdomain,notebook){return(
 () => window["@endpointservices.context"] || (() => ({
   serverless: false,
   namespace: subdomain(),
   notebook: notebook(),
   secrets: {}
 }))()
-)});
-  main.variable(observer("Response")).define("Response", function(){return(
+)}
+
+function _Response(){return(
 class {
   constructor(req, done) {
     this.req = req;
@@ -264,8 +323,9 @@ class {
     };
   }
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`
 ### Change Log
   - 2021-08-07
@@ -296,8 +356,9 @@ md`
   - 2020-11-18: Serverside performance increase
   - 2020-11-17: Published
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _13(md){return(
 md`
 
 # API Reference
@@ -402,15 +463,39 @@ By default Serverless cells cannot be called by other Serverless cells and can o
 
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _14(md){return(
 md`## Express Routing
 
 You can attached an Express router to allow fine grained path based responses. Find out more [here](https://observablehq.com/@tomlarkworthy/api-hosting-with-express).
 
 `
-)});
-  main.variable(observer("subdomain")).define("subdomain", ["html","location"], function(html,location){return(
+)}
+
+function _chars(){return(
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+)}
+
+function _salt(){return(
+window.crypto
+  // ~6 bits per selection, we need 120
+  .getRandomValues(new Uint32Array(Math.ceil(120.0 / 5.9)))
+)}
+
+function _generateSessionId(salt,chars){return(
+(name) => {
+  const letters = new Uint32Array(salt);
+  for (let i = 0; i < name.length; i++) {
+    letters[i] = salt[i] ^ name.charCodeAt(i % name.length);
+  }
+  return letters
+    .reduce((acc, n) => acc.concat(chars[n % chars.length]), [])
+    .join("");
+}
+)}
+
+function _subdomain(html,location){return(
 (url) => {
   url = url || html`<a href="">`.href;
   const origin = location.origin;
@@ -421,8 +506,9 @@ You can attached an Express router to allow fine grained path based responses. F
   if (match = /^https:\/\/([^.]*).static.observableusercontent.com/.exec(origin)) return match[1]
   return undefined;
 }
-)});
-  main.variable(observer("notebook")).define("notebook", ["html"], function(html){return(
+)}
+
+function _notebook(html){return(
 (url) => {
   url = url || html`<a href="">`.href;
   let match;
@@ -430,10 +516,46 @@ You can attached an Express router to allow fine grained path based responses. F
   if (match = /^https:\/\/(next\.)?observablehq.com\/(d\/[^/?#]*)/.exec(url)) return match[2]
   throw new Error("Cannot determine notebook name")
 }
-)});
+)}
+
+function _22(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["PreviewServerlessCells@2.png", {url: new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9.png", import.meta.url), mimeType: "image/png", toString}],
+    ["webcodeURL@1.svg", {url: new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["FileAttachment","width","md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("viewof host")).define("viewof host", ["Inputs"], _host);
+  main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
+  main.variable(observer("viewof region")).define("viewof region", ["Inputs"], _region);
+  main.variable(observer("region")).define("region", ["Generators", "viewof region"], (G, _) => G.input(_));
+  main.variable(observer("viewof livecode")).define("viewof livecode", ["Inputs"], _livecode);
+  main.variable(observer("livecode")).define("livecode", ["Generators", "viewof livecode"], (G, _) => G.input(_));
+  main.variable(observer()).define(["deploy","host","region","livecode"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","generateSessionId","Response","subdomain","getContext","html"], _deploy);
+  main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], _onVersionPublished);
+  main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], _getContext);
+  main.variable(observer("Response")).define("Response", _Response);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("chars")).define("chars", _chars);
+  main.variable(observer("salt")).define("salt", _salt);
+  main.variable(observer("generateSessionId")).define("generateSessionId", ["salt","chars"], _generateSessionId);
+  main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
+  main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
+  main.variable(observer()).define(["footer"], _22);
   return main;
 }

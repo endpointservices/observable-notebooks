@@ -1,14 +1,13 @@
 // https://observablehq.com/@tomlarkworthy/tom-larkworthy@189
 import define1 from "./c0de6bf6c2f598ef@62.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`
 # Tom Larkworthy
 `
-)});
-  main.variable(observer("futurice_profile")).define("futurice_profile", ["html"], function(html){return(
+)}
+
+function _futurice_profile(html){return(
 html`
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
@@ -38,8 +37,9 @@ html`
   </div>
 </div>
 `
-)});
-  main.variable(observer("futurice_profile_bulma")).define("futurice_profile_bulma", ["html","bulmaWithIcons"], function(html,bulmaWithIcons){return(
+)}
+
+function _futurice_profile_bulma(html,bulmaWithIcons){return(
 html`
 ${bulmaWithIcons}
 <div class="columns">
@@ -65,7 +65,13 @@ ${bulmaWithIcons}
 </div>
 </div>
 </div>`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer("futurice_profile")).define("futurice_profile", ["html"], _futurice_profile);
+  main.variable(observer("futurice_profile_bulma")).define("futurice_profile_bulma", ["html","bulmaWithIcons"], _futurice_profile_bulma);
   const child1 = runtime.module(define1);
   main.import("bulmaWithIcons", child1);
   return main;

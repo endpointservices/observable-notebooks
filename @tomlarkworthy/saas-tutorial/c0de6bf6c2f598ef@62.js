@@ -1,10 +1,9 @@
 // https://observablehq.com/@tomlarkworthy/bulma@62
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Bulma`
-)});
-  main.variable(observer()).define(["html"], function(html){return(
+)}
+
+function _2(html){return(
 html`
 <quote>
 <a href="https://bulma.io/">Bulma</a> is a CSS framework based on Flexbox.
@@ -12,16 +11,18 @@ html`
 
 If you want to customize have a look at <a href='https://observablehq.com/@tomlarkworthy/custom-bulma'>custom-bulma</a>
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _3(md){return(
 md`
 ~~~js
 import {bulma} from "@tomlarkworthy/bulma"
 import {bulmaWithIcons} from "@tomlarkworthy/bulma"
 ~~~
 `
-)});
-  main.variable(observer("box")).define("box", ["html"], function(html){return(
+)}
+
+function _box(html){return(
 html`
 <div class="box">
   <article class="media">
@@ -55,8 +56,9 @@ html`
   </article>
 </div>
 `
-)});
-  main.variable(observer("card")).define("card", ["html"], function(html){return(
+)}
+
+function _card(html){return(
 html`<div class="columns">
       <div class="column is-one-third">
         
@@ -88,8 +90,9 @@ html`<div class="columns">
     </div>
   </div>
 </div>`
-)});
-  main.variable(observer("colorIcons")).define("colorIcons", ["html"], function(html){return(
+)}
+
+function _colorIcons(html){return(
 html`<span class="icon has-text-info">
   <i class="fas fa-info-circle"></i>
 </span>
@@ -102,31 +105,52 @@ html`<span class="icon has-text-info">
 <span class="icon has-text-danger">
   <i class="fas fa-ban"></i>
 </span>`
-)});
-  main.variable(observer("overrides")).define("overrides", ["html"], function(html){return(
+)}
+
+function _overrides(html){return(
 html`<style>
 h1 {
 	font-size: 3rem !important;
 }
 </style>`
-)});
-  main.variable(observer("bulmaWithIcons")).define("bulmaWithIcons", ["require","FONT_AWESOME_VERSION","bulma"], async function(require,FONT_AWESOME_VERSION,bulma)
+)}
+
+async function _bulmaWithIcons(require,FONT_AWESOME_VERSION,bulma)
 {
   await require(`https://use.fontawesome.com/releases/${FONT_AWESOME_VERSION}/js/all.js`).catch(() => {});
   return bulma;
 }
-);
-  main.variable(observer("bulma")).define("bulma", ["html","BULMA_VERSION"], function(html,BULMA_VERSION){return(
+
+
+function _bulma(html,BULMA_VERSION){return(
 html`<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/${BULMA_VERSION}/css/bulma.min.css">`
-)});
-  main.variable(observer("BULMA_VERSION")).define("BULMA_VERSION", function(){return(
+)}
+
+function _BULMA_VERSION(){return(
 "0.9.1"
-)});
-  main.variable(observer("FONT_AWESOME_VERSION")).define("FONT_AWESOME_VERSION", function(){return(
+)}
+
+function _FONT_AWESOME_VERSION(){return(
 "v5.15.0"
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`https://fontawesome.com/icons?d=gallery&m=free`
-)});
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["html"], _2);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer("box")).define("box", ["html"], _box);
+  main.variable(observer("card")).define("card", ["html"], _card);
+  main.variable(observer("colorIcons")).define("colorIcons", ["html"], _colorIcons);
+  main.variable(observer("overrides")).define("overrides", ["html"], _overrides);
+  main.variable(observer("bulmaWithIcons")).define("bulmaWithIcons", ["require","FONT_AWESOME_VERSION","bulma"], _bulmaWithIcons);
+  main.variable(observer("bulma")).define("bulma", ["html","BULMA_VERSION"], _bulma);
+  main.variable(observer("BULMA_VERSION")).define("BULMA_VERSION", _BULMA_VERSION);
+  main.variable(observer("FONT_AWESOME_VERSION")).define("FONT_AWESOME_VERSION", _FONT_AWESOME_VERSION);
+  main.variable(observer()).define(["md"], _12);
   return main;
 }

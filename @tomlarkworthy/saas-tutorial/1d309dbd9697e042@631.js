@@ -1,14 +1,11 @@
-import define1 from "./8aac8b2cb06bf434@247.js";
-import define2 from "./b09f1f038b1040e3@69.js";
+// https://observablehq.com/@tomlarkworthy/github-backups@631
+import define1 from "./8aac8b2cb06bf434@261.js";
+import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./e6f8b27a19576fcb@428.js";
-import define5 from "./58f3eb7334551ae6@187.js";
+import define5 from "./58f3eb7334551ae6@211.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["image@1.png",new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md"], function(md){return(
+function _1(md){return(
 md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
 
 Take control of your data and relax. Backup your public and team [Observable](https://observablehq.com) notebooks to a Github repository *automatically when published*.
@@ -19,16 +16,18 @@ The setup is a two step process.
 2. In the Github repository, setup an Action Workflow that downloads the \`notebook.tar.gz\` and unpacks it.
 
 [Observable notebook exports](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) are ES6 modules with a HTML runner. You can easily run your notebooks without a dependency on Observable servers, or include the code in a build process. Take a look for yourself at our Github backups [here](https://github.com/endpointservices/observable-notebooks).`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Import the Github backup notebook.
 
 
 ~~~js
 import {enableGithubBackups, backupNowButton} from \`@tomlarkworthy/github-backups\`
 ~~~`
-)});
-  main.variable(observer()).define(["FileAttachment","md"], async function(FileAttachment,md){return(
+)}
+
+async function _3(FileAttachment,md){return(
 md`## Call \`enableGithubBackups({ owner, repo })\`
 
 In an Observable notebook call \`enableGithubBackups({ owner, repo })\` with the target Github repository for backups. For example,
@@ -44,12 +43,16 @@ enableGithubBackups({
 This will open a webcode endpoint UI. Store a Github [access token](https://github.com/settings/tokens/new) in a secret named \`github_token\`, and bind it to the endpoint, as shown below. If you add an API key you can backup non-public team notebooks.
 
 ${await FileAttachment("image@1.png").image({style: 'max-width: 640px'})}
+
+⚠️ You notebook must be public *or* you must provide an API key for the backup process to read the source.
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _4(md){return(
 md`### Implementation`
-)});
-  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy","getMetadata2"], function(onVersion,getMetadata,dispatchProxyName,createDispatchProxy,getMetadata2){return(
+)}
+
+function _enableGithubBackups(onVersion,getMetadata,dispatchProxyName,createDispatchProxy,getMetadata2){return(
 function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
@@ -120,13 +123,15 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
 
   return dispatchBackup;
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _6(md){return(
 md`### Backup now button
 
 It's useful, especially when setting up, to manually trigger the backup. Use the \`backupNowButton()\` function to trigger the Github workflow.`
-)});
-  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html","getCurrentMetadata"], function(Inputs,html,getCurrentMetadata){return(
+)}
+
+function _backupNowButton(Inputs,html,getCurrentMetadata){return(
 () =>
   Inputs.button("backup now", {
     reduce: async () => {
@@ -148,8 +153,9 @@ It's useful, especially when setting up, to manually trigger the backup. Use the
       });
     }
   })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _8(md){return(
 md`### What *enableGithubBackups* does
 
 *enableGithubBackups* setups up an endpoint that receives \`onVersion\` hook that triggers backup repository workflow stored in Github. The endpoint sends the Github repository workflow an event_type of type \`new_notebook_version\` along with a client payload JSON containing the notebook \`id\` and \`version\` and authenticated with the \`github_token\` credentials.
@@ -157,8 +163,9 @@ md`### What *enableGithubBackups* does
 Note the actual backup is performed by a Github Action.
 
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Setup \`.github/workflows/backup.yml\`
 
 In a Github repository for backups, create a workflow for performing the backups. The following example comes from [endpointservices/observable-notebooks/.github/workflows/backup.yml](https://github.com/endpointservices/observable-notebooks/blob/main/.github/workflows/backup.yml). Note you can send all notebooks to the same repository as they are prefixed by Observable login and slug.
@@ -168,7 +175,6 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
-concurrency: backups # Prevent parallel commits clashing
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -212,31 +218,67 @@ jobs:
           fi
 \`\`\`
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _10(md){return(
+md`You can see if your workflow is triggering in the action sections of your repository in Github.`
+)}
+
+function _11(md){return(
 md`## Daily backup job
 
 Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow to ensure backups converge to the latest.`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _12(md){return(
 md`## Example
 
 The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github (and the Action Workflow file is in that repository too). Of course, if you are not *tomlarkworthy* you cannot login the the endpoint below, and there is no way to access my personal *github_token* but it is there, enabling the integration.`
-)});
-  main.variable(observer()).define(["enableGithubBackups"], function(enableGithubBackups){return(
+)}
+
+function _13(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
   repo: "observable-notebooks",
   allow: ["tomlarkworthy", "endpointservices"],
   debugProxy: true // Places breakpoint inside dispatch proxy (final step before Github)
 })
-)});
-  main.variable(observer()).define(["backupNowButton"], function(backupNowButton){return(
+)}
+
+function _14(backupNowButton){return(
 backupNowButton()
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`## Dependencies`
-)});
+)}
+
+function _21(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image@1.png", {url: new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["FileAttachment","md"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","getMetadata","dispatchProxyName","createDispatchProxy","getMetadata2"], _enableGithubBackups);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html","getCurrentMetadata"], _backupNowButton);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["enableGithubBackups"], _13);
+  main.variable(observer()).define(["backupNowButton"], _14);
+  main.variable(observer()).define(["md"], _15);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
@@ -249,8 +291,6 @@ md`## Dependencies`
   main.import("metadata", "getMetadata2", child4);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _21);
   return main;
 }

@@ -1,12 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/testing@659
-import define1 from "./84e66f78139ac354@814.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+// https://observablehq.com/@tomlarkworthy/testing@669
+import define1 from "./84e66f78139ac354@829.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
-export default function define(runtime, observer) {
-  const main = runtime.module();
-  const fileAttachments = new Map([["noun_test_2404407.svg",new URL("./files/b85565d2b6f001a2db39bdbeafbf5aa687188a77a6f65088a3da275743064af6ec763f97d4575207873165a49b07b65e492987b100b4a0d6bbe3df1f74efda1e",import.meta.url)]]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], async function(md,FileAttachment){return(
+async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
 
 <center>
@@ -52,8 +48,9 @@ See the [example here](https://observablehq.com/@tomlarkworthy/testing-example).
 - 2020-03-23 TAP reports are now hosted by "orchestrator" cells so can be used to test serverless cell services
 - 2020-02-14 Collaberation between [@chonghorizons](https://observablehq.com/@chonghorizons) and [@tomlarkworthy](https://observablehq.com/@tomlarkworthy) to add *timeout_ms* and explicit _done_() callback
 `
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _2(md){return(
 md`## Lazy loading
 
 You might not want testing to be a static dependancy, you can use something like the following to programatically load the testing library only if some condition is true. (thanks [@mootari](/@mootari) who donated this)
@@ -75,8 +72,9 @@ testing = {
 ~~~
 
 `
-)});
-  main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","reconcile","html","HTMLAnchorElement","invalidation"], function(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){return(
+)}
+
+function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){return(
 ({
   name = "tests", // Set to null to turn of tap report link
   timeout_ms = 30000
@@ -135,7 +133,7 @@ testing = {
 
   function generate() {
     return html`<div class="testsuite" id=${id}>
-        <h2 id="title{id}">${name}</h2>
+        ${name ? html`<h2 id="title{id}">${name}</h2>` : null}
         <a name="testsuite${id}"></a>
         <input key="filter"
           oninput=${(e) => e.stopPropagation()}
@@ -219,8 +217,9 @@ testing = {
   view.value = api;
   return view;
 }
-)});
-  main.variable(observer("report")).define("report", function(){return(
+)}
+
+function _report(){return(
 function report(suite, { timeout = 10000 } = {}) {
   function tap(suite) {
     // Ugly indentation here to avoid whitespace in the TAP report.
@@ -252,111 +251,134 @@ ${Object.keys(suite.results)
     setTimeout(waitForResults, 1000);
   });
 }
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _5(md){return(
 md`## Test Suite UI`
-)});
-  main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], function(createSuite){return(
+)}
+
+function _suite(createSuite){return(
 createSuite({
   timeout_ms: 5000
 })
-)});
-  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _7(md){return(
 md`#### The report links to an always on TAP report`
-)});
-  main.variable(observer()).define(["html","report","suite"], async function(html,report,suite){return(
+)}
+
+async function _8(html,report,suite){return(
 html`<pre>${await report(suite)}</pre>`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _9(md){return(
 md`## Some Tests`
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _10(suite,expect){return(
 suite.test("sync pass", () => expect(true).toBe(true))
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _11(md){return(
 md`#### Demo of what a failing test looks like`
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _12(suite,expect){return(
 suite.test("sync fail", () => expect(true).toBe(false))
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _13(suite,expect){return(
 suite.test("throw exception", () => {
   console.log("Run: Throws exception")
   expect(() => {
     throw new Error("Expected exception");
   }).toThrow();
 })
-)});
-  main.variable(observer()).define(["suite"], function(suite){return(
+)}
+
+function _14(suite){return(
 suite.test("asyncORIG - original function", async () => {
   console.log("Run: async function")
   await new Promise(resolve => setTimeout(resolve, 500));
   return "foo2"
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _15(md){return(
 md`### Some more async function tests
 
 added by @chonghorizons, Feb2021`
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _16(md){return(
 md`#### Demo of timeout`
-)});
-  main.variable(observer()).define(["suite"], function(suite){return(
+)}
+
+function _17(suite){return(
 suite.test("async0 - should fail, no resolve", async () => {
   console.log("Run: async function")
 //  await new Promise(resolve => setTimeout(resolve, 1000));
   await new Promise( resolve => {});
 })
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _18(suite,expect){return(
 suite.test("async1 check returned data", async () => {
   await new Promise(resolve => setTimeout(()=>resolve("foo"), 1000))
     .then(data => {
     expect(data).toBe("foo");
   })
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _19(md){return(
 md`#### Demo of not calling _done_ will timeout`
-)});
-  main.variable(observer()).define(["suite"], function(suite){return(
+)}
+
+function _20(suite){return(
 suite.test("async2 function hanging example, should fail", done => {
   
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _21(md){return(
 md`#### Demo of _done_ param is propogated as an error`
-)});
-  main.variable(observer()).define(["suite"], function(suite){return(
+)}
+
+function _22(suite){return(
 suite.test("done arg is an error", done => {
   done(new Error("Not an error really"));
 })
-)});
-  main.variable(observer()).define(["md"], function(md){return(
+)}
+
+function _23(md){return(
 md`#### Demo of normal errors will fail a test with _done_`
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _24(suite,expect){return(
 suite.test("Failure with done raises error", async done => {
   expect(true).toBe(false);
 })
-)});
-  main.variable(observer()).define(["suite","expect"], function(suite,expect){return(
+)}
+
+function _25(suite,expect){return(
 suite.test('async4: the data is peanut butter', () => {
   const fetchData = () => new Promise(resolve => resolve('peanut butter'));
   return fetchData().then(data => {
     expect(data).toBe('peanut butter');
   });
 })
-)});
-  const child1 = runtime.module(define1);
-  main.import("reconcile", child1);
-  main.import("html", child1);
-  main.variable(observer("pseudouuid")).define("pseudouuid", function(){return(
+)}
+
+function _html(htl){return(
+htl.html
+)}
+
+function _pseudouuid(){return(
 () => Math.random().toString(16).substring(3)
-)});
-  main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], function(require,JEST_EXPECT_STANDALONE_VERSION)
+)}
+
+function _expect(require,JEST_EXPECT_STANDALONE_VERSION)
 {
   console.log("loding expect");
   if (window.expect) return window.expect;
@@ -368,14 +390,57 @@ suite.test('async4: the data is peanut butter', () => {
     return window.expect;
   });
 }
-);
-  main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", function(){return(
+
+
+function _JEST_EXPECT_STANDALONE_VERSION(){return(
 "24.0.2"
-)});
+)}
+
+function _32(footer){return(
+footer
+)}
+
+export default function define(runtime, observer) {
+  const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["noun_test_2404407.svg", {url: new URL("./files/b85565d2b6f001a2db39bdbeafbf5aa687188a77a6f65088a3da275743064af6ec763f97d4575207873165a49b07b65e492987b100b4a0d6bbe3df1f74efda1e.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","reconcile","html","HTMLAnchorElement","invalidation"], _createSuite);
+  main.variable(observer("report")).define("report", _report);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
+  main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["html","report","suite"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["suite","expect"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["suite","expect"], _12);
+  main.variable(observer()).define(["suite","expect"], _13);
+  main.variable(observer()).define(["suite"], _14);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["suite"], _17);
+  main.variable(observer()).define(["suite","expect"], _18);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["suite"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["suite"], _22);
+  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["suite","expect"], _24);
+  main.variable(observer()).define(["suite","expect"], _25);
+  main.variable(observer("html")).define("html", ["htl"], _html);
+  const child1 = runtime.module(define1);
+  main.import("reconcile", child1);
+  main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
+  main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
+  main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], function(footer){return(
-footer
-)});
+  main.variable(observer()).define(["footer"], _32);
   return main;
 }
