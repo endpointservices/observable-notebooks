@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/login-with-comment@1438
-import define1 from "./993a0c51ef1175ea@1362.js";
+import define1 from "./993a0c51ef1175ea@1373.js";
 import define2 from "./d84ccee0a2202d45@337.js";
 import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
@@ -8,7 +8,7 @@ import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./698257e86fae4586@374.js";
 import define8 from "./ab3e70b29c480e6d@83.js";
 import define9 from "./b8a500058f806a6b@11.js";
-import define10 from "./58f3eb7334551ae6@210.js";
+import define10 from "./58f3eb7334551ae6@211.js";
 
 async function _1(md,FileAttachment){return(
 md`# Login with comment
