@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/encapsulated-monitoring@229
-import define1 from "./293899bef371e135@271.js";
+// https://observablehq.com/@endpointservices/encapsulated-monitoring@231
+import define1 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# The Fully Encapsulated Monitoring Notebook
@@ -58,14 +58,14 @@ The video and notebook series [Building a SMART FARM](https://observablehq.com/@
 )}
 
 function _9(md){return(
-md`### 1. [Realtime Inbound Request Log](https://observablehq.com/@endpointservices/realtime-request-log)
+md`### 2. [Realtime Inbound Request Log](https://observablehq.com/@endpointservices/realtime-request-log)
 The [Realtime Inbound Request Log](https://observablehq.com/@endpointservices/realtime-request-log) notebook hosts an endpoint and puts all inbound requests in a log. When you view the notebook the log entries are queried and some summaries are provided.
 This notebook was developed to help me sniff request headers on a remote machine not under my control, by scripting the remote machine to query the instrumented endpoint.
 `
 )}
 
 function _10(md){return(
-md`### 2. [Latency Monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor)
+md`### 3. [Latency Monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor)
 
 The [Latency Monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor) notebook is a full end-to-end prober solution. It periodically schedules traffic to a system, measures the latency, and summarizes the results in a dashboard.
 
