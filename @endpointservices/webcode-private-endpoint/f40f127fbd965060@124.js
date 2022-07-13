@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/webcode-private-endpoint@123
-import define1 from "./293899bef371e135@247.js";
+// https://observablehq.com/@endpointservices/webcode-private-endpoint@124
+import define1 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# [WEBCode.run](https://webcode.run) Private Endpoints Released`
@@ -37,11 +37,7 @@ I am going to start posting webcode.run updates to a [newsletter](https://webcod
 `
 )}
 
-function _4(htl){return(
-htl.html`<iframe src="https://webcode.substack.com/embed" width="480" height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>`
-)}
-
-function _6(footer){return(
+function _5(footer){return(
 footer
 )}
 
@@ -50,9 +46,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["htl"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer()).define(["htl"], _4);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _6);
+  main.variable(observer()).define(["footer"], _5);
   return main;
 }
