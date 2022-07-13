@@ -57,7 +57,10 @@ FileAttachment("empty@1").constructor.__proto__
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["empty@1",new URL("./files/aaf5ec330f0dfd9b95a227670f343e20580ad90dc63af4ae39c38035b5a48001b3a57a354a5a3033ac3b336dc6dffa189021d093b9c9ac83e1e9fae64a08f352",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["empty@1", {url: new URL("./files/aaf5ec330f0dfd9b95a227670f343e20580ad90dc63af4ae39c38035b5a48001b3a57a354a5a3033ac3b336dc6dffa189021d093b9c9ac83e1e9fae64a08f352.bin", import.meta.url), mimeType: "application/octet-stream", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof file")).define("viewof file", ["localFileInput"], _file);

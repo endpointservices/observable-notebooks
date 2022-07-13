@@ -279,7 +279,10 @@ require("d3@6")
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["poodle (3).json",new URL("./files/8bd411c3335c848e8abba1e8d4f1b21f851bbd300d8527daf069b929de8fac53c55b245d18f022eb46a29961fc3bda3246f674b93508b6fe54730ce9721e2568",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["poodle (3).json", {url: new URL("./files/8bd411c3335c848e8abba1e8d4f1b21f851bbd300d8527daf069b929de8fac53c55b245d18f022eb46a29961fc3bda3246f674b93508b6fe54730ce9721e2568.json", import.meta.url), mimeType: "application/json", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["visualization"], _2);

@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase-admin@367
+// https://observablehq.com/@tomlarkworthy/firebase-admin@374
 function _1(md){return(
 md`# Firebase Admin and Google API helpers in the browser
 
@@ -405,7 +405,10 @@ require('https://bundle.run/jsrsasign@10.1.4')
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);

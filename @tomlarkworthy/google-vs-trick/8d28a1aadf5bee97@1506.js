@@ -1,13 +1,13 @@
-// https://observablehq.com/@tomlarkworthy/google-vs-trick@1501
+// https://observablehq.com/@tomlarkworthy/google-vs-trick@1506
 import define1 from "./b5172ba044a84c1e@665.js";
 import define2 from "./18498b485712f206@114.js";
-import define3 from "./0e0b35a92c819d94@408.js";
+import define3 from "./0e0b35a92c819d94@434.js";
 import define4 from "./048a17a165be198d@263.js";
 import define5 from "./3d321b3f7d398726@462.js";
-import define6 from "./027541187c96745d@145.js";
+import define6 from "./027541187c96745d@147.js";
 import define7 from "./f92778131fd76559@1173.js";
 import define8 from "./bb2055d580bbbab2@106.js";
-import define9 from "./293899bef371e135@225.js";
+import define9 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# The Google 'VS' trick
@@ -47,8 +47,8 @@ So you need an Observable account and to leave a comment on this notebook to use
 *also you can disable notifications in the notebook burger menu / settings*`
 )}
 
-function _5($0){return(
-$0
+function _user(createLogin){return(
+createLogin()
 )}
 
 function _6(md){return(
@@ -139,10 +139,9 @@ Inputs.bind(
 function _SINGLE_RESULTS_ONLY(Inputs,localStorageView){return(
 Inputs.bind(
   Inputs.toggle({
-    label: "Single term results only",
-    value: false
+    label: "Single term results only"
   }),
-  localStorageView("topic_search_singles")
+  localStorageView("topic_search_singles", { json: true })
 )
 )}
 
@@ -787,13 +786,19 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@2.png",new URL("./files/17ad1408bf1c54d4874bb9a2dcccb12109e06ba19a3982f788292b11cfbb4a8e612461bfac0c6cd412a5202f638d78a3edc1fd4cd19dbe20938f49dee65c9c44",import.meta.url)],["poodle (7).json",new URL("./files/d35859fb70678f8eecea94791dc2f07a19fe255bf78809a814927a01948fd29e013d73245fadebb4da402baca166f7b13b99a9943e963f9eb4d2411a3ec1f2b7",import.meta.url)],["egograph.png",new URL("./files/e03b974a2dcc8317f3b9eb2385cdf572a12641671b4adaeae7941bc6efdfcdc0df70899ce536de7a6bc39b33acd09f9d3f2d2725ae5238ac098cde74f6d223b8",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image@2.png", {url: new URL("./files/17ad1408bf1c54d4874bb9a2dcccb12109e06ba19a3982f788292b11cfbb4a8e612461bfac0c6cd412a5202f638d78a3edc1fd4cd19dbe20938f49dee65c9c44.png", import.meta.url), mimeType: "image/png", toString}],
+    ["poodle (7).json", {url: new URL("./files/d35859fb70678f8eecea94791dc2f07a19fe255bf78809a814927a01948fd29e013d73245fadebb4da402baca166f7b13b99a9943e963f9eb4d2411a3ec1f2b7.json", import.meta.url), mimeType: "application/json", toString}],
+    ["egograph.png", {url: new URL("./files/e03b974a2dcc8317f3b9eb2385cdf572a12641671b4adaeae7941bc6efdfcdc0df70899ce536de7a6bc39b33acd09f9d3f2d2725ae5238ac098cde74f6d223b8.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["FileAttachment"], _2);
   main.variable(observer()).define(["FileAttachment","md"], _3);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["viewof user"], _5);
+  main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
+  main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["htl","Inputs","downloadObjectAsJson","unvisited","distance","exclude","allEdges","links","initialTerm"], _7);
   main.variable(observer("viewof upload")).define("viewof upload", ["fileInput"], _upload);
@@ -888,8 +893,7 @@ export default function define(runtime, observer) {
   const child5 = runtime.module(define5);
   main.import("fileInput", child5);
   const child6 = runtime.module(define6);
-  main.import("viewof user", child6);
-  main.import("user", child6);
+  main.import("createLogin", child6);
   const child7 = runtime.module(define7);
   main.import("view", child7);
   const child8 = runtime.module(define8);
