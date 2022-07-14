@@ -1,3 +1,4 @@
+// https://observablehq.com/@tomlarkworthy/ndd@1181
 import define1 from "./e1c39d41e8e944b0@420.js";
 import define2 from "./293899bef371e135@271.js";
 
@@ -39,10 +40,9 @@ function _clicker(Inputs){return(
 Inputs.button("Click me!")
 )}
 
-async function _delayedDependentAsyncComputation(clicker,Promises,uid)
+function _delayedDependentAsyncComputation(clicker,uid)
 {
-  clicker; // create dependancy on clicker cell.
-  await Promises.delay(1000); // slow to resolve a value
+  clicker; // create dependancy on clicker cellto resolve a value
   return uid();
 }
 
@@ -310,7 +310,6 @@ function _uid(){return(
 
 function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
 function interceptVariable(v, invalidation) {
-  debugger;
   if (excludes.includes(v._name)) return;
   const name = v._name || "anon_" + v._observer.id;
 
@@ -369,7 +368,7 @@ export default function define(runtime, observer) {
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
   main.variable(observer("clicker")).define("clicker", ["Generators", "viewof clicker"], (G, _) => G.input(_));
-  main.variable(observer("delayedDependentAsyncComputation")).define("delayedDependentAsyncComputation", ["clicker","Promises","uid"], _delayedDependentAsyncComputation);
+  main.variable(observer("delayedDependentAsyncComputation")).define("delayedDependentAsyncComputation", ["clicker","uid"], _delayedDependentAsyncComputation);
   main.variable(observer("viewof runPeriodics")).define("viewof runPeriodics", ["Inputs"], _runPeriodics);
   main.variable(observer("runPeriodics")).define("runPeriodics", ["Generators", "viewof runPeriodics"], (G, _) => G.input(_));
   main.variable(observer("periodicFulfilled")).define("periodicFulfilled", ["runPeriodics","Promises"], _periodicFulfilled);
