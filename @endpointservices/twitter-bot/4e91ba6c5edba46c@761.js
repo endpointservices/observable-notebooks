@@ -1,9 +1,9 @@
 // https://observablehq.com/@endpointservices/zapier@761
 import define1 from "./11a5ab8b1b3a51db@1161.js";
-import define2 from "./dff1e917c89f5e76@1711.js";
-import define3 from "./993a0c51ef1175ea@1345.js";
+import define2 from "./dff1e917c89f5e76@1948.js";
+import define3 from "./993a0c51ef1175ea@1375.js";
 import define4 from "./ab3e70b29c480e6d@83.js";
-import define5 from "./293899bef371e135@226.js";
+import define5 from "./293899bef371e135@278.js";
 
 async function _1(md,FileAttachment){return(
 md`# Zapier Cell Trigger
@@ -399,7 +399,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["zapier.png", {url: new URL("./files/e489c027a94f63bdf02166d09611dc04f13681617393d806fb9b4fc52cc09aa4a7f8114000355e2c5813a388a547c0d2154e197be1fb7739f1285c26cf721b20", import.meta.url), mimeType: "image/png", toString}]
+    ["zapier.png", {url: new URL("./files/e489c027a94f63bdf02166d09611dc04f13681617393d806fb9b4fc52cc09aa4a7f8114000355e2c5813a388a547c0d2154e197be1fb7739f1285c26cf721b20.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);

@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/onversion@247
-import define1 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@endpointservices/onversion@261
+import define1 from "./58f3eb7334551ae6@211.js";
 
 function _1(onVersion,md){return(
 md`# On Version Notebook Hook 
@@ -38,12 +38,22 @@ ${(onVersion, '')}
 )}
 
 function _2(md){return(
+md`### Low Latency
+
+With a sample size of 1, I recorded a latency of seven seconds`
+)}
+
+function _3(htl){return(
+htl.html`<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/lGYdoCNkdAk" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+)}
+
+function _4(md){return(
 md`### How it works
 
 When a notebook is published, Observable's infra loads the notebook to scan for metadata. We can detect this process by looking at the host URL (and a few other ways) `
 )}
 
-async function _3(FileAttachment,md){return(
+async function _5(FileAttachment,md){return(
 md`#### Example - WebHook
 
 In this example we ask the notebook to make an outbound request after a notebook is published.
@@ -57,7 +67,7 @@ function _nonce(){return(
 3
 )}
 
-function _5(onVersion){return(
+function _7(onVersion){return(
 onVersion((metadata) => {
   fetch(
     `https://webcode.run/observablehq.com/@endpointservices/realtime-request-log/version-${metadata?.id}@${metadata?.version}`
@@ -65,7 +75,7 @@ onVersion((metadata) => {
 })
 )}
 
-function _6(md){return(
+function _8(md){return(
 md`### Implementation
 
 We check to see if the URL is prefixed with /thumbnail`
@@ -92,7 +102,7 @@ async (work) => {
 }
 )}
 
-function _10(footer){return(
+function _12(footer){return(
 footer
 )}
 
@@ -100,19 +110,21 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image@1.png", {url: new URL("./files/4729a9f274ae2604cf10e1384d5e582d108eb74e56765e26c57dd37a5ef88ddb7850c71291fe021eb33869eb10af413facd2d13d2c332bf325574c61213d5c64", import.meta.url), mimeType: "image/png", toString}]
+    ["image@1.png", {url: new URL("./files/4729a9f274ae2604cf10e1384d5e582d108eb74e56765e26c57dd37a5ef88ddb7850c71291fe021eb33869eb10af413facd2d13d2c332bf325574c61213d5c64.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["onVersion","md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer()).define(["FileAttachment","md"], _3);
+  main.variable(observer()).define(["htl"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["FileAttachment","md"], _5);
   main.variable(observer("nonce")).define("nonce", _nonce);
-  main.variable(observer()).define(["onVersion"], _5);
-  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["onVersion"], _7);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer("extractMetadata")).define("extractMetadata", _extractMetadata);
   main.variable(observer("onVersion")).define("onVersion", ["extractMetadata","html"], _onVersion);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _10);
+  main.variable(observer()).define(["footer"], _12);
   return main;
 }

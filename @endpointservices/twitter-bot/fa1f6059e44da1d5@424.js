@@ -1,6 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/catch-all@394
-import define1 from "./e1c39d41e8e944b0@378.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@tomlarkworthy/catch-all@424
+import define1 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# Detect notebook runtime errors with *catchAll((cellName, reason) => {...})*
@@ -20,20 +19,19 @@ import {catchAll} from '@tomlarkworthy/catch-all'
 )}
 
 function _2(md){return(
-md`#### note
+md`### Change Log
 
-Only the variables present when *catchAll* is called will be tracked, and new cells created afterwards will not be tracked.
+- 2022-06-26, removed mootari/access-runtime and inspected cells instead. This loses the cellName, but does track new cells being added
+  `
+)}
+
+function _3(md){return(
+md`#### note
 
 You can pass an *invalidation* promise as the 2nd argument to clean up the observers, this is needed if you expect to be calling *catchAll* more than once.`
 )}
 
-function _3(md){return(
-md`#### Thanks [@mootari/access-runtime](https://observablehq.com/@mootari/access-runtime)
-
-This notebook operates upon a hacks developed by [@mootari](/@mootari) and [@bryangingechen](/@bryangingechen). Read more in the dependency link 👇`
-)}
-
-function _5(md){return(
+function _4(md){return(
 md`### Demo`
 )}
 
@@ -41,7 +39,7 @@ function _errorTrigger(Inputs,md){return(
 Inputs.button(md`throw an error`, { required: true })
 )}
 
-function _7(Inputs,errorLog){return(
+function _6(Inputs,errorLog){return(
 Inputs.table(errorLog)
 )}
 
@@ -53,7 +51,7 @@ function _errorCell(errorTrigger)
 }
 
 
-function _9(catchAll,$0,invalidation){return(
+function _8(catchAll,$0,invalidation){return(
 catchAll((cellName, reason) => {
   $0.value = $0.value.concat({
     cellName,
@@ -66,36 +64,51 @@ function _errorLog(){return(
 []
 )}
 
-function _11(md){return(
+function _10(md){return(
 md`### Implementation`
 )}
 
-function _catchAll(runtime,modules){return(
-(handler, invalidation) => {
-  const moduleName = "main";
-  Array.from(runtime._variables)
-    .filter((v) => modules.get(v._module) === moduleName)
-    .forEach((v) => {
-      if (v._observer.rejected) {
-        const oldRejectedHandler = v._observer.rejected;
-        v._observer.rejected = (error, name) => {
-          try {
-            handler(name, error);
-          } catch (err) {
-            console.error(err);
-          }
-          // The oldRejectedHandler is often a prototype, so we use Reflect to call it
-          Reflect.apply(oldRejectedHandler, v._observer, [error, name]);
-        };
-        if (invalidation)
-          invalidation.then(() => (v._observer.rejected = oldRejectedHandler));
-      } else {
-        // This is probably the no_observer case
-        // https://github.com/observablehq/runtime/blob/893fed311c59a79fc1b326dd6f8612e85634adce/src/variable.js#L14
-        v._observer.rejected = (error, name) => handler(name, error);
-        if (invalidation)
-          invalidation.then(() => (v._observer.rejected = undefined));
+function _error(Inputs,Event,MutationObserver,invalidation)
+{
+  const view = Inputs.input();
+
+  const notify = (event) => {
+    view.value = event.detail.error;
+    view.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  const processInspectorNode = (el) => {
+    el.addEventListener("error", notify);
+  };
+
+  // Attach to current cells
+  [...document.querySelectorAll(".observablehq").values()].forEach(
+    processInspectorNode
+  );
+  // Watch for new cells
+  const root = document.querySelector(".observablehq-root");
+  if (root) {
+    const observer = new MutationObserver((mutationList, observer) => {
+      for (const mutation of mutationList) {
+        [...mutation.addedNodes].forEach(processInspectorNode);
       }
+    });
+    observer.observe(root, {
+      childList: true
+    });
+    invalidation.then(observer.disconnect);
+  }
+  return view;
+}
+
+
+function _catchAll($0){return(
+(handler, invalidation) => {
+  const listener = () => handler("unknown", $0.value);
+  $0.addEventListener("input", listener);
+  if (invalidation)
+    invalidation.then(() => {
+      $0.removeEventListener(listener);
     });
 }
 )}
@@ -151,27 +164,26 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  const child1 = runtime.module(define1);
-  main.import("runtime", child1);
-  main.import("modules", child1);
-  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _4);
   main.variable(observer("viewof errorTrigger")).define("viewof errorTrigger", ["Inputs","md"], _errorTrigger);
   main.variable(observer("errorTrigger")).define("errorTrigger", ["Generators", "viewof errorTrigger"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","errorLog"], _7);
+  main.variable(observer()).define(["Inputs","errorLog"], _6);
   main.variable(observer("errorCell")).define("errorCell", ["errorTrigger"], _errorCell);
-  main.variable(observer()).define(["catchAll","mutable errorLog","invalidation"], _9);
+  main.variable(observer()).define(["catchAll","mutable errorLog","invalidation"], _8);
   main.define("initial errorLog", _errorLog);
   main.variable(observer("mutable errorLog")).define("mutable errorLog", ["Mutable", "initial errorLog"], (M, _) => new M(_));
   main.variable(observer("errorLog")).define("errorLog", ["mutable errorLog"], _ => _.generator);
-  main.variable(observer()).define(["md"], _11);
-  main.variable(observer("catchAll")).define("catchAll", ["runtime","modules"], _catchAll);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("viewof error")).define("viewof error", ["Inputs","Event","MutationObserver","invalidation"], _error);
+  main.variable(observer("error")).define("error", ["Generators", "viewof error"], (G, _) => G.input(_));
+  main.variable(observer("catchAll")).define("catchAll", ["viewof error"], _catchAll);
   main.variable(observer()).define(["md"], _13);
   main.variable(observer("testing")).define("testing", ["viewof errorTrigger","catchAll"], _testing);
   main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
   main.variable(observer()).define(["suite","mutable errorLog","viewof errorTrigger","Event","testing"], _16);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _18);
   return main;
 }
