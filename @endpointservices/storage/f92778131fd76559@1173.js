@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/view@1173
 import define1 from "./9bed702f80a3797e@402.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal

@@ -1,14 +1,14 @@
 // https://observablehq.com/@endpointservices/storage@941
 import define1 from "./573e072575f28fb9@454.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
-import define3 from "./993a0c51ef1175ea@1345.js";
+import define3 from "./993a0c51ef1175ea@1375.js";
 import define4 from "./52d808b188b8672b@129.js";
-import define5 from "./dff1e917c89f5e76@1711.js";
+import define5 from "./dff1e917c89f5e76@1948.js";
 import define6 from "./3d9d1394d858ca97@553.js";
 import define7 from "./777fe85658e39c55@470.js";
 import define8 from "./1956899a56408464@459.js";
 import define9 from "./0905542adbad836e@55.js";
-import define10 from "./293899bef371e135@247.js";
+import define10 from "./293899bef371e135@278.js";
 
 async function _1(md,FileAttachment){return(
 md`![](${await FileAttachment("storage.png").url()})
@@ -392,7 +392,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["storage.png", {url: new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4", import.meta.url), mimeType: "image/png", toString}]
+    ["storage.png", {url: new URL("./files/2c4b5386929916dd0bdfad6c659a3b1209ff8cd567a651922b03612ed58eab417007bfe078b4de66320e8f709e25d4e8e66dbc1888276d21c68f8f3a5dff3bb4.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
