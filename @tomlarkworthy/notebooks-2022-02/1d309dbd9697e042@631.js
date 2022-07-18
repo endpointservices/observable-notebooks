@@ -1,9 +1,9 @@
-// https://observablehq.com/@tomlarkworthy/github-backups@627
-import define1 from "./8aac8b2cb06bf434@247.js";
+// https://observablehq.com/@tomlarkworthy/github-backups@631
+import define1 from "./8aac8b2cb06bf434@261.js";
 import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./e6f8b27a19576fcb@428.js";
-import define5 from "./58f3eb7334551ae6@209.js";
+import define5 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
@@ -259,7 +259,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image@1.png",new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image@1.png", {url: new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);

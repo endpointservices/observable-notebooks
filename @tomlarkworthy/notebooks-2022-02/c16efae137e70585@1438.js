@@ -1,15 +1,14 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1416
-import define1 from "./993a0c51ef1175ea@1345.js";
-import define2 from "./d84ccee0a2202d45@255.js";
+// https://observablehq.com/@endpointservices/login-with-comment@1438
+import define1 from "./993a0c51ef1175ea@1375.js";
+import define2 from "./d84ccee0a2202d45@337.js";
 import define3 from "./f92778131fd76559@1173.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
-import define5 from "./dff1e917c89f5e76@1711.js";
+import define5 from "./dff1e917c89f5e76@1948.js";
 import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./698257e86fae4586@367.js";
-import define8 from "./c7a3b20cec5d4dd9@659.js";
-import define9 from "./ab3e70b29c480e6d@83.js";
-import define10 from "./b8a500058f806a6b@10.js";
-import define11 from "./58f3eb7334551ae6@209.js";
+import define7 from "./698257e86fae4586@374.js";
+import define8 from "./ab3e70b29c480e6d@83.js";
+import define9 from "./b8a500058f806a6b@11.js";
+import define10 from "./58f3eb7334551ae6@211.js";
 
 async function _1(md,FileAttachment){return(
 md`# Login with comment
@@ -47,6 +46,7 @@ a minimal working example in a 3rd party notebook is [here](https://observablehq
 function _2(md){return(
 md`### Change Log
 
+- 2022-07-24: Syncronize independant login states using authStateListener, so logout on one buttons propogates to all log-with-comments
 - 2021-08-29: Scan for team mebership feature. Looks at profile URLs and adds to JWT's additionalClaims`
 )}
 
@@ -54,7 +54,7 @@ function _3(md){return(
 md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color: var(--syntax_keyword)">viewof</span> user</span>`
 )}
 
-function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
+function _createLogin(userFirebase,html,viewroutine,$0,screen,Event,ask,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
 () => {
   // When no-one is logged in we want don't want the cell to resolve, so we return a promise
   // We want that promise to be resolved next time we get a value
@@ -104,17 +104,28 @@ function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,ha
         updateResult();
 
         if (!userFirebase.auth().currentUser) {
-          response = yield* ask(
-            screen({
-              actions: ["login"]
-            })
-          );
+          const loginUi = screen({
+            actions: ["login"]
+          });
+
+          // We need to see if someone logs in via a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (user)
+              loginUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(loginUi);
+          unsubscribe();
         } else {
-          response = yield* ask(
-            screen({
-              actions: ["logout"]
-            })
-          );
+          const logoutUi = screen({
+            actions: ["logout"]
+          });
+          // We need to see if someone logout ivia a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (!user)
+              logoutUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(logoutUi);
+          unsubscribe();
         }
 
         if (actionWas("logout")) {
@@ -642,15 +653,33 @@ Inputs.toggle({
 })
 )}
 
-function _runTests(runTestsSelector,invalidation){return(
-runTestsSelector ? true: invalidation
+async function _testing(runTestsSelector,invalidation)
+{
+  if (!runTestsSelector) return invalidation;
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+
+
+function _expect(testing){return(
+testing.expect
 )}
 
-function _suite(runTests,createSuite){return(
-runTests && createSuite()
+function _suite(testing){return(
+testing.createSuite()
 )}
 
-function _47(md){return(
+function _48(md){return(
 md`### Sketch of operation
 
 - ask: Login with comment?
@@ -665,7 +694,7 @@ md`### Sketch of operation
 `
 )}
 
-function _48(md){return(
+function _49(md){return(
 md`#### prepare
 
 Client sends the server the public key, so the server can record the clients intent to initiate a comment login. Client keeps private key secret, so only it can obtain credentials later on.
@@ -720,15 +749,11 @@ suite.test("prepare codes cannot be reused", async (done) => {
 })
 )}
 
-function _53(md){return(
+function _54(md){return(
 md`#### findLoginCommentingCode
 
 Finds a username of a person commenting something containing a code on a given notebook URL
 `
-)}
-
-function _55(getCommentsAndNamespace){return(
-getCommentsAndNamespace('https://observablehq.com/d/f063d0526c1317ca')
 )}
 
 function _findLoginCommentingCode(getCommentsAndNamespace){return(
@@ -1023,18 +1048,21 @@ function checkIsURL(arg, name) {
 }
 )}
 
-function _78(footer){return(
+function _77(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["ezgif.com-gif-maker.webp",new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","ask","screen","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
+  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","screen","Event","ask","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
   main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
   main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _6);
@@ -1083,19 +1111,19 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _43);
   main.variable(observer("viewof runTestsSelector")).define("viewof runTestsSelector", ["Inputs"], _runTestsSelector);
   main.variable(observer("runTestsSelector")).define("runTestsSelector", ["Generators", "viewof runTestsSelector"], (G, _) => G.input(_));
-  main.variable(observer("runTests")).define("runTests", ["runTestsSelector","invalidation"], _runTests);
-  main.variable(observer("viewof suite")).define("viewof suite", ["runTests","createSuite"], _suite);
+  main.variable(observer("testing")).define("testing", ["runTestsSelector","invalidation"], _testing);
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _47);
   main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("prepare_backend")).define("prepare_backend", ["deploy","getAccessTokenFromServiceAccount","SERVICE_ACCOUNT_SECRET","signinWithAccessToken","firebase","HOST_NOTEBOOK"], _prepare_backend);
   main.variable(observer("prepare")).define("prepare", ["prepare_backend"], _prepare);
   main.variable(observer("prepareOK")).define("prepareOK", ["suite","randomId","expect","prepare"], _prepareOK);
   main.variable(observer("prepareCodeResuse")).define("prepareCodeResuse", ["suite","randomId","prepare"], _prepareCodeResuse);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _54);
   const child3 = runtime.module(define2);
   main.import("getCommentsAndNamespace", child3);
-  main.variable(observer()).define(["getCommentsAndNamespace"], _55);
   main.variable(observer("findLoginCommentingCode")).define("findLoginCommentingCode", ["getCommentsAndNamespace"], _findLoginCommentingCode);
   main.variable(observer()).define(["html","FileAttachment"], _57);
   main.variable(observer("findLoginCommentingCodeTest")).define("findLoginCommentingCodeTest", ["suite","expect","findLoginCommentingCode"], _findLoginCommentingCodeTest);
@@ -1128,14 +1156,11 @@ export default function define(runtime, observer) {
   main.import("signinWithAccessToken", child8);
   main.import("getAccessTokenFromServiceAccount", child8);
   const child9 = runtime.module(define8);
-  main.import("createSuite", child9);
-  main.import("expect", child9);
+  main.import("pbcopy", child9);
   const child10 = runtime.module(define9);
-  main.import("pbcopy", child10);
+  main.import("promiseRecursive", child10);
   const child11 = runtime.module(define10);
-  main.import("promiseRecursive", child11);
-  const child12 = runtime.module(define11);
-  main.import("footer", child12);
-  main.variable(observer()).define(["footer"], _78);
+  main.import("footer", child11);
+  main.variable(observer()).define(["footer"], _77);
   return main;
 }
