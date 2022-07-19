@@ -1,6 +1,4 @@
-// https://observablehq.com/@mootari/access-runtime@378
-import define1 from "./8e6e97112bddde8a@334.js";
-
+// https://observablehq.com/@mootari/access-runtime@420
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
 
@@ -33,24 +31,28 @@ The following code applies a temporary [monkey patch](https://en.wikipedia.org/w
 `
 )}
 
-function _captureRuntime(){return(
+function _runtime(){return(
 new Promise(resolve => {
+  const debug = new URL(document.baseURI).searchParams.has('debug')
+    ? console.debug
+    : () => {};
   const fn = Set.prototype.forEach;
   Set.prototype.forEach = function(...args) {
     let o, runtime;
     
     if(o = args[1]) {
+      
       if(o._modules) {
-        console.debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/runtime.js#L107');
+        debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/runtime.js#L107');
         runtime = o;
       }
       else if(o._module) {
-        console.debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/variable.js#L147');
+        debug('🎉 Captured Runtime from [thisArg] in https://github.com/observablehq/runtime/blob/c9ec40b/src/variable.js#L147');
         runtime = o._module._runtime;
       }
     }
     else if((o = this[Symbol.iterator]().next().value) && o._module) {
-      console.debug('Captured Runtime from ???');
+      debug('Captured Runtime from ???');
       runtime = o._module._runtime;
     }
     
@@ -63,15 +65,11 @@ new Promise(resolve => {
 })
 )}
 
-function _runtime(captureRuntime){return(
-captureRuntime
-)}
-
-function _5(md){return(
+function _4(md){return(
 md`---`
 )}
 
-function _6(md){return(
+function _5(md){return(
 md`## Modules`
 )}
 
@@ -101,53 +99,42 @@ function _modules(runtime)
 }
 
 
-function _8(md){return(
+function _7(md){return(
 md`## Variables`
+)}
+
+function _8(runtime){return(
+Array.from(runtime._variables).map(v => v._name)
 )}
 
 function _variables(runtime,modules){return(
 Array.from(runtime._variables)
-  .filter(v => v._name !== null)
+  //.filter(v => v._name !== null)
   .map(v => [modules.get(v._module), v._type === 2 ? `(${v._name})` : v._name])
   .reduce((o, [m, v]) => ((o[m]||(o[m]=[])).push(v), o), {})
 )}
 
-function _defines(md,runtime){return(
-md`## Defines (Imports)
-  <!-- In Observable's UI modules are not automatically removed if an importing cell has been changed or deleted. As such runtime._modules and runtime._variables may contain modules and variables that are currently-->
-
-  Listed below are the define() functions of all imported modules.
-  <style>
-pre.observablehq--md-pre {max-height: 20em;border:1px solid #aaa;padding:.5em; box-sizing:border-box}
-code:not(.hljs) {padding: 0px 3px;
-  display: inline-block;
-  border: 1px dotted #0004;
-  border-radius: 3px;
-}
-</style>
-
-  ${Array.from(runtime._modules, ([define]) => `~~~javascript\n${define.toString()}~~~\n`)}
+function _10(md){return(
+md`---
 `
 )}
 
-function _11(md){return(
-md`---`
+function _captureRuntime(runtime){return(
+runtime
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("captureRuntime")).define("captureRuntime", _captureRuntime);
-  main.variable(observer("runtime")).define("runtime", ["captureRuntime"], _runtime);
+  main.variable(observer("runtime")).define("runtime", _runtime);
+  main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["md"], _5);
-  main.variable(observer()).define(["md"], _6);
   main.variable(observer("modules")).define("modules", ["runtime"], _modules);
-  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["runtime"], _8);
   main.variable(observer("variables")).define("variables", ["runtime","modules"], _variables);
-  main.variable(observer("defines")).define("defines", ["md","runtime"], _defines);
-  main.variable(observer()).define(["md"], _11);
-  const child1 = runtime.module(define1);
-  main.import("slider", child1);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("captureRuntime")).define("captureRuntime", ["runtime"], _captureRuntime);
   return main;
 }
