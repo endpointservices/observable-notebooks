@@ -296,11 +296,13 @@ function _runner(settings,Runtime,targetNotebook,$0,Event,$1,$2)
 function _responder(runner,$0,$1,$2){return(
 runner, // No clear time to finish so we just send everytyhing aftger a timeout
 setTimeout(() => {
-  $0.resolve({
+  const response = {
     settings: $0.value,
     errors: $1.value,
     events: $2.value
-  });
+  };
+  console.log("responding", response);
+  $0.resolve(response);
 }, $0.value.wait * 1000)
 )}
 
