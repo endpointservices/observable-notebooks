@@ -146,7 +146,7 @@ endpoint(
       const payload = JSON.stringify(
         {
           settings: response.sessings,
-          errors: response.errors.errors.map((e) => ({
+          errors: response.errors.map((e) => ({
             cell: e.cell,
             message: e.error.message
           }))
