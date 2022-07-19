@@ -1,6 +1,6 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@259
-import define1 from "./e1c39d41e8e944b0@378.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@264
+import define1 from "./e1c39d41e8e944b0@420.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
@@ -70,10 +70,18 @@ function _notebookSnapshot(modules,runtime,promiseState){return(
 (knownVariable) => {
   const moduleName = knownVariable
     ? modules.get(
-        [...runtime._variables].find((v) => v._name === knownVariable)._module
+        [...runtime._variables].find((v) => v._name === knownVariable)?._module
       )
     : "main";
 
+  if (!moduleName) {
+    debugger;
+    throw new Error(
+      `Cannot find tracking variable '${knownVariable}' for notebook snapshot in runtime variables ${JSON.stringify(
+        [...runtime._variables]
+      )}`
+    );
+  }
   console.log(moduleName);
 
   return Promise.all(
