@@ -293,15 +293,15 @@ function _runner(settings,Runtime,targetNotebook,$0,Event,$1,$2)
 }
 
 
-function _responder(runner,$0,settings,errors,events){return(
+function _responder(runner,$0,$1,$2){return(
 runner, // No clear time to finish so we just send everytyhing aftger a timeout
 setTimeout(() => {
   $0.resolve({
-    settings,
-    errors,
-    events
+    settings: $0.value,
+    errors: $1.value,
+    events: $2.value
   });
-}, settings.wait * 1000)
+}, $0.value.wait * 1000)
 )}
 
 function _28(md){return(
@@ -404,7 +404,7 @@ export default function define(runtime, observer) {
   main.variable(observer("Runtime")).define("Runtime", ["viewof healthcheck","invalidation"], _Runtime);
   main.variable(observer("targetNotebook")).define("targetNotebook", ["settings","viewof healthcheck","invalidation"], _targetNotebook);
   main.variable(observer("runner")).define("runner", ["settings","Runtime","targetNotebook","viewof events","Event","viewof sentry","viewof errors"], _runner);
-  main.variable(observer("responder")).define("responder", ["runner","viewof healthcheck","settings","errors","events"], _responder);
+  main.variable(observer("responder")).define("responder", ["runner","viewof healthcheck","viewof errors","viewof events"], _responder);
   main.variable(observer()).define(["md"], _28);
   const child1 = runtime.module(define1);
   main.import("notebookSnapshot", child1);
