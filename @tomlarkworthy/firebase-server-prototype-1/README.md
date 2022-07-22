@@ -1,6 +1,6 @@
 # Hackable Firebase Realtime Database Server Prototype #1
 
-https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@1002
+https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@1006
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/58676df968603c83@1002.tgz?v=3
+npm install https://api.observablehq.com/d/58676df968603c83@1006.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
