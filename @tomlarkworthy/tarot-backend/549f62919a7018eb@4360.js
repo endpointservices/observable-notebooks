@@ -46,8 +46,8 @@ md`## Application UI
 This is the final application, it is a composite of all our separately designed UI pieces.`
 )}
 
-async function _display(font,ndd,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
-font, ndd, 
+async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
+font,
 console.log("viewof display"),
 view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
   "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp"
@@ -143,9 +143,9 @@ md`#### shareID
 First, we detect a share id from either the URL params, or the last path segment.`
 )}
 
-function _shareId(ndd,URLSearchParams,location)
+function _shareId(URLSearchParams,location)
 {
-  ndd, console.log("share id");
+  console.log("share id");
   const search = new URLSearchParams(location.search).get("share");
   if (search) return search;
   const path = location.pathname.split("/").slice(-1)[0];
@@ -1471,10 +1471,11 @@ function _150(md){return(
 md`### clientside user`
 )}
 
-async function _user(getContext,firebase,invalidation){return(
-(await getContext()).serverless === false
-  ? (await firebase.auth().signInAnonymously()).user
-  : invalidation
+async function _user(getContext,invalidation,firebase){return(
+(await getContext()).serverless === true
+  ? (console.log("Not logging in"), invalidation)
+  : (console.log("logging in"),
+    (await firebase.auth().signInAnonymously()).user)
 )}
 
 function _152(md){return(
@@ -1496,7 +1497,11 @@ Inputs.button("update index.html", {
 })
 )}
 
-function _154(deploy,page){return(
+function _154(md){return(
+md`### Test server`
+)}
+
+function _155(deploy,page){return(
 deploy("index", (req, res) => {
   res.send(page({ debug: true }));
 })
@@ -1512,26 +1517,32 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _158(md){return(
+function _159(md){return(
 md`By exporting the state in a endoint we can sample the state of the server via a flatdata collector.`
 )}
 
-function _159(endpoint,notebookSnapshot){return(
-endpoint("variables", async (req, res) => {
-  res.json(
-    (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
-      (variable) => ({
-        state: variable.state,
-        name: variable.name,
-        // Note these cells might contain personal information, so we only allow errors values to leave the environment
-        ...(variable.state === "rejected" && { value: variable.value })
-      })
-    )
-  );
-})
+function _160(endpoint,notebookSnapshot){return(
+endpoint(
+  "variables",
+  async (req, res) => {
+    res.json(
+      (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
+        (variable) => ({
+          state: variable.state,
+          name: variable.name,
+          // Note these cells might contain personal information, so we only allow errors values to leave the environment
+          ...(variable.state === "rejected" && { value: variable.value })
+        })
+      )
+    );
+  },
+  {
+    hostNotebook: "@tomlarkworthy/tarot-backend"
+  }
+)
 )}
 
-function _160(md){return(
+function _161(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1563,11 +1574,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _165(md){return(
+function _166(md){return(
 md`## Utilities`
 )}
 
-function _166(md){return(
+function _167(md){return(
 md`### findCardsByName`
 )}
 
@@ -1583,7 +1594,7 @@ async (cardNames) =>
   )
 )}
 
-function _168(md){return(
+function _169(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1610,7 +1621,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _170(md){return(
+function _171(md){return(
 md`### textFit v2.3.1 11/2014 by STRML (strml.github.com) (see license in source)`
 )}
 
@@ -1870,15 +1881,15 @@ htl.html`<style>
 </style>`
 )}
 
-function _174(md){return(
+function _175(md){return(
 md`## Dependencies`
 )}
 
-function _188(md){return(
+function _189(md){return(
 md`### Analytics & Backup`
 )}
 
-function _189(footer){return(
+function _190(footer){return(
 footer
 )}
 
@@ -1893,7 +1904,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("viewof display")).define("viewof display", ["font","ndd","view","FileAttachment","whoInput","questionInput","pickCards","showCards","cards","fortuneOutput","restartButton","shareButton"], _display);
+  main.variable(observer("viewof display")).define("viewof display", ["font","view","FileAttachment","whoInput","questionInput","pickCards","showCards","cards","fortuneOutput","restartButton","shareButton"], _display);
   main.variable(observer("display")).define("display", ["Generators", "viewof display"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _5);
   main.variable(observer("ndd")).define("ndd", ["_ndd"], _ndd);
@@ -1901,7 +1912,7 @@ export default function define(runtime, observer) {
   main.variable(observer("restartAction")).define("restartAction", ["Generators","viewof display","invalidation"], _restartAction);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
-  main.variable(observer("shareId")).define("shareId", ["ndd","URLSearchParams","location"], _shareId);
+  main.variable(observer("shareId")).define("shareId", ["URLSearchParams","location"], _shareId);
   main.variable(observer()).define(["md"], _12);
   main.variable(observer("previousFortune")).define("previousFortune", ["firebase","shareId"], _previousFortune);
   main.variable(observer()).define(["md"], _14);
@@ -2069,18 +2080,19 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _148);
   main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
   main.variable(observer()).define(["md"], _150);
-  main.variable(observer("user")).define("user", ["getContext","firebase","invalidation"], _user);
+  main.variable(observer("user")).define("user", ["getContext","invalidation","firebase"], _user);
   main.variable(observer()).define(["md"], _152);
   main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _153);
-  main.variable(observer()).define(["deploy","page"], _154);
+  main.variable(observer()).define(["md"], _154);
+  main.variable(observer()).define(["deploy","page"], _155);
   main.variable(observer("debuggingSection")).define("debuggingSection", ["md"], _debuggingSection);
   const child2 = runtime.module(define2);
   main.import("notebookSnapshot", child2);
   main.import("modules", child2);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer()).define(["md"], _158);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _159);
-  main.variable(observer()).define(["md"], _160);
+  main.variable(observer()).define(["md"], _159);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _160);
+  main.variable(observer()).define(["md"], _161);
   const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
   main.import("firebase", child3);
   main.import("DocView", child3);
@@ -2088,16 +2100,16 @@ export default function define(runtime, observer) {
   main.import("firebase", "adminFirebase", child4);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _165);
   main.variable(observer()).define(["md"], _166);
+  main.variable(observer()).define(["md"], _167);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _168);
+  main.variable(observer()).define(["md"], _169);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(["md"], _170);
+  main.variable(observer()).define(["md"], _171);
   main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   main.variable(observer("font")).define("font", ["htl"], _font);
-  main.variable(observer()).define(["md"], _174);
+  main.variable(observer()).define(["md"], _175);
   const child5 = runtime.module(define4);
   main.import("getCards", child5);
   main.import("images", "cardData", child5);
@@ -2129,7 +2141,7 @@ export default function define(runtime, observer) {
   main.import("footer", child16);
   const child17 = runtime.module(define16);
   main.import("_ndd", child17);
-  main.variable(observer()).define(["md"], _188);
-  main.variable(observer()).define(["footer"], _189);
+  main.variable(observer()).define(["md"], _189);
+  main.variable(observer()).define(["footer"], _190);
   return main;
 }
