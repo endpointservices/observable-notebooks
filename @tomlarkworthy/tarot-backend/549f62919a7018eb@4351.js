@@ -46,8 +46,8 @@ md`## Application UI
 This is the final application, it is a composite of all our separately designed UI pieces.`
 )}
 
-async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
-font,
+async function _display(font,ndd,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
+font, ndd, 
 console.log("viewof display"),
 view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
   "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp"
@@ -143,9 +143,9 @@ md`#### shareID
 First, we detect a share id from either the URL params, or the last path segment.`
 )}
 
-function _shareId(URLSearchParams,location)
+function _shareId(ndd,URLSearchParams,location)
 {
-  console.log("share id");
+  ndd, console.log("share id");
   const search = new URLSearchParams(location.search).get("share");
   if (search) return search;
   const path = location.pathname.split("/").slice(-1)[0];
@@ -1893,7 +1893,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["toc"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("viewof display")).define("viewof display", ["font","view","FileAttachment","whoInput","questionInput","pickCards","showCards","cards","fortuneOutput","restartButton","shareButton"], _display);
+  main.variable(observer("viewof display")).define("viewof display", ["font","ndd","view","FileAttachment","whoInput","questionInput","pickCards","showCards","cards","fortuneOutput","restartButton","shareButton"], _display);
   main.variable(observer("display")).define("display", ["Generators", "viewof display"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _5);
   main.variable(observer("ndd")).define("ndd", ["_ndd"], _ndd);
@@ -1901,7 +1901,7 @@ export default function define(runtime, observer) {
   main.variable(observer("restartAction")).define("restartAction", ["Generators","viewof display","invalidation"], _restartAction);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
-  main.variable(observer("shareId")).define("shareId", ["URLSearchParams","location"], _shareId);
+  main.variable(observer("shareId")).define("shareId", ["ndd","URLSearchParams","location"], _shareId);
   main.variable(observer()).define(["md"], _12);
   main.variable(observer("previousFortune")).define("previousFortune", ["firebase","shareId"], _previousFortune);
   main.variable(observer()).define(["md"], _14);
