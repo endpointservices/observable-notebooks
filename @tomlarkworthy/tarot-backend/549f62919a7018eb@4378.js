@@ -1466,12 +1466,16 @@ function _149(md){return(
 md`### clientside user`
 )}
 
-async function _user(getContext,invalidation,firebase){return(
-getContext().serverless === true
-  ? (console.log("Not logging in"), invalidation)
-  : (console.log("logging in"),
-    (await firebase.auth().signInAnonymously()).user)
-)}
+async function _user(getContext,invalidation,firebase)
+{
+  try {
+    if (getContext().serverless === true) {
+      return invalidation;
+    }
+  } catch (err) {}
+  return (await firebase.auth().signInAnonymously()).user;
+}
+
 
 function _151(md){return(
 md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
