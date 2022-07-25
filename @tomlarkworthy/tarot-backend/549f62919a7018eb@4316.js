@@ -139,6 +139,7 @@ First, we detect a share id from either the URL params, or the last path segment
 
 function _shareId(URLSearchParams,location)
 {
+  console.log("share id");
   const search = new URLSearchParams(location.search).get("share");
   if (search) return search;
   const path = location.pathname.split("/").slice(-1)[0];
@@ -154,6 +155,7 @@ If a shareId is present we load it from the realtime database, this will return 
 
 async function _previousFortune(firebase,shareId)
 {
+  console.log("previousFortune");
   const snapshot = await firebase
     .database()
     .ref(`/@tomlarkworthy/tarot-backend/calls/${shareId}`)
