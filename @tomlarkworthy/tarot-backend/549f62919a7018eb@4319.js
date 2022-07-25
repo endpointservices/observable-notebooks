@@ -47,6 +47,7 @@ This is the final application, it is a composite of all our separately designed 
 
 async function _display(font,view,FileAttachment,whoInput,questionInput,pickCards,showCards,cards,fortuneOutput,restartButton,shareButton){return(
 font,
+console.log("viewof display"),
 view`<div style="height: 800px; display: none; background-image: url('${await FileAttachment(
   "imgonline-com-ua-TextureSeamless-ddu5gFbCzzWeXp (1) (1).webp"
 ).url()}'); background-size: contain; backgroud-color: #fff; font-family: Montserrat, sans-serif; max-width: auto;">
@@ -172,6 +173,7 @@ This cell executes once, and will update the UI with a previousFortune if we hav
 
 async function _loadPreviousFortune(previousFortune,$0,findCardsByName,baseURL,shareId)
 {
+  console.log("loadPreviousFortune");
   if (previousFortune) {
     $0.fortune.value = previousFortune.reading.choices[0].text;
     $0.name.value = previousFortune.name;
@@ -1853,14 +1855,10 @@ md`## Dependencies`
 )}
 
 function _185(md){return(
-md`### Prefetch transitive dependancies`
-)}
-
-function _186(md){return(
 md`### Analytics & Backup`
 )}
 
-function _187(footer){return(
+function _186(footer){return(
 footer
 )}
 
@@ -2108,7 +2106,6 @@ export default function define(runtime, observer) {
   const child16 = runtime.module(define15);
   main.import("footer", child16);
   main.variable(observer()).define(["md"], _185);
-  main.variable(observer()).define(["md"], _186);
-  main.variable(observer()).define(["footer"], _187);
+  main.variable(observer()).define(["footer"], _186);
   return main;
 }
