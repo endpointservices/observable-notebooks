@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/webcode@836
 import define1 from "./cbc2e7f6260d11b1@2788.js";
-import define2 from "./dff1e917c89f5e76@1948.js";
+import define2 from "./dff1e917c89f5e76@1955.js";
 import define3 from "./58f3eb7334551ae6@211.js";
 
 function _1(html){return(
