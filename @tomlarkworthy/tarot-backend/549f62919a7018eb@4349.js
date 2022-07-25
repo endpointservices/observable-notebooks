@@ -1411,7 +1411,7 @@ new Runtime().module(notebook, name => {
     return new Inspector(document.querySelector("#display"));
   } else if (name === "transitions") {
     return true;
-  } else if (name === "ndd" && debug) {
+  } else if (name === "ndd" && ${debug}) {
     return new Inspector(document.querySelector("#debugger"));
   }
 });
@@ -1498,7 +1498,7 @@ Inputs.button("update index.html", {
 
 function _154(deploy,page){return(
 deploy("index", (req, res) => {
-  res.send(page({}));
+  res.send(page({ debug: true }));
 })
 )}
 
