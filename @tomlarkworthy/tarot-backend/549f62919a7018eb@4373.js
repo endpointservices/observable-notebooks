@@ -1497,9 +1497,15 @@ md`### Test server`
 )}
 
 function _154(deploy,page){return(
-deploy("index", (req, res) => {
-  res.send(page({ debug: true }));
-})
+deploy(
+  "index",
+  (req, res) => {
+    res.send(page({ debug: true }));
+  },
+  {
+    hostNotebook: "@tomlarkworthy/tarot-backend"
+  }
+)
 )}
 
 function _debuggingSection(md){return(
