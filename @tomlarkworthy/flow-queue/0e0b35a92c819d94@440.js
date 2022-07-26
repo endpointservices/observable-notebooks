@@ -1,8 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@434
-import define1 from "./293899bef371e135@271.js";
+// https://observablehq.com/@tomlarkworthy/flow-queue@440
+import define1 from "./293899bef371e135@278.js";
 
 async function _1(FileAttachment,width,md){return(
-md`# Unroll a promise over dataflow cells using *flowQueue*
+md`# Convert cell computation to a Promise with cell *flowQueue*
 
 
 ~~~js
