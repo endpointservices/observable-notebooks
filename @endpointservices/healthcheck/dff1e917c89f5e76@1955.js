@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1948
-import define1 from "./8aac8b2cb06bf434@261.js";
+// https://observablehq.com/@endpointservices/serverless-cells@1955
+import define1 from "./8aac8b2cb06bf434@263.js";
 import define2 from "./58f3eb7334551ae6@211.js";
 
 async function _1(FileAttachment,width,md){return(
@@ -90,45 +90,6 @@ Come hang out with us on the [d3 Zulip server](https://d3js.zulipchat.com/#narro
 )}
 
 function _2(md){return(
-md`### Example`
-)}
-
-function _host(Inputs){return(
-Inputs.select(["webcode.run", "http://localhost:8080"], {
-  label: "host"
-})
-)}
-
-function _region(Inputs){return(
-Inputs.select(
-  ["nearest", "us-central1", "europe-west1", "asia-east1"],
-  {
-    label: "region"
-  }
-)
-)}
-
-function _livecode(Inputs){return(
-Inputs.radio(["unspecified", "false", "public"], {
-  label: "livecode?"
-})
-)}
-
-function _6(deploy,host,region,livecode){return(
-deploy(
-  "default",
-  async (req, res) => {
-    res.send(req);
-  },
-  {
-    host: host,
-    ...((region !== "nearest") & { region }),
-    livecode
-  }
-)
-)}
-
-function _7(md){return(
 md`### Implementation`
 )}
 
@@ -219,12 +180,16 @@ onVersion((metadata) => {
 )}
 
 function _getContext(subdomain,notebook){return(
-() => window["@endpointservices.context"] || (() => ({
-  serverless: false,
-  namespace: subdomain(),
-  notebook: notebook(),
-  secrets: {}
-}))()
+() => {
+  if (window["@endpointservices.context"])
+    return window["@endpointservices.context"];
+  return {
+    serverless: false,
+    namespace: subdomain(),
+    notebook: notebook(),
+    secrets: {}
+  };
+}
 )}
 
 function _Response(){return(
@@ -325,7 +290,7 @@ class {
 }
 )}
 
-function _12(md){return(
+function _7(md){return(
 md`
 ### Change Log
   - 2021-08-07
@@ -358,7 +323,7 @@ md`
 `
 )}
 
-function _13(md){return(
+function _8(md){return(
 md`
 
 # API Reference
@@ -465,7 +430,7 @@ By default Serverless cells cannot be called by other Serverless cells and can o
 `
 )}
 
-function _14(md){return(
+function _9(md){return(
 md`## Express Routing
 
 You can attached an Express router to allow fine grained path based responses. Find out more [here](https://observablehq.com/@tomlarkworthy/api-hosting-with-express).
@@ -518,7 +483,7 @@ function _notebook(html){return(
 }
 )}
 
-function _22(footer){return(
+function _17(footer){return(
 footer
 )}
 
@@ -532,21 +497,13 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","width","md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("viewof host")).define("viewof host", ["Inputs"], _host);
-  main.variable(observer("host")).define("host", ["Generators", "viewof host"], (G, _) => G.input(_));
-  main.variable(observer("viewof region")).define("viewof region", ["Inputs"], _region);
-  main.variable(observer("region")).define("region", ["Generators", "viewof region"], (G, _) => G.input(_));
-  main.variable(observer("viewof livecode")).define("viewof livecode", ["Inputs"], _livecode);
-  main.variable(observer("livecode")).define("livecode", ["Generators", "viewof livecode"], (G, _) => G.input(_));
-  main.variable(observer()).define(["deploy","host","region","livecode"], _6);
-  main.variable(observer()).define(["md"], _7);
   main.variable(observer("deploy")).define("deploy", ["onVersionPublished","generateSessionId","Response","subdomain","getContext","html"], _deploy);
   main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], _onVersionPublished);
   main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], _getContext);
   main.variable(observer("Response")).define("Response", _Response);
-  main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["md"], _13);
-  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("chars")).define("chars", _chars);
   main.variable(observer("salt")).define("salt", _salt);
   main.variable(observer("generateSessionId")).define("generateSessionId", ["salt","chars"], _generateSessionId);
@@ -556,6 +513,6 @@ export default function define(runtime, observer) {
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _22);
+  main.variable(observer()).define(["footer"], _17);
   return main;
 }

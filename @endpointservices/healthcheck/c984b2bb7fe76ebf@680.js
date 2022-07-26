@@ -145,7 +145,7 @@ endpoint(
       const status = response.errors.length > 0 ? 503 : 200;
       const payload = JSON.stringify(
         {
-          settings: response.sessings,
+          settings: response.settings,
           errors: response.errors.map((e) => ({
             cell: e.cell,
             message: e.error.message
@@ -271,6 +271,7 @@ function _runner(settings,Runtime,targetNotebook,$0,Event,$1,$2)
       },
       rejected(error) {
         const ignore = settings.excludes.includes(name);
+        debugger;
         $0.value = [
           ...$0.value,
           {
@@ -284,7 +285,10 @@ function _runner(settings,Runtime,targetNotebook,$0,Event,$1,$2)
 
         if (!ignore) {
           // Report error
-          $2.value = [...$2.value];
+          $2.value = [
+            ...$2.value,
+            { error: error, cell: name }
+          ];
           $2.dispatchEvent(new Event("input", { bubbles: true }));
         }
       }
