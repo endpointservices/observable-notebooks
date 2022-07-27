@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/sentry@243
-import define1 from "./fa1f6059e44da1d5@408.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define1 from "./fa1f6059e44da1d5@425.js";
+import define2 from "./58f3eb7334551ae6@211.js";
 
 async function _1(FileAttachment,md){return(
 md`# [Observablehq.com](https://observablehq.com) Notebook Monitoring with [sentry.io](sentry.io)
