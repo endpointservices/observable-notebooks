@@ -1,11 +1,11 @@
-// https://observablehq.com/@tomlarkworthy/ndd@1181
+// https://observablehq.com/@tomlarkworthy/ndd@1182
 import define1 from "./e1c39d41e8e944b0@420.js";
 import define2 from "./293899bef371e135@271.js";
 
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
 
-A [moldable](https://moldabledevelopment.com/) development tool to help debug dataflow problems ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread).
+A [moldable](https://moldabledevelopment.com/) development tool to help debug dataflow problems by visualizing all cell state transitions in the containing notebook ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread). Import into your own notebook when you need to debug a dataflow problem
 
 \`\`\`js
 import {_ndd} from '@tomlarkworthy/ndd'
