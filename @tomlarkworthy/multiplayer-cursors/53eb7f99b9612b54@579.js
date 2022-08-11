@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/multiplayer-cursors@576
+// https://observablehq.com/@tomlarkworthy/multiplayer-cursors@579
 import define1 from "./5c1b38ac46351270@308.js";
 import define2 from "./993a0c51ef1175ea@1375.js";
 import define3 from "./316f0885d15ab671@65.js";
@@ -20,6 +20,10 @@ Still, it is a very cool effect and combined with [@tomlarkworthy/shareview](htt
 ### Conclusion
 
 Database overhead peaked at 11% with 10 concurrent users. We should maybe try to be a little more effecient (max publish rate). No-pne cursors line up becuase layouts differ, so some kinda of relative positioning might be better if we want to stick with a general solution.
+
+Cursers that are backgrounded for a while get flooded with updates when going back online, the full history is replayed which seems suboptimal. Ideally we should disconnect the server and reconnect. (the person is not really there)
+
+We were suffering from zombie cursers due to https://github.com/firebase/firebase-js-sdk/issues/174 but that seems to be fixed 2022-08-11
 `
 )}
 
