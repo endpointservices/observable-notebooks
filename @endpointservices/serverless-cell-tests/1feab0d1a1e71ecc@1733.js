@@ -1,4 +1,4 @@
-import define1 from "./6eda90668ae03044@830.js";
+import define1 from "./6eda90668ae03044@836.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
 import define3 from "./c7a3b20cec5d4dd9@669.js";
 import define4 from "./293899bef371e135@278.js";
@@ -423,7 +423,7 @@ deploy(
 
 function _pngElement(html,pngLink){return(
 new Promise((resolve) => {
-  let img = html`<img src=${pngLink} onerror=${() => {
+  let img = html`<img src=${pngLink.href} onerror=${() => {
     img.err = true;
     resolve(img);
   }} onload=${() => resolve(img)} />`;

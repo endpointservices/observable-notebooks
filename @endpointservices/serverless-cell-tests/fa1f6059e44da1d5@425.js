@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/catch-all@424
+// https://observablehq.com/@tomlarkworthy/catch-all@425
 import define1 from "./58f3eb7334551ae6@211.js";
 
 function _1(md){return(
@@ -151,7 +151,7 @@ suite.test("Errors are logged", async (done) => {
     const newNumErrors = $0.value.length;
     testing.expect(newNumErrors - numErrors).toBeGreaterThan(0);
     done();
-  }, 100);
+  }, 500);
 })
 )}
 

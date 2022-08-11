@@ -1,6 +1,6 @@
 # Serverless Cell Tests
 
-https://observablehq.com/@endpointservices/serverless-cell-tests@1732
+https://observablehq.com/@endpointservices/serverless-cell-tests@1733
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/1feab0d1a1e71ecc@1732.tgz?v=3
+npm install https://api.observablehq.com/d/1feab0d1a1e71ecc@1733.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
