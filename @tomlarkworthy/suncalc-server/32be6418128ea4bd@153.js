@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/suncalc-server@151
+// https://observablehq.com/@tomlarkworthy/suncalc-server@153
 import define1 from "./6eda90668ae03044@836.js";
 import define2 from "./509d6b5d1aebf2a1@215.js";
 import define3 from "./293899bef371e135@278.js";
@@ -38,8 +38,8 @@ function _suncalcServer(endpoint,$0,suntimesRoute,handleSuntimes){return(
 endpoint(
   "default",
   async (req, res) => {
-    debugger;
-    $0.value = req.body;
+    debugger; // put a request debugger breakpoint in for demo purposes
+    $0.value = req.body; // Also write the incoming request into the lastRequest value
     if (suntimesRoute.test(req.url)) return handleSuntimes(req);
     else res.status(404).send("Not found");
   },
