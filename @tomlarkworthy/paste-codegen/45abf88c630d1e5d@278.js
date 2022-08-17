@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/paste-codegen@277
+// https://observablehq.com/@tomlarkworthy/paste-codegen@278
 import define1 from "./293899bef371e135@278.js";
 
 function _1(md){return(
@@ -58,13 +58,13 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 )}
 
 function _5(md){return(
-md`However, we can simply write a cells for each destructurable method that forward to a common dynamically imported module for the same effect. The enclosing notebook *can* be destructured on import:
+md`However, we can simply write a cell for each destructurable method that forwards to a common dynamically imported module for the same effect. This enclosing notebook *can* be destructured on import:
 
 \`\`\`js
 import { getAuth, onAuthStateChanged } from "@tom.larkworthy/firebase-auth";
 \`\`\`
 
-so you end up with an identical API. The painful part is writing all the cells, so here have build a helper for auto-generating the code based on reflection of the module`
+so you end up with an identical API. The painful part is writing all the cells, so here have build a helper for auto-generating the code based on reflection of the module object`
 )}
 
 function _modulePath(Inputs)
