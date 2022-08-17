@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/youtube-upload",
+  "main": "74a66fc481edf1e3@335.js",
+  "version": "335.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/youtube-upload",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
