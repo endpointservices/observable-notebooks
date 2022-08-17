@@ -1,10 +1,10 @@
-// https://observablehq.com/@tomlarkworthy/paste-codegen@276
+// https://observablehq.com/@tomlarkworthy/paste-codegen@277
 import define1 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# Code generation with multi-cell clipboard pasting
 
-With this notebook, you can programmatically populate clipboard data with pastable cells. The intent is to help code-generation. After the core utilities, there is an ES6 module destructured intended to help wrap dynamically imported modules in a notebook enabling destructuring.
+With this notebook, you can programmatically populate clipboard data with pastable cells. The intent is to help code-generation. After the core utilities, there is an ES6 module destructurer intended to help wrap dynamically imported modules in a notebook enabling destructuring.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/E2e_TcvS6Bg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
 )}
