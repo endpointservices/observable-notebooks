@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/distiller",
+  "main": "3bb9c81923cc627c@728.js",
+  "version": "728.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/distiller",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4"
+  }
+}
