@@ -3,7 +3,7 @@ import define1 from "./8aac8b2cb06bf434@263.js";
 import define2 from "./b09f1f038b1040e3@76.js";
 import define3 from "./55bed46f68a80641@366.js";
 import define4 from "./e6f8b27a19576fcb@428.js";
-import define5 from "./58f3eb7334551ae6@211.js";
+import define5 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
