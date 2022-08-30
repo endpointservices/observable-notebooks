@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/nunjucks@647
 import define1 from "./b419f4d2dc70c295@464.js";
-import define2 from "./293899bef371e135@225.js";
+import define2 from "./293899bef371e135@280.js";
 
 function _1(md){return(
 md`# 👋 Hello Nunjucks
