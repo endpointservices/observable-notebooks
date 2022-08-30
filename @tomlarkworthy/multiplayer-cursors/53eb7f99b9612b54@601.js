@@ -1,7 +1,7 @@
-// https://observablehq.com/@tomlarkworthy/multiplayer-cursors@579
-import define1 from "./5c1b38ac46351270@308.js";
-import define2 from "./993a0c51ef1175ea@1375.js";
-import define3 from "./316f0885d15ab671@65.js";
+// https://observablehq.com/@tomlarkworthy/multiplayer-cursors@601
+import define1 from "./5c1b38ac46351270@317.js";
+import define2 from "./993a0c51ef1175ea@1396.js";
+import define3 from "./316f0885d15ab671@69.js";
 import define4 from "./c2dae147641e012a@46.js";
 import define5 from "./a2e58f97fd5e8d7c@736.js";
 import define6 from "./84e66f78139ac354@829.js";
@@ -127,7 +127,11 @@ function _updateMyMouse(pointers,device,meRef,invalidation)
 }
 
 
-function _16(md){return(
+function _enableLogging(firebase){return(
+firebase.firebase_.database.enableLogging(true)
+)}
+
+function _17(md){return(
 md`### Graphics`
 )}
 
@@ -184,11 +188,11 @@ str => {
 }
 )}
 
-function _22(colorFromString){return(
+function _23(colorFromString){return(
 colorFromString("400")
 )}
 
-function _31(footer){return(
+function _32(footer){return(
 footer
 )}
 
@@ -212,17 +216,19 @@ export default function define(runtime, observer) {
   main.variable(observer("meRef")).define("meRef", ["devices","device","onlineRef"], _meRef);
   main.variable(observer("syncPointers")).define("syncPointers", ["online","pointers"], _syncPointers);
   main.variable(observer("updateMyMouse")).define("updateMyMouse", ["pointers","device","meRef","invalidation"], _updateMyMouse);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("enableLogging")).define("enableLogging", ["firebase"], _enableLogging);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("viewof pointers")).define("viewof pointers", ["devices","pointer","html"], _pointers);
   main.variable(observer("pointers")).define("pointers", ["Generators", "viewof pointers"], (G, _) => G.input(_));
   main.variable(observer("pointer")).define("pointer", ["svg","colorFromString"], _pointer);
   main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", _FIREBASE_CONFIG);
   main.variable(observer("device")).define("device", ["localStorage","randomId"], _device);
   main.variable(observer("colorFromString")).define("colorFromString", _colorFromString);
-  main.variable(observer()).define(["colorFromString"], _22);
+  main.variable(observer()).define(["colorFromString"], _23);
   const child1 = runtime.module(define1).derive(["FIREBASE_CONFIG"], main);
   main.import("share", child1);
   main.import("db", child1);
+  main.import("firebase", child1);
   main.import("FKEY", child1);
   const child2 = runtime.module(define2).derive(["FIREBASE_CONFIG"], main);
   main.import("listen", child2);
@@ -239,6 +245,6 @@ export default function define(runtime, observer) {
   main.import("svg", child7);
   const child8 = runtime.module(define8);
   main.import("footer", child8);
-  main.variable(observer()).define(["footer"], _31);
+  main.variable(observer()).define(["footer"], _32);
   return main;
 }
