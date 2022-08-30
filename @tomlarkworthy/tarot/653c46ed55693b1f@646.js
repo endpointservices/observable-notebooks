@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/juice@646
-import define1 from "./f92778131fd76559@1173.js";
+import define1 from "./f92778131fd76559@1174.js";
 import define2 from "./4a1fa3c167b752e5@304.js";
 
 async function _1(FileAttachment,md){return(
