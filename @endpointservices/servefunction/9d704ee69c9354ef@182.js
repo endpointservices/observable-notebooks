@@ -1,5 +1,5 @@
-import define1 from "./6eda90668ae03044@804.js";
-import define2 from "./293899bef371e135@267.js";
+import define1 from "./6eda90668ae03044@836.js";
+import define2 from "./293899bef371e135@280.js";
 
 function _1(md){return(
 md`# *serveFunction*
