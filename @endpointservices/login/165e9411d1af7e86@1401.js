@@ -1,9 +1,9 @@
-// https://observablehq.com/@tomlarkworthy/api-hosting-with-express@1398
-import define1 from "./dff1e917c89f5e76@1711.js";
+// https://observablehq.com/@tomlarkworthy/api-hosting-with-express@1401
+import define1 from "./dff1e917c89f5e76@1964.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
-import define3 from "./c7a3b20cec5d4dd9@661.js";
+import define3 from "./c7a3b20cec5d4dd9@669.js";
 
-async function _1(md,FileAttachment){return(
+function _1(md){return(
 md`# Using Express Router for [Serverside Cells](https://observablehq.com/@tomlarkworthy/serverside-cells)
 
 The notebook adapts the [Express](https://expressjs.com/) web framework for use in a [serverside cell](https://observablehq.com/@tomlarkworthy/serverside-cells). So now you can build idiomatic Javascript servers right from the comfort of an Observable notebook!
@@ -12,12 +12,7 @@ You can grab everything you need in one go with
 
 ~~~js
     import {Router, handleWithExpress, deploy} from '@tomlarkworthy/api-hosting-with-express'
-~~~
-
-![Everybody got a serverless](${await FileAttachment(
-  "everybodygotaserverless.jpg"
-).url()})
-`
+~~~`
 )}
 
 function _2(md){return(
@@ -346,10 +341,25 @@ $0
 )}
 
 function _15(ci,test_router_endpoint,expect){return(
-ci.test("/response route returns payload containing Response keys", async () => {
-  const response = await (await fetch(test_router_endpoint.href + "/response")).json()
-  expect(Object.keys(response)).toEqual(expect.arrayContaining(["url", "method", "query", "params", "headers",  "ip", "context"]));
-})
+ci.test(
+  "/response route returns payload containing Response keys",
+  async () => {
+    const response = await (await fetch(
+      test_router_endpoint.href + "/response"
+    )).json();
+    expect(Object.keys(response)).toEqual(
+      expect.arrayContaining([
+        "url",
+        "method",
+        "query",
+        "params",
+        "headers",
+        "ip",
+        "context"
+      ])
+    );
+  }
+)
 )}
 
 function _16(ci,test_router_endpoint,expect){return(
@@ -381,11 +391,10 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["everybodygotaserverless.jpg", {url: new URL("./files/f9cda006d5de6e2908ff017849a890b5f72dcfc1c85487df71b987873db69107c34b36fcf2d8d1fcac6f263fb1926b622520fd18d6352ba0be2863f31cad0a1a", import.meta.url), mimeType: "image/jpeg", toString}],
-    ["cookie-signature-1.1.0.js", {url: new URL("./files/f2ed50f9e13ffb9ff9a0a04888cc0ee173081207b583f80fe268e81081a07317df98bb935d80db48ffeeaef4c1c7d5c89de54dcc67f717f42e52a8cc5df9c685", import.meta.url), mimeType: "application/javascript", toString}]
+    ["cookie-signature-1.1.0.js", {url: new URL("./files/f2ed50f9e13ffb9ff9a0a04888cc0ee173081207b583f80fe268e81081a07317df98bb935d80db48ffeeaef4c1c7d5c89de54dcc67f717f42e52a8cc5df9c685.js", import.meta.url), mimeType: "application/javascript", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("Router")).define("Router", ["require"], _Router);
   main.variable(observer()).define(["md"], _4);

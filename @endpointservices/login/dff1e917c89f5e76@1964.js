@@ -1,6 +1,6 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1711
-import define1 from "./8aac8b2cb06bf434@258.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@endpointservices/serverless-cells@1964
+import define1 from "./8aac8b2cb06bf434@263.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 async function _1(FileAttachment,width,md){return(
 md`# Serverless Cells
@@ -93,11 +93,23 @@ function _2(md){return(
 md`### Implementation`
 )}
 
-function _deploy(onVersionPublished,Response,subdomain,getContext,html){return(
+function _deploy(onVersionPublished,generateSessionId,Response,subdomain,getContext,html){return(
 function (label, handler, options) {
   onVersionPublished; // Ensure all users of this have the onPublish hook installed
+  if (typeof label !== "string")
+    throw new Error(
+      "The first parameter 'name' must be a unique string to disambiguate different endpoints, using'default' will exclude it from the URL"
+    );
+
   options = options || {};
   const modifiers = options.modifiers || ["external"];
+  if (typeof options.livecode === "string") {
+    options.livecode = options.livecode.toUpperCase();
+  }
+  // We have to generate sessions if we are live coding
+  const session =
+    options.livecode === "PUBLIC" ? generateSessionId(label) : undefined;
+
   const isExternal = modifiers.includes("external");
   const isTerminal = modifiers.includes("terminal");
   const isOrchestrator = modifiers.includes("orchestrator");
@@ -122,7 +134,11 @@ function (label, handler, options) {
     secrets: options.secrets
   };
 
-  const host = "https://" + (options.host || `webcode.run`);
+  const host =
+    options.host && /http(s?):\/\//.exec(options.host)
+      ? options.host
+      : "https://" + (options.host || `webcode.run`);
+
   const region = options.region ? `/regions/${options.region}` : "";
   try {
     // Bug fix
@@ -132,13 +148,14 @@ function (label, handler, options) {
     const notebook = options.hostNotebook
       ? options.hostNotebook.split("/")[1]
       : getContext().notebook;
-    const name = label === "default" ? "" : `;${label}`;
+    const name = label === "default" && !session ? "" : `;${label}`;
+    const correlation = session ? `;${session}` : "";
     const link =
       `${host}${region}/observablehq.com` +
       (options.hostNotebook ||
         `${notebook.startsWith("d/") ? "" : `/@${namespace}`}/${notebook}`) +
-      `${name}`;
-    return html`<a href="${link}" target="_blank">${label}</a>`;
+      `${name}${correlation}`;
+    return html`<a href="${link}" target="_blank">${link}</a>`;
   } catch (err) {
     console.error("Links don't work when embedded, but the deployed code does");
     return Object.defineProperty({}, "href", {
@@ -163,12 +180,16 @@ onVersion((metadata) => {
 )}
 
 function _getContext(subdomain,notebook){return(
-() => window["@endpointservices.context"] || (() => ({
-  serverless: false,
-  namespace: subdomain(),
-  notebook: notebook(),
-  secrets: {}
-}))()
+() => {
+  if (window["@endpointservices.context"])
+    return window["@endpointservices.context"];
+  return {
+    serverless: false,
+    namespace: subdomain(),
+    notebook: notebook(),
+    secrets: {}
+  };
+}
 )}
 
 function _Response(){return(
@@ -417,6 +438,28 @@ You can attached an Express router to allow fine grained path based responses. F
 `
 )}
 
+function _chars(){return(
+"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+)}
+
+function _salt(){return(
+window.crypto
+  // ~6 bits per selection, we need 120
+  .getRandomValues(new Uint32Array(Math.ceil(120.0 / 5.9)))
+)}
+
+function _generateSessionId(salt,chars){return(
+(name) => {
+  const letters = new Uint32Array(salt);
+  for (let i = 0; i < name.length; i++) {
+    letters[i] = salt[i] ^ name.charCodeAt(i % name.length);
+  }
+  return letters
+    .reduce((acc, n) => acc.concat(chars[n % chars.length]), [])
+    .join("");
+}
+)}
+
 function _subdomain(html,location){return(
 (url) => {
   url = url || html`<a href="">`.href;
@@ -434,34 +477,50 @@ function _notebook(html){return(
 (url) => {
   url = url || html`<a href="">`.href;
   let match;
-  if (match = /^https:\/\/(next\.)?observablehq.com\/@[^/]*\/([^/?#]*)/.exec(url)) return match[2]
-  if (match = /^https:\/\/(next\.)?observablehq.com\/(d\/[^/?#]*)/.exec(url)) return match[2]
-  throw new Error("Cannot determine notebook name")
+  if (
+    (match = /^https:\/\/(next\.)?observablehq.com\/@[^/]*\/([^/?#;:]*(\/\d+)?)/.exec(
+      url
+    ))
+  ) {
+    // 2022-08-11: Added support for numerical suffix (e.g. /2)
+    return match[2];
+  }
+  if ((match = /^https:\/\/(next\.)?observablehq.com\/(d\/[^/?#]*)/.exec(url)))
+    return match[2];
+  throw new Error("Cannot determine notebook name");
 }
+)}
+
+function _17(footer){return(
+footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["PreviewServerlessCells@2.png", {url: new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9", import.meta.url), mimeType: "image/png", toString}],
-    ["webcodeURL@1.svg", {url: new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97", import.meta.url), mimeType: "image/svg+xml", toString}]
+    ["PreviewServerlessCells@2.png", {url: new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9.png", import.meta.url), mimeType: "image/png", toString}],
+    ["webcodeURL@1.svg", {url: new URL("./files/b797ffea682c2d1260334582978e5f92834b1ad2a93e12355f5a2ccc8de7ffbe47b72ca03fedf0df413dfdc5ca722120a62728b6dd20d17047bdb0a26124da97.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","width","md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","Response","subdomain","getContext","html"], _deploy);
+  main.variable(observer("deploy")).define("deploy", ["onVersionPublished","generateSessionId","Response","subdomain","getContext","html"], _deploy);
   main.variable(observer("onVersionPublished")).define("onVersionPublished", ["onVersion"], _onVersionPublished);
   main.variable(observer("getContext")).define("getContext", ["subdomain","notebook"], _getContext);
   main.variable(observer("Response")).define("Response", _Response);
   main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
+  main.variable(observer("chars")).define("chars", _chars);
+  main.variable(observer("salt")).define("salt", _salt);
+  main.variable(observer("generateSessionId")).define("generateSessionId", ["salt","chars"], _generateSessionId);
   main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
   main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
+  main.variable(observer()).define(["footer"], _17);
   return main;
 }
