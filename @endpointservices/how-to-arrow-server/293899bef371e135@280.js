@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@268
-import define1 from "./a81f2a20664080d3@243.js";
+// https://observablehq.com/@endpointservices/footer-with-backups@280
+import define1 from "./a81f2a20664080d3@245.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@631.js";
 
@@ -18,9 +18,10 @@ footer
 
 function _graphic(md){return(
 md`<small>
-[WEBCode.run](https://webcode.run) makes building fully encapsulated services within Observable notebooks possible.
+[WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks. Signup for the [webcode newsletter on Substack](https://webcode.substack.com/).
 
-*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>`
+*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
+`
 )}
 
 function _footer($0,plausible_analytics,sentry,graphic)

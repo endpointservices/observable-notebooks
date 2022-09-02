@@ -1,6 +1,4 @@
-import define1 from "./c7a3b20cec5d4dd9@669.js";
-import define2 from "./ef672b935bd480fc@622.js";
-import define3 from "./58f3eb7334551ae6@209.js";
+import define1 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# ⛔️ Get Notebook Comments ⚠️
@@ -28,11 +26,32 @@ md`## Change log
 - 2022-06-15 Change from sniffing iframe to looking for RSS feed to determine notebook namespace (Bug fix for design change)`
 )}
 
-function _suite(createSuite){return(
-createSuite()
+async function _testing()
+{
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+
+
+function _expect(testing){return(
+testing.expect
 )}
 
-function _7(suite,expect,exampleWithCustomURL){return(
+function _suite(testing){return(
+testing.createSuite()
+)}
+
+function _8(suite,expect,exampleWithCustomURL){return(
 suite.test("getCommentsAndNamespace with custom URL", async () => {
   expect(exampleWithCustomURL.namespace).toBe("endpointservices");
   expect(exampleWithCustomURL.comments.length).toBeGreaterThanOrEqual(1);
@@ -44,7 +63,7 @@ suite.test("getCommentsAndNamespace with custom URL", async () => {
 })
 )}
 
-function _8(suite,expect,exampleById){return(
+function _9(suite,expect,exampleById){return(
 suite.test("getCommentsAndNamespace with ID URL", async () => {
   expect(exampleById.namespace).toBe("endpointservices");
   expect(exampleById.comments.length).toBeGreaterThanOrEqual(1);
@@ -117,8 +136,18 @@ function findNamespace(dom) {
 }
 )}
 
-function _ALLOW_DOMAINS(){return(
-['observablehq.com']
+function _fetchp(){return(
+(url) =>
+  fetch(
+    "https://webcode.run/observablehq.com/@endpointservices/observable-proxy;proxy_d2d3fe67a2",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        options: {},
+        url: url
+      })
+    }
+  )
 )}
 
 function _16(footer){return(
@@ -131,22 +160,19 @@ export default function define(runtime, observer) {
   main.variable(observer("exampleWithCustomURL")).define("exampleWithCustomURL", ["getCommentsAndNamespace"], _exampleWithCustomURL);
   main.variable(observer("exampleById")).define("exampleById", ["getCommentsAndNamespace"], _exampleById);
   main.variable(observer()).define(["md"], _4);
-  const child1 = runtime.module(define1);
-  main.import("createSuite", child1);
-  main.import("expect", child1);
-  main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
+  main.variable(observer("testing")).define("testing", _testing);
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["suite","expect","exampleWithCustomURL"], _7);
-  main.variable(observer()).define(["suite","expect","exampleById"], _8);
+  main.variable(observer()).define(["suite","expect","exampleWithCustomURL"], _8);
+  main.variable(observer()).define(["suite","expect","exampleById"], _9);
   main.variable(observer("getComments")).define("getComments", ["fetchp","DOMParser","findComments"], _getComments);
   main.variable(observer("getCommentsAndNamespace")).define("getCommentsAndNamespace", ["fetchp","DOMParser","findComments","findNamespace"], _getCommentsAndNamespace);
   main.variable(observer("findComments")).define("findComments", _findComments);
   main.variable(observer("findNamespace")).define("findNamespace", _findNamespace);
-  main.variable(observer("ALLOW_DOMAINS")).define("ALLOW_DOMAINS", _ALLOW_DOMAINS);
-  const child2 = runtime.module(define2);
-  main.import("fetchp", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
+  main.variable(observer("fetchp")).define("fetchp", _fetchp);
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _16);
   return main;
 }
