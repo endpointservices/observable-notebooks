@@ -1,11 +1,11 @@
-// https://observablehq.com/@endpointservices/livecode@1629
-import define1 from "./6eda90668ae03044@830.js";
-import define2 from "./0e0b35a92c819d94@434.js";
+// https://observablehq.com/@endpointservices/livecode@1657
+import define1 from "./6eda90668ae03044@836.js";
+import define2 from "./0e0b35a92c819d94@444.js";
 import define3 from "./576f8943dbfbd395@114.js";
 import define4 from "./048a17a165be198d@263.js";
 import define5 from "./509d6b5d1aebf2a1@215.js";
 import define6 from "./9bed702f80a3797e@402.js";
-import define7 from "./293899bef371e135@271.js";
+import define7 from "./293899bef371e135@280.js";
 
 function _1(md){return(
 md`# *Livecode* a webserver *in a browser*
@@ -54,7 +54,9 @@ md`## Declarative Endpoints`
 function _8(md){return(
 md`WEBCode's API is declarative. You can simply declare an endpoint with \`endpoint(<name>, <handler>, <options>)\`. There is no deploy step, this is pure *infra-as-code*.
 
-**Endpoints will be instantaneously live on the internet**, if *livecode* is enabled, otherwise, if nobody is *livecoding*, the request will be handled by *the last **published** version of the notebook*. If the notebook has never been published, the endpoint will \`404\`.`
+**Endpoints will be instantaneously live on the internet**, if *livecode* is enabled, otherwise, if nobody is *livecoding*, the request will be handled by *the last **published** version of the notebook*. If the notebook has never been published, the endpoint will \`404\`.
+
+⚠️ *livecoding* cannot run when the page is not in the foreground (upvote [issue](https://github.com/observablehq/feedback/issues/458) if you want this fixed)`
 )}
 
 function _exampleEndpoint(endpoint,$0,host){return(
