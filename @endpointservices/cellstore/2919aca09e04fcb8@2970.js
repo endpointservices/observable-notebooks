@@ -6,7 +6,7 @@ import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./293899bef371e135@290.js";
 
 function _1(md){return(
-md`# Create persisted and forkable abstractions with \`cellstore\``
+md`# Simple notebook storage: \`cellstore\``
 )}
 
 function _2(md){return(
@@ -264,28 +264,181 @@ The global shared store write limit is much smaller because it can potentially f
 )}
 
 function _38(md){return(
-md`---`
+md`## Options: \`firebaseApp\`, \`prepareBackendURL\`, \`verifyBackendURL\` and \`database\`\` for bring-your-own-Firebase
+
+You can bring-your-own firebase realtime database. You will need to provide a custom auth token signing backend too using a service account from the same project. While \`cellstore\` uses login-with-comment-v2, the backend is actually still the [v1](https://observablehq.com/embed/@endpointservices/login-with-comment), so it's the v1 you will want to fork to create a custom auth backend.
+
+The backend adds custom claims including which namespace the user signed in from (the realm) as well as the teams they are part of. Using those custom claims we are able to implement the forking logic. Security rules also enforce write and version counters are increments and enforce rate limits. Our current rules can be found below.`
 )}
 
 function _39(md){return(
-md`## Implementation`
+md`#### Rules
+
+\`\`\`js
+{
+  "rules": {
+    "config": {
+      "$owner": {
+        "$key": {
+          ".write": "
+          // exceptions to help testing	
+          ($key === 'userJourneyTest' && $owner === 'endpointservices')
+          ||
+          auth.token.observablehq_com.contains('|' + $owner + '|')",
+          "writes_per_day": {
+            ".validate": "newData.parent().child('per_user').val() === true ? newData.val() <= 10000 : newData.val() <= 100"
+          }
+        }
+      }
+    },
+    "day": {
+      ".write": "newData.isNumber()",
+      // Check day and day + 1 encloses now
+      ".validate": "newData.val() * 1000 * 60 * 60 * 24 - 10000 < now
+      							&& (newData.val() + 1) * 1000 * 60 * 60 * 24 + 10000 > now"
+    },
+    "dailyWrites": {
+      "$day": {
+       	"$owner": {
+          "$key": {
+            "$shard": {
+              ".read": "$shard === '_' || auth.token.observablehq_com.contains('|' + $shard + '|')",
+              ".write": "$shard == '_' || auth.token.observablehq_com.contains('|' + $shard + '|')",
+              ".validate": "
+              (
+              	// The dailyWrites counter incrments by one each time
+              	(newData.val() == 1 && !data.exists()) 
+                || newData.val() == data.val() + 1 
+              ) && (
+              	// The dailyWrite counter stays below the configured rate limit
+                newData.val() <= newData.parent().parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/writes_per_day').val()
+              )"
+            }
+          }
+        } 
+      }
+    },
+    "version": {
+      "$owner": {
+        "$key": {
+          "$shard": {
+            ".read": "$shard === '_' || auth.token.observablehq_com.contains('|' + $shard + '|')",
+            ".write": "
+            	$shard == '_' // Global shard, anbody can write
+            	|| (
+                // OR per_user so user has to match share
+            		auth.token.observablehq_com.contains('|' + $shard + '|')
+            		&& (
+                  // Also you are signed in to the owners realm
+              		auth.token.realm === $owner
+                  // Or you have signed in to a personal realm that matches shard
+                  || auth.token.realm === $shard
+              	)
+              )
+          	",
+            ".validate": "
+            	(
+                (newData.val() == 1 && !data.exists()) 
+              	|| newData.val() == data.val() + 1 
+              )"
+          }
+        }
+      } 
+    }
+    ,
+    "data": {
+      "$owner": {
+        "$key": {
+          "$shard": {
+            ".read": "
+            (
+                (
+                  // Either you are reading from a global location (anybody can do this from anywhere)
+                  $shard == '_'
+                  && data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/per_user').val() == false
+                )
+                || (
+                  // OR per_user so user has to match shard
+                  auth.token.observablehq_com.contains('|' + $shard + '|')
+                  && data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/per_user').val() == true
+                  && (
+                      // Also you are signed in to the owners realm
+                      auth.token.realm === $owner
+                      // Or you have signed in to a personal realm that matches shard
+                      || auth.token.realm === $shard
+                  )
+              )
+            ) 
+            // Check read permission
+            && (
+              // Either, readers is set to 'all'
+              'all' == data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/readers').val()
+              // Or config/.../readers contains auth.uid
+              || data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/readers/' + auth.uid).exists()
+            )
+            ",
+            ".write": "
+            (
+            	(
+            	  // Either you are writing to a global location (!per_user)
+                $shard == '_' 
+                && data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/per_user').val() == false)
+            	|| (
+                // OR per_user so user has to match shard (per_user)
+            		auth.token.observablehq_com.contains('|' + $shard + '|')
+                && data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/per_user').val() == true
+            		&& (
+                  // Also you are signed in to the owners realm
+              		auth.token.realm === $owner
+                  // Or you have signed in to a personal realm that matches shard
+                  || auth.token.realm === $shard
+              	)
+              )
+            ) 
+            // Check write permission
+						&& (
+              // Either writers is set to 'all'
+              'all' == data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/writers').val()
+              // Or config/.../writers contains auth.uid
+              || data.parent().parent().parent().parent().child('config/' + $owner + '/' + $key + '/writers/' + auth.uid).exists()
+            )
+            // Check increment or new version counter 
+            && newData.parent().parent().parent().parent().child('version/' + $owner + '/' + $key + '/' + $shard).val() == (data.parent().parent().parent().parent().child('version/' + $owner + '/' + $key + '/' + $shard).exists() ? data.parent().parent().parent().parent().child('version/' + $owner + '/' + $key + '/' + $shard).val() + 1: 1)
+            // Check increment or new dailyWrites counter, note /day is used to figure out day
+            && newData.parent().parent().parent().parent().child('dailyWrites/' + newData.parent().parent().parent().parent().child('day').val() + '/' + $owner + '/' + $key + '/' + $shard).val() == (data.parent().parent().parent().parent().child('dailyWrites/' + newData.parent().parent().parent().parent().child('day').val() + '/' + $owner + '/' + $key + '/' + $shard).exists() ? data.parent().parent().parent().parent().child('dailyWrites/' + newData.parent().parent().parent().parent().child('day').val() + '/' + $owner + '/' + $key + '/' + $shard).val() + 1 : 1)
+            "
+          }
+        }
+      } 
+    }
+  }
+}
+\`\`\``
 )}
 
-function _41(cellstoreDeps){return(
-cellstoreDeps
-)}
-
-function _42(md){return(
+function _40(md){return(
 md`---`
 )}
 
-function _43(md){return(
+function _41(md){return(
+md`## Implementation`
+)}
+
+function _43(cellstoreDeps){return(
+cellstoreDeps
+)}
+
+function _44(md){return(
+md`---`
+)}
+
+function _45(md){return(
 md`## Development tooling
 
 This is not relevant for users, but I don't feel the need to hide it in another notebook. This tools help with the development and testing of \`cellstore\`. Like the documentation, I don't want them included with the minimized library.`
 )}
 
-function _44(md){return(
+function _46(md){return(
 md`### New user Journey Manual Test
 
 Its important that a fresh cellstore works, however, the user might not be logged in, and all the permissions are keyed of a config that may not have written, so we need to ensure that an anonymous user can login as an owner and get started right away. If the config is not written first, the data listeners get permission denied and fail, so there is an important ordering that should be tested.
@@ -322,7 +475,7 @@ function _newUserJourney(createSuite){return(
 createSuite({ name: null, timeout_ms: 99999999 })
 )}
 
-function _49(newUserJourney,newUserJourneyParams,$0,expect,invalidation){return(
+function _51(newUserJourney,newUserJourneyParams,$0,expect,invalidation){return(
 newUserJourney.test("new user can login and write data", (done) => {
   newUserJourneyParams; // reset
 
@@ -343,7 +496,7 @@ newUserJourney.test("new user can login and write data", (done) => {
 })
 )}
 
-function _50(newUserJourneyParams){return(
+function _52(newUserJourneyParams){return(
 newUserJourneyParams
 )}
 
@@ -351,7 +504,7 @@ function _authRef(){return(
 undefined
 )}
 
-function _52($0,auth){return(
+function _54($0,auth){return(
 $0.value = auth
 )}
 
@@ -399,7 +552,7 @@ function _newUserJourneyResults(Inputs){return(
 Inputs.input()
 )}
 
-function _58($0,newUserJourneyStore,dataflowRead,backendRead,Event)
+function _60($0,newUserJourneyStore,dataflowRead,backendRead,Event)
 {
   $0.value = {
     written: newUserJourneyStore,
@@ -411,7 +564,7 @@ function _58($0,newUserJourneyStore,dataflowRead,backendRead,Event)
 }
 
 
-function _59(md){return(
+function _61(md){return(
 md`### Permissions Prediction Tests`
 )}
 
@@ -419,7 +572,7 @@ function _permissions(createSuite){return(
 createSuite({ name: null })
 )}
 
-function _62(permissions,expect,canWrite){return(
+function _64(permissions,expect,canWrite){return(
 permissions.test("can write is false without uid", () => {
   expect(
     canWrite({
@@ -435,7 +588,7 @@ permissions.test("can write is false without uid", () => {
 })
 )}
 
-function _63(permissions,expect,canWrite){return(
+function _65(permissions,expect,canWrite){return(
 permissions.test("can write is false with wrong uid", () => {
   expect(
     canWrite({
@@ -450,7 +603,7 @@ permissions.test("can write is false with wrong uid", () => {
 })
 )}
 
-function _64(permissions,expect,canWrite){return(
+function _66(permissions,expect,canWrite){return(
 permissions.test("can write is true using [uid] in writer", () => {
   expect(
     canWrite({
@@ -467,7 +620,7 @@ permissions.test("can write is true using [uid] in writer", () => {
 })
 )}
 
-function _65(permissions,expect,canWrite){return(
+function _67(permissions,expect,canWrite){return(
 permissions.test("can write is true with 'all' as writer", () => {
   expect(
     canWrite({
@@ -485,7 +638,7 @@ permissions.test("can write is true with 'all' as writer", () => {
 })
 )}
 
-function _66(permissions,expect,canWrite){return(
+function _68(permissions,expect,canWrite){return(
 permissions.test("can write is true on forked realm for forker", () => {
   expect(
     canWrite({
@@ -502,7 +655,7 @@ permissions.test("can write is true on forked realm for forker", () => {
 })
 )}
 
-function _67(permissions,expect,canWrite){return(
+function _69(permissions,expect,canWrite){return(
 permissions.test("can write is false on forked realm for non-forker", () => {
   expect(
     canWrite({
@@ -519,7 +672,7 @@ permissions.test("can write is false on forked realm for non-forker", () => {
 })
 )}
 
-function _68(permissions,expect,canWrite){return(
+function _70(permissions,expect,canWrite){return(
 permissions.test("can write is false without writer", () => {
   expect(
     canWrite({
@@ -535,7 +688,7 @@ permissions.test("can write is false without writer", () => {
 })
 )}
 
-function _69(permissions,expect,canWrite){return(
+function _71(permissions,expect,canWrite){return(
 permissions.test("can write is true when shard is _ and !per_user", () => {
   expect(
     canWrite({
@@ -552,7 +705,7 @@ permissions.test("can write is true when shard is _ and !per_user", () => {
 })
 )}
 
-function _70(permissions,expect,canWrite){return(
+function _72(permissions,expect,canWrite){return(
 permissions.test(
   "can write is false when shard is user_id and per_user",
   () => {
@@ -572,7 +725,7 @@ permissions.test(
 )
 )}
 
-function _71(permissions,expect,canWrite){return(
+function _73(permissions,expect,canWrite){return(
 permissions.test("can write is false when shard is _ and per_user", () => {
   expect(
     canWrite({
@@ -589,7 +742,7 @@ permissions.test("can write is false when shard is _ and per_user", () => {
 })
 )}
 
-function _72(permissions,expect,canRead){return(
+function _74(permissions,expect,canRead){return(
 permissions.test("can read is true using [uid] in reader", () => {
   expect(
     canRead({
@@ -606,7 +759,7 @@ permissions.test("can read is true using [uid] in reader", () => {
 })
 )}
 
-function _73(permissions,expect,canRead){return(
+function _75(permissions,expect,canRead){return(
 permissions.test("can read is true using 'all' in reader", () => {
   expect(
     canRead({
@@ -623,7 +776,7 @@ permissions.test("can read is true using 'all' in reader", () => {
 })
 )}
 
-function _74(permissions,expect,canRead){return(
+function _76(permissions,expect,canRead){return(
 permissions.test("can read is false without reader", () => {
   expect(
     canRead({
@@ -639,7 +792,7 @@ permissions.test("can read is false without reader", () => {
 })
 )}
 
-function _75(md){return(
+function _77(md){return(
 md`### UI Playground`
 )}
 
@@ -667,18 +820,18 @@ UI({
 })
 )}
 
-function _77(sample){return(
+function _79(sample){return(
 sample
 )}
 
-function _78(Inputs,$0){return(
+function _80(Inputs,$0){return(
 Inputs.bind(
   Inputs.radio(["info", "login-with-comment"], { label: "screen" }),
   $0.screen
 )
 )}
 
-function _79(Inputs,$0){return(
+function _81(Inputs,$0){return(
 Inputs.bind(
   Inputs.toggle({
     label: "signIn"
@@ -687,7 +840,7 @@ Inputs.bind(
 )
 )}
 
-function _80(Inputs,$0){return(
+function _82(Inputs,$0){return(
 Inputs.bind(
   Inputs.toggle({
     label: "signOut"
@@ -696,7 +849,7 @@ Inputs.bind(
 )
 )}
 
-function _81(Inputs,$0){return(
+function _83(Inputs,$0){return(
 Inputs.bind(
   Inputs.toggle({
     label: "showData"
@@ -705,7 +858,7 @@ Inputs.bind(
 )
 )}
 
-function _82(Inputs,$0){return(
+function _84(Inputs,$0){return(
 Inputs.bind(
   Inputs.toggle({
     label: "showWriteRate"
@@ -714,7 +867,7 @@ Inputs.bind(
 )
 )}
 
-function _83(Inputs,$0){return(
+function _85(Inputs,$0){return(
 Inputs.bind(
   Inputs.range([0, 10], {
     label: "writes",
@@ -724,7 +877,7 @@ Inputs.bind(
 )
 )}
 
-function _84(Inputs,$0){return(
+function _86(Inputs,$0){return(
 Inputs.bind(
   Inputs.range([0, 10], {
     label: "writes_per_day",
@@ -734,7 +887,7 @@ Inputs.bind(
 )
 )}
 
-function _86(footer){return(
+function _88(footer){return(
 footer
 )}
 
@@ -790,6 +943,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _37);
   main.variable(observer()).define(["md"], _38);
   main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["md"], _41);
   const child4 = runtime.module(define4);
   main.import("cellstore", child4);
   main.import("signOut", child4);
@@ -800,10 +955,10 @@ export default function define(runtime, observer) {
   main.import("UI", child4);
   main.import("defaultApp", child4);
   main.import("cellstoreDeps", child4);
-  main.variable(observer()).define(["cellstoreDeps"], _41);
-  main.variable(observer()).define(["md"], _42);
-  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["cellstoreDeps"], _43);
   main.variable(observer()).define(["md"], _44);
+  main.variable(observer()).define(["md"], _45);
+  main.variable(observer()).define(["md"], _46);
   main.variable(observer("viewof newUserJourneyParams")).define("viewof newUserJourneyParams", ["Inputs"], _newUserJourneyParams);
   main.variable(observer("newUserJourneyParams")).define("newUserJourneyParams", ["Generators", "viewof newUserJourneyParams"], (G, _) => G.input(_));
   main.variable(observer("viewof afterLogin")).define("viewof afterLogin", ["viewof newUserJourneyStore","Inputs"], _afterLogin);
@@ -812,27 +967,25 @@ export default function define(runtime, observer) {
   main.variable(observer("newUserJourneyStore")).define("newUserJourneyStore", ["Generators", "viewof newUserJourneyStore"], (G, _) => G.input(_));
   main.variable(observer("viewof newUserJourney")).define("viewof newUserJourney", ["createSuite"], _newUserJourney);
   main.variable(observer("newUserJourney")).define("newUserJourney", ["Generators", "viewof newUserJourney"], (G, _) => G.input(_));
-  main.variable(observer()).define(["newUserJourney","newUserJourneyParams","viewof newUserJourneyResults","expect","invalidation"], _49);
-  main.variable(observer()).define(["newUserJourneyParams"], _50);
+  main.variable(observer()).define(["newUserJourney","newUserJourneyParams","viewof newUserJourneyResults","expect","invalidation"], _51);
+  main.variable(observer()).define(["newUserJourneyParams"], _52);
   main.define("initial authRef", _authRef);
   main.variable(observer("mutable authRef")).define("mutable authRef", ["Mutable", "initial authRef"], (M, _) => new M(_));
   main.variable(observer("authRef")).define("authRef", ["mutable authRef"], _ => _.generator);
-  main.variable(observer()).define(["mutable authRef","auth"], _52);
+  main.variable(observer()).define(["mutable authRef","auth"], _54);
   main.variable(observer("clearNewUserJourneyStoreConfig")).define("clearNewUserJourneyStoreConfig", ["newUserJourneyParams","signOut","mutable authRef"], _clearNewUserJourneyStoreConfig);
   main.variable(observer("doWrite")).define("doWrite", ["afterLogin","viewof newUserJourneyStore","newUserJourneyParams"], _doWrite);
   main.variable(observer("backendRead")).define("backendRead", ["doWrite"], _backendRead);
   main.variable(observer("dataflowRead")).define("dataflowRead", ["newUserJourneyStore"], _dataflowRead);
   main.variable(observer("viewof newUserJourneyResults")).define("viewof newUserJourneyResults", ["Inputs"], _newUserJourneyResults);
   main.variable(observer("newUserJourneyResults")).define("newUserJourneyResults", ["Generators", "viewof newUserJourneyResults"], (G, _) => G.input(_));
-  main.variable(observer()).define(["viewof newUserJourneyResults","newUserJourneyStore","dataflowRead","backendRead","Event"], _58);
-  main.variable(observer()).define(["md"], _59);
+  main.variable(observer()).define(["viewof newUserJourneyResults","newUserJourneyStore","dataflowRead","backendRead","Event"], _60);
+  main.variable(observer()).define(["md"], _61);
   main.variable(observer("viewof permissions")).define("viewof permissions", ["createSuite"], _permissions);
   main.variable(observer("permissions")).define("permissions", ["Generators", "viewof permissions"], (G, _) => G.input(_));
   const child5 = runtime.module(define5);
   main.import("createSuite", child5);
   main.import("expect", child5);
-  main.variable(observer()).define(["permissions","expect","canWrite"], _62);
-  main.variable(observer()).define(["permissions","expect","canWrite"], _63);
   main.variable(observer()).define(["permissions","expect","canWrite"], _64);
   main.variable(observer()).define(["permissions","expect","canWrite"], _65);
   main.variable(observer()).define(["permissions","expect","canWrite"], _66);
@@ -841,22 +994,24 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["permissions","expect","canWrite"], _69);
   main.variable(observer()).define(["permissions","expect","canWrite"], _70);
   main.variable(observer()).define(["permissions","expect","canWrite"], _71);
-  main.variable(observer()).define(["permissions","expect","canRead"], _72);
-  main.variable(observer()).define(["permissions","expect","canRead"], _73);
+  main.variable(observer()).define(["permissions","expect","canWrite"], _72);
+  main.variable(observer()).define(["permissions","expect","canWrite"], _73);
   main.variable(observer()).define(["permissions","expect","canRead"], _74);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["permissions","expect","canRead"], _75);
+  main.variable(observer()).define(["permissions","expect","canRead"], _76);
+  main.variable(observer()).define(["md"], _77);
   main.variable(observer("viewof sample")).define("viewof sample", ["UI","createLogin","defaultApp"], _sample);
   main.variable(observer("sample")).define("sample", ["Generators", "viewof sample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["sample"], _77);
-  main.variable(observer()).define(["Inputs","viewof sample"], _78);
-  main.variable(observer()).define(["Inputs","viewof sample"], _79);
+  main.variable(observer()).define(["sample"], _79);
   main.variable(observer()).define(["Inputs","viewof sample"], _80);
   main.variable(observer()).define(["Inputs","viewof sample"], _81);
   main.variable(observer()).define(["Inputs","viewof sample"], _82);
   main.variable(observer()).define(["Inputs","viewof sample"], _83);
   main.variable(observer()).define(["Inputs","viewof sample"], _84);
+  main.variable(observer()).define(["Inputs","viewof sample"], _85);
+  main.variable(observer()).define(["Inputs","viewof sample"], _86);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], _86);
+  main.variable(observer()).define(["footer"], _88);
   return main;
 }
