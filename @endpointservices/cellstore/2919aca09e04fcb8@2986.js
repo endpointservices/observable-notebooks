@@ -1,7 +1,7 @@
 import define1 from "./9bed702f80a3797e@402.js";
 import define2 from "./ef672b935bd480fc@623.js";
 import define3 from "./e1e1342567637708@620.js";
-import define4 from "./640827b90181613e@2951.js";
+import define4 from "./640827b90181613e@2958.js";
 import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./293899bef371e135@290.js";
 
@@ -28,9 +28,9 @@ toc("h2,h3,h4")
 function _5(md){return(
 md`## Motivation
 
-*"There doesn't seem to be a way of building up higher level abstractions [on Observablehq] and saving and reusing them."* -- Jimmy Miller, [Future of Coding Slack](https://linen.futureofcoding.org/t/2162521/it-s-time-we-rethought-the-text-editor-our-editors-today-are#2e87db8c-bb7b-48fc-be01-0ad7e566dde7), Aug 2022
+*"There doesn't seem to be a way of building up higher-level abstractions [on Observablehq] and saving and reusing them."* -- Jimmy Miller, [Future of Coding Slack](https://linen.futureofcoding.org/t/2162521/it-s-time-we-rethought-the-text-editor-our-editors-today-are#2e87db8c-bb7b-48fc-be01-0ad7e566dde7), Aug 2022
 
-I used to worry about Observable extensibility but then I went on to build [an Oauth Authorization Server](https://observablehq.com/@endpointservices/auth), an [OpenAI Tarot Card Reader](https://thetarot.online/), a [CORS Proxy](https://observablehq.com/@tomlarkworthy/fetchp), on-demand [Minecraft Server](https://observablehq.com/@tomlarkworthy/minecraft-servers), a [notebook debugger](https://observablehq.com/@tomlarkworthy/ndd), a [Twitter bot](https://twitter.com/trendingnotebo2) and a API [latency monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor). To meet my growing needs I added plugins for [analytics](https://observablehq.com/@endpointservices/plausible-analytics), [continuous integration](https://observablehq.com/@endpointservices/healthcheck), [error monitoring](https://observablehq.com/@endpointservices/sentry) and [backups](https://observablehq.com/@tomlarkworthy/github-backups). And so I conclude there is very little you cannot do on Observable, however, setting these things up required specialized Cloud knowledge unrelated to the fun part of creation. It shouldn't be so time consuming and technical! **Jimmy has a point**.
+I used to worry about Observable extensibility but then I went on to build [an Oauth Authorization Server](https://observablehq.com/@endpointservices/auth), an [OpenAI Tarot Card Reader](https://thetarot.online/), a [CORS Proxy](https://observablehq.com/@tomlarkworthy/fetchp), on-demand [Minecraft Server](https://observablehq.com/@tomlarkworthy/minecraft-servers), a [notebook debugger](https://observablehq.com/@tomlarkworthy/ndd), a [Twitter bot](https://twitter.com/trendingnotebo2) and a API [latency monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor). To meet my growing needs I added plugins for [analytics](https://observablehq.com/@endpointservices/plausible-analytics), [continuous integration](https://observablehq.com/@endpointservices/healthcheck), [error monitoring](https://observablehq.com/@endpointservices/sentry) and [backups](https://observablehq.com/@tomlarkworthy/github-backups). And so I conclude there is very little you cannot do on Observable, however, setting these things up required specialized Cloud knowledge unrelated to the fun part of creation. It shouldn't be so time-consuming and technical! **Jimmy has a point**.
 
 So with \`cellstore\` I am taking my experience of building stateful applications on Observable and refactoring out a common-case state abstraction. While I am at it, I can fix some philosophical issues, like end-user forkability, once-and-for-all, and now I can put it all into a single declarative function you can just call. There are no additional steps to do! It's super easy to add state to notebooks now. I can't wait to see what you will do with it!
 `

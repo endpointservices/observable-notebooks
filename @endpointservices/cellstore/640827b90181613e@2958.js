@@ -5,7 +5,9 @@ import define4 from "./f20d8159d88e6df4@1627.js";
 import define5 from "./2b294a89125f5f7b@65.js";
 
 function _1(md){return(
-md`# \`cellstore\` ([main](https://observablehq.com/@endpointservices/cellstore))`
+md`# \`cellstore\` 
+
+This is the unlisted minimal implementation of \`cellstore\`, the main explanatory notebook can be found [here](https://observablehq.com/@endpointservices/cellstore)`
 )}
 
 function _cellstore(UI,htl,_,increment1,Event,hasLocalStorage,localStorage,$0,invalidation,canWrite,canRead,disposal){return(
