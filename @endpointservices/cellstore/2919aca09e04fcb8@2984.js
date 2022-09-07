@@ -268,7 +268,7 @@ md`## Options: \`firebaseApp\`, \`prepareBackendURL\`, \`verifyBackendURL\` and 
 
 You can bring your own firebase realtime database. You will also need to provide a custom auth token signing backend using a service account from the same project. While \`cellstore\` uses login-with-comment-v2, the auth backend is actually still the [v1](https://observablehq.com/embed/@endpointservices/login-with-comment), so it's the v1 you will want to fork to create your own custom auth backend.
 
-The auth backend adds [custom claims](https://firebase.google.com/docs/auth/admin/custom-claims) including which namespace the user signed in from (the realm) as well as the teams they are part of. Using those custom claims we are able to implement the forking logic. Firebase Security rules that enforce write and version counters are incremented as data mutations happen and also enforce rate limits are respected. I will send you the rules on request.`
+The auth backend adds [custom claims](https://firebase.google.com/docs/auth/admin/custom-claims) including which namespace the user signed in from (the realm) as well as the teams they are part of. Using those custom claims we are able to implement the forking logic. Firebase Security rules also enforce write and version counters are incremented as data mutations happen and also enforce rate limits are respected. I will send you rules on request.`
 )}
 
 function _39(md){return(
