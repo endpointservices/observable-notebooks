@@ -57,7 +57,7 @@ function _9(md){return(
 md`---`
 )}
 
-function _CodeMirror(codemirror,Event,htl){return(
+function _CodeMirror(codemirror,Event,htl,calcChange){return(
 (doc = "", config = {}) => {
   const extensions = config.extensions ?? [];
   const keymaps = config.keymaps ?? [];
@@ -80,17 +80,61 @@ function _CodeMirror(codemirror,Event,htl){return(
     enumerable: true,
     get: () => doc,
     set: (newContent) => {
+      const change = calcChange(doc, newContent, view.state.selection);
       doc = newContent;
-      view.dispatch({
-        changes: [{ from: 0, to: view.state.doc.length, insert: newContent }]
-      });
+      view.dispatch(change);
     }
   });
   return container;
 }
 )}
 
-function _11(md){return(
+function _11(calcChange){return(
+calcChange("abcddddddefg", "abcddddddefg", { ranges: [{ from: 8 }] })
+)}
+
+function _calcChange(){return(
+(previous, next, selection) => {
+  // Find where to start inserting
+  for (
+    var insertOffset = 0;
+    insertOffset < selection.ranges[0].from;
+    insertOffset++
+  ) {
+    if (previous[insertOffset] !== next[insertOffset]) break;
+  }
+
+  // Find where the insert ends
+  for (
+    var endOffset = 0;
+    endOffset < previous.length - selection.ranges[0].from;
+    endOffset++
+  ) {
+    if (
+      previous[previous.length - endOffset - 1] !==
+      next[next.length - endOffset - 1]
+    )
+      break;
+  }
+  const insert = next.substring(insertOffset, next.length - endOffset);
+  const cursor = Math.min(insertOffset + insert.length, next.length);
+  return {
+    changes: [
+      {
+        from: insertOffset,
+        to: previous.length - endOffset,
+        insert
+      }
+    ],
+    selection: {
+      anchor: cursor,
+      head: cursor
+    }
+  };
+}
+)}
+
+function _13(md){return(
 md`---`
 )}
 
@@ -105,7 +149,7 @@ codemirror.EditorView.theme({
 })
 )}
 
-function _13(md){return(
+function _15(md){return(
 md`---`
 )}
 
@@ -124,7 +168,7 @@ function _codemirror(esmImport,CODEMIRROR_VERSION){return(
 esmImport(`codemirror@${CODEMIRROR_VERSION}`)
 )}
 
-function _17(md){return(
+function _19(md){return(
 md`---`
 )}
 
@@ -141,13 +185,15 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("CODEMIRROR_VERSION")).define("CODEMIRROR_VERSION", _CODEMIRROR_VERSION);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer("CodeMirror")).define("CodeMirror", ["codemirror","Event","htl"], _CodeMirror);
-  main.variable(observer()).define(["md"], _11);
-  main.variable(observer("myDefaultTheme")).define("myDefaultTheme", ["codemirror"], _myDefaultTheme);
+  main.variable(observer("CodeMirror")).define("CodeMirror", ["codemirror","Event","htl","calcChange"], _CodeMirror);
+  main.variable(observer()).define(["calcChange"], _11);
+  main.variable(observer("calcChange")).define("calcChange", _calcChange);
   main.variable(observer()).define(["md"], _13);
+  main.variable(observer("myDefaultTheme")).define("myDefaultTheme", ["codemirror"], _myDefaultTheme);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer("esmImport")).define("esmImport", _esmImport);
   main.variable(observer("esmCodeMirror")).define("esmCodeMirror", ["esmImport","CODEMIRROR_VERSION"], _esmCodeMirror);
   main.variable(observer("codemirror")).define("codemirror", ["esmImport","CODEMIRROR_VERSION"], _codemirror);
-  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["md"], _19);
   return main;
 }

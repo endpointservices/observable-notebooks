@@ -1,6 +1,6 @@
 import define1 from "./9bed702f80a3797e@402.js";
 import define2 from "./ef672b935bd480fc@623.js";
-import define3 from "./e1e1342567637708@620.js";
+import define3 from "./e1e1342567637708@742.js";
 import define4 from "./640827b90181613e@2958.js";
 import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./293899bef371e135@290.js";
@@ -237,7 +237,7 @@ Inputs.button("load example program", {
 })
 )}
 
-function _35(Inputs,CodeMirror,codemirror,rustPlugin,myDefaultTheme,$0){return(
+function _editor(Inputs,CodeMirror,codemirror,rustPlugin,myDefaultTheme,$0){return(
 Inputs.bind(
   CodeMirror("", {
     extensions: [codemirror.basicSetup, rustPlugin.rust(), myDefaultTheme]
@@ -793,7 +793,8 @@ export default function define(runtime, observer) {
   main.import("myDefaultTheme", child3);
   main.variable(observer("rustPlugin")).define("rustPlugin", ["esmCodeMirror"], _rustPlugin);
   main.variable(observer()).define(["Inputs","viewof rustProgram"], _34);
-  main.variable(observer()).define(["Inputs","CodeMirror","codemirror","rustPlugin","myDefaultTheme","viewof rustProgram"], _35);
+  main.variable(observer("viewof editor")).define("viewof editor", ["Inputs","CodeMirror","codemirror","rustPlugin","myDefaultTheme","viewof rustProgram"], _editor);
+  main.variable(observer("editor")).define("editor", ["Generators", "viewof editor"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _36);
   main.variable(observer()).define(["md"], _37);
   main.variable(observer()).define(["md"], _38);

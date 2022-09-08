@@ -1,6 +1,6 @@
 # Simple notebook storage: cellstore
 
-https://observablehq.com/@endpointservices/cellstore@2986
+https://observablehq.com/@endpointservices/cellstore@2990
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/2919aca09e04fcb8@2986.tgz?v=3
+npm install https://api.observablehq.com/d/2919aca09e04fcb8@2990.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
