@@ -79,7 +79,7 @@ function _CodeMirror(codemirror,Event,htl,calcChange){return(
   Object.defineProperty(container, "value", {
     enumerable: true,
     get: () => doc,
-    set: (newContent) => {
+    set: (newContent = "") => {
       const change = calcChange(doc, newContent, view.state.selection);
       doc = newContent;
       view.dispatch(change);
