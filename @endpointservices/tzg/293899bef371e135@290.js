@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@280
+// https://observablehq.com/@endpointservices/footer-with-backups@290
 import define1 from "./a81f2a20664080d3@245.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@631.js";
@@ -16,11 +16,11 @@ footer
 \`\`\``
 )}
 
-function _graphic(md){return(
+function _graphic(md,backupNowButton){return(
 md`<small>
 [WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks. Signup for the [webcode newsletter on Substack](https://webcode.substack.com/).
 
-*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
+*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* Backups by [backup-to-github](https://observablehq.com/@tomlarkworthy/github-backups). ${backupNowButton()}</small>
 `
 )}
 
@@ -135,7 +135,7 @@ enableGithubBackups({
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
+  main.variable(observer("graphic")).define("graphic", ["md","backupNowButton"], _graphic);
   main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);

@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1442
+// https://observablehq.com/@endpointservices/login-with-comment@1444
 import define1 from "./993a0c51ef1175ea@1396.js";
 import define2 from "./d84ccee0a2202d45@356.js";
 import define3 from "./f92778131fd76559@1174.js";
@@ -839,11 +839,6 @@ deploy(
 
       // Code must be exchanged within time window.
       if (
-        privateCode ===
-        "v58yd9ljbj4kDmENMcKwx3cYa3vYuXvVyQEo45IYFrMuZ90F8TH3nTgHdv6pRvWN"
-      ) {
-        // Debugging a problematic code
-      } else if (
         new Date() - new Date(t) > 10 * 60 * 1000 ||
         new Date() - new Date(t) < 0
       ) {
@@ -889,6 +884,7 @@ deploy(
         };
         additionalClaims["observablehq_com"] = "|" + login + "|";
       }
+      additionalClaims["realm"] = namespace;
 
       const token = await createCustomToken(
         JSON.parse(ctx.secrets[TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET]),
