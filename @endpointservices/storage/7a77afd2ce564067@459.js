@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/oauth@459
 import define1 from "./ef672b935bd480fc@623.js";
 import define2 from "./c2dae147641e012a@46.js";
-import define3 from "./316f0885d15ab671@65.js";
+import define3 from "./316f0885d15ab671@69.js";
 
 function _1(md){return(
 md`# Oauth 2.0 Client
