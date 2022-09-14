@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/certify-subdomain-ownership@1592
-import define1 from "./65d33fe44849cfde@586.js";
+import define1 from "./65d33fe44849cfde@588.js";
 import define2 from "./698257e86fae4586@378.js";
 import define3 from "./52d808b188b8672b@129.js";
 import define4 from "./87deeb645328fb3b@223.js";
@@ -8,7 +8,7 @@ import define6 from "./11a5ab8b1b3a51db@1161.js";
 import define7 from "./c7a3b20cec5d4dd9@669.js";
 import define8 from "./cb60908738c3dabe@152.js";
 import define9 from "./ab3e70b29c480e6d@83.js";
-import define10 from "./293899bef371e135@280.js";
+import define10 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`

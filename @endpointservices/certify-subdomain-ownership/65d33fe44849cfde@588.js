@@ -1,9 +1,9 @@
-// https://observablehq.com/@tomlarkworthy/metaprogramming@586
+// https://observablehq.com/@tomlarkworthy/metaprogramming@588
 import define1 from "./c7a3b20cec5d4dd9@669.js";
 import define2 from "./3d9d1394d858ca97@553.js";
 
 function _1(md){return(
-md`# Metaprogramming with _Peek_
+md`# Metaprogramming with _Peek_ [Not recommended for production user]
 
 <center style="height:320px"><span style="font-size:800px; line-height: 730px">*</span></center>
 
