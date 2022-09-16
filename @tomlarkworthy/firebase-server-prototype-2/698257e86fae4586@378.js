@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase-admin@374
+// https://observablehq.com/@tomlarkworthy/firebase-admin@378
 function _1(md){return(
 md`# Firebase Admin and Google API helpers in the browser
 
@@ -337,34 +337,41 @@ Combine this with [Google API Client](https://observablehq.com/@tomlarkworthy/ga
 )}
 
 function _getAccessTokenFromServiceAccount(jsrsasign){return(
-async function getAccessTokenFromServiceAccount(serviceAccountKey) {
-  if (typeof serviceAccountKey === 'string') {
-    serviceAccountKey = JSON.parse(serviceAccountKey)
+async function getAccessTokenFromServiceAccount(
+  serviceAccountKey,
+  {
+    scope = "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/cloud-platform"
+  } = {}
+) {
+  if (typeof serviceAccountKey === "string") {
+    serviceAccountKey = JSON.parse(serviceAccountKey);
   }
   // First create a JWT from the credentials
-  const tNow = Math.floor((new Date()).getTime() / 1000);
-  const sHeader = JSON.stringify({alg: 'RS256', typ: 'JWT'});
+  const tNow = Math.floor(new Date().getTime() / 1000);
+  const sHeader = JSON.stringify({ alg: "RS256", typ: "JWT" });
   const sPayload = JSON.stringify({
-      iss: serviceAccountKey.client_email,
-      scope: "https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/cloud-platform",
-      iat: tNow,
-      exp: tNow + 600,
-      aud: "https://oauth2.googleapis.com/token",
+    iss: serviceAccountKey.client_email,
+    scope: scope,
+    iat: tNow,
+    exp: tNow + 600,
+    aud: "https://oauth2.googleapis.com/token"
   });
-  const JWT = jsrsasign.KJUR.jws.JWS.sign("RS256", sHeader, sPayload, serviceAccountKey.private_key);
-    
-  // Swap JWT for access_token
-  const tokenResponse = await fetch(
-    'https://oauth2.googleapis.com/token',
-    {
-      method: 'POST',
-      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-      body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${JWT}`,
-    }
+  const JWT = jsrsasign.KJUR.jws.JWS.sign(
+    "RS256",
+    sHeader,
+    sPayload,
+    serviceAccountKey.private_key
   );
 
+  // Swap JWT for access_token
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${JWT}`
+  });
+
   if (tokenResponse.status != 200) {
-    throw new Error(await tokenResponse.text())
+    throw new Error(await tokenResponse.text());
   }
   return (await tokenResponse.json()).access_token;
 }
@@ -407,7 +414,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image.png", {url: new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1", import.meta.url), mimeType: "image/png", toString}]
+    ["image.png", {url: new URL("./files/d13fe08447f9f86d52f1c006b5611bd53ae8a468c9fb36bf059cdf2e33713c2ce9670c55163040a1b21390fe3f813d87cfc18c569b3067fa9cb524d464786cc1.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
