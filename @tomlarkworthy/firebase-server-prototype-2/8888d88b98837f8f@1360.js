@@ -25,21 +25,6 @@ Inputs.bind(
 )
 )}
 
-function _useWebsocket(Inputs,localStorageView){return(
-Inputs.bind(
-  Inputs.toggle({ label: "websocket?" }),
-  localStorageView("websocket", {
-    json: true
-  })
-)
-)}
-
-function _toggleWebsockets(useWebsocket)
-{
-  if (!useWebsocket) window.WebSocket = undefined;
-}
-
-
 function _rtdbLogs(Inputs){return(
 Inputs.input([])
 )}
@@ -63,8 +48,7 @@ function _overlay(showOverlay,view,Inputs,$0,Event,$1,html,makeSticky,invalidati
           $0.dispatchEvent(new Event("input", { bubbles: true }))
         )
       })}
-      ${["useWebsocket", $1]}
-      
+      ${$1}
     </div>
   </div>`;
   const container = html`<div style="width:100%; height:100%; position: fixed;top:0px; pointer-events: none; ">${sidebar}`;
@@ -74,7 +58,7 @@ function _overlay(showOverlay,view,Inputs,$0,Event,$1,html,makeSticky,invalidati
 }
 
 
-function _10(md){return(
+function _8(md){return(
 md`This notebook is part of a [collection](https://observablehq.com/collection/@tomlarkworthy/firebase) creating **an improved, open-source Firebase-compatible realtime database**. We will create an elastic architecture by leveraging new serverless technology. Serverless will enable us to horizontally scale the expensive parts of request handling, such as authorization rules and external API connectors, without impacting throughput. The goal is to offer end user programmability of the system, including using ordinary Javascript for authorization rules, and other goodies like custom federated data sources. **Lack of programmability is the main weakness of existing managed realtime database offerings**.
 
 To make something truly end user programmable, it is not enough to offer the source code under a permissive license. It needs innovate on documentation, innovate on workflow, offer social commenting features and be painless to stand up the customizations. This is why the prototype is hosted on Observable, it enables **literate programming**, in notebook comments, the fastest development feedback loop, one click forking -- all in the browser with zero setup. Our intellectual property is not locked in though, the code is an ES6 module that is also exported to Github [here](https://github.com/endpointservices/observable-notebooks/tree/main/%40tomlarkworthy/redis-backend-1).
@@ -82,7 +66,7 @@ To make something truly end user programmable, it is not enough to offer the sou
 This notebook is a prototype of a Redis based persistence and message broker backend. It's a living prototype, the code is executed in *your* browser. Its part of my quest to create a **transparent cloud**. It contains unit tests that exercise the broad features. are run in your browser that connect to an external Redis server. You can watch the network tab executing the commands in your browser's development tools. If you fork this notebook, you can change the code, the commands will hit the same redis server unless you also change the [redisConfig](https://observablehq.com/@tomlarkworthy/redis-backend-1#redisConfig) cell below.`
 )}
 
-function _11(md){return(
+function _9(md){return(
 md`## At-least-once ordered delivery over unreliable communications
 
 Causal consistency has implications when transporting messages over an unreliable transport. During network partitions, messages need to be buffered until there is an opportunity to send them. When they are eventually sent, they need to be applied by the server in the same order the client originally raised them and *exactly once*, because of **causal consistency**.
@@ -95,7 +79,7 @@ For the unordered transport like HTTP, the client can send multiple database req
 `
 )}
 
-function _12(md){return(
+function _10(md){return(
 md`
 ## Causal Consistency over Stateless Workers
 
@@ -104,19 +88,19 @@ So now we get to the core technical challenge. Causal consistency implies preser
 In Google's real Firebase Realtime database implementation all requests hit a single server so it can maintain a per client queue of pending operations, but by switching to an elastic architecture, the load balancer in front of the elastic compute works against us by scattering incoming operations across difference machines. Thus, the required pending operation queue needs to be moved to external shared state.`
 )}
 
-function _13(md){return(
+function _11(md){return(
 md`*Let's build a 3rd party wire compatible Firebase Database Server.*`
 )}
 
-function _14(toc){return(
+function _12(toc){return(
 toc("h2,h3,h4,h5,h6")
 )}
 
-function _15(md){return(
+function _13(md){return(
 md`## Introduction`
 )}
 
-function _16(width,md){return(
+function _14(width,md){return(
 md`This is a prototype **Firebase wire compatible** Realtime Database Server. Vanilla Firebase web clients are able to connect and sync data with it. The server is written in [Observable](https://observablehq.com/) to simplify programmable customizability, you can one-click fork to host your own ([*really*](https://observablehq.com/@observablehq/fork-suggest-merge)).
 
 I think an end user programmable database server has much potential, for example, you could use ordinary code to authorize requests, you could even call out to external APIs, checking signatures *etc.* You could create synthetic data views to federated data sources *on-demand*, or fanout writes to additional storage engines. You can collocate the database near to users for incredibly low latency. 
@@ -126,7 +110,7 @@ This is just a prototype though, and **not ready for production use**. However, 
 <iframe width="${Math.min(720, width)}" height="315" src="https://www.youtube.com/embed/P6zuvlcAKag" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
 )}
 
-function _17(md){return(
+function _15(md){return(
 md`### What this prototype does
 
 - Works with vanilla Firebase clients over public internet.
@@ -149,23 +133,23 @@ md`### What this prototype does
 `
 )}
 
-function _18(md){return(
+function _16(md){return(
 md`## Background
 In a previous work we developed a tool for [reverse engineering the Firebase Realtime Database wire protocol](https://observablehq.com/@tomlarkworthy/rtdb-protocol), which included a very primitive Firebase Server Fake. Since then, we have created a [Redis driver](https://observablehq.com/@tomlarkworthy/redis) so notebooks can persist data to Redis directly, and so now we are in a position to put it all together. 
 `
 )}
 
-function _19(md){return(
+function _17(md){return(
 md`## Follow along
 [twitter](https://twitter.com/tomlarkworthy) or 
 <iframe src="https://webcode.substack.com/embed" width="640" height="200px" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>`
 )}
 
-function _20(md){return(
+function _18(md){return(
 md`## Database URL`
 )}
 
-function _21(md){return(
+function _19(md){return(
 md`With a specially formatted database URL we can send a vanilla Firebase client to a 3rd party server implementation.`
 )}
 
@@ -173,7 +157,7 @@ function _databaseURL(thisNotebooksNamespace,thisNotebooksSlug){return(
 `https://webcode.run?ns=${thisNotebooksNamespace}|${thisNotebooksSlug};server`
 )}
 
-function _23(md){return(
+function _21(md){return(
 md`## Live Tests
 
 The tests are meant to be read. They illustrate what features are working and furthermore, they are executed in **your** browser so you know it works because you have seen it work. Pop open DevTools and take a look when the clients are reset.
@@ -189,7 +173,7 @@ function _clientConfig(databaseURL){return(
 }
 )}
 
-function _25(md){return(
+function _23(md){return(
 md`### Firebase Test Clients`
 )}
 
@@ -199,10 +183,11 @@ function _referenceDatabase(rtdb,$0,Event)
     $0.value = $0.value + "\n" + log;
     $0.dispatchEvent(new Event("input", { bubbles: true }));
   });
+  
 }
 
 
-function _28(md){return(
+function _26(md){return(
 md`### Test Results`
 )}
 
@@ -214,19 +199,19 @@ createSuite({
 })
 )}
 
-function _30(md){return(
+function _28(md){return(
 md`### Restart Test Clients & Tests`
 )}
 
-function _31($0){return(
+function _29($0){return(
 $0
 )}
 
-function _32(md){return(
+function _30(md){return(
 md`### Smoke Tests`
 )}
 
-function _33(md){return(
+function _31(md){return(
 md`#### Read your write`
 )}
 
@@ -240,7 +225,7 @@ suite.test("Read your own write - String", async () => {
 })
 )}
 
-function _35(md){return(
+function _33(md){return(
 md`#### Read other's write`
 )}
 
@@ -255,7 +240,7 @@ suite.test("Read their write - String", async () => {
 })
 )}
 
-function _37(md){return(
+function _35(md){return(
 md`#### Listen notified of other's write`
 )}
 
@@ -279,21 +264,21 @@ suite.test(
 )
 )}
 
-function _39(md){return(
+function _37(md){return(
 md`## Custom Firebase Realtime Server`
 )}
 
-function _40(md){return(
+function _38(md){return(
 md`### Storage Engine: Redis
 
 Redis the the storage engine for this prototype. We are using a custom [redis-web](https://observablehq.com/@tomlarkworthy/redis) client.`
 )}
 
-function _42(md){return(
+function _40(md){return(
 md`## Shared redis is used for global operations such as process_operation`
 )}
 
-function _43(operations){return(
+function _41(operations){return(
 operations
 )}
 
@@ -307,7 +292,7 @@ function _redisConfig(){return(
 }
 )}
 
-function _45(md){return(
+function _43(md){return(
 md`### Long Poll Endpoint
 
 Firebase clients make long lived connection to this endpoint`
@@ -324,7 +309,7 @@ endpoint("server", async (req, res) => {
 })
 )}
 
-function _47(md){return(
+function _45(md){return(
 md`### Long Poll Request Pipeline
 
 If you are live tunnelling the server endpoint, these cells will evaluate in response to production traffic (and will handle production traffic).`
@@ -337,7 +322,7 @@ flowQueue({
 })
 )}
 
-function _49(incomingLongpollRequest){return(
+function _47(incomingLongpollRequest){return(
 incomingLongpollRequest
 )}
 
@@ -512,7 +497,7 @@ async function _incomingLongpollRequestAction(incomingLongpollRequest,createClie
 }
 
 
-function _53(md){return(
+function _51(md){return(
 md`### Data Request Pipeline`
 )}
 
@@ -523,7 +508,7 @@ flowQueue({
 })
 )}
 
-function _55(incomingRequest){return(
+function _53(incomingRequest){return(
 incomingRequest
 )}
 
@@ -560,7 +545,7 @@ function _requestRouter(incomingRequest,$0,$1,$2,$3,$4)
 }
 
 
-function _57(md){return(
+function _55(md){return(
 md`#### STATS`
 )}
 
@@ -571,7 +556,7 @@ flowQueue({
 })
 )}
 
-function _59(incomingStats){return(
+function _57(incomingStats){return(
 incomingStats
 )}
 
@@ -596,7 +581,7 @@ function _incomingStatsAction(incomingStats,enqueue_notify,$0)
 }
 
 
-function _61(md){return(
+function _59(md){return(
 md`#### PUT`
 )}
 
@@ -607,7 +592,7 @@ flowQueue({
 })
 )}
 
-function _63(incomingPut){return(
+function _61(incomingPut){return(
 incomingPut
 )}
 
@@ -633,7 +618,7 @@ function _incomingPutAction(incomingPut,enqueue_operation,$0)
 }
 
 
-function _65(md){return(
+function _63(md){return(
 md`#### GET`
 )}
 
@@ -644,7 +629,7 @@ flowQueue({
 })
 )}
 
-function _67(incomingGet){return(
+function _65(incomingGet){return(
 incomingGet
 )}
 
@@ -672,7 +657,7 @@ function _incomingGetAction(incomingGet,enqueue_operation,$0)
 }
 
 
-function _69(md){return(
+function _67(md){return(
 md`#### QUERY`
 )}
 
@@ -687,7 +672,7 @@ flowQueue({
 })
 )}
 
-function _72(incomingQuery){return(
+function _70(incomingQuery){return(
 incomingQuery
 )}
 
@@ -714,7 +699,7 @@ function _incomingQueryAction(incomingQuery,enqueue_operation,$0)
 }
 
 
-function _74(md){return(
+function _72(md){return(
 md`### Utils`
 )}
 
@@ -738,7 +723,7 @@ function _thisNotebooksSlug(html,HEALTH_CHECK_FALLBACK_SLUG)
 }
 
 
-function _78(md){return(
+function _76(md){return(
 md`### Remote notebook state
 
 We expose an endpoint for reading the remote notebooks state, which can be useful for debugging remote errors.`
@@ -748,7 +733,7 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _81(endpoint,notebookSnapshot){return(
+function _79(endpoint,notebookSnapshot){return(
 endpoint("variables", async (req, res) => {
   res.json(
     (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
@@ -763,7 +748,7 @@ endpoint("variables", async (req, res) => {
 })
 )}
 
-function _82(md){return(
+function _80(md){return(
 md`### [Health check](https://observablehq.com/@endpointservices/healthcheck)
 
 The healthcheck is actively monitored and includes the smoke tests.
@@ -774,7 +759,7 @@ The healthcheck is actively monitored and includes the smoke tests.
 | europe-west4   | https://webcode.run/regions/europe-west4/observablehq.com/@endpointservices/healthcheck?target=%40tomlarkworthy%2Ffirebase-server-prototype-1&wait=50        |`
 )}
 
-function _83(md){return(
+function _81(md){return(
 md`When running inside the healthcheck notebook, the slug is detected incorrectly as "healthcheck" which means the clients connect to the wrong place. So we have manual fix.`
 )}
 
@@ -786,15 +771,15 @@ function _HEALTH_CHECK_FALLBACK_NAMESPACE(){return(
 "tomlarkworthy"
 )}
 
-function _86(md){return(
+function _84(md){return(
 md`### Notebook Error Monitoring, Analytics and Backups`
 )}
 
-function _87(footer){return(
+function _85(footer){return(
 footer
 )}
 
-function _88(md){return(
+function _86(md){return(
 md`### Dependancies`
 )}
 
@@ -809,28 +794,25 @@ export default function define(runtime, observer) {
   main.import("view", child3);
   main.variable(observer("viewof showOverlay")).define("viewof showOverlay", ["Inputs","localStorageView"], _showOverlay);
   main.variable(observer("showOverlay")).define("showOverlay", ["Generators", "viewof showOverlay"], (G, _) => G.input(_));
-  main.variable(observer("viewof useWebsocket")).define("viewof useWebsocket", ["Inputs","localStorageView"], _useWebsocket);
-  main.variable(observer("useWebsocket")).define("useWebsocket", ["Generators", "viewof useWebsocket"], (G, _) => G.input(_));
-  main.variable(observer("toggleWebsockets")).define("toggleWebsockets", ["useWebsocket"], _toggleWebsockets);
   main.variable(observer("viewof rtdbLogs")).define("viewof rtdbLogs", ["Inputs"], _rtdbLogs);
   main.variable(observer("rtdbLogs")).define("rtdbLogs", ["Generators", "viewof rtdbLogs"], (G, _) => G.input(_));
-  main.variable(observer("overlay")).define("overlay", ["showOverlay","view","Inputs","viewof rtdbLogs","Event","viewof useWebsocket","html","makeSticky","invalidation"], _overlay);
+  main.variable(observer("overlay")).define("overlay", ["showOverlay","view","Inputs","viewof rtdbLogs","Event","viewof restartClient","html","makeSticky","invalidation"], _overlay);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["toc"], _12);
   main.variable(observer()).define(["md"], _13);
-  main.variable(observer()).define(["toc"], _14);
+  main.variable(observer()).define(["width","md"], _14);
   main.variable(observer()).define(["md"], _15);
-  main.variable(observer()).define(["width","md"], _16);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer()).define(["md"], _17);
   main.variable(observer()).define(["md"], _18);
   main.variable(observer()).define(["md"], _19);
-  main.variable(observer()).define(["md"], _20);
-  main.variable(observer()).define(["md"], _21);
   main.variable(observer("databaseURL")).define("databaseURL", ["thisNotebooksNamespace","thisNotebooksSlug"], _databaseURL);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("clientConfig")).define("clientConfig", ["databaseURL"], _clientConfig);
-  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["md"], _23);
   const child4 = runtime.module(define4).derive([{name: "clientConfig", alias: "config"}], main);
   main.import("viewof restartClient", child4);
   main.import("restartClient", child4);
@@ -838,20 +820,20 @@ export default function define(runtime, observer) {
   main.import("rootA", child4);
   main.import("rootB", child4);
   main.variable(observer("referenceDatabase")).define("referenceDatabase", ["rtdb","viewof rtdbLogs","Event"], _referenceDatabase);
-  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("viewof suite")).define("viewof suite", ["server","flowQueue","createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["viewof restartClient"], _29);
   main.variable(observer()).define(["md"], _30);
-  main.variable(observer()).define(["viewof restartClient"], _31);
-  main.variable(observer()).define(["md"], _32);
-  main.variable(observer()).define(["md"], _33);
+  main.variable(observer()).define(["md"], _31);
   main.variable(observer("readYourWriteTest")).define("readYourWriteTest", ["suite","randomString","rtdb","rootA","expect"], _readYourWriteTest);
-  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("readTheirWriteTest")).define("readTheirWriteTest", ["suite","randomString","rtdb","rootA","rootB","expect"], _readTheirWriteTest);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("listenNotifiedOfWrite")).define("listenNotifiedOfWrite", ["suite","randomString","rtdb","rootA","rootB","_"], _listenNotifiedOfWrite);
-  main.variable(observer()).define(["md"], _39);
-  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _38);
   const child5 = runtime.module(define5);
   main.import("enqueue_operation", child5);
   main.import("enqueue_notify", child5);
@@ -863,60 +845,60 @@ export default function define(runtime, observer) {
   main.import("retrieveLongpollSession", child5);
   main.import("incrementLongpollResponseNum", child5);
   main.import("operations", child5);
-  main.variable(observer()).define(["md"], _42);
-  main.variable(observer()).define(["operations"], _43);
+  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["operations"], _41);
   main.variable(observer("redisConfig")).define("redisConfig", _redisConfig);
-  main.variable(observer()).define(["md"], _45);
+  main.variable(observer()).define(["md"], _43);
   main.variable(observer("server")).define("server", ["endpoint","viewof incomingLongpollRequest"], _server);
-  main.variable(observer()).define(["md"], _47);
+  main.variable(observer()).define(["md"], _45);
   main.variable(observer("viewof incomingLongpollRequest")).define("viewof incomingLongpollRequest", ["flowQueue"], _incomingLongpollRequest);
   main.variable(observer("incomingLongpollRequest")).define("incomingLongpollRequest", ["Generators", "viewof incomingLongpollRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingLongpollRequest"], _49);
+  main.variable(observer()).define(["incomingLongpollRequest"], _47);
   main.variable(observer("newSessionResponse")).define("newSessionResponse", _newSessionResponse);
   main.variable(observer("disconnectFrame")).define("disconnectFrame", _disconnectFrame);
   main.variable(observer("incomingLongpollRequestAction")).define("incomingLongpollRequestAction", ["incomingLongpollRequest","createClient","redisConfig","createLongpollSession","newSessionResponse","incrementLongpollResponseNum","viewof incomingLongpollRequest","disconnectFrame","retrieveLongpollSession","viewof incomingRequest","process_operation","next_notify","ack_notify"], _incomingLongpollRequestAction);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _51);
   main.variable(observer("viewof incomingRequest")).define("viewof incomingRequest", ["flowQueue"], _incomingRequest);
   main.variable(observer("incomingRequest")).define("incomingRequest", ["Generators", "viewof incomingRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingRequest"], _55);
+  main.variable(observer()).define(["incomingRequest"], _53);
   main.variable(observer("requestRouter")).define("requestRouter", ["incomingRequest","viewof incomingStats","viewof incomingPut","viewof incomingQuery","viewof incomingGet","viewof incomingRequest"], _requestRouter);
-  main.variable(observer()).define(["md"], _57);
+  main.variable(observer()).define(["md"], _55);
   main.variable(observer("viewof incomingStats")).define("viewof incomingStats", ["flowQueue"], _incomingStats);
   main.variable(observer("incomingStats")).define("incomingStats", ["Generators", "viewof incomingStats"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingStats"], _59);
+  main.variable(observer()).define(["incomingStats"], _57);
   main.variable(observer("incomingStatsAction")).define("incomingStatsAction", ["incomingStats","enqueue_notify","viewof incomingStats"], _incomingStatsAction);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["md"], _59);
   main.variable(observer("viewof incomingPut")).define("viewof incomingPut", ["flowQueue"], _incomingPut);
   main.variable(observer("incomingPut")).define("incomingPut", ["Generators", "viewof incomingPut"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingPut"], _63);
+  main.variable(observer()).define(["incomingPut"], _61);
   main.variable(observer("incomingPutAction")).define("incomingPutAction", ["incomingPut","enqueue_operation","viewof incomingPut"], _incomingPutAction);
-  main.variable(observer()).define(["md"], _65);
+  main.variable(observer()).define(["md"], _63);
   main.variable(observer("viewof incomingGet")).define("viewof incomingGet", ["flowQueue"], _incomingGet);
   main.variable(observer("incomingGet")).define("incomingGet", ["Generators", "viewof incomingGet"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingGet"], _67);
+  main.variable(observer()).define(["incomingGet"], _65);
   main.variable(observer("incomingGetAction")).define("incomingGetAction", ["incomingGet","enqueue_operation","viewof incomingGet"], _incomingGetAction);
-  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["md"], _67);
   main.variable(observer("pathToListeners")).define("pathToListeners", _pathToListeners);
   main.variable(observer("viewof incomingQuery")).define("viewof incomingQuery", ["flowQueue"], _incomingQuery);
   main.variable(observer("incomingQuery")).define("incomingQuery", ["Generators", "viewof incomingQuery"], (G, _) => G.input(_));
-  main.variable(observer()).define(["incomingQuery"], _72);
+  main.variable(observer()).define(["incomingQuery"], _70);
   main.variable(observer("incomingQueryAction")).define("incomingQueryAction", ["incomingQuery","enqueue_operation","viewof incomingQuery"], _incomingQueryAction);
-  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["md"], _72);
   main.variable(observer("randomString")).define("randomString", _randomString);
   main.variable(observer("thisNotebooksNamespace")).define("thisNotebooksNamespace", ["thisNotebooksSlug","HEALTH_CHECK_FALLBACK_SLUG","HEALTH_CHECK_FALLBACK_NAMESPACE","html"], _thisNotebooksNamespace);
   main.variable(observer("thisNotebooksSlug")).define("thisNotebooksSlug", ["html","HEALTH_CHECK_FALLBACK_SLUG"], _thisNotebooksSlug);
-  main.variable(observer()).define(["md"], _78);
+  main.variable(observer()).define(["md"], _76);
   const child6 = runtime.module(define6);
   main.import("notebookSnapshot", child6);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _81);
-  main.variable(observer()).define(["md"], _82);
-  main.variable(observer()).define(["md"], _83);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _79);
+  main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["md"], _81);
   main.variable(observer("HEALTH_CHECK_FALLBACK_SLUG")).define("HEALTH_CHECK_FALLBACK_SLUG", _HEALTH_CHECK_FALLBACK_SLUG);
   main.variable(observer("HEALTH_CHECK_FALLBACK_NAMESPACE")).define("HEALTH_CHECK_FALLBACK_NAMESPACE", _HEALTH_CHECK_FALLBACK_NAMESPACE);
+  main.variable(observer()).define(["md"], _84);
+  main.variable(observer()).define(["footer"], _85);
   main.variable(observer()).define(["md"], _86);
-  main.variable(observer()).define(["footer"], _87);
-  main.variable(observer()).define(["md"], _88);
   const child7 = runtime.module(define7);
   main.import("gfx", child7);
   const child8 = runtime.module(define8);
