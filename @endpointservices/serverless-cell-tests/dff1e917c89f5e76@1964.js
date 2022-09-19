@@ -1,6 +1,6 @@
-// https://observablehq.com/@endpointservices/serverless-cells@1955
+// https://observablehq.com/@endpointservices/serverless-cells@1964
 import define1 from "./8aac8b2cb06bf434@263.js";
-import define2 from "./58f3eb7334551ae6@211.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 async function _1(FileAttachment,width,md){return(
 md`# Serverless Cells
@@ -477,9 +477,17 @@ function _notebook(html){return(
 (url) => {
   url = url || html`<a href="">`.href;
   let match;
-  if (match = /^https:\/\/(next\.)?observablehq.com\/@[^/]*\/([^/?#]*)/.exec(url)) return match[2]
-  if (match = /^https:\/\/(next\.)?observablehq.com\/(d\/[^/?#]*)/.exec(url)) return match[2]
-  throw new Error("Cannot determine notebook name")
+  if (
+    (match = /^https:\/\/(next\.)?observablehq.com\/@[^/]*\/([^/?#;:]*(\/\d+)?)/.exec(
+      url
+    ))
+  ) {
+    // 2022-08-11: Added support for numerical suffix (e.g. /2)
+    return match[2];
+  }
+  if ((match = /^https:\/\/(next\.)?observablehq.com\/(d\/[^/?#]*)/.exec(url)))
+    return match[2];
+  throw new Error("Cannot determine notebook name");
 }
 )}
 
