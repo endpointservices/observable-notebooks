@@ -1,5 +1,5 @@
 // https://observablehq.com/@observablehq/banner@463
-import define1 from "./ee098917a6150f1f@388.js";
+import define1 from "./ee098917a6150f1f@390.js";
 
 function _1(bannerTitle){return(
 bannerTitle("Reusable banners")
@@ -228,7 +228,10 @@ function _bannerHeight(){return(
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["whm-dvc.png",new URL("./files/d65b10049c554db9c4e8bad81c4183c7d1932217a9750d7cf7efb2b524a8066501de737af6d1d7fc9328ddd60f2fbdbb1f5832a83cd2ba64fe503f7cac367cc4",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["whm-dvc.png", {url: new URL("./files/d65b10049c554db9c4e8bad81c4183c7d1932217a9750d7cf7efb2b524a8066501de737af6d1d7fc9328ddd60f2fbdbb1f5832a83cd2ba64fe503f7cac367cc4.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["bannerTitle"], _1);
   main.variable(observer()).define(["md"], _2);

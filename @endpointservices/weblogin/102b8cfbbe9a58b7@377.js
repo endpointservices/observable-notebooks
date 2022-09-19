@@ -1,8 +1,8 @@
 import define1 from "./7a77afd2ce564067@459.js";
 import define2 from "./c2dae147641e012a@46.js";
-import define3 from "./ef672b935bd480fc@619.js";
+import define3 from "./ef672b935bd480fc@623.js";
 import define4 from "./1131d8b2f152e8a8@463.js";
-import define5 from "./293899bef371e135@225.js";
+import define5 from "./293899bef371e135@290.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("Weblogin.png").url(), "User signin with IndieWeb weblogin")
@@ -206,7 +206,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["Weblogin.png",new URL("./files/ca8a76de87199997679a9cf7731f7a13c101f90dc661ba5bb1a39cedb6a817ea74c588fe3dc1a46a78f147f99ef2e0c5678e050a4f26ac4d81e95a8c9dce93e9",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Weblogin.png", {url: new URL("./files/ca8a76de87199997679a9cf7731f7a13c101f90dc661ba5bb1a39cedb6a817ea74c588fe3dc1a46a78f147f99ef2e0c5678e050a4f26ac4d81e95a8c9dce93e9.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["bannerImage","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
