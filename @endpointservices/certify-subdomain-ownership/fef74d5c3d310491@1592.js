@@ -1,15 +1,4 @@
 // https://observablehq.com/@endpointservices/certify-subdomain-ownership@1592
-import define1 from "./65d33fe44849cfde@588.js";
-import define2 from "./698257e86fae4586@378.js";
-import define3 from "./52d808b188b8672b@129.js";
-import define4 from "./87deeb645328fb3b@223.js";
-import define5 from "./dff1e917c89f5e76@1964.js";
-import define6 from "./11a5ab8b1b3a51db@1161.js";
-import define7 from "./c7a3b20cec5d4dd9@669.js";
-import define8 from "./cb60908738c3dabe@152.js";
-import define9 from "./ab3e70b29c480e6d@83.js";
-import define10 from "./293899bef371e135@290.js";
-
 function _1(md){return(
 md`
 # Certify Subdomain Ownership 
@@ -355,6 +344,16 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./65d33fe44849cfde@588.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./698257e86fae4586@378.js")).default));
+  main.define("module 3", async () => runtime.module((await import("./52d808b188b8672b@129.js")).default));
+  main.define("module 4", async () => runtime.module((await import("./87deeb645328fb3b@223.js")).default));
+  main.define("module 5", async () => runtime.module((await import("./dff1e917c89f5e76@1964.js")).default));
+  main.define("module 6", async () => runtime.module((await import("./11a5ab8b1b3a51db@1161.js")).default));
+  main.define("module 7", async () => runtime.module((await import("./c7a3b20cec5d4dd9@669.js")).default));
+  main.define("module 8", async () => runtime.module((await import("./cb60908738c3dabe@152.js")).default));
+  main.define("module 9", async () => runtime.module((await import("./ab3e70b29c480e6d@83.js")).default));
+  main.define("module 10", async () => runtime.module((await import("./293899bef371e135@290.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["image.png", {url: new URL("./files/cf69b517437593b34a97ecf99c6a0677045fe92bf69bdbeb6a03e1087223074c642396c2b0815e1377da42b0aa022e99bd8f0f64d6c603f1b0cff4540fa2ac11.png", import.meta.url), mimeType: "image/png", toString}]
@@ -380,37 +379,27 @@ export default function define(runtime, observer) {
   main.variable(observer("validation_implementation")).define("validation_implementation", ["deploy","getAccessTokenFromServiceAccount","signinWithAccessToken","firebase","fetchCode","fetchMeta"], _validation_implementation);
   main.variable(observer("subdomain_certificates")).define("subdomain_certificates", ["listen","firebase","user"], _subdomain_certificates);
   main.variable(observer("relation")).define("relation", ["user"], _relation);
-  const child1 = runtime.module(define1);
-  main.import("peekFirst", child1);
-  const child2 = runtime.module(define2);
-  main.import("signinWithAccessToken", child2);
-  main.import("getAccessTokenFromServiceAccount", child2);
-  main.import("jsrsasign", child2);
-  const child3 = runtime.module(define3);
-  main.import("viewof user", child3);
-  main.import("user", child3);
-  main.import("firebase", child3);
-  main.import("listen", child3);
-  main.import("subdomain", child3);
-  main.import("isOwner", child3);
-  const child4 = runtime.module(define4);
-  main.import("regIdentifier", child4);
-  main.import("fetchMeta", child4);
-  const child5 = runtime.module(define5);
-  main.import("deploy", child5);
-  const child6 = runtime.module(define6);
-  main.import("html", child6);
-  const child7 = runtime.module(define7);
-  main.import("viewof suite", child7);
-  main.import("suite", child7);
-  main.import("expect", child7);
-  const child8 = runtime.module(define8);
-  main.import("encode", child8);
-  main.import("decode", child8);
-  const child9 = runtime.module(define9);
-  main.import("copy", child9);
-  const child10 = runtime.module(define10);
-  main.import("footer", child10);
+  main.define("peekFirst", ["module 1", "@variable"], (_, v) => v.import("peekFirst", _));
+  main.define("signinWithAccessToken", ["module 2", "@variable"], (_, v) => v.import("signinWithAccessToken", _));
+  main.define("getAccessTokenFromServiceAccount", ["module 2", "@variable"], (_, v) => v.import("getAccessTokenFromServiceAccount", _));
+  main.define("jsrsasign", ["module 2", "@variable"], (_, v) => v.import("jsrsasign", _));
+  main.define("viewof user", ["module 3", "@variable"], (_, v) => v.import("viewof user", _));
+  main.define("user", ["module 3", "@variable"], (_, v) => v.import("user", _));
+  main.define("firebase", ["module 3", "@variable"], (_, v) => v.import("firebase", _));
+  main.define("listen", ["module 3", "@variable"], (_, v) => v.import("listen", _));
+  main.define("subdomain", ["module 3", "@variable"], (_, v) => v.import("subdomain", _));
+  main.define("isOwner", ["module 3", "@variable"], (_, v) => v.import("isOwner", _));
+  main.define("regIdentifier", ["module 4", "@variable"], (_, v) => v.import("regIdentifier", _));
+  main.define("fetchMeta", ["module 4", "@variable"], (_, v) => v.import("fetchMeta", _));
+  main.define("deploy", ["module 5", "@variable"], (_, v) => v.import("deploy", _));
+  main.define("html", ["module 6", "@variable"], (_, v) => v.import("html", _));
+  main.define("viewof suite", ["module 7", "@variable"], (_, v) => v.import("viewof suite", _));
+  main.define("suite", ["module 7", "@variable"], (_, v) => v.import("suite", _));
+  main.define("expect", ["module 7", "@variable"], (_, v) => v.import("expect", _));
+  main.define("encode", ["module 8", "@variable"], (_, v) => v.import("encode", _));
+  main.define("decode", ["module 8", "@variable"], (_, v) => v.import("decode", _));
+  main.define("copy", ["module 9", "@variable"], (_, v) => v.import("copy", _));
+  main.define("footer", ["module 10", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _31);
   return main;
 }

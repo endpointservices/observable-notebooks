@@ -1,7 +1,3 @@
-import define1 from "./993a0c51ef1175ea@1396.js";
-import define2 from "./698257e86fae4586@378.js";
-import define3 from "./293899bef371e135@290.js";
-
 function _1(md){return(
 md`# Endpoint Utils
 ~~~js
@@ -81,6 +77,9 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", ["@variable"], async (v) => runtime.module((await import("./993a0c51ef1175ea@1396.js")).default).derive(["firebaseConfig"], v._module));
+  main.define("module 2", async () => runtime.module((await import("./698257e86fae4586@378.js")).default));
+  main.define("module 3", async () => runtime.module((await import("./293899bef371e135@290.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("isOwner")).define("isOwner", ["firebase","subdomain"], _isOwner);
   main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
@@ -89,15 +88,12 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["notebook"], _6);
   main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
   main.variable(observer("signinWithAccessToken")).define("signinWithAccessToken", ["firebase"], _signinWithAccessToken);
-  const child1 = runtime.module(define1).derive(["firebaseConfig"], main);
-  main.import("viewof user", child1);
-  main.import("user", child1);
-  main.import("firebase", child1);
-  main.import("listen", child1);
-  const child2 = runtime.module(define2);
-  main.import("getAccessTokenFromServiceAccount", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
+  main.define("viewof user", ["module 1", "@variable"], (_, v) => v.import("viewof user", _));
+  main.define("user", ["module 1", "@variable"], (_, v) => v.import("user", _));
+  main.define("firebase", ["module 1", "@variable"], (_, v) => v.import("firebase", _));
+  main.define("listen", ["module 1", "@variable"], (_, v) => v.import("listen", _));
+  main.define("getAccessTokenFromServiceAccount", ["module 2", "@variable"], (_, v) => v.import("getAccessTokenFromServiceAccount", _));
+  main.define("footer", ["module 3", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _12);
   return main;
 }

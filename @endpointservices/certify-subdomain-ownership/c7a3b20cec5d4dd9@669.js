@@ -1,7 +1,4 @@
 // https://observablehq.com/@tomlarkworthy/testing@669
-import define1 from "./84e66f78139ac354@829.js";
-import define2 from "./58f3eb7334551ae6@215.js";
-
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
 
@@ -402,6 +399,8 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./84e66f78139ac354@829.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["noun_test_2404407.svg", {url: new URL("./files/b85565d2b6f001a2db39bdbeafbf5aa687188a77a6f65088a3da275743064af6ec763f97d4575207873165a49b07b65e492987b100b4a0d6bbe3df1f74efda1e.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
@@ -434,13 +433,11 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","expect"], _24);
   main.variable(observer()).define(["suite","expect"], _25);
   main.variable(observer("html")).define("html", ["htl"], _html);
-  const child1 = runtime.module(define1);
-  main.import("reconcile", child1);
+  main.define("reconcile", ["module 1", "@variable"], (_, v) => v.import("reconcile", _));
   main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _32);
   return main;
 }
