@@ -1,8 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@280
-import define1 from "./a81f2a20664080d3@245.js";
-import define2 from "./c2dae147641e012a@46.js";
-import define3 from "./1d309dbd9697e042@631.js";
-
+// https://observablehq.com/@endpointservices/footer-with-backups@290
 function _1(md){return(
 md`# Endpoint Services Footer
 
@@ -16,11 +12,11 @@ footer
 \`\`\``
 )}
 
-function _graphic(md){return(
+function _graphic(md,backupNowButton){return(
 md`<small>
 [WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks. Signup for the [webcode newsletter on Substack](https://webcode.substack.com/).
 
-*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
+*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* Backups by [backup-to-github](https://observablehq.com/@tomlarkworthy/github-backups). ${backupNowButton()}</small>
 `
 )}
 
@@ -134,21 +130,21 @@ enableGithubBackups({
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./a81f2a20664080d3@245.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./c2dae147641e012a@46.js")).default));
+  main.define("module 3", async () => runtime.module((await import("./1d309dbd9697e042@631.js")).default));
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
+  main.variable(observer("graphic")).define("graphic", ["md","backupNowButton"], _graphic);
   main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
   main.variable(observer()).define(["md"], _6);
-  const child1 = runtime.module(define1);
-  main.import("sentry", child1);
-  const child2 = runtime.module(define2);
-  main.import("localStorage", child2);
+  main.define("sentry", ["module 1", "@variable"], (_, v) => v.import("sentry", _));
+  main.define("localStorage", ["module 2", "@variable"], (_, v) => v.import("localStorage", _));
   main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], _backups);
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
-  const child3 = runtime.module(define3);
-  main.import("enableGithubBackups", child3);
-  main.import("backupNowButton", child3);
+  main.define("enableGithubBackups", ["module 3", "@variable"], (_, v) => v.import("enableGithubBackups", _));
+  main.define("backupNowButton", ["module 3", "@variable"], (_, v) => v.import("backupNowButton", _));
   return main;
 }
