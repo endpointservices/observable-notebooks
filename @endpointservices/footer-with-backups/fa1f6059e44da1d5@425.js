@@ -1,6 +1,4 @@
 // https://observablehq.com/@tomlarkworthy/catch-all@425
-import define1 from "./58f3eb7334551ae6@215.js";
-
 function _1(md){return(
 md`# Detect notebook runtime errors with *catchAll((cellName, reason) => {...})*
 
@@ -161,6 +159,7 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
@@ -182,8 +181,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof suite")).define("viewof suite", ["testing"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
   main.variable(observer()).define(["suite","mutable errorLog","viewof errorTrigger","Event","testing"], _16);
-  const child1 = runtime.module(define1);
-  main.import("footer", child1);
+  main.define("footer", ["module 1", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _18);
   return main;
 }

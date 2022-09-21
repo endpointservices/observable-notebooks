@@ -1,7 +1,4 @@
 // https://observablehq.com/@endpointservices/footer-with-backups@208
-import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./1d309dbd9697e042@631.js";
-
 function _1(md){return(
 md`# Endpoint Services Footer
 
@@ -161,6 +158,8 @@ enableGithubBackups({
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./c2dae147641e012a@46.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./1d309dbd9697e042@631.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
   main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","backups","graphic"], _footer);
@@ -170,12 +169,10 @@ export default function define(runtime, observer) {
   main.variable(observer("sentry")).define("sentry", ["html","location","Sentry","Tracing"], _sentry);
   main.variable(observer("Sentry")).define("Sentry", ["require","FileAttachment"], _Sentry);
   main.variable(observer("Tracing")).define("Tracing", ["require","FileAttachment"], _Tracing);
-  const child1 = runtime.module(define1);
-  main.import("localStorage", child1);
+  main.define("localStorage", ["module 1", "@variable"], (_, v) => v.import("localStorage", _));
   main.variable(observer()).define(["md"], _11);
   main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], _backups);
   main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
-  const child2 = runtime.module(define2);
-  main.import("enableGithubBackups", child2);
+  main.define("enableGithubBackups", ["module 2", "@variable"], (_, v) => v.import("enableGithubBackups", _));
   return main;
 }
