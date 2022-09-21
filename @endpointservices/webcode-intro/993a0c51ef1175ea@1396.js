@@ -1,7 +1,4 @@
 // https://observablehq.com/@tomlarkworthy/firebase@1396
-import define1 from "./3df1b33bb2cfcd3c@475.js";
-import define2 from "./58f3eb7334551ae6@215.js";
-
 function _1(md){return(
 md`# Firebase and Firebase UI (v8)
 
@@ -690,6 +687,8 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./3df1b33bb2cfcd3c@475.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["Screen Shot 2019-11-06 at 12.16.34 AM.png", {url: new URL("./files/33cbb25f5481dedc73ecc45de90291e561d3662978a4e3b28a2a8f587f965058a3cce8e8e10e78f527043fd90b76dfbe54cc911ea19252e7422e158e33fd47d1.png", import.meta.url), mimeType: "image/png", toString}],
@@ -744,10 +743,8 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof permissionDeniedView")).define("viewof permissionDeniedView", ["DocsView","firebase"], _permissionDeniedView);
   main.variable(observer("permissionDeniedView")).define("permissionDeniedView", ["Generators", "viewof permissionDeniedView"], (G, _) => G.input(_));
   main.variable(observer()).define(["docsViewTests","viewof permissionDeniedView"], _38);
-  const child1 = runtime.module(define1);
-  main.import("View", child1);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.define("View", ["module 1", "@variable"], (_, v) => v.import("View", _));
+  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _41);
   return main;
 }
