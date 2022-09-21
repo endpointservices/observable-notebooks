@@ -1,6 +1,3 @@
-import define1 from "./6eda90668ae03044@830.js";
-import define2 from "./58f3eb7334551ae6@209.js";
-
 function _1(md){return(
 md`# Starting [Github Action](https://docs.github.com/en/actions) Workflows From [Observable](https://observablehq.com/)`
 )}
@@ -108,16 +105,16 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./6eda90668ae03044@836.js")).default));
+  main.define("module 2", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("Octokit")).define("Octokit", _Octokit);
   main.variable(observer("dispatch")).define("dispatch", ["Octokit"], _dispatch);
-  const child1 = runtime.module(define1);
-  main.import("endpoint", child1);
-  main.import("subdomain", child1);
+  main.define("endpoint", ["module 1", "@variable"], (_, v) => v.import("endpoint", _));
+  main.define("subdomain", ["module 1", "@variable"], (_, v) => v.import("subdomain", _));
   main.variable(observer("dispatchProxyName")).define("dispatchProxyName", _dispatchProxyName);
   main.variable(observer("createDispatchProxy")).define("createDispatchProxy", ["endpoint","dispatchProxyName","dispatch","subdomain","html"], _createDispatchProxy);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _8);
   return main;
 }

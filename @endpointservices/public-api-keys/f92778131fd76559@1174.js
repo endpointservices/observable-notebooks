@@ -1,7 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/view@1173
-import define1 from "./9bed702f80a3797e@402.js";
-import define2 from "./58f3eb7334551ae6@209.js";
-
+// https://observablehq.com/@tomlarkworthy/view@1174
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal
 
@@ -1535,12 +1532,26 @@ suite.test("Collection object creates matching keys", async () => {
 })
 )}
 
+async function _toc()
+{
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@nebrius/indented-toc.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return module.value("toc");
+}
+
+
 function _105(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  main.define("module 1", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["toc"], _3);
@@ -1657,10 +1668,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","view","Inputs","expect"], _100);
   main.variable(observer()).define(["suite","view","Inputs","expect"], _101);
   main.variable(observer()).define(["suite","view","Inputs","expect"], _102);
-  const child1 = runtime.module(define1);
-  main.import("toc", child1);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.variable(observer("toc")).define("toc", _toc);
+  main.define("footer", ["module 1", "@variable"], (_, v) => v.import("footer", _));
   main.variable(observer()).define(["footer"], _105);
   return main;
 }
