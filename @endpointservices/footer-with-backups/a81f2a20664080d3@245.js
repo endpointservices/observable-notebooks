@@ -1,4 +1,7 @@
 // https://observablehq.com/@endpointservices/sentry@245
+import define1 from "./fa1f6059e44da1d5@425.js";
+import define2 from "./58f3eb7334551ae6@215.js";
+
 function _1(md){return(
 md`# [Observablehq.com](https://observablehq.com) Notebook Monitoring with [sentry.io](sentry.io)
 
@@ -125,8 +128,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./fa1f6059e44da1d5@425.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["image@1.png", {url: new URL("./files/c8ad4ae31da35d2adf2a7256ef6791d044f4d0c2982b9ea6597838d5f012063838e769af1750f2acd52b25ff7299c584cd58fd5adcc9d595eedc6a3cabd46cc3.png", import.meta.url), mimeType: "image/png", toString}],
@@ -142,9 +143,11 @@ export default function define(runtime, observer) {
   main.variable(observer("sentry")).define("sentry", ["html","location","Sentry","Tracing","catchAll","invalidation"], _sentry);
   main.variable(observer("Sentry")).define("Sentry", _Sentry);
   main.variable(observer("Tracing")).define("Tracing", _Tracing);
-  main.define("catchAll", ["module 1", "@variable"], (_, v) => v.import("catchAll", _));
+  const child1 = runtime.module(define1);
+  main.import("catchAll", child1);
   main.variable(observer()).define(["md"], _10);
-  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _12);
   return main;
 }

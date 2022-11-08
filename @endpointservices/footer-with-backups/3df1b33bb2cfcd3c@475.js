@@ -1,4 +1,6 @@
 // https://observablehq.com/@mbostock/synchronized-views@475
+import define1 from "./4caee69e966109c8@35.js";
+
 function _1(md){return(
 md`# Synchronized Views
 
@@ -190,7 +192,6 @@ function eventof(input) {
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./4caee69e966109c8@35.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof x")).define("viewof x", ["html"], _x);
   main.variable(observer("x")).define("x", ["Generators", "viewof x"], (G, _) => G.input(_));
@@ -224,6 +225,7 @@ export default function define(runtime, observer) {
   main.variable(observer("get")).define("get", _get);
   main.variable(observer("set")).define("set", _set);
   main.variable(observer("eventof")).define("eventof", _eventof);
-  main.define("disposal", ["module 1", "@variable"], (_, v) => v.import("disposal", _));
+  const child1 = runtime.module(define1);
+  main.import("disposal", child1);
   return main;
 }
