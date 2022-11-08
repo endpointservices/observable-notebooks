@@ -1,14 +1,19 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1375
-import define1 from "./c7a3b20cec5d4dd9@669.js";
-import define2 from "./3df1b33bb2cfcd3c@475.js";
-import define3 from "./58f3eb7334551ae6@211.js";
+// https://observablehq.com/@tomlarkworthy/firebase@1396
+import define1 from "./3df1b33bb2cfcd3c@475.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
-md`# Firebase and Firebase UI
+md`# Firebase and Firebase UI (v8)
 
-The Firebase SDK and a user signin UI, plus utility classes for the databases.
+The Firebase SDK (version 8) and a user signin UI, plus utility classes for the databases.
 
 Provides a realtime push database (Firestore) and cloud file storage (Firebase storage) protected with granular per user permissions (Firebase auth) behind federated login (Google, Facebook, Twitter, Github, Anonymous, Email and Phone). A reactive login button is provided through FirebaseUI.
+
+### For the v9 modular SDK... 
+
+This notebook is based on Firebase version 8, in version 9 there was a huge shift to modularity for a reduction in bundle size, however, the API is completely different so it's a very different thing.
+
+[the modular firebase SDK collection](https://observablehq.com/@tomlarkworthy/firebase-modular-sdk?collection=@tomlarkworthy/firebase-modular-sdk)
 
 ### Change log
 - 2022-03-28: Add ignorePendingWrites option to listen, which defaults to false for backwards compatibility
@@ -236,8 +241,8 @@ listen(firebase.firestore().doc("services/testing/example/empty"), {
 })
 )}
 
-function _listenTests(createSuite){return(
-createSuite()
+function _listenTests(testing){return(
+testing.createSuite()
 )}
 
 function _12(listenTests,firebase,expect,listen){return(
@@ -623,19 +628,40 @@ function _30(md){return(
 md`### Testing`
 )}
 
-function _docsViewTests(createSuite){return(
-createSuite()
+async function _testing()
+{
+  const [{ Runtime }, { default: define }] = await Promise.all([
+    import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+    ),
+    import(`https://api.observablehq.com/@tomlarkworthy/testing.js?v=3`)
+  ]);
+  const module = new Runtime().module(define);
+  return Object.fromEntries(
+    await Promise.all(
+      ["expect", "createSuite"].map((n) => module.value(n).then((v) => [n, v]))
+    )
+  );
+}
+
+
+function _expect(testing){return(
+testing.expect
+)}
+
+function _docsViewTests(testing){return(
+testing.createSuite()
 )}
 
 function _testView(DocsView,firebase){return(
 new DocsView(firebase.firestore().collection("services/testing/example"))
 )}
 
-function _34(testView){return(
+function _35(testView){return(
 testView
 )}
 
-function _35(docsViewTests,expect,testView){return(
+function _36(docsViewTests,expect,testView){return(
 docsViewTests.test("First value is the result", () => {
   // Well this is a pass but the Runtime won't allow a cell to catch the Runtime error
   console.log("expect?");
@@ -647,7 +673,7 @@ function _permissionDeniedView(DocsView,firebase){return(
 new DocsView(firebase.firestore().collection("hjfkjhfsd/dasdasdas/dasdasdas"))
 )}
 
-function _37(docsViewTests,$0){return(
+function _38(docsViewTests,$0){return(
 docsViewTests.test("Permission errors bubble up", async (done) => {
   // Well this is a pass but the Runtime won't allow a cell to catch the Runtime error
   try {
@@ -658,7 +684,7 @@ docsViewTests.test("Permission errors bubble up", async (done) => {
 })
 )}
 
-function _40(footer){return(
+function _41(footer){return(
 footer
 )}
 
@@ -685,7 +711,7 @@ export default function define(runtime, observer) {
   main.variable(observer("collection_listen")).define("collection_listen", ["listen","firebase"], _collection_listen);
   main.variable(observer("doc_listen")).define("doc_listen", ["listen","firebase"], _doc_listen);
   main.variable(observer("default_value")).define("default_value", ["listen","firebase"], _default_value);
-  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["createSuite"], _listenTests);
+  main.variable(observer("viewof listenTests")).define("viewof listenTests", ["testing"], _listenTests);
   main.variable(observer("listenTests")).define("listenTests", ["Generators", "viewof listenTests"], (G, _) => G.input(_));
   main.variable(observer()).define(["listenTests","firebase","expect","listen"], _12);
   main.variable(observer()).define(["listenTests","firebase","expect","listen"], _13);
@@ -707,22 +733,21 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _28);
   main.variable(observer("DocsView")).define("DocsView", ["View"], _DocsView);
   main.variable(observer()).define(["md"], _30);
-  const child1 = runtime.module(define1);
-  main.import("createSuite", child1);
-  main.import("expect", child1);
-  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["createSuite"], _docsViewTests);
+  main.variable(observer("testing")).define("testing", _testing);
+  main.variable(observer("expect")).define("expect", ["testing"], _expect);
+  main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["testing"], _docsViewTests);
   main.variable(observer("docsViewTests")).define("docsViewTests", ["Generators", "viewof docsViewTests"], (G, _) => G.input(_));
   main.variable(observer("viewof testView")).define("viewof testView", ["DocsView","firebase"], _testView);
   main.variable(observer("testView")).define("testView", ["Generators", "viewof testView"], (G, _) => G.input(_));
-  main.variable(observer()).define(["testView"], _34);
-  main.variable(observer()).define(["docsViewTests","expect","testView"], _35);
+  main.variable(observer()).define(["testView"], _35);
+  main.variable(observer()).define(["docsViewTests","expect","testView"], _36);
   main.variable(observer("viewof permissionDeniedView")).define("viewof permissionDeniedView", ["DocsView","firebase"], _permissionDeniedView);
   main.variable(observer("permissionDeniedView")).define("permissionDeniedView", ["Generators", "viewof permissionDeniedView"], (G, _) => G.input(_));
-  main.variable(observer()).define(["docsViewTests","viewof permissionDeniedView"], _37);
+  main.variable(observer()).define(["docsViewTests","viewof permissionDeniedView"], _38);
+  const child1 = runtime.module(define1);
+  main.import("View", child1);
   const child2 = runtime.module(define2);
-  main.import("View", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _40);
+  main.import("footer", child2);
+  main.variable(observer()).define(["footer"], _41);
   return main;
 }

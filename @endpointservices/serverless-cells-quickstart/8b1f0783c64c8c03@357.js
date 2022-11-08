@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/serverless-cells-quickstart@357
-import define1 from "./dff1e917c89f5e76@1948.js";
+import define1 from "./dff1e917c89f5e76@1964.js";
 import define2 from "./3fd0d90f06cd444e@89.js";
-import define3 from "./293899bef371e135@278.js";
+import define3 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`# How to create a public URL with [Serverless Cells](https://observablehq.com/@endpointservices/serverless-cells)`
