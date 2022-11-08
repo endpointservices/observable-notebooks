@@ -1,12 +1,12 @@
 // https://observablehq.com/@endpointservices/cron@415
 import define1 from "./52d808b188b8672b@129.js";
-import define2 from "./dff1e917c89f5e76@1711.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
 import define3 from "./11a5ab8b1b3a51db@1161.js";
-import define4 from "./84e66f78139ac354@814.js";
-import define5 from "./a2e58f97fd5e8d7c@674.js";
+import define4 from "./84e66f78139ac354@829.js";
+import define5 from "./a2e58f97fd5e8d7c@736.js";
 import define6 from "./0905542adbad836e@55.js";
 import define7 from "./3d9d1394d858ca97@553.js";
-import define8 from "./293899bef371e135@225.js";
+import define8 from "./293899bef371e135@290.js";
 
 async function _1(md,FileAttachment){return(
 md`# Schedule Regular Tasks with Cron
@@ -164,7 +164,10 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["Cron.png",new URL("./files/db6a61a4a210555c4422ea034ec059f52ee2d3128a3e23eb16e24c2197b85c46128aca9ccebb8b72c431456d84f31c4648df69e2dbfaf473eecf75e2188c2220",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["Cron.png", {url: new URL("./files/db6a61a4a210555c4422ea034ec059f52ee2d3128a3e23eb16e24c2197b85c46128aca9ccebb8b72c431456d84f31c4648df69e2dbfaf473eecf75e2188c2220.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["signature","createCron"], _2);
