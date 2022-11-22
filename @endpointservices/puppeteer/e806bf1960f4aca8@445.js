@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/puppeteer@445
-import define1 from "./f92778131fd76559@1173.js";
-import define2 from "./c16efae137e70585@1429.js";
-import define3 from "./293899bef371e135@247.js";
+import define1 from "./f92778131fd76559@1174.js";
+import define2 from "./c16efae137e70585@1444.js";
+import define3 from "./293899bef371e135@290.js";
 
 async function _1(md,FileAttachment){return(
 md`# Browser Automation with Puppeteer
@@ -209,8 +209,8 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["puppeteer-web-0.0.3.js", {url: new URL("./files/d388b40ec6f0de2f7bc7298b068e8a0e84b4db2a6f31d6e150901f185e40f04c3bd38d06b75ada5932ece93d6e1af1fed8a9a6369d0682ae790944f964e9d924", import.meta.url), mimeType: "application/javascript", toString}],
-    ["puppeteer.png", {url: new URL("./files/243b533b7711810576f16d3718a988783a7b4cfc059c2eda243baf41d26762d9f128c746a5a8c2b181c7b7895506df8de83dd693447949a579543c0a91e969e4", import.meta.url), mimeType: "image/png", toString}]
+    ["puppeteer-web-0.0.3.js", {url: new URL("./files/d388b40ec6f0de2f7bc7298b068e8a0e84b4db2a6f31d6e150901f185e40f04c3bd38d06b75ada5932ece93d6e1af1fed8a9a6369d0682ae790944f964e9d924.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["puppeteer.png", {url: new URL("./files/243b533b7711810576f16d3718a988783a7b4cfc059c2eda243baf41d26762d9f128c746a5a8c2b181c7b7895506df8de83dd693447949a579543c0a91e969e4.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);

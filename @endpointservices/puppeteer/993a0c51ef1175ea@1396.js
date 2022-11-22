@@ -1,13 +1,19 @@
-// https://observablehq.com/@tomlarkworthy/firebase@1345
+// https://observablehq.com/@tomlarkworthy/firebase@1396
 import define1 from "./3df1b33bb2cfcd3c@475.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
-md`# Firebase and Firebase UI
+md`# Firebase and Firebase UI (v8)
 
-The Firebase SDK and a user signin UI, plus utility classes for the databases.
+The Firebase SDK (version 8) and a user signin UI, plus utility classes for the databases.
 
 Provides a realtime push database (Firestore) and cloud file storage (Firebase storage) protected with granular per user permissions (Firebase auth) behind federated login (Google, Facebook, Twitter, Github, Anonymous, Email and Phone). A reactive login button is provided through FirebaseUI.
+
+### For the v9 modular SDK... 
+
+This notebook is based on Firebase version 8, in version 9 there was a huge shift to modularity for a reduction in bundle size, however, the API is completely different so it's a very different thing.
+
+[the modular firebase SDK collection](https://observablehq.com/@tomlarkworthy/firebase-modular-sdk?collection=@tomlarkworthy/firebase-modular-sdk)
 
 ### Change log
 - 2022-03-28: Add ignorePendingWrites option to listen, which defaults to false for backwards compatibility
@@ -68,16 +74,18 @@ async function _firebase(require,FileAttachment,firebaseConfig)
     // Has to be window.firebase for Firebase UI to find it
     // Require Firebase SDK once
     window._firebase = require.alias({
-      "@firebase/app": await FileAttachment("firebase-app.js").url(), // 8.4.1
-      "@firebase/auth": await FileAttachment("firebase-auth.js").url(),
-      "@firebase/database": await FileAttachment("firebase-database.js").url(),
+      "@firebase/app": await FileAttachment("firebase-app@1.js").url(),
+      "@firebase/auth": await FileAttachment("firebase-auth@1.js").url(),
+      "@firebase/database": await FileAttachment(
+        "firebase-database@1.js"
+      ).url(),
       "@firebase/firestore": await FileAttachment(
-        "firebase-firestore.js"
+        "firebase-firestore@1.js"
       ).url(),
       "@firebase/functions": await FileAttachment(
-        "firebase-functions.js"
+        "firebase-functions@1.js"
       ).url(),
-      "@firebase/storage": await FileAttachment("firebase-storage.js").url()
+      "@firebase/storage": await FileAttachment("firebase-storage@1.js").url()
     })(
       "@firebase/app",
       "@firebase/auth",
@@ -620,9 +628,8 @@ function _30(md){return(
 md`### Testing`
 )}
 
-async function _testing(DocsView,firebase,firebaseui)
+async function _testing()
 {
-  DocsView, firebase, firebaseui;
   const [{ Runtime }, { default: define }] = await Promise.all([
     import(
       "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
@@ -685,13 +692,13 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["Screen Shot 2019-11-06 at 12.16.34 AM.png", {url: new URL("./files/33cbb25f5481dedc73ecc45de90291e561d3662978a4e3b28a2a8f587f965058a3cce8e8e10e78f527043fd90b76dfbe54cc911ea19252e7422e158e33fd47d1", import.meta.url), mimeType: "image/png", toString}],
-    ["firebase-storage.js", {url: new URL("./files/94e5aea4cc6cad9a4e6d33909304a02f328fd76cfba29e077e9b0861267589a5238283913a21605cf8444317b1356718dd37715a552836455f7a14917537faff", import.meta.url), mimeType: "application/javascript", toString}],
-    ["firebase-functions.js", {url: new URL("./files/f78f07572ec1a32909166a94f4bc7ead99afd223cc11bd87d0d76cf43846f462b341053f2edb52e593d19889958b026bac178b89494b5e4cf8f284ec2988a3d7", import.meta.url), mimeType: "application/javascript", toString}],
-    ["firebase-firestore.js", {url: new URL("./files/2d5cc6a0a68fdf18efc60dfd62f8b85484d97677ea01fa10c786522a222789929f493811bb1f2f774f7719741f2d2a10625c2b140149f8e55d29651f67f5b149", import.meta.url), mimeType: "application/javascript", toString}],
-    ["firebase-database.js", {url: new URL("./files/6d0288584c4ea56241cd6b7ec8f941a3aa6dfa7909360c88da9b69fc82360f7d91a2180f596893df51f3b9c6b4c489a2523aa7ad93392918e656b93d06a6c9db", import.meta.url), mimeType: "application/javascript", toString}],
-    ["firebase-auth.js", {url: new URL("./files/f4dc14c87b0d9dbe3cef7d6ef918693da744128a4ccb6f62f0a01517fd74a7d820fd90199d8d2a258990b31345e59d1b45c9c583dcba6e5dbff5738bf499fcaa", import.meta.url), mimeType: "application/javascript", toString}],
-    ["firebase-app.js", {url: new URL("./files/d9752327453acf77e767930a980e065cb0cd1dd450ed2d815acf17815a275993eccb8ff342763e03ae9171e86476a1476d61bc196e53734a5fbc111ecf29afa1", import.meta.url), mimeType: "application/javascript", toString}]
+    ["Screen Shot 2019-11-06 at 12.16.34 AM.png", {url: new URL("./files/33cbb25f5481dedc73ecc45de90291e561d3662978a4e3b28a2a8f587f965058a3cce8e8e10e78f527043fd90b76dfbe54cc911ea19252e7422e158e33fd47d1.png", import.meta.url), mimeType: "image/png", toString}],
+    ["firebase-functions@1.js", {url: new URL("./files/f78f07572ec1a32909166a94f4bc7ead99afd223cc11bd87d0d76cf43846f462b341053f2edb52e593d19889958b026bac178b89494b5e4cf8f284ec2988a3d7.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["firebase-app@1.js", {url: new URL("./files/d9752327453acf77e767930a980e065cb0cd1dd450ed2d815acf17815a275993eccb8ff342763e03ae9171e86476a1476d61bc196e53734a5fbc111ecf29afa1.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["firebase-database@1.js", {url: new URL("./files/6d0288584c4ea56241cd6b7ec8f941a3aa6dfa7909360c88da9b69fc82360f7d91a2180f596893df51f3b9c6b4c489a2523aa7ad93392918e656b93d06a6c9db.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["firebase-auth@1.js", {url: new URL("./files/f4dc14c87b0d9dbe3cef7d6ef918693da744128a4ccb6f62f0a01517fd74a7d820fd90199d8d2a258990b31345e59d1b45c9c583dcba6e5dbff5738bf499fcaa.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["firebase-firestore@1.js", {url: new URL("./files/2d5cc6a0a68fdf18efc60dfd62f8b85484d97677ea01fa10c786522a222789929f493811bb1f2f774f7719741f2d2a10625c2b140149f8e55d29651f67f5b149.js", import.meta.url), mimeType: "application/javascript", toString}],
+    ["firebase-storage@1.js", {url: new URL("./files/94e5aea4cc6cad9a4e6d33909304a02f328fd76cfba29e077e9b0861267589a5238283913a21605cf8444317b1356718dd37715a552836455f7a14917537faff.js", import.meta.url), mimeType: "application/javascript", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
@@ -726,7 +733,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _28);
   main.variable(observer("DocsView")).define("DocsView", ["View"], _DocsView);
   main.variable(observer()).define(["md"], _30);
-  main.variable(observer("testing")).define("testing", ["DocsView","firebase","firebaseui"], _testing);
+  main.variable(observer("testing")).define("testing", _testing);
   main.variable(observer("expect")).define("expect", ["testing"], _expect);
   main.variable(observer("viewof docsViewTests")).define("viewof docsViewTests", ["testing"], _docsViewTests);
   main.variable(observer("docsViewTests")).define("docsViewTests", ["Generators", "viewof docsViewTests"], (G, _) => G.input(_));
