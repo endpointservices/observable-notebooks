@@ -1,6 +1,6 @@
 # How to make a Twitter Bot
 
-https://observablehq.com/@endpointservices/twitter-bot@344
+https://observablehq.com/@endpointservices/twitter-bot@349
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,8 +13,8 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/6fbcc8e36d6a8622@344.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/d/6fbcc8e36d6a8622@349.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

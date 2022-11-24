@@ -1,10 +1,9 @@
-// https://observablehq.com/@endpointservices/twitter-bot@344
 import define1 from "./629be1812462d083@415.js";
 import define2 from "./dff1e917c89f5e76@1964.js";
 import define3 from "./993a0c51ef1175ea@1396.js";
 import define4 from "./4e91ba6c5edba46c@761.js";
 import define5 from "./ef672b935bd480fc@623.js";
-import define6 from "./293899bef371e135@280.js";
+import define6 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`# How to make a Twitter Bot
@@ -152,11 +151,17 @@ function _24(md){return(
 md`#### Top notebook Tweet Text`
 )}
 
-function _text(topNotebook){return(
-`"${topNotebook.title}" by ${topNotebook.owner.name} https://observablehq.com/@${topNotebook.owner.login}/${topNotebook.slug}`
+function _suffix(topNotebook){return(
+topNotebook.slug == null
+  ? `d/${topNotebook.id}`
+  : `@${topNotebook.owner.login}/${topNotebook.slug}`
 )}
 
-function _26(md){return(
+function _text(topNotebook,suffix){return(
+`"${topNotebook.title}" by ${topNotebook.owner.name} https://observablehq.com/${suffix}`
+)}
+
+function _27(md){return(
 md`#### Top Notebook image`
 )}
 
@@ -164,11 +169,11 @@ function _imgURL(topNotebook){return(
 `https://static.observableusercontent.com/thumbnail/${topNotebook.thumbnail}.jpg`
 )}
 
-function _28(html,imgURL){return(
+function _29(html,imgURL){return(
 html`<img src=${imgURL}></img>`
 )}
 
-function _29(md){return(
+function _30(md){return(
 md`### Content hash`
 )}
 
@@ -186,11 +191,11 @@ function _contentHash(hash,text){return(
 hash(text)
 )}
 
-function _32(contentHash){return(
+function _33(contentHash){return(
 contentHash.length
 )}
 
-function _34(footer){return(
+function _35(footer){return(
 footer
 )}
 
@@ -227,16 +232,17 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _22);
   main.variable(observer("topNotebook")).define("topNotebook", ["trending"], _topNotebook);
   main.variable(observer()).define(["md"], _24);
-  main.variable(observer("text")).define("text", ["topNotebook"], _text);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer("suffix")).define("suffix", ["topNotebook"], _suffix);
+  main.variable(observer("text")).define("text", ["topNotebook","suffix"], _text);
+  main.variable(observer()).define(["md"], _27);
   main.variable(observer("imgURL")).define("imgURL", ["topNotebook"], _imgURL);
-  main.variable(observer()).define(["html","imgURL"], _28);
-  main.variable(observer()).define(["md"], _29);
+  main.variable(observer()).define(["html","imgURL"], _29);
+  main.variable(observer()).define(["md"], _30);
   main.variable(observer("hash")).define("hash", _hash);
   main.variable(observer("contentHash")).define("contentHash", ["hash","text"], _contentHash);
-  main.variable(observer()).define(["contentHash"], _32);
+  main.variable(observer()).define(["contentHash"], _33);
   const child6 = runtime.module(define6);
   main.import("footer", child6);
-  main.variable(observer()).define(["footer"], _34);
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }
