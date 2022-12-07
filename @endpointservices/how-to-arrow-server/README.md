@@ -13,7 +13,7 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
+npm install @observablehq/runtime@5
 npm install https://api.observablehq.com/d/a66997db084f1047@91.tgz?v=3
 ~~~
 
