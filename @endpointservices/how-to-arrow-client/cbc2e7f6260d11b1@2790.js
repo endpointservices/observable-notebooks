@@ -1,3 +1,11 @@
+import define1 from "./027541187c96745d@147.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./f92778131fd76559@1174.js";
+import define4 from "./4a1fa3c167b752e5@304.js";
+import define5 from "./9bed702f80a3797e@402.js";
+import define6 from "./316f0885d15ab671@69.js";
+import define7 from "./58f3eb7334551ae6@215.js";
+
 function _1(md){return(
 md`# WEBcode UI
 `
@@ -1826,19 +1834,14 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./027541187c96745d@147.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./dff1e917c89f5e76@1964.js")).default));
-  main.define("module 3", async () => runtime.module((await import("./f92778131fd76559@1174.js")).default));
-  main.define("module 4", async () => runtime.module((await import("./4a1fa3c167b752e5@304.js")).default));
-  main.define("module 5", async () => runtime.module((await import("./9bed702f80a3797e@402.js")).default));
-  main.define("module 6", async () => runtime.module((await import("./316f0885d15ab671@69.js")).default));
-  main.define("module 7", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
-  main.define("createLogin", ["module 1", "@variable"], (_, v) => v.import("createLogin", _));
-  main.define("firebase", ["module 1", "@variable"], (_, v) => v.import("firebase", _));
-  main.define("deploy", ["module 2", "@variable"], (_, v) => v.import("deploy", _));
-  main.define("Response", ["module 2", "@variable"], (_, v) => v.import("Response", _));
-  main.define("getContext", ["module 2", "@variable"], (_, v) => v.import("getContext", _));
+  const child1 = runtime.module(define1);
+  main.import("createLogin", child1);
+  main.import("firebase", child1);
+  const child2 = runtime.module(define2);
+  main.import("deploy", child2);
+  main.import("Response", child2);
+  main.import("getContext", child2);
   main.variable(observer()).define(["toc"], _4);
   main.variable(observer("viewof testUser")).define("viewof testUser", ["createLogin"], _testUser);
   main.variable(observer("testUser")).define("testUser", ["Generators", "viewof testUser"], (G, _) => G.input(_));
@@ -1979,14 +1982,19 @@ export default function define(runtime, observer) {
   main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","html","getContext","Response"], _createChannel);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
-  main.define("view", ["module 3", "@variable"], (_, v) => v.import("view", _));
-  main.define("variable", ["module 3", "@variable"], (_, v) => v.import("variable", _));
-  main.define("cautious", ["module 3", "@variable"], (_, v) => v.import("cautious", _));
-  main.define("viewroutine", ["module 4", "@variable"], (_, v) => v.import("viewroutine", _));
-  main.define("ask", ["module 4", "@variable"], (_, v) => v.import("ask", _));
-  main.define("toc", ["module 5", "@variable"], (_, v) => v.import("toc", _));
-  main.define("randomId", ["module 6", "@variable"], (_, v) => v.import("randomId", _));
-  main.define("footer", ["module 7", "@variable"], (_, v) => v.import("footer", _));
+  const child3 = runtime.module(define3);
+  main.import("view", child3);
+  main.import("variable", child3);
+  main.import("cautious", child3);
+  const child4 = runtime.module(define4);
+  main.import("viewroutine", child4);
+  main.import("ask", child4);
+  const child5 = runtime.module(define5);
+  main.import("toc", child5);
+  const child6 = runtime.module(define6);
+  main.import("randomId", child6);
+  const child7 = runtime.module(define7);
+  main.import("footer", child7);
   main.variable(observer()).define(["footer"], _130);
   return main;
 }

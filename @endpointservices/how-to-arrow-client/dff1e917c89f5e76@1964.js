@@ -1,4 +1,7 @@
 // https://observablehq.com/@endpointservices/serverless-cells@1964
+import define1 from "./8aac8b2cb06bf434@263.js";
+import define2 from "./58f3eb7334551ae6@215.js";
+
 async function _1(FileAttachment,width,md){return(
 md`# Serverless Cells
 
@@ -494,8 +497,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./8aac8b2cb06bf434@263.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["PreviewServerlessCells@2.png", {url: new URL("./files/b62247c0e9ee195b70aa8001ba70002ac1d3465e3d03f6a634290cc9c530f0c6cbf1a49c8dc9d726a3a3fe3cc36c269575739c0586586b6aab24ae344911add9.png", import.meta.url), mimeType: "image/png", toString}],
@@ -516,8 +517,10 @@ export default function define(runtime, observer) {
   main.variable(observer("generateSessionId")).define("generateSessionId", ["salt","chars"], _generateSessionId);
   main.variable(observer("subdomain")).define("subdomain", ["html","location"], _subdomain);
   main.variable(observer("notebook")).define("notebook", ["html"], _notebook);
-  main.define("onVersion", ["module 1", "@variable"], (_, v) => v.import("onVersion", _));
-  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
+  const child1 = runtime.module(define1);
+  main.import("onVersion", child1);
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _17);
   return main;
 }

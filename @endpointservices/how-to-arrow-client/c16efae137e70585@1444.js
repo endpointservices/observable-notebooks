@@ -1,4 +1,14 @@
 // https://observablehq.com/@endpointservices/login-with-comment@1444
+import define1 from "./993a0c51ef1175ea@1396.js";
+import define2 from "./d84ccee0a2202d45@356.js";
+import define3 from "./f92778131fd76559@1174.js";
+import define4 from "./4a1fa3c167b752e5@304.js";
+import define5 from "./dff1e917c89f5e76@1964.js";
+import define6 from "./316f0885d15ab671@65.js";
+import define7 from "./698257e86fae4586@378.js";
+import define8 from "./b8a500058f806a6b@11.js";
+import define9 from "./58f3eb7334551ae6@215.js";
+
 async function _1(md,FileAttachment){return(
 md`# Login with comment
 <h2>⚠️ the V2 is <a href="https://observablehq.com/@endpointservices/login-with-comment-v2">here</a></h2>
@@ -1042,15 +1052,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", ["@variable"], async (v) => runtime.module((await import("./993a0c51ef1175ea@1396.js")).default).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], v._module));
-  main.define("module 2", async () => runtime.module((await import("./d84ccee0a2202d45@356.js")).default));
-  main.define("module 3", async () => runtime.module((await import("./f92778131fd76559@1174.js")).default));
-  main.define("module 4", async () => runtime.module((await import("./4a1fa3c167b752e5@304.js")).default));
-  main.define("module 5", async () => runtime.module((await import("./dff1e917c89f5e76@1964.js")).default));
-  main.define("module 6", async () => runtime.module((await import("./316f0885d15ab671@65.js")).default));
-  main.define("module 7", async () => runtime.module((await import("./698257e86fae4586@378.js")).default));
-  main.define("module 8", async () => runtime.module((await import("./b8a500058f806a6b@11.js")).default));
-  main.define("module 9", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["ezgif.com-gif-maker.webp", {url: new URL("./files/1b25a5625ca0969979cfcb99d951343a91d6a59d217a101374e1abd1a24138978784e3fcd0abec470a3bd2af53c7d30858abe9874799b40c56e9dd871c84add2.webp", import.meta.url), mimeType: "image/webp", toString}]
@@ -1077,9 +1078,11 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("SERVICE_ACCOUNT_SECRET")).define("SERVICE_ACCOUNT_SECRET", _SERVICE_ACCOUNT_SECRET);
   main.variable(observer("FIREBASE_CONFIG")).define("FIREBASE_CONFIG", _FIREBASE_CONFIG);
-  main.define("firebase", ["module 1", "@variable"], (_, v) => v.import("firebase", _));
+  const child1 = runtime.module(define1).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
+  main.import("firebase", child1);
   main.variable(observer()).define(["md"], _20);
-  main.define("userFirebase", ["module 1", "@variable"], (_, v) => v.import("firebase", "userFirebase", _));
+  const child2 = runtime.module(define1).derive([{name: "TOKEN_FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
+  main.import("firebase", "userFirebase", child2);
   main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET);
   main.variable(observer()).define(["md"], _23);
   main.variable(observer("TOKEN_FIREBASE_CONFIG")).define("TOKEN_FIREBASE_CONFIG", _TOKEN_FIREBASE_CONFIG);
@@ -1117,7 +1120,8 @@ export default function define(runtime, observer) {
   main.variable(observer("prepareOK")).define("prepareOK", ["suite","randomId","expect","prepare"], _prepareOK);
   main.variable(observer("prepareCodeResuse")).define("prepareCodeResuse", ["suite","randomId","prepare"], _prepareCodeResuse);
   main.variable(observer()).define(["md"], _54);
-  main.define("getCommentsAndNamespace", ["module 2", "@variable"], (_, v) => v.import("getCommentsAndNamespace", _));
+  const child3 = runtime.module(define2);
+  main.import("getCommentsAndNamespace", child3);
   main.variable(observer("findLoginCommentingCode")).define("findLoginCommentingCode", ["getCommentsAndNamespace"], _findLoginCommentingCode);
   main.variable(observer()).define(["html","FileAttachment"], _57);
   main.variable(observer("findLoginCommentingCodeTest")).define("findLoginCommentingCodeTest", ["suite","expect","findLoginCommentingCode"], _findLoginCommentingCodeTest);
@@ -1131,21 +1135,28 @@ export default function define(runtime, observer) {
   main.variable(observer("verifyWithoutComment")).define("verifyWithoutComment", ["suite","randomId","hash","prepare","verify","expect"], _verifyWithoutComment);
   main.variable(observer("hash")).define("hash", _hash);
   main.variable(observer("checkIsURL")).define("checkIsURL", _checkIsURL);
-  main.define("view", ["module 3", "@variable"], (_, v) => v.import("view", _));
-  main.define("cautious", ["module 3", "@variable"], (_, v) => v.import("cautious", _));
-  main.define("viewroutine", ["module 4", "@variable"], (_, v) => v.import("viewroutine", _));
-  main.define("ask", ["module 4", "@variable"], (_, v) => v.import("ask", _));
-  main.define("deploy", ["module 5", "@variable"], (_, v) => v.import("deploy", _));
-  main.define("subdomain", ["module 5", "@variable"], (_, v) => v.import("subdomain", _));
-  main.define("getContext", ["module 5", "@variable"], (_, v) => v.import("getContext", _));
-  main.define("randomId", ["module 6", "@variable"], (_, v) => v.import("randomId", _));
-  main.define("createCustomToken", ["module 7", "@variable"], (_, v) => v.import("createCustomToken", _));
-  main.define("verifyCustomToken", ["module 7", "@variable"], (_, v) => v.import("verifyCustomToken", _));
-  main.define("verifyIdToken", ["module 7", "@variable"], (_, v) => v.import("verifyIdToken", _));
-  main.define("signinWithAccessToken", ["module 7", "@variable"], (_, v) => v.import("signinWithAccessToken", _));
-  main.define("getAccessTokenFromServiceAccount", ["module 7", "@variable"], (_, v) => v.import("getAccessTokenFromServiceAccount", _));
-  main.define("promiseRecursive", ["module 8", "@variable"], (_, v) => v.import("promiseRecursive", _));
-  main.define("footer", ["module 9", "@variable"], (_, v) => v.import("footer", _));
+  const child4 = runtime.module(define3);
+  main.import("view", child4);
+  main.import("cautious", child4);
+  const child5 = runtime.module(define4);
+  main.import("viewroutine", child5);
+  main.import("ask", child5);
+  const child6 = runtime.module(define5);
+  main.import("deploy", child6);
+  main.import("subdomain", child6);
+  main.import("getContext", child6);
+  const child7 = runtime.module(define6);
+  main.import("randomId", child7);
+  const child8 = runtime.module(define7);
+  main.import("createCustomToken", child8);
+  main.import("verifyCustomToken", child8);
+  main.import("verifyIdToken", child8);
+  main.import("signinWithAccessToken", child8);
+  main.import("getAccessTokenFromServiceAccount", child8);
+  const child9 = runtime.module(define8);
+  main.import("promiseRecursive", child9);
+  const child10 = runtime.module(define9);
+  main.import("footer", child10);
   main.variable(observer()).define(["footer"], _76);
   return main;
 }

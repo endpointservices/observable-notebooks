@@ -1,4 +1,7 @@
 // https://observablehq.com/@endpointservices/how-to-arrow-client@104
+import define1 from "./a2e58f97fd5e8d7c@736.js";
+import define2 from "./293899bef371e135@290.js";
+
 async function _1(md,FileAttachment){return(
 md`![](${await FileAttachment("ApachearrowClient@1.png").url()})
 
@@ -43,8 +46,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./a2e58f97fd5e8d7c@736.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./293899bef371e135@290.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["ApachearrowClient@1.png", {url: new URL("./files/96f2198dda3268ae6fb71bb37fbeedd85df056d42c8e933276b31e5b84ce423b410926f7a12a7828960f8170291db0d58e73371a30490c28d42eb8f11c66afa2.png", import.meta.url), mimeType: "image/png", toString}]
@@ -56,9 +57,11 @@ export default function define(runtime, observer) {
   main.variable(observer("dt")).define("dt", ["aq","notebook"], _dt);
   main.variable(observer("results")).define("results", ["Table","dt"], _results);
   main.variable(observer("aq")).define("aq", ["require"], _aq);
-  main.define("Table", ["module 1", "@variable"], (_, v) => v.import("Table", _));
+  const child1 = runtime.module(define1);
+  main.import("Table", child1);
   main.variable(observer("d3")).define("d3", ["require"], _d3);
-  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _10);
   return main;
 }
