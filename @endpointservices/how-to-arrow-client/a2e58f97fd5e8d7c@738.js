@@ -1,6 +1,5 @@
-// https://observablehq.com/@observablehq/inputs@736
 function _1(md){return(
-md`# Observable Inputs
+md`# Introduction to Inputs
 
 These lightweight interface components — buttons, sliders, dropdowns, tables, and the like — help you explore data and build interactive displays. For a walkthrough of how you might use these to support data analysis, see [Hello, Inputs!](/@observablehq/hello-inputs)`
 )}
