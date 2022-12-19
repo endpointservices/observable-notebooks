@@ -1,6 +1,5 @@
-// https://observablehq.com/@observablehq/inputs@736
 function _1(md){return(
-md`# Observable Inputs
+md`# Introduction to Inputs
 
 These lightweight interface components — buttons, sliders, dropdowns, tables, and the like — help you explore data and build interactive displays. For a walkthrough of how you might use these to support data analysis, see [Hello, Inputs!](/@observablehq/hello-inputs)`
 )}
@@ -419,7 +418,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["us-state-capitals.tsv", {url: new URL("./files/eee4d2a928a36026dab4281b76deb7fe0cd885f1c6df6e546efb79db7e5fa5ccc98a395f865d31c1db3344ff1734683764bb1a63871fb1b39f77bb810f49699c", import.meta.url), mimeType: "text/tab-separated-values", toString}]
+    ["us-state-capitals.tsv", {url: new URL("./files/eee4d2a928a36026dab4281b76deb7fe0cd885f1c6df6e546efb79db7e5fa5ccc98a395f865d31c1db3344ff1734683764bb1a63871fb1b39f77bb810f49699c.tsv", import.meta.url), mimeType: "text/tab-separated-values", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

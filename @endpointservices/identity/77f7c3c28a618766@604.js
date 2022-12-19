@@ -1,12 +1,12 @@
 // https://observablehq.com/@endpointservices/identity@604
 import define1 from "./b5ee47165ef0a032@504.js";
-import define2 from "./dff1e917c89f5e76@1711.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
 import define3 from "./9a81133e63eb4a91@136.js";
-import define4 from "./1131d8b2f152e8a8@463.js";
+import define4 from "@observablehq/banner@463";
 import define5 from "./573e072575f28fb9@454.js";
-import define6 from "./316f0885d15ab671@65.js";
+import define6 from "./316f0885d15ab671@69.js";
 import define7 from "./52d808b188b8672b@129.js";
-import define8 from "./293899bef371e135@267.js";
+import define8 from "./293899bef371e135@290.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("Identity.png").url(), "Bring your own Identity with IndieAuth")
@@ -314,7 +314,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["Identity.png", {url: new URL("./files/df501385ecbb382199076ccbc922bedf7ff4f3f8c2d21d25322ed7db4b5d8376aea5c0f8d6213d0ebc6bdd5bd3ef0860cba924468f5499515d43654c1d8e1df0", import.meta.url), mimeType: "image/png", toString}]
+    ["Identity.png", {url: new URL("./files/df501385ecbb382199076ccbc922bedf7ff4f3f8c2d21d25322ed7db4b5d8376aea5c0f8d6213d0ebc6bdd5bd3ef0860cba924468f5499515d43654c1d8e1df0.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["bannerImage","FileAttachment"], _1);
