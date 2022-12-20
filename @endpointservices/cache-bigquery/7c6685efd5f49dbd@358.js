@@ -1,11 +1,11 @@
 // https://observablehq.com/@endpointservices/cache-bigquery@358
 import define1 from "./b5ee47165ef0a032@504.js";
 import define2 from "./777fe85658e39c55@470.js";
-import define3 from "./a2e58f97fd5e8d7c@674.js";
-import define4 from "./993a0c51ef1175ea@1345.js";
-import define5 from "./698257e86fae4586@374.js";
-import define6 from "./ef672b935bd480fc@619.js";
-import define7 from "./293899bef371e135@226.js";
+import define3 from "./a2e58f97fd5e8d7c@738.js";
+import define4 from "./993a0c51ef1175ea@1396.js";
+import define5 from "./698257e86fae4586@378.js";
+import define6 from "./ef672b935bd480fc@623.js";
+import define7 from "./293899bef371e135@290.js";
 
 async function _1(md,FileAttachment){return(
 md`# How to cache BigQuery results in a public Notebook with Firebase Storage or a Cloud Bucket
@@ -292,7 +292,13 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["image.png",new URL("./files/fbc397fffdbe52b61932e0103b0325cae160a17d283c91f7069cd45fa6ceb77126c2406184bd88c0f0fc9c4dbc6b6bbfb558789e3fd0932c2bed366d8f20bdfc",import.meta.url)],["image@2.png",new URL("./files/18624dbd4d6b6bca3f66183a47b4640a0189c1f3fc33f677f52eda3db72a9c021e27daa182c8b0a898a12b8738107514b7f03f050815828e1fcdbb4ecde2042a",import.meta.url)],["BQCache.png",new URL("./files/ea3c89962b18d200e41e79f2a8af4b7c56bd1a1eef909523642599f8c2b98c2ef6a524fb84ae1584fcea0c286be2491af84932e3685d35f5651398da6082403a",import.meta.url)],["image@3.png",new URL("./files/50ed998f033d3ae2c3fccfe7b9665c917eb9b07efaa94a44ea99c6a0ad81bfa8cbeda923368579bd7bc8722a82304ee269bb395eebe4ba180613a5b62e6e7355",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/fbc397fffdbe52b61932e0103b0325cae160a17d283c91f7069cd45fa6ceb77126c2406184bd88c0f0fc9c4dbc6b6bbfb558789e3fd0932c2bed366d8f20bdfc.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@2.png", {url: new URL("./files/18624dbd4d6b6bca3f66183a47b4640a0189c1f3fc33f677f52eda3db72a9c021e27daa182c8b0a898a12b8738107514b7f03f050815828e1fcdbb4ecde2042a.png", import.meta.url), mimeType: "image/png", toString}],
+    ["BQCache.png", {url: new URL("./files/ea3c89962b18d200e41e79f2a8af4b7c56bd1a1eef909523642599f8c2b98c2ef6a524fb84ae1584fcea0c286be2491af84932e3685d35f5651398da6082403a.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image@3.png", {url: new URL("./files/50ed998f033d3ae2c3fccfe7b9665c917eb9b07efaa94a44ea99c6a0ad81bfa8cbeda923368579bd7bc8722a82304ee269bb395eebe4ba180613a5b62e6e7355.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);

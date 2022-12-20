@@ -1,13 +1,13 @@
-import define1 from "./027541187c96745d@145.js";
-import define2 from "./dff1e917c89f5e76@1711.js";
-import define3 from "./f92778131fd76559@1173.js";
+import define1 from "./027541187c96745d@147.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./f92778131fd76559@1174.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
 import define5 from "./9bed702f80a3797e@402.js";
-import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./58f3eb7334551ae6@209.js";
+import define6 from "./316f0885d15ab671@69.js";
+import define7 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
-md`# UI Components
+md`# WEBcode UI
 `
 )}
 
@@ -15,7 +15,11 @@ function _4(toc){return(
 toc()
 )}
 
-function _5(md){return(
+function _testUser(createLogin){return(
+createLogin()
+)}
+
+function _6(md){return(
 md`## Design`
 )}
 
@@ -39,40 +43,51 @@ function _colors(){return(
 }
 )}
 
-function _7(md){return(
+function _8(md){return(
 md`### Header`
 )}
 
-function _8(exampleHeader){return(
+function _9(exampleHeader){return(
 exampleHeader
 )}
 
-function _exampleHeader(serverlessCellUI)
+function _exampleHeader(serverlessCellUI,invalidation)
 {
-  const ui = serverlessCellUI({
-    namespace: 'endpointservices',
-    endpoint:
-      "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint"
-  });
+  const ui = serverlessCellUI(
+    {
+      namespace: "endpointservices",
+      endpoint:
+        "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint"
+    },
+    invalidation
+  );
   return ui;
 }
 
 
-function _10()
-{
-  return ({}["blah"] || {})["foo"];
-}
+function _serverlessCellUI(createLogin,viewroutine,ask,headerLogin,headerCreator,headerNotCreator){return(
+(config, invalidation) => {
+  const userView = createLogin();
+  // Normalise params
+  if (typeof config?.options?.livecode === "string") {
+    config.options.livecode = config.options.livecode.toUpperCase();
+  }
 
-
-function _serverlessCellUI(viewroutine,$0,ask,headerLogin,headerCreator,headerNotCreator){return(
-(config, invalidation) =>
-  viewroutine(async function* () {
+  return viewroutine(async function* () {
     while (true) {
-      if (!$0.value || $0.value.then) {
-        yield* ask(headerLogin(config));
+      if (!userView.value || userView.value.then) {
+        yield* ask(
+          headerLogin(
+            {
+              ...config,
+              userView
+            },
+            invalidation
+          )
+        );
       } else {
         if (
-          ((await $0.value.getIdTokenResult()).claims[
+          ((await userView.value.getIdTokenResult()).claims[
             "observablehq.com"
           ] || {})[config.namespace]
         ) {
@@ -80,7 +95,7 @@ function _serverlessCellUI(viewroutine,$0,ask,headerLogin,headerCreator,headerNo
             headerCreator(
               {
                 ...config,
-                user: $0.value
+                userView
               },
               invalidation
             )
@@ -90,7 +105,7 @@ function _serverlessCellUI(viewroutine,$0,ask,headerLogin,headerCreator,headerNo
             headerNotCreator(
               {
                 ...config,
-                user: $0.value
+                userView
               },
               invalidation
             )
@@ -98,30 +113,32 @@ function _serverlessCellUI(viewroutine,$0,ask,headerLogin,headerCreator,headerNo
         }
       }
     }
-  })
+  });
+}
 )}
 
-function _exampleHeaderActive(headerCreator,user){return(
+function _exampleHeaderActive(headerCreator,createLogin){return(
 headerCreator({
-  namespace: 'tomlarkworthy',
-  endpoint: "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-  user
+  namespace: "tomlarkworthy",
+  endpoint:
+    "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
+  userView: createLogin()
 })
 )}
 
-function _headerCreator(supress,view,style,Inputs,$0,variable,urlTitle,normalizeObservablehqEndpoint,tabbedPane,statusPane,secretsPane){return(
+function _headerCreator(supress,view,style,Inputs,variable,urlTitle,normalizeObservablehqEndpoint,tabbedPane,statusPane,secretsPane){return(
 (config, invalidation) => {
   const ui = supress(view`
   ${style()}
   <details open class="e-header-details">
-    ${["_user", Inputs.input($0.value)]}
+    ${["_user", Inputs.input(config.userView.value)]}
     ${["_href", variable(config.endpoint)]}
     <summary style="width: 100%;">
       ${urlTitle({
         url: config.endpoint,
         text: normalizeObservablehqEndpoint(config.endpoint)
       })}
-      ${$0}
+      ${config.userView}
     </summary>
     ${tabbedPane({
       status: () => statusPane(config, invalidation),
@@ -133,18 +150,25 @@ function _headerCreator(supress,view,style,Inputs,$0,variable,urlTitle,normalize
 }
 )}
 
-function _exampleHeaderNotCreator(headerNotCreator){return(
-headerNotCreator({
-  namespace: 'tomlarkworthy',
-  endpoint:
-    "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-  undefined
-})
+function _exampleHeaderNotCreator(headerNotCreator,invalidation){return(
+headerNotCreator(
+  {
+    namespace: "tomlarkworthy",
+    options: {
+      livecode: "PUBLIC"
+    },
+    endpoint:
+      "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint;dh4cs",
+    undefined
+  },
+  invalidation
+)
 )}
 
-function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0,md){return(
+function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,tabbedPane,publicStatusPane,md){return(
 (config, invalidation) => {
-  const ui = supress(view`
+  const ui = supress(
+    view`
   ${style()}
   <details class="e-header-details">
     ${["_href", variable(config.endpoint)]}
@@ -154,21 +178,36 @@ function _headerNotCreator(supress,view,style,variable,urlTitle,normalizeObserva
         text: normalizeObservablehqEndpoint(config.endpoint)
       })}
     </summary>
-    ${$0}
+    ${config.userView}
+    ${tabbedPane({
+      status: () => publicStatusPane(config, invalidation)
+    })}
     <span style="font-size: 16px">
-    ${md`⚠️ You are not an admin of ${config.namespace}, [fork](https://observablehq.com/@observablehq/fork-share-merge) into your own namespace to configure or debug it.`}
+
+    ${
+      config?.options?.livecode === "PUBLIC"
+        ? md`🔥 This endpoint has public [livecoding](https://observablehq.com/@endpointservices/livecode) enabled. Requests made to your unique URL will be tunnelled and served by *your* browser.`
+        : ""
+    }
     </span>
-  </details>`);
+  </details>`,
+    {
+      ignore: (evt) => evt?.detail?.user === undefined || evt.detail.user.then
+    }
+  );
   return ui;
 }
 )}
 
-function _exampleHeaderLogin(headerLogin){return(
+function _exampleHeaderLogin(headerLogin,invalidation){return(
 headerLogin({
-  namespace: 'tomlarkworthy',
+  namespace: "tomlarkworthy",
   endpoint:
     "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-  undefined
+  options: {
+    livecode: "PUBLIC"
+  },
+  invalidation
 })
 )}
 
@@ -176,20 +215,34 @@ function _17(exampleHeaderLogin){return(
 exampleHeaderLogin
 )}
 
-function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,$0){return(
-(config) =>
-  supress(view`
+function _headerLogin(supress,view,style,variable,urlTitle,normalizeObservablehqEndpoint,html){return(
+(config, invalidation) =>
+  supress(
+    view`
   ${style()}
   <details class="e-header-details">
-  ${["_href", variable(config.endpoint)]}
-  <summary style="width: 100%;">
-    ${urlTitle({
-      url: config.endpoint,
-      text: normalizeObservablehqEndpoint(config.endpoint)
-    })}
-    ${$0}
-  </summary>
-</details>`)
+    ${["_href", variable(config.endpoint)]}
+    <summary style="width: 100%;">
+      ${urlTitle({
+        url: config.endpoint,
+        text: normalizeObservablehqEndpoint(config.endpoint)
+      })}
+    </summary>
+    <p class="e-explain">💡 If you are the host of this endpoint, login to admininister and <a href="https://observablehq.com/@endpointservices/livecode">livecode</a> the endpoint</p>
+    ${
+      config?.options?.livecode === "PUBLIC"
+        ? html`<p class="e-explain">🔥 The owner has enabled public <a href="https://observablehq.com/@endpointservices/livecode">livecoding</a>! anybody can login to start a <a href="https://observablehq.com/@endpointservices/livecode">livecode</a> session</p>`
+        : ""
+    }
+    ${config.userView}
+  </details>`,
+    {
+      ignore: (evt) =>
+        evt?.detail?.user === undefined ||
+        evt.detail.user === null ||
+        evt.detail.user.then
+    }
+  )
 )}
 
 function _headerCSS(html,colors){return(
@@ -282,11 +335,13 @@ function _urlTitle(view,variable,externalLinkSVG,textNodeView){return(
 )}
 
 function _supress(view){return(
-_view => {
-  _view.addEventListener('input', evt => {
-    if (evt?.detail?.user === undefined) evt.stopPropagation();
+(_view, { ignore } = {}) => {
+  if (ignore === undefined) ignore = (evt) => evt?.detail?.user === undefined;
+
+  _view.addEventListener("input", (evt) => {
+    if (ignore(evt)) evt.stopPropagation();
   });
-  return view`<span>${['...', _view]}`;
+  return view`<span>${["...", _view]}`;
 }
 )}
 
@@ -882,13 +937,13 @@ Also contains the logic
 `
 )}
 
-function _exampleSecretsPane(secretsPane,user,invalidation){return(
+function _exampleSecretsPane(secretsPane,$0,invalidation){return(
 secretsPane(
   {
     namespace: "endpointservices",
     endpoint:
       "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-    user: user
+    userView: $0
   },
   invalidation
 )
@@ -899,7 +954,8 @@ exampleSecretsPane
 )}
 
 function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,normalizeEndpoint,firebase,setSecret,deleteSecret,getStoredSecrets){return(
-({ namespace, endpoint, user } = {}, invalidation) => {
+({ namespace, endpoint, userView } = {}, invalidation) => {
+  const user = userView.value;
   const ui = view`<div class='e-main-box'>
       ${["bindings", boundSecrets({ namespace, endpoint })]}
       ${["stored", storedSecrets({ namespace, endpoint })]}
@@ -992,8 +1048,8 @@ function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,norma
     ui.value.edit.disabled = true; // close
     ui.value.stored.secrets.items = [];
 
-    if (ui.value.edit.action === CREATE) {
-      console.log("Creating new secret");
+    if (ui.value.edit.action === CREATE || ui.value.edit.action === UPDATE) {
+      console.log("Creating/updating new secret");
       await setSecret({
         namespace,
         name: namespace + "_" + ui.value.edit.name.text,
@@ -1009,7 +1065,7 @@ function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,norma
     ui.value.edit.disabled = true; // close
     ui.value.stored.secrets.items = [];
     if (ui.value.edit.action === UPDATE) {
-      console.log("Delele secret");
+      console.log("Delete secret");
       await deleteSecret({
         namespace,
         name: namespace + "_" + ui.value.edit.name.text,
@@ -1173,27 +1229,33 @@ function _editSecret(variable,columnPane,view,textNodeView,textarea,button){retu
   const disabledVar = variable(disabled);
 
   const ui = columnPane({
-    content: view`<div class="e-col-title">${['disabled', disabledVar]}${[
-      'action',
+    content: view`<div class="e-col-title">${["disabled", disabledVar]}${[
+      "action",
       textNodeView(action)
     ]} Secret</div><br>
-      ${['name', textarea({ rows: 1, placeholder: "enter name" })]}
-      ${['secret', textarea({ rows: 8, placeholder: "enter value" })]}
+      ${["name", textarea({ rows: 1, placeholder: "enter name" })]}
+      ${[
+        "secret",
+        textarea({
+          rows: 8,
+          placeholder: "enter value"
+        })
+      ]}
       <div>
         <span>${[
-          'delete',
+          "delete",
           button({
             action: "delete",
             label: "delete",
-            cssClass: 'e-btn3'
+            cssClass: "e-btn3"
           })
         ]}</span>
         <span style="float: right;">${[
-          'save',
+          "save",
           button({
             action: "save",
             label: "save",
-            cssClass: 'e-btn3'
+            cssClass: "e-btn3"
           })
         ]}</span>
       </div>
@@ -1201,12 +1263,12 @@ function _editSecret(variable,columnPane,view,textNodeView,textarea,button){retu
   });
 
   function updateVisibility() {
-    if (disabledVar.value) ui.classList.add('hide');
-    else ui.classList.remove('hide');
+    if (disabledVar.value) ui.classList.add("hide");
+    else ui.classList.remove("hide");
   }
   updateVisibility();
 
-  disabledVar.addEventListener('assign', updateVisibility);
+  disabledVar.addEventListener("assign", updateVisibility);
 
   return ui;
 }
@@ -1222,7 +1284,10 @@ statusPane(
     namespace: "tomlarkworthy",
     name: "test",
     endpoint:
-      "https://webcode.run/observablehq.com/@tomlarkworthy/serverless-cell-dashboard;test"
+      "https://webcode.run/observablehq.com/@tomlarkworthy/serverless-cell-dashboard;test",
+    options: {
+      livecode: "PUBLIC"
+    }
   },
   invalidation
 )
@@ -1232,10 +1297,21 @@ function _91(exampleStatusPane){return(
 exampleStatusPane
 )}
 
-function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createChannel){return(
-({ namespace, endpoint, name, user } = {}, invalidation) => {
+function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createChannel,getCorrelation){return(
+(
+  { namespace, endpoint, name, user, options = {} } = {},
+  invalidation
+) => {
   const ui = view`<div class='e-main-box'>
-      ${["livecode", liveCoding({ namespace, endpoint })]}
+      ${[
+        "livecode",
+        liveCoding({
+          namespace,
+          endpoint,
+          livecode: options.livecode,
+          livecodepublic: options.livecode === "PUBLIC"
+        })
+      ]}
       ${["apiKey", apiKey({ namespace, endpoint })]}
     </div>`;
 
@@ -1258,6 +1334,7 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
           endpoint,
           name,
           namespace,
+          correlation: getCorrelation(endpoint),
           newRequestCallback: (req) => {
             ui.value.livecode.tunnelled++;
           }
@@ -1270,6 +1347,7 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
       }
     }
   }
+  invalidation.then(() => updateDebugChannel(false));
 
   // Subscribe to config changes
   invalidation.then(
@@ -1279,12 +1357,28 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
       // update bindings
       ui.value.livecode.livemode =
         val?.flags?.livemode === undefined ? true : val.flags.livemode;
+
       updateDebugChannel(ui.value.livecode.livemode);
       ui.value.apiKey.apiKey = val?.api_key === undefined ? "" : val?.api_key;
+
+      // Sync hardcoded secrets into record
+      (options.secrets || []).forEach((secret) => {
+        if (!(val.secrets || {})[secret]) {
+          configDoc.set(
+            {
+              namespace,
+              secrets: {
+                [secret]: "hardcoded"
+              }
+            },
+            { merge: true }
+          );
+        }
+      });
     })
   );
 
-  ui.livecode.singleton.livemode.addEventListener("input", () => {
+  ui.livecode.singleton.addEventListener("input", () => {
     console.log("update config");
     configDoc.set(
       {
@@ -1313,33 +1407,127 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
 )}
 
 function _93(md){return(
+md`### Public Status Page`
+)}
+
+function _94(publicStatusPane,invalidation){return(
+publicStatusPane(
+  {
+    namespace: "tomlarkworthy",
+    name: "test",
+    endpoint:
+      "https://webcode.run/observablehq.com/@tomlarkworthy/serverless-cell-dashboard;test;fsesa",
+    options: {
+      livemode: "PUBLIC"
+    }
+  },
+  invalidation
+)
+)}
+
+function _publicStatusPane(view,liveCoding,md,createChannel,getCorrelation){return(
+(
+  { namespace, endpoint, name, user, options = {} } = {},
+  invalidation
+) => {
+  const ui = view`<div class='e-main-box'>
+      ${[
+        "livecode",
+        liveCoding({
+          namespace,
+          endpoint,
+          livecode: options.livecode || options.livecode === "PUBLIC",
+          livecodepublic: options.livecode === "PUBLIC"
+        })
+      ]}
+      <div class="e-col-pane">
+        <div class="e-col-title">Limited Access</div>
+        <p class="e-explain"><i>
+        ${md`⚠️ You do not have administration rights on this endpoint because you are not signed in as **${namespace}**, [fork](https://observablehq.com/@observablehq/fork-share-merge) into your own namespace if you want to performed privilidged operations. If you are a team member of **${namespace}**, you must scan for team access when logging in.`}
+        </i></p>
+      </div>
+    </div>`;
+
+  let destroyChannel = undefined;
+  let currentLiveMode = undefined;
+
+  async function updateDebugChannel(livemode) {
+    console.log(`set livemode to ${livemode} from ${currentLiveMode}`);
+    if (livemode === currentLiveMode) return;
+    else {
+      currentLiveMode = livemode;
+      if (currentLiveMode) {
+        destroyChannel = await createChannel({
+          endpoint,
+          name,
+          namespace,
+          correlation: getCorrelation(endpoint),
+          newRequestCallback: (req) => {
+            ui.value.livecode.tunnelled++;
+          }
+        });
+      } else {
+        if (destroyChannel) {
+          destroyChannel();
+          destroyChannel = undefined;
+        }
+      }
+    }
+  }
+  invalidation.then(() => updateDebugChannel(false));
+
+  ui.livecode.singleton.addEventListener("input", () => {
+    updateDebugChannel(ui.livecode.singleton.livemode.value);
+  });
+  updateDebugChannel(ui.livecode.singleton.livemode.value);
+
+  return ui;
+}
+)}
+
+function _96(md){return(
 md`#### Live Coding`
 )}
 
 function _exampleLiveCoding(liveCoding){return(
 liveCoding({
+  livecode: "PUBLIC",
   endpoint:
-    'https://webcode.run/regions/europe-west1/observablehq.com/d/6eda90668ae03044;info'
+    "https://webcode.run/regions/europe-west1/observablehq.com/d/6eda90668ae03044;info"
 })
 )}
 
-function _95(exampleLiveCoding){return(
+function _98(exampleLiveCoding){return(
 exampleLiveCoding
 )}
 
-function _liveCoding(columnPane,view,Inputs,textNodeView){return(
-({ livecode = true } = {}) => {
+function _liveCoding(columnPane,view,textNodeView,Inputs){return(
+({ livecode } = {}) => {
   const ui = columnPane({
-    content: view`<div class="e-col-title">Live Coding</div><br>
-      <p class="e-explain"><i>Live coding tunnels production traffic to your browser so you can run and debug serverside code locally and in realtime.</i></p>
+    content: view`<div class="e-col-title">Livecoding</div>
+      <p class="e-explain"><i><a target="_blank" href="https://observablehq.com/@endpointservices/livecode">Livecoding</a> tunnels production traffic to <b>your</b> browser so you can run and debug the latest serverside code reactively.</i></p>
+      <p class="e-explain">⚠️ tab must be in <a target="_blank" href="https://github.com/observablehq/feedback/issues/458">foreground</a> to livecode</p>
+      <p class="e-explain"><b>tunnelled: ${[
+        "tunnelled",
+        textNodeView(0)
+      ]}</b></p>
       ${[
         "livemode",
         Inputs.toggle({
-          label: "enable live coding",
-          value: livecode
+          label: "enable livecoding",
+          value: livecode === undefined ? true : livecode,
+          disabled: livecode === false
         })
       ]}
-      <p class="e-explain">tunnelled: ${["tunnelled", textNodeView(0)]}</p>
+      ${[
+        "livemodepublic",
+        Inputs.toggle({
+          label: "⚠️ enable public livecoding",
+          value: livecode === "PUBLIC",
+          disabled: true
+        })
+      ]}
+      <p class="e-explain"><i>Public livecode is enabled through an <a target="_blank" href="https://observablehq.com/@endpointservices/webcode-docs#options">option</a>. </i></p>
   </div`
   });
 
@@ -1347,7 +1535,7 @@ function _liveCoding(columnPane,view,Inputs,textNodeView){return(
 }
 )}
 
-function _97(md){return(
+function _100(md){return(
 md`#### API key`
 )}
 
@@ -1355,7 +1543,7 @@ function _apiKeyExample(apiKey){return(
 apiKey()
 )}
 
-function _99(apiKeyExample){return(
+function _102(apiKeyExample){return(
 apiKeyExample
 )}
 
@@ -1390,7 +1578,7 @@ function _textNodeView(){return(
 }
 )}
 
-function _102(md){return(
+function _105(md){return(
 md`### Generic Styles
 
 has to be last so modifiers are applied last
@@ -1430,13 +1618,40 @@ function _style(html,titleCSS,buttonCSS,textAreaCSS,listSelectorCSS,tabPaneCSS,c
 </style>`
 )}
 
-function _106(md){return(
+function _108(md){return(
 md`## Implementation`
 )}
 
+function _109(normalizeEndpoint){return(
+normalizeEndpoint(
+  "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo;fxd"
+)
+)}
+
+function _110(getCorrelation){return(
+getCorrelation(
+  "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;default"
+)
+)}
+
 function _normalizeEndpoint(){return(
-endpoint =>
-  endpoint.replace(/https:\/\/webcode.run\/(regions\/([^/]*)\/)?/, '')
+(endpoint, { excludeCorrelation = true } = {}) => {
+  const tripHost = endpoint.replace(
+    /https:\/\/webcode.run\/(regions\/([^/]*)\/)?/,
+    ""
+  );
+  if (excludeCorrelation) {
+    // Look for two semi colon entries and leave the first
+    return tripHost.replace(/(;[^;/]+)(;[^;/]+)/, (match, $1) => $1);
+  } else {
+    return tripHost;
+  }
+}
+)}
+
+function _getCorrelation(){return(
+(endpoint) =>
+  /(?:;[^;/]+)(?:;(?<correlation>[^;/]+))/.exec(endpoint)?.groups?.correlation
 )}
 
 function _normalizeObservablehqEndpoint(){return(
@@ -1447,13 +1662,13 @@ endpoint =>
   )
 )}
 
-function _109(normalizeObservablehqEndpoint){return(
+function _114(normalizeObservablehqEndpoint){return(
 normalizeObservablehqEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo"
 )
 )}
 
-function _110(md){return(
+function _115(md){return(
 md`### Secrets`
 )}
 
@@ -1498,20 +1713,21 @@ async ({ user, namespace, name }) =>
   secretClient(user, `/subdomains/${namespace}/secrets/${name}`, "DELETE")
 )}
 
-function _116(md){return(
+function _121(md){return(
 md`### Live code`
 )}
 
-function _createChannel(database,randomId,firestore,normalizeEndpoint,getContext,Response){return(
+function _createChannel(database,randomId,firestore,normalizeEndpoint,html,getContext,Response){return(
 async function createChannel({
   endpoint,
   name,
   namespace,
+  correlation = undefined,
   newRequestCallback = () => {}
 } = {}) {
   database.goOnline();
-  const sessionId = await randomId(32);
-  console.log("New debug session", sessionId);
+  const sessionId = correlation || (await randomId(32));
+  console.log(`New livecode session: ${sessionId}`);
 
   const configDoc = firestore.doc(
     `/services/http/endpoints/${encodeURIComponent(
@@ -1530,34 +1746,43 @@ async function createChannel({
           .ref(`services/http/debug/${sessionId}`)
           .onDisconnect()
           .remove();
-        database.ref(`services/http/debug/${sessionId}/status`).set("online");
+        database.ref(`services/http/debug/${sessionId}/status`).set({
+          state: "online",
+          href: html`<a href="">`.href,
+          endpoint,
+          started: { ".sv": "timestamp" }
+        });
       }
     });
-  // indicate in dynamic config we have a debugging channel open
-  // Note, another device may switch it, for now, we don't want a tug of war so we shall
-  // let it be lost
-  await configDoc.set(
-    {
-      namespace,
-      debugger: {
-        // path: database.ref(`services/http/debug/${sessionId}`).path.toString()
-        path: database
-          .ref(`services/http/debug/${sessionId}`)
-          .toString()
-          .replace(
-            "https://endpointservice-eu.europe-west1.firebasedatabase.app",
-            ""
-          )
-      }
-    },
-    { merge: true }
-  );
+
+  if (!correlation) {
+    // indicate in dynamic config we have a debugging channel open
+    // Note, another device may switch it, for now, we don't want a tug of war so we shall
+    // let it be lost
+    await configDoc.set(
+      {
+        namespace,
+        debugger: {
+          // path: database.ref(`services/http/debug/${sessionId}`).path.toString()
+          path: database
+            .ref(`services/http/debug/${sessionId}`)
+            .toString()
+            .replace(
+              "https://endpointservice-eu.europe-west1.firebasedatabase.app",
+              ""
+            )
+        }
+      },
+      { merge: true }
+    );
+  }
 
   // Read! listen to inbound requests and respond.
   database
     .ref(`services/http/debug/${sessionId}/requests`)
     .on("child_added", async (snap) => {
       const req = snap.val();
+      if (snap.child("response").val()) return; // Skip if response seen
       newRequestCallback(req.request);
       window["@endpointservices.status"] = (status) =>
         snap.child("status").ref.set(status);
@@ -1581,7 +1806,7 @@ async function createChannel({
       }
     });
   return () => {
-    console.log("unsubscribe");
+    console.log(`End livecode session: ${sessionId}`);
     database.ref(`services/http/debug/${sessionId}/status`).off("value");
     database
       .ref(`services/http/debug/${sessionId}/requests`)
@@ -1589,18 +1814,6 @@ async function createChannel({
     database.ref(`services/http/debug/${sessionId}/status`).remove();
   };
 }
-)}
-
-function _118(deploy){return(
-deploy("test", async (request, response) => {
-  response
-    .header("foo", "bar")
-    .header("foo2", "bar2")
-    .status(400);
-  response.write('chunk1');
-  response.write('chunk2');
-  response.end();
-})
 )}
 
 function _firestore(firebase){return(
@@ -1615,7 +1828,7 @@ function _database(firebase)
 }
 
 
-function _126(footer){return(
+function _130(footer){return(
 footer
 )}
 
@@ -1623,32 +1836,32 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   const child1 = runtime.module(define1);
-  main.import("viewof user", child1);
-  main.import("user", child1);
+  main.import("createLogin", child1);
   main.import("firebase", child1);
   const child2 = runtime.module(define2);
   main.import("deploy", child2);
   main.import("Response", child2);
   main.import("getContext", child2);
   main.variable(observer()).define(["toc"], _4);
-  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("viewof testUser")).define("viewof testUser", ["createLogin"], _testUser);
+  main.variable(observer("testUser")).define("testUser", ["Generators", "viewof testUser"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _6);
   main.variable(observer("colors")).define("colors", _colors);
-  main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["exampleHeader"], _8);
-  main.variable(observer("viewof exampleHeader")).define("viewof exampleHeader", ["serverlessCellUI"], _exampleHeader);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["exampleHeader"], _9);
+  main.variable(observer("viewof exampleHeader")).define("viewof exampleHeader", ["serverlessCellUI","invalidation"], _exampleHeader);
   main.variable(observer("exampleHeader")).define("exampleHeader", ["Generators", "viewof exampleHeader"], (G, _) => G.input(_));
-  main.variable(observer()).define(_10);
-  main.variable(observer("serverlessCellUI")).define("serverlessCellUI", ["viewroutine","viewof user","ask","headerLogin","headerCreator","headerNotCreator"], _serverlessCellUI);
-  main.variable(observer("viewof exampleHeaderActive")).define("viewof exampleHeaderActive", ["headerCreator","user"], _exampleHeaderActive);
+  main.variable(observer("serverlessCellUI")).define("serverlessCellUI", ["createLogin","viewroutine","ask","headerLogin","headerCreator","headerNotCreator"], _serverlessCellUI);
+  main.variable(observer("viewof exampleHeaderActive")).define("viewof exampleHeaderActive", ["headerCreator","createLogin"], _exampleHeaderActive);
   main.variable(observer("exampleHeaderActive")).define("exampleHeaderActive", ["Generators", "viewof exampleHeaderActive"], (G, _) => G.input(_));
-  main.variable(observer("headerCreator")).define("headerCreator", ["supress","view","style","Inputs","viewof user","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","statusPane","secretsPane"], _headerCreator);
-  main.variable(observer("viewof exampleHeaderNotCreator")).define("viewof exampleHeaderNotCreator", ["headerNotCreator"], _exampleHeaderNotCreator);
+  main.variable(observer("headerCreator")).define("headerCreator", ["supress","view","style","Inputs","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","statusPane","secretsPane"], _headerCreator);
+  main.variable(observer("viewof exampleHeaderNotCreator")).define("viewof exampleHeaderNotCreator", ["headerNotCreator","invalidation"], _exampleHeaderNotCreator);
   main.variable(observer("exampleHeaderNotCreator")).define("exampleHeaderNotCreator", ["Generators", "viewof exampleHeaderNotCreator"], (G, _) => G.input(_));
-  main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user","md"], _headerNotCreator);
-  main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin"], _exampleHeaderLogin);
+  main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","publicStatusPane","md"], _headerNotCreator);
+  main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin","invalidation"], _exampleHeaderLogin);
   main.variable(observer("exampleHeaderLogin")).define("exampleHeaderLogin", ["Generators", "viewof exampleHeaderLogin"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleHeaderLogin"], _17);
-  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","viewof user"], _headerLogin);
+  main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","html"], _headerLogin);
   main.variable(observer("headerCSS")).define("headerCSS", ["html","colors"], _headerCSS);
   main.variable(observer()).define(["md"], _20);
   main.variable(observer()).define(["externalLinkSVG"], _21);
@@ -1709,7 +1922,7 @@ export default function define(runtime, observer) {
   main.variable(observer("exampleListSelector")).define("exampleListSelector", ["Generators", "viewof exampleListSelector"], (G, _) => G.input(_));
   main.variable(observer("listSelectorCSS")).define("listSelectorCSS", ["htl","colors"], _listSelectorCSS);
   main.variable(observer()).define(["md"], _71);
-  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","user","invalidation"], _exampleSecretsPane);
+  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","viewof testUser","invalidation"], _exampleSecretsPane);
   main.variable(observer("exampleSecretsPane")).define("exampleSecretsPane", ["Generators", "viewof exampleSecretsPane"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleSecretsPane"], _73);
   main.variable(observer("secretsPane")).define("secretsPane", ["view","boundSecrets","storedSecrets","editSecret","firestore","normalizeEndpoint","firebase","setSecret","deleteSecret","getStoredSecrets"], _secretsPane);
@@ -1734,34 +1947,39 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof exampleStatusPane")).define("viewof exampleStatusPane", ["statusPane","invalidation"], _exampleStatusPane);
   main.variable(observer("exampleStatusPane")).define("exampleStatusPane", ["Generators", "viewof exampleStatusPane"], (G, _) => G.input(_));
   main.variable(observer()).define(["exampleStatusPane"], _91);
-  main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel"], _statusPane);
+  main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel","getCorrelation"], _statusPane);
   main.variable(observer()).define(["md"], _93);
+  main.variable(observer()).define(["publicStatusPane","invalidation"], _94);
+  main.variable(observer("publicStatusPane")).define("publicStatusPane", ["view","liveCoding","md","createChannel","getCorrelation"], _publicStatusPane);
+  main.variable(observer()).define(["md"], _96);
   main.variable(observer("viewof exampleLiveCoding")).define("viewof exampleLiveCoding", ["liveCoding"], _exampleLiveCoding);
   main.variable(observer("exampleLiveCoding")).define("exampleLiveCoding", ["Generators", "viewof exampleLiveCoding"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleLiveCoding"], _95);
-  main.variable(observer("liveCoding")).define("liveCoding", ["columnPane","view","Inputs","textNodeView"], _liveCoding);
-  main.variable(observer()).define(["md"], _97);
+  main.variable(observer()).define(["exampleLiveCoding"], _98);
+  main.variable(observer("liveCoding")).define("liveCoding", ["columnPane","view","textNodeView","Inputs"], _liveCoding);
+  main.variable(observer()).define(["md"], _100);
   main.variable(observer("viewof apiKeyExample")).define("viewof apiKeyExample", ["apiKey"], _apiKeyExample);
   main.variable(observer("apiKeyExample")).define("apiKeyExample", ["Generators", "viewof apiKeyExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["apiKeyExample"], _99);
+  main.variable(observer()).define(["apiKeyExample"], _102);
   main.variable(observer("apiKey")).define("apiKey", ["columnPane","view","Inputs"], _apiKey);
   main.variable(observer("textNodeView")).define("textNodeView", _textNodeView);
-  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["md"], _105);
   main.variable(observer("mobile")).define("mobile", _mobile);
   main.variable(observer("style")).define("style", ["html","titleCSS","buttonCSS","textAreaCSS","listSelectorCSS","tabPaneCSS","colPaneCSS","tabsCSS","headerCSS","colors"], _style);
-  main.variable(observer()).define(["md"], _106);
+  main.variable(observer()).define(["md"], _108);
+  main.variable(observer()).define(["normalizeEndpoint"], _109);
+  main.variable(observer()).define(["getCorrelation"], _110);
   main.variable(observer("normalizeEndpoint")).define("normalizeEndpoint", _normalizeEndpoint);
+  main.variable(observer("getCorrelation")).define("getCorrelation", _getCorrelation);
   main.variable(observer("normalizeObservablehqEndpoint")).define("normalizeObservablehqEndpoint", _normalizeObservablehqEndpoint);
-  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _109);
-  main.variable(observer()).define(["md"], _110);
+  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _114);
+  main.variable(observer()).define(["md"], _115);
   main.variable(observer("SECRET_API")).define("SECRET_API", _SECRET_API);
   main.variable(observer("secretClient")).define("secretClient", ["SECRET_API"], _secretClient);
   main.variable(observer("getStoredSecrets")).define("getStoredSecrets", ["secretClient"], _getStoredSecrets);
   main.variable(observer("setSecret")).define("setSecret", ["secretClient"], _setSecret);
   main.variable(observer("deleteSecret")).define("deleteSecret", ["secretClient"], _deleteSecret);
-  main.variable(observer()).define(["md"], _116);
-  main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","getContext","Response"], _createChannel);
-  main.variable(observer()).define(["deploy"], _118);
+  main.variable(observer()).define(["md"], _121);
+  main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","html","getContext","Response"], _createChannel);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
   const child3 = runtime.module(define3);
@@ -1777,6 +1995,6 @@ export default function define(runtime, observer) {
   main.import("randomId", child6);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _126);
+  main.variable(observer()).define(["footer"], _130);
   return main;
 }

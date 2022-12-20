@@ -1,6 +1,5 @@
-// https://observablehq.com/@observablehq/inputs@674
 function _1(md){return(
-md`# Observable Inputs
+md`# Introduction to Inputs
 
 These lightweight interface components — buttons, sliders, dropdowns, tables, and the like — help you explore data and build interactive displays. For a walkthrough of how you might use these to support data analysis, see [Hello, Inputs!](/@observablehq/hello-inputs)`
 )}
@@ -24,8 +23,8 @@ function _5(gain){return(
 gain
 )}
 
-function _6(html,gain){return(
-html`The current gain is ${gain.toFixed(1)}!`
+function _6(gain,md){return(
+md`The current gain is ${gain.toFixed(1)}!`
 )}
 
 function _7(md){return(
@@ -34,6 +33,7 @@ md`Observable Inputs are released under the [ISC license](https://github.com/obs
 
 function _basics(md){return(
 md`---
+
 ## Basics
 
 These basic inputs will get you started.
@@ -48,12 +48,12 @@ These basic inputs will get you started.
 * [Textarea](/@observablehq/input-textarea) - enter freeform multi-line text
 * [Date](/@observablehq/input-date) or [Datetime](/@observablehq/input-date) - choose a date
 * [Color](/@observablehq/input-color) - choose a color
-* [File](/@observablehq/input-file) - choose a local file
-`
+* [File](/@observablehq/input-file) - choose a local file`
 )}
 
 function _9(md){return(
 md`---
+
 ### [Button](/@observablehq/input-button) 
 
 Do something when a button is clicked. [Examples ›](/@observablehq/input-button) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#button)`
@@ -69,6 +69,7 @@ clicks
 
 function _12(md){return(
 md`---
+
 ### [Toggle](/@observablehq/input-toggle) 
 
 Toggle between two values (on or off). [Examples ›](/@observablehq/input-toggle) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#toggle)`
@@ -84,6 +85,7 @@ mute
 
 function _15(md){return(
 md`---
+
 ### [Checkbox](/@observablehq/input-checkbox) 
 
 Choose any from a set. [Examples ›](/@observablehq/input-checkbox) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#checkbox)`
@@ -99,6 +101,7 @@ flavors
 
 function _18(md){return(
 md`---
+
 ### [Radio](/@observablehq/input-radio)
 
 Choose one from a set. [Examples ›](/@observablehq/input-radio) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#radio)`
@@ -114,6 +117,7 @@ flavor
 
 function _21(md){return(
 md`---
+
 ### [Range](/@observablehq/input-range)
 
 Pick a number. [Examples ›](/@observablehq/input-range) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#range)`
@@ -129,6 +133,7 @@ n
 
 function _24(md){return(
 md`---
+
 ### [Select](/@observablehq/input-select)
 
 Choose one, or any, from a menu. [Examples ›](/@observablehq/input-select) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#select)`
@@ -152,6 +157,7 @@ visitedStates
 
 function _29(md){return(
 md`---
+
 ### [Text](/@observablehq/input-text)
 
 Enter freeform single-line text. [Examples ›](/@observablehq/input-text) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#text)`
@@ -167,6 +173,7 @@ name
 
 function _32(md){return(
 md`---
+
 ### [Textarea](/@observablehq/input-textarea)
 
 Enter freeform multi-line text. [Examples ›](/@observablehq/input-textarea) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#textarea)`
@@ -182,6 +189,7 @@ bio
 
 function _35(md){return(
 md`---
+
 ### [Date](/@observablehq/input-date)
 
 Choose a date, or a date and time. [Examples ›](/@observablehq/input-date) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#date)`
@@ -197,6 +205,7 @@ birthday
 
 function _38(md){return(
 md`---
+
 ### [Color](/@observablehq/input-color)
 
 Choose a color. [Examples ›](/@observablehq/input-color) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#color)`
@@ -212,6 +221,7 @@ color
 
 function _41(md){return(
 md`---
+
 ### [File](/@observablehq/input-file)
 
 Choose a local file. [Examples ›](/@observablehq/input-file) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#file)`
@@ -227,6 +237,7 @@ file.csv({typed: true})
 
 function _tables(md){return(
 md`---
+
 ## Tabular data
 
 These fancy inputs are designed to work with tabular data such as CSV or TSV [file attachments](/@observablehq/file-attachments) and [database clients](/@observablehq/databases).
@@ -237,6 +248,7 @@ These fancy inputs are designed to work with tabular data such as CSV or TSV [fi
 
 function _45(md){return(
 md`---
+
 ### [Search](/@observablehq/input-search)
 
 Query a tabular dataset. [Examples ›](/@observablehq/input-search) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#search)`
@@ -252,6 +264,7 @@ search
 
 function _48(md){return(
 md`---
+
 ### [Table](/@observablehq/input-table)
 
 Browse a tabular dataset. [Examples ›](/@observablehq/input-table) [API Reference ›](https://github.com/observablehq/inputs/blob/main/README.md#table)`
@@ -267,24 +280,26 @@ rows
 
 function _techniques(md){return(
 md`---
+
 ## And more!
 
 Got the basics? Here are a few more advanced techniques:
 
 * [Form](https://observablehq.com/@observablehq/input-form?collection=@observablehq/inputs) - combine multiple inputs for a compact display
 * [Synchronized inputs](https://observablehq.com/@observablehq/synchronized-inputs?collection=@observablehq/inputs) - bind two or more inputs
-* [Introduction to Views](/@observablehq/introduction-to-views) - more on Observable’s viewof
-`
+* [Introduction to Views](/@observablehq/introduction-to-views) - more on Observable’s viewof`
 )}
 
 function _52(md){return(
 md`We are grateful to Jeremy Ashkenas for blazing the trail with [“The Grand Native Inputs Bazaar”](/@jashkenas/inputs). To migrate from Jeremy’s inputs to our new official inputs, consider our [legacy inputs](/@observablehq/legacy-inputs).`
 )}
 
-function _53(md,Inputs,html){return(
-md`For even more, consider these “friends & family” inputs and techniques shared by the Observable community:
+function _53(md){return(
+md`For even more, consider these “friends & family” inputs and techniques shared by the Observable community:`
+)}
 
-${Inputs.table([
+function _54(Inputs,html){return(
+Inputs.table([
   [["2D Slider", "/d/98bbb19bf9e859ee"], "Fabian Iwand", "a two-dimensional range"],
   [["Binary Input", "/@rreusser/binary-input"], "Ricky Reusser", "bitwise IEEE floating point"],
   [["DIY inputs", "/@bartok32/diy-inputs"], "Bartosz Prusinowski", "inputs with fun, custom styles"],
@@ -314,12 +329,14 @@ ${Inputs.table([
   format: {
     Name: ([title, link]) => html`<a href=${link} target=_blank>${title}`
   }
-})}
-
-To share your reusable input or technique, please leave a comment.`
+})
 )}
 
-function _54(md){return(
+function _55(md){return(
+md`To share your reusable input or technique, please leave a comment.`
+)}
+
+function _56(md){return(
 md`---
 
 ## Appendix`
@@ -333,7 +350,7 @@ function _stateNames(capitals){return(
 capitals.map(d => d.State)
 )}
 
-function _57(md){return(
+function _59(md){return(
 md`The cells below provide deprecated aliases for older versions of Inputs. Please use Inputs.button *etc.* instead of importing from this notebook.`
 )}
 
@@ -399,7 +416,10 @@ htl.html
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["us-state-capitals.tsv",new URL("./files/eee4d2a928a36026dab4281b76deb7fe0cd885f1c6df6e546efb79db7e5fa5ccc98a395f865d31c1db3344ff1734683764bb1a63871fb1b39f77bb810f49699c",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["us-state-capitals.tsv", {url: new URL("./files/eee4d2a928a36026dab4281b76deb7fe0cd885f1c6df6e546efb79db7e5fa5ccc98a395f865d31c1db3344ff1734683764bb1a63871fb1b39f77bb810f49699c.tsv", import.meta.url), mimeType: "text/tab-separated-values", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("usage")).define("usage", ["md"], _usage);
@@ -407,7 +427,7 @@ export default function define(runtime, observer) {
   main.variable(observer("gain")).define("gain", ["Generators", "viewof gain"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["gain"], _5);
-  main.variable(observer()).define(["html","gain"], _6);
+  main.variable(observer()).define(["gain","md"], _6);
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("basics")).define("basics", ["md"], _basics);
   main.variable(observer()).define(["md"], _9);
@@ -468,11 +488,13 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["rows"], _50);
   main.variable(observer("techniques")).define("techniques", ["md"], _techniques);
   main.variable(observer()).define(["md"], _52);
-  main.variable(observer()).define(["md","Inputs","html"], _53);
-  main.variable(observer()).define(["md"], _54);
+  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["Inputs","html"], _54);
+  main.variable(observer()).define(["md"], _55);
+  main.variable(observer()).define(["md"], _56);
   main.variable(observer("capitals")).define("capitals", ["FileAttachment"], _capitals);
   main.variable(observer("stateNames")).define("stateNames", ["capitals"], _stateNames);
-  main.variable(observer()).define(["md"], _57);
+  main.variable(observer()).define(["md"], _59);
   main.variable(observer("Button")).define("Button", ["Inputs"], _Button);
   main.variable(observer("Toggle")).define("Toggle", ["Inputs"], _Toggle);
   main.variable(observer("Radio")).define("Radio", ["Inputs"], _Radio);

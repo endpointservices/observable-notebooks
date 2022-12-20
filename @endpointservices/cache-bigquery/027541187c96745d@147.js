@@ -1,5 +1,5 @@
-import define1 from "./c16efae137e70585@1429.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define1 from "./c16efae137e70585@1444.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# Endpoint Services: Login with Comment
@@ -20,7 +20,11 @@ function _user(createLogin){return(
 createLogin()
 )}
 
-async function _4(md,verifyIdToken,firebase,user){return(
+function _4(user){return(
+user.getIdToken()
+)}
+
+async function _5(md,verifyIdToken,firebase,user){return(
 md`~~~
 ${JSON.stringify(
   await verifyIdToken(firebase, await user.getIdToken()),
@@ -47,11 +51,11 @@ function _AUTH_CHECK(){return(
 }
 )}
 
-function _6(verify_backend){return(
+function _7(verify_backend){return(
 verify_backend
 )}
 
-function _7(prepare_backend){return(
+function _8(prepare_backend){return(
 prepare_backend
 )}
 
@@ -72,7 +76,7 @@ function _firebaseConfig(){return(
 }
 )}
 
-function _12(footer){return(
+function _13(footer){return(
 footer
 )}
 
@@ -88,15 +92,16 @@ export default function define(runtime, observer) {
   main.import("subdomain", child1);
   main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
   main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md","verifyIdToken","firebase","user"], _4);
+  main.variable(observer()).define(["user"], _4);
+  main.variable(observer()).define(["md","verifyIdToken","firebase","user"], _5);
   main.variable(observer("AUTH_CHECK")).define("AUTH_CHECK", _AUTH_CHECK);
-  main.variable(observer()).define(["verify_backend"], _6);
-  main.variable(observer()).define(["prepare_backend"], _7);
+  main.variable(observer()).define(["verify_backend"], _7);
+  main.variable(observer()).define(["prepare_backend"], _8);
   main.variable(observer("HOST_NOTEBOOK")).define("HOST_NOTEBOOK", _HOST_NOTEBOOK);
   main.variable(observer("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET")).define("TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET", _TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET);
   main.variable(observer("firebaseConfig")).define("firebaseConfig", _firebaseConfig);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _12);
+  main.variable(observer()).define(["footer"], _13);
   return main;
 }

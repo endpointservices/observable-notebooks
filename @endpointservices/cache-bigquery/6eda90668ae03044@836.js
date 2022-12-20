@@ -1,7 +1,7 @@
-// https://observablehq.com/@endpointservices/webcode@803
-import define1 from "./cbc2e7f6260d11b1@2483.js";
-import define2 from "./dff1e917c89f5e76@1711.js";
-import define3 from "./58f3eb7334551ae6@209.js";
+// https://observablehq.com/@endpointservices/webcode@836
+import define1 from "./cbc2e7f6260d11b1@2790.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./58f3eb7334551ae6@215.js";
 
 function _1(html){return(
 html`<a href="https://webcode.run"><h1 style="font-family: Tahoma; font-size: 9vw;"><span style="color: #E78AAE">WEB</span><span style="color: #626262">code</span><span style="color: #9DE2BF">.</span><span style="color: #4A44C4">run</span></h1></a>
@@ -115,14 +115,6 @@ Runtime of the source code is published here: https://github.com/endpointservice
 )}
 
 function _12(md){return(
-md`
-
-## Talk to others in the community
-
-Come hang out with us on the [d3 Zulip server](https://d3js.zulipchat.com/#narrow/stream/289603-serverless-cells/topic/Welcome.20to.20Serverless.20Cells) or on the [forum](https://talk.observablehq.com/t/serverless-cells/4491)`
-)}
-
-function _13(md){return(
 md`##### Implementation`
 )}
 
@@ -133,7 +125,10 @@ deploy
 function _deploy(baseDeploy,serverlessCellUI,subdomain){return(
 (name, handler, options = {}) => {
   const resolveUid = "uiilwqbmonujdnfv" + name;
-  if (window[resolveUid]) window[resolveUid]();
+  if (window[resolveUid]) {
+    console.log(`Serverless cells, invalidating ${name}`);
+    window[resolveUid]();
+  }
   const link = baseDeploy(name, handler, {
     reusable: true,
     ...options,
@@ -143,20 +138,21 @@ function _deploy(baseDeploy,serverlessCellUI,subdomain){return(
     {
       name,
       namespace: subdomain(),
-      endpoint: link.href
+      endpoint: link.href,
+      options
     },
-    new Promise((resolve) => (window[resolveUid] = resolve))
+    new Promise((resolve) => (window[resolveUid] = resolve)) // Our invlidation promise
   );
   ui.href = link.href;
   return ui;
 }
 )}
 
-function _16(md){return(
+function _15(md){return(
 md`##### Dependencies`
 )}
 
-function _19(htl){return(
+function _18(htl){return(
 htl.html`<style>
   code {
     white-space: pre-wrap;
@@ -178,7 +174,7 @@ htl.html`<style>
 </stlye>`
 )}
 
-function _21(footer){return(
+function _20(footer){return(
 footer
 )}
 
@@ -196,10 +192,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["md"], _13);
   main.variable(observer("endpoint")).define("endpoint", ["deploy"], _endpoint);
   main.variable(observer("deploy")).define("deploy", ["baseDeploy","serverlessCellUI","subdomain"], _deploy);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _15);
   const child1 = runtime.module(define1);
   main.import("serverlessCellUI", child1);
   main.import("colors", child1);
@@ -207,9 +202,9 @@ export default function define(runtime, observer) {
   main.import("deploy", "baseDeploy", child2);
   main.import("getContext", child2);
   main.import("subdomain", child2);
-  main.variable(observer()).define(["htl"], _19);
+  main.variable(observer()).define(["htl"], _18);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _21);
+  main.variable(observer()).define(["footer"], _20);
   return main;
 }
