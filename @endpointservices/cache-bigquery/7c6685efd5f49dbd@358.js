@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/cache-bigquery@358
 import define1 from "./b5ee47165ef0a032@504.js";
 import define2 from "./777fe85658e39c55@470.js";
-import define3 from "./a2e58f97fd5e8d7c@738.js";
+import define3 from "./a2e58f97fd5e8d7c@741.js";
 import define4 from "./993a0c51ef1175ea@1396.js";
 import define5 from "./698257e86fae4586@378.js";
 import define6 from "./ef672b935bd480fc@623.js";

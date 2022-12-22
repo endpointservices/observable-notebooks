@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/notebook-secret@504
 import define1 from "./11a5ab8b1b3a51db@1161.js";
-import define2 from "./a2e58f97fd5e8d7c@738.js";
+import define2 from "./a2e58f97fd5e8d7c@741.js";
 import define3 from "./ab3e70b29c480e6d@83.js";
 import define4 from "./293899bef371e135@290.js";
 
