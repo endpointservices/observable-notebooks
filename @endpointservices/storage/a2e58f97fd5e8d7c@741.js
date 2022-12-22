@@ -1,6 +1,5 @@
-// https://observablehq.com/@observablehq/inputs@736
 function _1(md){return(
-md`# Observable Inputs
+md`# Introduction to Inputs
 
 These lightweight interface components — buttons, sliders, dropdowns, tables, and the like — help you explore data and build interactive displays. For a walkthrough of how you might use these to support data analysis, see [Hello, Inputs!](/@observablehq/hello-inputs)`
 )}
@@ -16,15 +15,15 @@ function _gain(Inputs){return(
 Inputs.range([0, 11], {value: 5, step: 0.1, label: "Gain"})
 )}
 
-function _4(md){return(
+function _now(md){return(
 md`Now you can reference the input’s value (here *gain*) in any cell, and the cell will run whenever the input changes. No event listeners required!`
 )}
 
-function _5(gain){return(
+function _gain2(gain){return(
 gain
 )}
 
-function _6(gain,md){return(
+function _currentgain(gain,md){return(
 md`The current gain is ${gain.toFixed(1)}!`
 )}
 
@@ -426,9 +425,9 @@ export default function define(runtime, observer) {
   main.variable(observer("usage")).define("usage", ["md"], _usage);
   main.variable(observer("viewof gain")).define("viewof gain", ["Inputs"], _gain);
   main.variable(observer("gain")).define("gain", ["Generators", "viewof gain"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["gain"], _5);
-  main.variable(observer()).define(["gain","md"], _6);
+  main.variable(observer("now")).define("now", ["md"], _now);
+  main.variable(observer("gain2")).define("gain2", ["gain"], _gain2);
+  main.variable(observer("currentgain")).define("currentgain", ["gain","md"], _currentgain);
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("basics")).define("basics", ["md"], _basics);
   main.variable(observer()).define(["md"], _9);
