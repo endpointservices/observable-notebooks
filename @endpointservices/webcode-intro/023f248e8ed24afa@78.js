@@ -1,3 +1,6 @@
+import define1 from "./6eda90668ae03044@836.js";
+import define2 from "./293899bef371e135@290.js";
+
 function _1(md){return(
 md`# My First Webcode Endpoint`
 )}
@@ -46,17 +49,17 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./6eda90668ae03044@836.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./293899bef371e135@290.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.define("deploy", ["module 1", "@variable"], (_, v) => v.import("deploy", _));
-  main.define("getContext", ["module 1", "@variable"], (_, v) => v.import("getContext", _));
+  const child1 = runtime.module(define1);
+  main.import("deploy", child1);
+  main.import("getContext", child1);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("endpoint")).define("endpoint", ["deploy","getContext"], _endpoint);
   main.variable(observer()).define(["endpoint","htl"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.define("footer", ["module 2", "@variable"], (_, v) => v.import("footer", _));
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _9);
   return main;
 }

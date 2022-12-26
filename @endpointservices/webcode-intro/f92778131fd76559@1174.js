@@ -1,4 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/view@1174
+import define1 from "./58f3eb7334551ae6@215.js";
+
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal
 
@@ -1551,7 +1553,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["toc"], _3);
@@ -1669,7 +1670,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","view","Inputs","expect"], _101);
   main.variable(observer()).define(["suite","view","Inputs","expect"], _102);
   main.variable(observer("toc")).define("toc", _toc);
-  main.define("footer", ["module 1", "@variable"], (_, v) => v.import("footer", _));
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _105);
   return main;
 }
