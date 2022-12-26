@@ -1,13 +1,10 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@271
-import define1 from "./a81f2a20664080d3@243.js";
-import define2 from "./c2dae147641e012a@46.js";
-import define3 from "./1d309dbd9697e042@631.js";
+import define1 from "./c2dae147641e012a@46.js";
+import define2 from "./a81f2a20664080d3@245.js";
 
 function _1(md){return(
 md`# Endpoint Services Footer
 
-
-Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics and backups.
+Generic services to apply to all Endpoint Service notebooks, e.g. error monitoring, analytics. Footer with backups is https://observablehq.com/@endpointservices/footer-with-backups
 
 \`\`\`js
 import { footer } from "@endpointservices/endpoint-services-footer"
@@ -16,19 +13,16 @@ footer
 \`\`\``
 )}
 
-function _graphic(md,width){return(
+function _graphic(md){return(
 md`<small>
-[WEBCode.run](https://webcode.run) makes building fully encapsulated services within Observable notebooks possible.
+[WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks. Signup for the [webcode newsletter on Substack](https://webcode.substack.com/).
 
-*Endpoint Services collects usage metrics through [Plausible Analytics](https://plausible.io/) and publishes them [here](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
-
-<iframe src="https://webcode.substack.com/embed" width="${width}" height="250" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
 `
 )}
 
-function _footer($0,plausible_analytics,sentry,graphic)
+function _footer(plausible_analytics,sentry,graphic)
 {
-  $0;
   plausible_analytics;
   const Sentry = sentry({
     DSN:
@@ -44,6 +38,10 @@ function _4(md){return(
 md`### Usage: Plausible Analytics
 
 Note, data domain auto set so it will only be able to track properties I own. And the use of plausible analytics is for usage stats, no personal information.`
+)}
+
+function _5(localStorage){return(
+localStorage
 )}
 
 function _plausible_analytics(html,localStorage,XMLHttpRequest)
@@ -116,41 +114,24 @@ function _plausible_analytics(html,localStorage,XMLHttpRequest)
 }
 
 
-function _6(md){return(
+function _8(md){return(
 md`### Error Monitoring: Sentry
 
 Sentry alerts me to errors in notebooks`
 )}
 
-function _9(md){return(
-md`### Backups`
-)}
-
-function _backups(enableGithubBackups){return(
-enableGithubBackups({
-  owner: "endpointservices",
-  repo: "observable-notebooks"
-  /*debugProxy: true*/
-})
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md","width"], _graphic);
-  main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
+  main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
+  main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["localStorage"], _5);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
-  main.variable(observer()).define(["md"], _6);
   const child1 = runtime.module(define1);
-  main.import("sentry", child1);
+  main.import("localStorage", child1);
+  main.variable(observer()).define(["md"], _8);
   const child2 = runtime.module(define2);
-  main.import("localStorage", child2);
-  main.variable(observer()).define(["md"], _9);
-  main.variable(observer("viewof backups")).define("viewof backups", ["enableGithubBackups"], _backups);
-  main.variable(observer("backups")).define("backups", ["Generators", "viewof backups"], (G, _) => G.input(_));
-  const child3 = runtime.module(define3);
-  main.import("enableGithubBackups", child3);
-  main.import("backupNowButton", child3);
+  main.import("sentry", child2);
   return main;
 }
