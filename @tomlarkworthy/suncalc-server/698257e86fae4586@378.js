@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/firebase-admin@375
+// https://observablehq.com/@tomlarkworthy/firebase-admin@378
 function _1(md){return(
 md`# Firebase Admin and Google API helpers in the browser
 
