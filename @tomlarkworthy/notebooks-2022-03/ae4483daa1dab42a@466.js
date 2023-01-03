@@ -1,8 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/notebooks-2022-03@466
-import define1 from "./67d1b2c32f1883c4@565.js";
+import define1 from "./67d1b2c32f1883c4@661.js";
 import define2 from "./55bed46f68a80641@366.js";
-import define3 from "./ef672b935bd480fc@622.js";
-import define4 from "./293899bef371e135@267.js";
+import define3 from "./ef672b935bd480fc@623.js";
+import define4 from "./293899bef371e135@290.js";
 
 function _1(month,md){return(
 md`# Inspiring Notebooks of ${month} 2022`
@@ -319,11 +319,11 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["tweet_activity_metrics_trendingnotebo2_20220301_20220401_en.csv", {url: new URL("./files/b9e4df54ac8f577e5331bc36b3f86b23300a8e80e0253d37bae7fdec22abdd7b25a9f50a13932a7eb0ad5c76e46f41506cad7717a1a93e7a23a63057f388f6c4", import.meta.url), mimeType: "text/csv", toString}],
-    ["fetchedNotebookURL (3).json", {url: new URL("./files/09b0520d3c4f54fc2a10d901614bd13b917fd5955f01bfdb6f2ef9695fa26fbb52681a824c08f7c1a2600156fd9f7feb76bbd3a85f3656a687ddc39978a022a1", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedMetadata (4).json", {url: new URL("./files/2b7240690137cf0433fe476fd33e220b5ef2dc161ff588f6cde15eddc74619f5c14bba5e255753bbef6b3c0b68fb9e311ec9502900f40cd2c52672e6c5d79ce6", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedMeta (3).json", {url: new URL("./files/c2414a68bc72321a1205f2cafbf4a2ad12f4c7f74db7d437bdd0cd110fe976315079b187506208bf93aa2ccc5a4d805cc4ab3fae7db5a5ec5bf39e02cc2a4c2a", import.meta.url), mimeType: "application/json", toString}],
-    ["fetchedTags (4).json", {url: new URL("./files/dd85837124355570a3d0298b4afb91a3492f35e4d08a48822383eca49586df36c4f1edd6ee571e31e5abd7e0949e1b7070c1a02509f1ebcc6d4449a6fa4c43dc", import.meta.url), mimeType: "application/json", toString}]
+    ["tweet_activity_metrics_trendingnotebo2_20220301_20220401_en.csv", {url: new URL("./files/b9e4df54ac8f577e5331bc36b3f86b23300a8e80e0253d37bae7fdec22abdd7b25a9f50a13932a7eb0ad5c76e46f41506cad7717a1a93e7a23a63057f388f6c4.csv", import.meta.url), mimeType: "text/csv", toString}],
+    ["fetchedNotebookURL (3).json", {url: new URL("./files/09b0520d3c4f54fc2a10d901614bd13b917fd5955f01bfdb6f2ef9695fa26fbb52681a824c08f7c1a2600156fd9f7feb76bbd3a85f3656a687ddc39978a022a1.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMetadata (4).json", {url: new URL("./files/2b7240690137cf0433fe476fd33e220b5ef2dc161ff588f6cde15eddc74619f5c14bba5e255753bbef6b3c0b68fb9e311ec9502900f40cd2c52672e6c5d79ce6.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMeta (3).json", {url: new URL("./files/c2414a68bc72321a1205f2cafbf4a2ad12f4c7f74db7d437bdd0cd110fe976315079b187506208bf93aa2ccc5a4d805cc4ab3fae7db5a5ec5bf39e02cc2a4c2a.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedTags (4).json", {url: new URL("./files/dd85837124355570a3d0298b4afb91a3492f35e4d08a48822383eca49586df36c4f1edd6ee571e31e5abd7e0949e1b7070c1a02509f1ebcc6d4449a6fa4c43dc.json", import.meta.url), mimeType: "application/json", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["month","md"], _1);
