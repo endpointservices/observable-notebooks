@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/webcode-private-endpoint@124
-import define1 from "./293899bef371e135@278.js";
+import define1 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`# [WEBCode.run](https://webcode.run) Private Endpoints Released`
