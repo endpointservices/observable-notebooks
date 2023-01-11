@@ -1,4 +1,4 @@
-// https://observablehq.com/@mkfreeman/plot-tooltip@659
+// https://observablehq.com/@mkfreeman/plot-tooltip@661
 import define1 from "./d2dffac0e42406e8@3045.js";
 import define2 from "./32eeadb67cb4cbcb@1472.js";
 import define3 from "./8d6618bb2d7befdd@199.js";
