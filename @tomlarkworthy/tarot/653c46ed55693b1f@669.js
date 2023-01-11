@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/juice@646
+// https://observablehq.com/@tomlarkworthy/juice@669
 import define1 from "./f92778131fd76559@1174.js";
 import define2 from "./4a1fa3c167b752e5@304.js";
 
@@ -21,6 +21,30 @@ import {juice} from '@tomlarkworthy/juice'
 )}
 
 function _2(md){return(
+md`## fastest way to make UI components
+
+Convert static renderers into reactive components:
+\`\`\`js
+(name, age) => html\`Your name is \${name} your age is \${age}\`
+\`\`\``
+)}
+
+function _profile(juice,html){return(
+juice((name, age) => html`Your name is ${name} your age is ${age}`, {
+  name: "[0]", // we index into the ...arguments array
+  age: "[1]"
+})
+)}
+
+function _example(profile){return(
+profile("tom", 21)
+)}
+
+function _5(Inputs,$0){return(
+Inputs.bind(Inputs.range([0, 99]), $0.age)
+)}
+
+function _6(md){return(
 md`## *juice* API
 
 ~~~
@@ -58,13 +82,13 @@ The new builder has a very different value type though. The value becomes a dict
 `
 )}
 
-function _3(md){return(
+function _7(md){return(
 md`### Works with any functional UI
 
 You can animate your own custom constructors or [D3 charts](https://observablehq.com/@tomlarkworthy/juice-and-charts)`
 )}
 
-function _4(md){return(
+function _8(md){return(
 md`#### Example
 
 If we *juice* the *range* builder:
@@ -102,7 +126,7 @@ Because the value is a nested view, each subview supports *Inputs.bind* individu
 `
 )}
 
-function _5(md){return(
+function _9(md){return(
 md`### Open Issues
 
 ##### DOM state lost when parameters
@@ -127,7 +151,7 @@ function* _stateLostExampleUpdater(Promises,stateLostExample)
 }
 
 
-function _8(md){return(
+function _12(md){return(
 md`## Implementation`
 )}
 
@@ -175,7 +199,7 @@ function _juice(proxyVariable,variable,_,view){return(
 }
 )}
 
-function _10(md){return(
+function _14(md){return(
 md`### helpers`
 )}
 
@@ -195,7 +219,7 @@ function proxyVariable({ name = "variable", get, set } = {}) {
 }
 )}
 
-function _12(md){return(
+function _16(md){return(
 md`## Range with dynamic max and min
 
 Here we extract the ranges first arg, *max* and *min* to be their own backwritable subviews
@@ -215,11 +239,11 @@ function _dynamicRangeExample(dynamicRange){return(
 dynamicRange([-1, 1], { label: "dynamic range" })
 )}
 
-function _15(dynamicRangeExample){return(
+function _19(dynamicRangeExample){return(
 dynamicRangeExample
 )}
 
-function _16(dynamicRangeExample){return(
+function _20(dynamicRangeExample){return(
 dynamicRangeExample
 )}
 
@@ -230,7 +254,7 @@ dynamicRange([-1, 1], {
 })
 )}
 
-function _18(dynamicRangeMin){return(
+function _22(dynamicRangeMin){return(
 dynamicRangeMin
 )}
 
@@ -241,7 +265,7 @@ dynamicRange([-1, 1], {
 })
 )}
 
-function _20(dynamicRangeMax){return(
+function _24(dynamicRangeMax){return(
 dynamicRangeMax
 )}
 
@@ -256,7 +280,7 @@ function _minMaxConstraints(Inputs,$0,$1,$2)
 }
 
 
-function _22(md){return(
+function _26(md){return(
 md`### Select with Dynamic Options`
 )}
 
@@ -268,7 +292,7 @@ juice(Inputs.select, {
 })
 )}
 
-function _24(Inputs,$0,Event){return(
+function _28(Inputs,$0,Event){return(
 Inputs.button("deal", {
   reduce: () => {
     const rndCard = () => {
@@ -298,32 +322,37 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["FileAttachment","md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer()).define(["md"], _3);
-  main.variable(observer()).define(["md"], _4);
-  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("profile")).define("profile", ["juice","html"], _profile);
+  main.variable(observer("viewof example")).define("viewof example", ["profile"], _example);
+  main.variable(observer("example")).define("example", ["Generators", "viewof example"], (G, _) => G.input(_));
+  main.variable(observer()).define(["Inputs","viewof example"], _5);
+  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof stateLostExample")).define("viewof stateLostExample", ["dynamicRange"], _stateLostExample);
   main.variable(observer("stateLostExample")).define("stateLostExample", ["Generators", "viewof stateLostExample"], (G, _) => G.input(_));
   main.variable(observer("stateLostExampleUpdater")).define("stateLostExampleUpdater", ["Promises","stateLostExample"], _stateLostExampleUpdater);
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer("juice")).define("juice", ["proxyVariable","variable","_","view"], _juice);
-  main.variable(observer()).define(["md"], _10);
-  main.variable(observer("proxyVariable")).define("proxyVariable", _proxyVariable);
   main.variable(observer()).define(["md"], _12);
+  main.variable(observer("juice")).define("juice", ["proxyVariable","variable","_","view"], _juice);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("proxyVariable")).define("proxyVariable", _proxyVariable);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer("dynamicRange")).define("dynamicRange", ["juice","Inputs"], _dynamicRange);
   main.variable(observer("viewof dynamicRangeExample")).define("viewof dynamicRangeExample", ["dynamicRange"], _dynamicRangeExample);
   main.variable(observer("dynamicRangeExample")).define("dynamicRangeExample", ["Generators", "viewof dynamicRangeExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeExample"], _15);
-  main.variable(observer()).define(["dynamicRangeExample"], _16);
+  main.variable(observer()).define(["dynamicRangeExample"], _19);
+  main.variable(observer()).define(["dynamicRangeExample"], _20);
   main.variable(observer("viewof dynamicRangeMin")).define("viewof dynamicRangeMin", ["dynamicRange"], _dynamicRangeMin);
   main.variable(observer("dynamicRangeMin")).define("dynamicRangeMin", ["Generators", "viewof dynamicRangeMin"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeMin"], _18);
+  main.variable(observer()).define(["dynamicRangeMin"], _22);
   main.variable(observer("viewof dynamicRangeMax")).define("viewof dynamicRangeMax", ["dynamicRange"], _dynamicRangeMax);
   main.variable(observer("dynamicRangeMax")).define("dynamicRangeMax", ["Generators", "viewof dynamicRangeMax"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeMax"], _20);
+  main.variable(observer()).define(["dynamicRangeMax"], _24);
   main.variable(observer("minMaxConstraints")).define("minMaxConstraints", ["Inputs","viewof dynamicRangeExample","viewof dynamicRangeMax","viewof dynamicRangeMin"], _minMaxConstraints);
-  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("dynamicSelect")).define("dynamicSelect", ["juice","Inputs"], _dynamicSelect);
-  main.variable(observer()).define(["Inputs","viewof exampleSelect","Event"], _24);
+  main.variable(observer()).define(["Inputs","viewof exampleSelect","Event"], _28);
   main.variable(observer("viewof exampleSelect")).define("viewof exampleSelect", ["dynamicSelect"], _exampleSelect);
   main.variable(observer("exampleSelect")).define("exampleSelect", ["Generators", "viewof exampleSelect"], (G, _) => G.input(_));
   const child1 = runtime.module(define1);

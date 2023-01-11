@@ -9,10 +9,10 @@ import define8 from "./0c800138c487d3e1@860.js";
 import define9 from "./698257e86fae4586@378.js";
 import define10 from "./f92778131fd76559@1174.js";
 import define11 from "./92ff66b718c1972f@141.js";
-import define12 from "./653c46ed55693b1f@646.js";
+import define12 from "./653c46ed55693b1f@669.js";
 import define13 from "./9bed702f80a3797e@402.js";
 import define14 from "./dff1e917c89f5e76@1964.js";
-import define15 from "./293899bef371e135@280.js";
+import define15 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`# Tarot Backend
