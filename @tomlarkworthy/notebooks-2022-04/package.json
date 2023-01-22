@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebooks-2022-04",
+  "main": "8ceea2cb7d7a8a20@542.js",
+  "version": "542.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebooks-2022-04",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
