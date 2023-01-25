@@ -1,16 +1,11 @@
-// https://observablehq.com/@endpointservices/sentry@243
-import define1 from "./fa1f6059e44da1d5@424.js";
-import define2 from "./58f3eb7334551ae6@210.js";
+// https://observablehq.com/@endpointservices/sentry@245
+import define1 from "./fa1f6059e44da1d5@425.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
-async function _1(FileAttachment,md){return(
+function _1(md){return(
 md`# [Observablehq.com](https://observablehq.com) Notebook Monitoring with [sentry.io](sentry.io)
 
 Sick of broken notebooks? Don't be that guy!
-
-<figure>
-<img src=${await FileAttachment("image@4.png").url()}></img>
-<figcaption>Have you tried refreshing the page?</figcaption>
-</figure>
 
 
 With some minor configuration you can have [sentry.io](sentry.io) monitor notebooks for unexpected errors, so you get informed fast when something breaks, and get to the bottom of those tricky to repro issues.
@@ -32,6 +27,7 @@ Usage
 
 function _2(md){return(
 md`### Change log
+- 2022-08-24 Remove preview image as it was 1.7MB of bloat!
 - 2022-03-31 Added *catchAll* to report runtime caught error (previously a blind spot)`
 )}
 
@@ -136,11 +132,10 @@ export default function define(runtime, observer) {
   const fileAttachments = new Map([
     ["image@1.png", {url: new URL("./files/c8ad4ae31da35d2adf2a7256ef6791d044f4d0c2982b9ea6597838d5f012063838e769af1750f2acd52b25ff7299c584cd58fd5adcc9d595eedc6a3cabd46cc3.png", import.meta.url), mimeType: "image/png", toString}],
     ["image@2.png", {url: new URL("./files/d514902a6a0977910569cbaead516077a7e2f21427c26cc4f15d73109a26771fcec180662b1724eb7a0038f555c0aadf7ddc3daf9b3a51b6722ec9064d8ad72d.png", import.meta.url), mimeType: "image/png", toString}],
-    ["image@3.png", {url: new URL("./files/6ff8fd10b917ca3215af6f21bc97a25ef7c20dc1921e40f9615c2929dd0c0e502a4049d9e8565efbff1b7258e5494d87490079ed0956dc25e364ff1f8a72f3f9.png", import.meta.url), mimeType: "image/png", toString}],
-    ["image@4.png", {url: new URL("./files/dcdaa39e4be97c69d27e82a6df66d263e0f4e32412268cbc40f2b1d08c1225b50a88a30416bda1e2a652d484d13b9cf7588625258dec0f4b1890fde5a38f2bf0.png", import.meta.url), mimeType: "image/png", toString}]
+    ["image@3.png", {url: new URL("./files/6ff8fd10b917ca3215af6f21bc97a25ef7c20dc1921e40f9615c2929dd0c0e502a4049d9e8565efbff1b7258e5494d87490079ed0956dc25e364ff1f8a72f3f9.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["FileAttachment","md"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["FileAttachment","md"], _3);
   main.variable(observer()).define(["FileAttachment","md"], _4);
