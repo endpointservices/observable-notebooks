@@ -1,4 +1,6 @@
 // https://observablehq.com/@endpointservices/onversion@263
+import define1 from "./58f3eb7334551ae6@215.js";
+
 function _1(onVersion,md){return(
 md`# On Version Notebook Hook 
 
@@ -106,7 +108,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["image@1.png", {url: new URL("./files/4729a9f274ae2604cf10e1384d5e582d108eb74e56765e26c57dd37a5ef88ddb7850c71291fe021eb33869eb10af413facd2d13d2c332bf325574c61213d5c64.png", import.meta.url), mimeType: "image/png", toString}]
@@ -122,7 +123,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _8);
   main.variable(observer("extractMetadata")).define("extractMetadata", _extractMetadata);
   main.variable(observer("onVersion")).define("onVersion", ["extractMetadata","html"], _onVersion);
-  main.define("footer", ["module 1", "@variable"], (_, v) => v.import("footer", _));
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _12);
   return main;
 }

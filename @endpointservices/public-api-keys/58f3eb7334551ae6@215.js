@@ -1,3 +1,6 @@
+import define1 from "./c2dae147641e012a@46.js";
+import define2 from "./a81f2a20664080d3@245.js";
+
 function _1(md){return(
 md`# Endpoint Services Footer
 
@@ -119,16 +122,16 @@ Sentry alerts me to errors in notebooks`
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./c2dae147641e012a@46.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./a81f2a20664080d3@245.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("graphic")).define("graphic", ["md"], _graphic);
   main.variable(observer("footer")).define("footer", ["plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["localStorage"], _5);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
-  main.define("localStorage", ["module 1", "@variable"], (_, v) => v.import("localStorage", _));
+  const child1 = runtime.module(define1);
+  main.import("localStorage", child1);
   main.variable(observer()).define(["md"], _8);
-  main.define("sentry", ["module 2", "@variable"], (_, v) => v.import("sentry", _));
+  const child2 = runtime.module(define2);
+  main.import("sentry", child2);
   return main;
 }

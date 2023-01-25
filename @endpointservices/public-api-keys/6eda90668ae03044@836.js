@@ -1,4 +1,8 @@
 // https://observablehq.com/@endpointservices/webcode@836
+import define1 from "./cbc2e7f6260d11b1@2790.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./58f3eb7334551ae6@215.js";
+
 function _1(html){return(
 html`<a href="https://webcode.run"><h1 style="font-family: Tahoma; font-size: 9vw;"><span style="color: #E78AAE">WEB</span><span style="color: #626262">code</span><span style="color: #9DE2BF">.</span><span style="color: #4A44C4">run</span></h1></a>
 
@@ -176,9 +180,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./cbc2e7f6260d11b1@2790.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./dff1e917c89f5e76@1964.js")).default));
-  main.define("module 3", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["html"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["width","html"], _3);
@@ -194,13 +195,16 @@ export default function define(runtime, observer) {
   main.variable(observer("endpoint")).define("endpoint", ["deploy"], _endpoint);
   main.variable(observer("deploy")).define("deploy", ["baseDeploy","serverlessCellUI","subdomain"], _deploy);
   main.variable(observer()).define(["md"], _15);
-  main.define("serverlessCellUI", ["module 1", "@variable"], (_, v) => v.import("serverlessCellUI", _));
-  main.define("colors", ["module 1", "@variable"], (_, v) => v.import("colors", _));
-  main.define("baseDeploy", ["module 2", "@variable"], (_, v) => v.import("deploy", "baseDeploy", _));
-  main.define("getContext", ["module 2", "@variable"], (_, v) => v.import("getContext", _));
-  main.define("subdomain", ["module 2", "@variable"], (_, v) => v.import("subdomain", _));
+  const child1 = runtime.module(define1);
+  main.import("serverlessCellUI", child1);
+  main.import("colors", child1);
+  const child2 = runtime.module(define2);
+  main.import("deploy", "baseDeploy", child2);
+  main.import("getContext", child2);
+  main.import("subdomain", child2);
   main.variable(observer()).define(["htl"], _18);
-  main.define("footer", ["module 3", "@variable"], (_, v) => v.import("footer", _));
+  const child3 = runtime.module(define3);
+  main.import("footer", child3);
   main.variable(observer()).define(["footer"], _20);
   return main;
 }
