@@ -1,3 +1,5 @@
+import define1 from "./58f3eb7334551ae6@215.js";
+
 function _1(md){return(
 md`# ⛔️ Get Notebook Comments ⚠️
 
@@ -154,7 +156,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("exampleWithCustomURL")).define("exampleWithCustomURL", ["getCommentsAndNamespace"], _exampleWithCustomURL);
   main.variable(observer("exampleById")).define("exampleById", ["getCommentsAndNamespace"], _exampleById);
@@ -170,7 +171,8 @@ export default function define(runtime, observer) {
   main.variable(observer("findComments")).define("findComments", _findComments);
   main.variable(observer("findNamespace")).define("findNamespace", _findNamespace);
   main.variable(observer("fetchp")).define("fetchp", _fetchp);
-  main.define("footer", ["module 1", "@variable"], (_, v) => v.import("footer", _));
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _16);
   return main;
 }

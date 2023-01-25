@@ -1,4 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/metaprogramming@588
+import define1 from "./c7a3b20cec5d4dd9@669.js";
+import define2 from "./3d9d1394d858ca97@553.js";
+
 function _1(md){return(
 md`# Metaprogramming with _Peek_ [Not recommended for production user]
 
@@ -282,8 +285,6 @@ require("@observablehq/runtime@4")
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./c7a3b20cec5d4dd9@669.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./3d9d1394d858ca97@553.js")).default));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["signature","peek"], _2);
   main.variable(observer("peek")).define("peek", ["Generators","Library","require","Runtime"], _peek);
@@ -315,9 +316,11 @@ export default function define(runtime, observer) {
   main.variable(observer("generator")).define("generator", _generator);
   main.variable(observer("dependentGenerator")).define("dependentGenerator", ["generator"], _dependentGenerator);
   main.variable(observer()).define(["md"], _33);
-  main.define("createSuite", ["module 1", "@variable"], (_, v) => v.import("createSuite", _));
-  main.define("expect", ["module 1", "@variable"], (_, v) => v.import("expect", _));
-  main.define("signature", ["module 2", "@variable"], (_, v) => v.import("signature", _));
+  const child1 = runtime.module(define1);
+  main.import("createSuite", child1);
+  main.import("expect", child1);
+  const child2 = runtime.module(define2);
+  main.import("signature", child2);
   main.variable(observer("observablehq")).define("observablehq", ["require"], _observablehq);
   return main;
 }

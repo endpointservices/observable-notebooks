@@ -1,4 +1,10 @@
 // https://observablehq.com/@tomlarkworthy/github-backups@631
+import define1 from "./8aac8b2cb06bf434@263.js";
+import define2 from "./b09f1f038b1040e3@76.js";
+import define3 from "./55bed46f68a80641@366.js";
+import define4 from "./e6f8b27a19576fcb@428.js";
+import define5 from "./58f3eb7334551ae6@215.js";
+
 function _1(md){return(
 md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
 
@@ -253,11 +259,6 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.define("module 1", async () => runtime.module((await import("./8aac8b2cb06bf434@263.js")).default));
-  main.define("module 2", async () => runtime.module((await import("./b09f1f038b1040e3@76.js")).default));
-  main.define("module 3", async () => runtime.module((await import("./55bed46f68a80641@366.js")).default));
-  main.define("module 4", async () => runtime.module((await import("./e6f8b27a19576fcb@428.js")).default));
-  main.define("module 5", async () => runtime.module((await import("./58f3eb7334551ae6@215.js")).default));
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["image@1.png", {url: new URL("./files/648780efd84242fcfc017133a5ce32ec072c82cd23bdf5f3fe9d79a7b9567068492b1c81915497d7210b185ec81f0217baa6bd00a4999d38a0d3c9dd7db6a2ee.png", import.meta.url), mimeType: "image/png", toString}]
@@ -278,13 +279,18 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["enableGithubBackups"], _13);
   main.variable(observer()).define(["backupNowButton"], _14);
   main.variable(observer()).define(["md"], _15);
-  main.define("onVersion", ["module 1", "@variable"], (_, v) => v.import("onVersion", _));
-  main.define("createDispatchProxy", ["module 2", "@variable"], (_, v) => v.import("createDispatchProxy", _));
-  main.define("dispatchProxyName", ["module 2", "@variable"], (_, v) => v.import("dispatchProxyName", _));
-  main.define("getMetadata", ["module 3", "@variable"], (_, v) => v.import("getMetadata", _));
-  main.define("getCurrentMetadata", ["module 3", "@variable"], (_, v) => v.import("getCurrentMetadata", _));
-  main.define("getMetadata2", ["module 4", "@variable"], (_, v) => v.import("metadata", "getMetadata2", _));
-  main.define("footer", ["module 5", "@variable"], (_, v) => v.import("footer", _));
+  const child1 = runtime.module(define1);
+  main.import("onVersion", child1);
+  const child2 = runtime.module(define2);
+  main.import("createDispatchProxy", child2);
+  main.import("dispatchProxyName", child2);
+  const child3 = runtime.module(define3);
+  main.import("getMetadata", child3);
+  main.import("getCurrentMetadata", child3);
+  const child4 = runtime.module(define4);
+  main.import("metadata", "getMetadata2", child4);
+  const child5 = runtime.module(define5);
+  main.import("footer", child5);
   main.variable(observer()).define(["footer"], _21);
   return main;
 }
