@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/fileinput@462
 import define1 from "./266e717755b1d175@112.js";
-import define2 from "./f92778131fd76559@1173.js";
+import define2 from "./f92778131fd76559@1174.js";
 
 function _1(md){return(
 md`# Draggable _LocalFile_ _fileInput_ 
