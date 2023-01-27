@@ -1,10 +1,10 @@
 import define1 from "./027541187c96745d@147.js";
-import define2 from "./dff1e917c89f5e76@1939.js";
-import define3 from "./f92778131fd76559@1173.js";
+import define2 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./f92778131fd76559@1174.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
 import define5 from "./9bed702f80a3797e@402.js";
-import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./58f3eb7334551ae6@209.js";
+import define6 from "./316f0885d15ab671@69.js";
+import define7 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# WEBcode UI
@@ -15,7 +15,11 @@ function _4(toc){return(
 toc()
 )}
 
-function _5(md){return(
+function _testUser(createLogin){return(
+createLogin()
+)}
+
+function _6(md){return(
 md`## Design`
 )}
 
@@ -39,11 +43,11 @@ function _colors(){return(
 }
 )}
 
-function _7(md){return(
+function _8(md){return(
 md`### Header`
 )}
 
-function _8(exampleHeader){return(
+function _9(exampleHeader){return(
 exampleHeader
 )}
 
@@ -207,7 +211,7 @@ headerLogin({
 })
 )}
 
-function _16(exampleHeaderLogin){return(
+function _17(exampleHeaderLogin){return(
 exampleHeaderLogin
 )}
 
@@ -282,11 +286,11 @@ html`<style>
 </style>`
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`### link`
 )}
 
-function _20(externalLinkSVG){return(
+function _21(externalLinkSVG){return(
 externalLinkSVG()
 )}
 
@@ -297,11 +301,11 @@ function _externalLinkSVG(svg,colors){return(
 `
 )}
 
-function _22(colors){return(
+function _23(colors){return(
 colors
 )}
 
-function _23(md){return(
+function _24(md){return(
 md`#### Title`
 )}
 
@@ -313,7 +317,7 @@ urlTitle({
 })
 )}
 
-function _25(exampleTitle){return(
+function _26(exampleTitle){return(
 exampleTitle
 )}
 
@@ -363,7 +367,7 @@ html`<style>
 </style>`
 )}
 
-function _29(md){return(
+function _30(md){return(
 md`### Tabs`
 )}
 
@@ -374,7 +378,7 @@ tabs({
 })
 )}
 
-function _31(tabsExample){return(
+function _32(tabsExample){return(
 tabsExample
 )}
 
@@ -436,7 +440,7 @@ html`<style>
 </style>`
 )}
 
-function _34(md){return(
+function _35(md){return(
 md`### Tabbed pane`
 )}
 
@@ -447,7 +451,7 @@ tabbedPane({
 })
 )}
 
-function _36(tabbedPaneExample){return(
+function _37(tabbedPaneExample){return(
 tabbedPaneExample
 )}
 
@@ -472,11 +476,11 @@ options => {
 }
 )}
 
-function _38(md){return(
+function _39(md){return(
 md`#### Tab Pane`
 )}
 
-function _39(tabPane,html){return(
+function _40(tabPane,html){return(
 tabPane({
   content: html`<ul><li>one</li></ul>`
 })
@@ -511,11 +515,11 @@ html`<style>
 `
 )}
 
-function _42(md){return(
+function _43(md){return(
 md`#### Column Pane`
 )}
 
-function _43(columnPane,htl){return(
+function _44(columnPane,htl){return(
 columnPane({
   content: htl.html`<span class="e-col-title">Title</span><ul><li>one</li><li>two`
 })
@@ -556,7 +560,7 @@ htl.html`<style>
 </style>`
 )}
 
-function _46(md){return(
+function _47(md){return(
 md`### button`
 )}
 
@@ -573,20 +577,20 @@ function _button(html,Event){return(
 }
 )}
 
-function _48(button){return(
+function _49(button){return(
 button({
   label: 'cool'
 })
 )}
 
-function _49(button){return(
+function _50(button){return(
 button({
   label: 'cool',
   cssClass: 'e-btn2'
 })
 )}
 
-function _50(button){return(
+function _51(button){return(
 button({
   label: 'cool',
   cssClass: 'e-btn3'
@@ -657,7 +661,7 @@ htl.html`<style>
 </style>`
 )}
 
-function _52(md){return(
+function _53(md){return(
 md`### Text input`
 )}
 
@@ -671,11 +675,11 @@ textarea({
 })
 )}
 
-function _55(exampleTextArea){return(
+function _56(exampleTextArea){return(
 exampleTextArea
 )}
 
-function _56(exampleTextAreaReadonly){return(
+function _57(exampleTextAreaReadonly){return(
 exampleTextAreaReadonly.text = "cool beans"
 )}
 
@@ -730,7 +734,7 @@ html`<style>
 </style>`
 )}
 
-function _59(md){return(
+function _60(md){return(
 md`### Backwritable listSelector`
 )}
 
@@ -759,11 +763,11 @@ listRow("testGroup")({
 })
 )}
 
-function _62(exampleListRow){return(
+function _63(exampleListRow){return(
 exampleListRow
 )}
 
-function _63($0,Event)
+function _64($0,Event)
 {
   $0.value.code = 'fum';
   $0.value.content = 'foo';
@@ -827,11 +831,11 @@ function _setExampleItems($0,Event)
 }
 
 
-function _66(exampleListSelector){return(
+function _67(exampleListSelector){return(
 exampleListSelector
 )}
 
-function _67($0){return(
+function _68($0){return(
 $0
 )}
 
@@ -926,31 +930,32 @@ htl.html`<style>
 </style>`
 )}
 
-function _70(md){return(
+function _71(md){return(
 md`### Secrets Pane
 
 Also contains the logic
 `
 )}
 
-function _exampleSecretsPane(secretsPane,user,invalidation){return(
+function _exampleSecretsPane(secretsPane,$0,invalidation){return(
 secretsPane(
   {
     namespace: "endpointservices",
     endpoint:
       "https://webcode.run/observablehq.com/@endpointservices/auth;authorization_endpoint",
-    user: user
+    userView: $0
   },
   invalidation
 )
 )}
 
-function _72(exampleSecretsPane){return(
+function _73(exampleSecretsPane){return(
 exampleSecretsPane
 )}
 
 function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,normalizeEndpoint,firebase,setSecret,deleteSecret,getStoredSecrets){return(
-({ namespace, endpoint, user } = {}, invalidation) => {
+({ namespace, endpoint, userView } = {}, invalidation) => {
+  const user = userView.value;
   const ui = view`<div class='e-main-box'>
       ${["bindings", boundSecrets({ namespace, endpoint })]}
       ${["stored", storedSecrets({ namespace, endpoint })]}
@@ -1043,8 +1048,8 @@ function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,norma
     ui.value.edit.disabled = true; // close
     ui.value.stored.secrets.items = [];
 
-    if (ui.value.edit.action === CREATE) {
-      console.log("Creating new secret");
+    if (ui.value.edit.action === CREATE || ui.value.edit.action === UPDATE) {
+      console.log("Creating/updating new secret");
       await setSecret({
         namespace,
         name: namespace + "_" + ui.value.edit.name.text,
@@ -1060,7 +1065,7 @@ function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,norma
     ui.value.edit.disabled = true; // close
     ui.value.stored.secrets.items = [];
     if (ui.value.edit.action === UPDATE) {
-      console.log("Delele secret");
+      console.log("Delete secret");
       await deleteSecret({
         namespace,
         name: namespace + "_" + ui.value.edit.name.text,
@@ -1089,13 +1094,13 @@ function _secretsPane(view,boundSecrets,storedSecrets,editSecret,firestore,norma
 }
 )}
 
-function _74(firestore){return(
+function _75(firestore){return(
 firestore.doc(`/services/http/endpoints/foo`).set({
   namespace: 'tomlarkworthy'
 })
 )}
 
-function _75(md){return(
+function _76(md){return(
 md`#### Bound Secrets`
 )}
 
@@ -1107,7 +1112,7 @@ boundSecrets({
 })
 )}
 
-function _77(exampleBoundSecrets){return(
+function _78(exampleBoundSecrets){return(
 exampleBoundSecrets
 )}
 
@@ -1153,11 +1158,11 @@ function _boundSecrets(columnPane,view,normalizeEndpoint,listSelector,button){re
 }
 )}
 
-function _79(firestore){return(
+function _80(firestore){return(
 firestore.doc(`/services/http/endpoints/foo`).get()
 )}
 
-function _80(md){return(
+function _81(md){return(
 md`#### Stored Secrets`
 )}
 
@@ -1167,7 +1172,7 @@ storedSecrets({
 })
 )}
 
-function _82(exampleStoredSecrets){return(
+function _83(exampleStoredSecrets){return(
 exampleStoredSecrets
 )}
 
@@ -1204,7 +1209,7 @@ function _storedSecrets(columnPane,view,textNodeView,listSelector,button){return
   })
 )}
 
-function _84(md){return(
+function _85(md){return(
 md`#### Create/edit Secret`
 )}
 
@@ -1215,7 +1220,7 @@ editSecret({
 })
 )}
 
-function _86(exampleEditSecret){return(
+function _87(exampleEditSecret){return(
 exampleEditSecret
 )}
 
@@ -1224,27 +1229,33 @@ function _editSecret(variable,columnPane,view,textNodeView,textarea,button){retu
   const disabledVar = variable(disabled);
 
   const ui = columnPane({
-    content: view`<div class="e-col-title">${['disabled', disabledVar]}${[
-      'action',
+    content: view`<div class="e-col-title">${["disabled", disabledVar]}${[
+      "action",
       textNodeView(action)
     ]} Secret</div><br>
-      ${['name', textarea({ rows: 1, placeholder: "enter name" })]}
-      ${['secret', textarea({ rows: 8, placeholder: "enter value" })]}
+      ${["name", textarea({ rows: 1, placeholder: "enter name" })]}
+      ${[
+        "secret",
+        textarea({
+          rows: 8,
+          placeholder: "enter value"
+        })
+      ]}
       <div>
         <span>${[
-          'delete',
+          "delete",
           button({
             action: "delete",
             label: "delete",
-            cssClass: 'e-btn3'
+            cssClass: "e-btn3"
           })
         ]}</span>
         <span style="float: right;">${[
-          'save',
+          "save",
           button({
             action: "save",
             label: "save",
-            cssClass: 'e-btn3'
+            cssClass: "e-btn3"
           })
         ]}</span>
       </div>
@@ -1252,18 +1263,18 @@ function _editSecret(variable,columnPane,view,textNodeView,textarea,button){retu
   });
 
   function updateVisibility() {
-    if (disabledVar.value) ui.classList.add('hide');
-    else ui.classList.remove('hide');
+    if (disabledVar.value) ui.classList.add("hide");
+    else ui.classList.remove("hide");
   }
   updateVisibility();
 
-  disabledVar.addEventListener('assign', updateVisibility);
+  disabledVar.addEventListener("assign", updateVisibility);
 
   return ui;
 }
 )}
 
-function _88(md){return(
+function _89(md){return(
 md`### Status Pane`
 )}
 
@@ -1282,7 +1293,7 @@ statusPane(
 )
 )}
 
-function _90(exampleStatusPane){return(
+function _91(exampleStatusPane){return(
 exampleStatusPane
 )}
 
@@ -1395,11 +1406,11 @@ function _statusPane(view,liveCoding,apiKey,firestore,normalizeEndpoint,createCh
 }
 )}
 
-function _92(md){return(
+function _93(md){return(
 md`### Public Status Page`
 )}
 
-function _93(publicStatusPane,invalidation){return(
+function _94(publicStatusPane,invalidation){return(
 publicStatusPane(
   {
     namespace: "tomlarkworthy",
@@ -1425,7 +1436,7 @@ function _publicStatusPane(view,liveCoding,md,createChannel,getCorrelation){retu
         liveCoding({
           namespace,
           endpoint,
-          livecode: options.livecode,
+          livecode: options.livecode || options.livecode === "PUBLIC",
           livecodepublic: options.livecode === "PUBLIC"
         })
       ]}
@@ -1474,7 +1485,7 @@ function _publicStatusPane(view,liveCoding,md,createChannel,getCorrelation){retu
 }
 )}
 
-function _95(md){return(
+function _96(md){return(
 md`#### Live Coding`
 )}
 
@@ -1486,7 +1497,7 @@ liveCoding({
 })
 )}
 
-function _97(exampleLiveCoding){return(
+function _98(exampleLiveCoding){return(
 exampleLiveCoding
 )}
 
@@ -1495,6 +1506,7 @@ function _liveCoding(columnPane,view,textNodeView,Inputs){return(
   const ui = columnPane({
     content: view`<div class="e-col-title">Livecoding</div>
       <p class="e-explain"><i><a target="_blank" href="https://observablehq.com/@endpointservices/livecode">Livecoding</a> tunnels production traffic to <b>your</b> browser so you can run and debug the latest serverside code reactively.</i></p>
+      <p class="e-explain">⚠️ tab must be in <a target="_blank" href="https://github.com/observablehq/feedback/issues/458">foreground</a> to livecode</p>
       <p class="e-explain"><b>tunnelled: ${[
         "tunnelled",
         textNodeView(0)
@@ -1523,7 +1535,7 @@ function _liveCoding(columnPane,view,textNodeView,Inputs){return(
 }
 )}
 
-function _99(md){return(
+function _100(md){return(
 md`#### API key`
 )}
 
@@ -1531,7 +1543,7 @@ function _apiKeyExample(apiKey){return(
 apiKey()
 )}
 
-function _101(apiKeyExample){return(
+function _102(apiKeyExample){return(
 apiKeyExample
 )}
 
@@ -1566,7 +1578,7 @@ function _textNodeView(){return(
 }
 )}
 
-function _104(md){return(
+function _105(md){return(
 md`### Generic Styles
 
 has to be last so modifiers are applied last
@@ -1606,17 +1618,17 @@ function _style(html,titleCSS,buttonCSS,textAreaCSS,listSelectorCSS,tabPaneCSS,c
 </style>`
 )}
 
-function _107(md){return(
+function _108(md){return(
 md`## Implementation`
 )}
 
-function _108(normalizeEndpoint){return(
+function _109(normalizeEndpoint){return(
 normalizeEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo;fxd"
 )
 )}
 
-function _109(getCorrelation){return(
+function _110(getCorrelation){return(
 getCorrelation(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;default"
 )
@@ -1650,13 +1662,13 @@ endpoint =>
   )
 )}
 
-function _113(normalizeObservablehqEndpoint){return(
+function _114(normalizeObservablehqEndpoint){return(
 normalizeObservablehqEndpoint(
   "https://webcode.run/regions/foo/observablehq.com/@endpointservices/secrets;foo"
 )
 )}
 
-function _114(md){return(
+function _115(md){return(
 md`### Secrets`
 )}
 
@@ -1701,7 +1713,7 @@ async ({ user, namespace, name }) =>
   secretClient(user, `/subdomains/${namespace}/secrets/${name}`, "DELETE")
 )}
 
-function _120(md){return(
+function _121(md){return(
 md`### Live code`
 )}
 
@@ -1816,7 +1828,7 @@ function _database(firebase)
 }
 
 
-function _129(footer){return(
+function _130(footer){return(
 footer
 )}
 
@@ -1831,10 +1843,12 @@ export default function define(runtime, observer) {
   main.import("Response", child2);
   main.import("getContext", child2);
   main.variable(observer()).define(["toc"], _4);
-  main.variable(observer()).define(["md"], _5);
+  main.variable(observer("viewof testUser")).define("viewof testUser", ["createLogin"], _testUser);
+  main.variable(observer("testUser")).define("testUser", ["Generators", "viewof testUser"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _6);
   main.variable(observer("colors")).define("colors", _colors);
-  main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["exampleHeader"], _8);
+  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["exampleHeader"], _9);
   main.variable(observer("viewof exampleHeader")).define("viewof exampleHeader", ["serverlessCellUI","invalidation"], _exampleHeader);
   main.variable(observer("exampleHeader")).define("exampleHeader", ["Generators", "viewof exampleHeader"], (G, _) => G.input(_));
   main.variable(observer("serverlessCellUI")).define("serverlessCellUI", ["createLogin","viewroutine","ask","headerLogin","headerCreator","headerNotCreator"], _serverlessCellUI);
@@ -1846,125 +1860,125 @@ export default function define(runtime, observer) {
   main.variable(observer("headerNotCreator")).define("headerNotCreator", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","tabbedPane","publicStatusPane","md"], _headerNotCreator);
   main.variable(observer("viewof exampleHeaderLogin")).define("viewof exampleHeaderLogin", ["headerLogin","invalidation"], _exampleHeaderLogin);
   main.variable(observer("exampleHeaderLogin")).define("exampleHeaderLogin", ["Generators", "viewof exampleHeaderLogin"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleHeaderLogin"], _16);
+  main.variable(observer()).define(["exampleHeaderLogin"], _17);
   main.variable(observer("headerLogin")).define("headerLogin", ["supress","view","style","variable","urlTitle","normalizeObservablehqEndpoint","html"], _headerLogin);
   main.variable(observer("headerCSS")).define("headerCSS", ["html","colors"], _headerCSS);
-  main.variable(observer()).define(["md"], _19);
-  main.variable(observer()).define(["externalLinkSVG"], _20);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["externalLinkSVG"], _21);
   main.variable(observer("externalLinkSVG")).define("externalLinkSVG", ["svg","colors"], _externalLinkSVG);
-  main.variable(observer()).define(["colors"], _22);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["colors"], _23);
+  main.variable(observer()).define(["md"], _24);
   main.variable(observer("viewof exampleTitle")).define("viewof exampleTitle", ["urlTitle"], _exampleTitle);
   main.variable(observer("exampleTitle")).define("exampleTitle", ["Generators", "viewof exampleTitle"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleTitle"], _25);
+  main.variable(observer()).define(["exampleTitle"], _26);
   main.variable(observer("urlTitle")).define("urlTitle", ["view","variable","externalLinkSVG","textNodeView"], _urlTitle);
   main.variable(observer("supress")).define("supress", ["view"], _supress);
   main.variable(observer("titleCSS")).define("titleCSS", ["html","colors"], _titleCSS);
-  main.variable(observer()).define(["md"], _29);
+  main.variable(observer()).define(["md"], _30);
   main.variable(observer("viewof tabsExample")).define("viewof tabsExample", ["tabs"], _tabsExample);
   main.variable(observer("tabsExample")).define("tabsExample", ["Generators", "viewof tabsExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["tabsExample"], _31);
+  main.variable(observer()).define(["tabsExample"], _32);
   main.variable(observer("tabs")).define("tabs", ["Event","htl"], _tabs);
   main.variable(observer("tabsCSS")).define("tabsCSS", ["html","colors"], _tabsCSS);
-  main.variable(observer()).define(["md"], _34);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("viewof tabbedPaneExample")).define("viewof tabbedPaneExample", ["tabbedPane","md"], _tabbedPaneExample);
   main.variable(observer("tabbedPaneExample")).define("tabbedPaneExample", ["Generators", "viewof tabbedPaneExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["tabbedPaneExample"], _36);
+  main.variable(observer()).define(["tabbedPaneExample"], _37);
   main.variable(observer("tabbedPane")).define("tabbedPane", ["tabs","view","viewroutine"], _tabbedPane);
-  main.variable(observer()).define(["md"], _38);
-  main.variable(observer()).define(["tabPane","html"], _39);
+  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["tabPane","html"], _40);
   main.variable(observer("tabPane")).define("tabPane", ["view"], _tabPane);
   main.variable(observer("tabPaneCSS")).define("tabPaneCSS", ["html","colors","mobile"], _tabPaneCSS);
-  main.variable(observer()).define(["md"], _42);
-  main.variable(observer()).define(["columnPane","htl"], _43);
+  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["columnPane","htl"], _44);
   main.variable(observer("columnPane")).define("columnPane", ["view"], _columnPane);
   main.variable(observer("colPaneCSS")).define("colPaneCSS", ["htl","colors","mobile"], _colPaneCSS);
-  main.variable(observer()).define(["md"], _46);
+  main.variable(observer()).define(["md"], _47);
   main.variable(observer("button")).define("button", ["html","Event"], _button);
-  main.variable(observer()).define(["button"], _48);
   main.variable(observer()).define(["button"], _49);
   main.variable(observer()).define(["button"], _50);
+  main.variable(observer()).define(["button"], _51);
   main.variable(observer("buttonCSS")).define("buttonCSS", ["htl","colors"], _buttonCSS);
-  main.variable(observer()).define(["md"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("viewof exampleTextArea")).define("viewof exampleTextArea", ["textarea"], _exampleTextArea);
   main.variable(observer("exampleTextArea")).define("exampleTextArea", ["Generators", "viewof exampleTextArea"], (G, _) => G.input(_));
   main.variable(observer("viewof exampleTextAreaReadonly")).define("viewof exampleTextAreaReadonly", ["textarea"], _exampleTextAreaReadonly);
   main.variable(observer("exampleTextAreaReadonly")).define("exampleTextAreaReadonly", ["Generators", "viewof exampleTextAreaReadonly"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleTextArea"], _55);
-  main.variable(observer()).define(["exampleTextAreaReadonly"], _56);
+  main.variable(observer()).define(["exampleTextArea"], _56);
+  main.variable(observer()).define(["exampleTextAreaReadonly"], _57);
   main.variable(observer("textarea")).define("textarea", ["variable","view","html"], _textarea);
   main.variable(observer("textAreaCSS")).define("textAreaCSS", ["html","colors"], _textAreaCSS);
-  main.variable(observer()).define(["md"], _59);
+  main.variable(observer()).define(["md"], _60);
   main.variable(observer("listRow")).define("listRow", ["variable","view","textNodeView"], _listRow);
   main.variable(observer("viewof exampleListRow")).define("viewof exampleListRow", ["listRow"], _exampleListRow);
   main.variable(observer("exampleListRow")).define("exampleListRow", ["Generators", "viewof exampleListRow"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleListRow"], _62);
-  main.variable(observer()).define(["viewof exampleListRow","Event"], _63);
+  main.variable(observer()).define(["exampleListRow"], _63);
+  main.variable(observer()).define(["viewof exampleListRow","Event"], _64);
   main.variable(observer("listSelector")).define("listSelector", ["variable","view","listRow"], _listSelector);
   main.variable(observer("setExampleItems")).define("setExampleItems", ["viewof exampleListSelector","Event"], _setExampleItems);
-  main.variable(observer()).define(["exampleListSelector"], _66);
-  main.variable(observer()).define(["viewof exampleListSelector"], _67);
+  main.variable(observer()).define(["exampleListSelector"], _67);
+  main.variable(observer()).define(["viewof exampleListSelector"], _68);
   main.variable(observer("viewof exampleListSelector")).define("viewof exampleListSelector", ["listSelector"], _exampleListSelector);
   main.variable(observer("exampleListSelector")).define("exampleListSelector", ["Generators", "viewof exampleListSelector"], (G, _) => G.input(_));
   main.variable(observer("listSelectorCSS")).define("listSelectorCSS", ["htl","colors"], _listSelectorCSS);
-  main.variable(observer()).define(["md"], _70);
-  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","user","invalidation"], _exampleSecretsPane);
+  main.variable(observer()).define(["md"], _71);
+  main.variable(observer("viewof exampleSecretsPane")).define("viewof exampleSecretsPane", ["secretsPane","viewof testUser","invalidation"], _exampleSecretsPane);
   main.variable(observer("exampleSecretsPane")).define("exampleSecretsPane", ["Generators", "viewof exampleSecretsPane"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleSecretsPane"], _72);
+  main.variable(observer()).define(["exampleSecretsPane"], _73);
   main.variable(observer("secretsPane")).define("secretsPane", ["view","boundSecrets","storedSecrets","editSecret","firestore","normalizeEndpoint","firebase","setSecret","deleteSecret","getStoredSecrets"], _secretsPane);
-  main.variable(observer()).define(["firestore"], _74);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["firestore"], _75);
+  main.variable(observer()).define(["md"], _76);
   main.variable(observer("viewof exampleBoundSecrets")).define("viewof exampleBoundSecrets", ["boundSecrets"], _exampleBoundSecrets);
   main.variable(observer("exampleBoundSecrets")).define("exampleBoundSecrets", ["Generators", "viewof exampleBoundSecrets"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleBoundSecrets"], _77);
+  main.variable(observer()).define(["exampleBoundSecrets"], _78);
   main.variable(observer("boundSecrets")).define("boundSecrets", ["columnPane","view","normalizeEndpoint","listSelector","button"], _boundSecrets);
-  main.variable(observer()).define(["firestore"], _79);
-  main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["firestore"], _80);
+  main.variable(observer()).define(["md"], _81);
   main.variable(observer("viewof exampleStoredSecrets")).define("viewof exampleStoredSecrets", ["storedSecrets"], _exampleStoredSecrets);
   main.variable(observer("exampleStoredSecrets")).define("exampleStoredSecrets", ["Generators", "viewof exampleStoredSecrets"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleStoredSecrets"], _82);
+  main.variable(observer()).define(["exampleStoredSecrets"], _83);
   main.variable(observer("storedSecrets")).define("storedSecrets", ["columnPane","view","textNodeView","listSelector","button"], _storedSecrets);
-  main.variable(observer()).define(["md"], _84);
+  main.variable(observer()).define(["md"], _85);
   main.variable(observer("viewof exampleEditSecret")).define("viewof exampleEditSecret", ["editSecret"], _exampleEditSecret);
   main.variable(observer("exampleEditSecret")).define("exampleEditSecret", ["Generators", "viewof exampleEditSecret"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleEditSecret"], _86);
+  main.variable(observer()).define(["exampleEditSecret"], _87);
   main.variable(observer("editSecret")).define("editSecret", ["variable","columnPane","view","textNodeView","textarea","button"], _editSecret);
-  main.variable(observer()).define(["md"], _88);
+  main.variable(observer()).define(["md"], _89);
   main.variable(observer("viewof exampleStatusPane")).define("viewof exampleStatusPane", ["statusPane","invalidation"], _exampleStatusPane);
   main.variable(observer("exampleStatusPane")).define("exampleStatusPane", ["Generators", "viewof exampleStatusPane"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleStatusPane"], _90);
+  main.variable(observer()).define(["exampleStatusPane"], _91);
   main.variable(observer("statusPane")).define("statusPane", ["view","liveCoding","apiKey","firestore","normalizeEndpoint","createChannel","getCorrelation"], _statusPane);
-  main.variable(observer()).define(["md"], _92);
-  main.variable(observer()).define(["publicStatusPane","invalidation"], _93);
+  main.variable(observer()).define(["md"], _93);
+  main.variable(observer()).define(["publicStatusPane","invalidation"], _94);
   main.variable(observer("publicStatusPane")).define("publicStatusPane", ["view","liveCoding","md","createChannel","getCorrelation"], _publicStatusPane);
-  main.variable(observer()).define(["md"], _95);
+  main.variable(observer()).define(["md"], _96);
   main.variable(observer("viewof exampleLiveCoding")).define("viewof exampleLiveCoding", ["liveCoding"], _exampleLiveCoding);
   main.variable(observer("exampleLiveCoding")).define("exampleLiveCoding", ["Generators", "viewof exampleLiveCoding"], (G, _) => G.input(_));
-  main.variable(observer()).define(["exampleLiveCoding"], _97);
+  main.variable(observer()).define(["exampleLiveCoding"], _98);
   main.variable(observer("liveCoding")).define("liveCoding", ["columnPane","view","textNodeView","Inputs"], _liveCoding);
-  main.variable(observer()).define(["md"], _99);
+  main.variable(observer()).define(["md"], _100);
   main.variable(observer("viewof apiKeyExample")).define("viewof apiKeyExample", ["apiKey"], _apiKeyExample);
   main.variable(observer("apiKeyExample")).define("apiKeyExample", ["Generators", "viewof apiKeyExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["apiKeyExample"], _101);
+  main.variable(observer()).define(["apiKeyExample"], _102);
   main.variable(observer("apiKey")).define("apiKey", ["columnPane","view","Inputs"], _apiKey);
   main.variable(observer("textNodeView")).define("textNodeView", _textNodeView);
-  main.variable(observer()).define(["md"], _104);
+  main.variable(observer()).define(["md"], _105);
   main.variable(observer("mobile")).define("mobile", _mobile);
   main.variable(observer("style")).define("style", ["html","titleCSS","buttonCSS","textAreaCSS","listSelectorCSS","tabPaneCSS","colPaneCSS","tabsCSS","headerCSS","colors"], _style);
-  main.variable(observer()).define(["md"], _107);
-  main.variable(observer()).define(["normalizeEndpoint"], _108);
-  main.variable(observer()).define(["getCorrelation"], _109);
+  main.variable(observer()).define(["md"], _108);
+  main.variable(observer()).define(["normalizeEndpoint"], _109);
+  main.variable(observer()).define(["getCorrelation"], _110);
   main.variable(observer("normalizeEndpoint")).define("normalizeEndpoint", _normalizeEndpoint);
   main.variable(observer("getCorrelation")).define("getCorrelation", _getCorrelation);
   main.variable(observer("normalizeObservablehqEndpoint")).define("normalizeObservablehqEndpoint", _normalizeObservablehqEndpoint);
-  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _113);
-  main.variable(observer()).define(["md"], _114);
+  main.variable(observer()).define(["normalizeObservablehqEndpoint"], _114);
+  main.variable(observer()).define(["md"], _115);
   main.variable(observer("SECRET_API")).define("SECRET_API", _SECRET_API);
   main.variable(observer("secretClient")).define("secretClient", ["SECRET_API"], _secretClient);
   main.variable(observer("getStoredSecrets")).define("getStoredSecrets", ["secretClient"], _getStoredSecrets);
   main.variable(observer("setSecret")).define("setSecret", ["secretClient"], _setSecret);
   main.variable(observer("deleteSecret")).define("deleteSecret", ["secretClient"], _deleteSecret);
-  main.variable(observer()).define(["md"], _120);
+  main.variable(observer()).define(["md"], _121);
   main.variable(observer("createChannel")).define("createChannel", ["database","randomId","firestore","normalizeEndpoint","html","getContext","Response"], _createChannel);
   main.variable(observer("firestore")).define("firestore", ["firebase"], _firestore);
   main.variable(observer("database")).define("database", ["firebase"], _database);
@@ -1981,6 +1995,6 @@ export default function define(runtime, observer) {
   main.import("randomId", child6);
   const child7 = runtime.module(define7);
   main.import("footer", child7);
-  main.variable(observer()).define(["footer"], _129);
+  main.variable(observer()).define(["footer"], _130);
   return main;
 }

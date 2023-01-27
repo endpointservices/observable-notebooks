@@ -1,17 +1,17 @@
-// https://observablehq.com/@endpointservices/login-with-comment@1436
-import define1 from "./993a0c51ef1175ea@1362.js";
-import define2 from "./d84ccee0a2202d45@337.js";
-import define3 from "./f92778131fd76559@1173.js";
+// https://observablehq.com/@endpointservices/login-with-comment@1444
+import define1 from "./993a0c51ef1175ea@1396.js";
+import define2 from "./d84ccee0a2202d45@356.js";
+import define3 from "./f92778131fd76559@1174.js";
 import define4 from "./4a1fa3c167b752e5@304.js";
-import define5 from "./dff1e917c89f5e76@1939.js";
+import define5 from "./dff1e917c89f5e76@1964.js";
 import define6 from "./316f0885d15ab671@65.js";
-import define7 from "./698257e86fae4586@374.js";
-import define8 from "./ab3e70b29c480e6d@83.js";
-import define9 from "./b8a500058f806a6b@11.js";
-import define10 from "./58f3eb7334551ae6@209.js";
+import define7 from "./698257e86fae4586@378.js";
+import define8 from "./b8a500058f806a6b@11.js";
+import define9 from "./58f3eb7334551ae6@215.js";
 
 async function _1(md,FileAttachment){return(
 md`# Login with comment
+<h2>⚠️ the V2 is <a href="https://observablehq.com/@endpointservices/login-with-comment-v2">here</a></h2>
 
 The simplest way to securely discover the currently logged in user. Furthermore, the result generates a token you can externally verify for use in backend services.
 
@@ -46,6 +46,7 @@ a minimal working example in a 3rd party notebook is [here](https://observablehq
 function _2(md){return(
 md`### Change Log
 
+- 2022-07-24: Syncronize independant login states using authStateListener, so logout on one buttons propogates to all log-with-comments
 - 2021-08-29: Scan for team mebership feature. Looks at profile URLs and adds to JWT's additionalClaims`
 )}
 
@@ -53,7 +54,7 @@ function _3(md){return(
 md`## <span style="font: var(--mono_fonts); font-size: 30px;"><span style="color: var(--syntax_keyword)">viewof</span> user</span>`
 )}
 
-function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,hash,prepare,FileAttachment,pbcopy,verify){return(
+function _createLogin(userFirebase,html,viewroutine,$0,screen,Event,ask,md,randomId,hash,prepare,FileAttachment,verify){return(
 () => {
   // When no-one is logged in we want don't want the cell to resolve, so we return a promise
   // We want that promise to be resolved next time we get a value
@@ -103,17 +104,28 @@ function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,ha
         updateResult();
 
         if (!userFirebase.auth().currentUser) {
-          response = yield* ask(
-            screen({
-              actions: ["login"]
-            })
-          );
+          const loginUi = screen({
+            actions: ["login"]
+          });
+
+          // We need to see if someone logs in via a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (user)
+              loginUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(loginUi);
+          unsubscribe();
         } else {
-          response = yield* ask(
-            screen({
-              actions: ["logout"]
-            })
-          );
+          const logoutUi = screen({
+            actions: ["logout"]
+          });
+          // We need to see if someone logout ivia a side channel
+          const unsubscribe = userFirebase.auth().onAuthStateChanged((user) => {
+            if (!user)
+              logoutUi.dispatchEvent(new Event("input", { bubbles: true }));
+          });
+          response = yield* ask(logoutUi);
+          unsubscribe();
         }
 
         if (actionWas("logout")) {
@@ -165,7 +177,9 @@ function _createLogin(userFirebase,html,viewroutine,$0,ask,screen,md,randomId,ha
               );
 
               if (actionWas("copy")) {
-                pbcopy("public auth code: " + publicCode);
+                navigator.clipboard.writeText(
+                  "public auth code: " + publicCode
+                );
               }
 
               relmeauth = response.profile_relmeauth === true;
@@ -825,11 +839,6 @@ deploy(
 
       // Code must be exchanged within time window.
       if (
-        privateCode ===
-        "v58yd9ljbj4kDmENMcKwx3cYa3vYuXvVyQEo45IYFrMuZ90F8TH3nTgHdv6pRvWN"
-      ) {
-        // Debugging a problematic code
-      } else if (
         new Date() - new Date(t) > 10 * 60 * 1000 ||
         new Date() - new Date(t) < 0
       ) {
@@ -875,6 +884,7 @@ deploy(
         };
         additionalClaims["observablehq_com"] = "|" + login + "|";
       }
+      additionalClaims["realm"] = namespace;
 
       const token = await createCustomToken(
         JSON.parse(ctx.secrets[TOKEN_SIGNER_SERVICE_ACCOUNT_SECRET]),
@@ -1036,7 +1046,7 @@ function checkIsURL(arg, name) {
 }
 )}
 
-function _77(footer){return(
+function _76(footer){return(
 footer
 )}
 
@@ -1050,7 +1060,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","ask","screen","md","randomId","hash","prepare","FileAttachment","pbcopy","verify"], _createLogin);
+  main.variable(observer("createLogin")).define("createLogin", ["userFirebase","html","viewroutine","mutable authStateKnown","screen","Event","ask","md","randomId","hash","prepare","FileAttachment","verify"], _createLogin);
   main.variable(observer("viewof user")).define("viewof user", ["createLogin"], _user);
   main.variable(observer("user")).define("user", ["Generators", "viewof user"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _6);
@@ -1144,11 +1154,9 @@ export default function define(runtime, observer) {
   main.import("signinWithAccessToken", child8);
   main.import("getAccessTokenFromServiceAccount", child8);
   const child9 = runtime.module(define8);
-  main.import("pbcopy", child9);
+  main.import("promiseRecursive", child9);
   const child10 = runtime.module(define9);
-  main.import("promiseRecursive", child10);
-  const child11 = runtime.module(define10);
-  main.import("footer", child11);
-  main.variable(observer()).define(["footer"], _77);
+  main.import("footer", child10);
+  main.variable(observer()).define(["footer"], _76);
   return main;
 }

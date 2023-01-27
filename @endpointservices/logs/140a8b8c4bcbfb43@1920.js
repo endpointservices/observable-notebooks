@@ -1,12 +1,12 @@
 // https://observablehq.com/@endpointservices/logs@1920
-import define1 from "./165e9411d1af7e86@1398.js";
-import define2 from "./698257e86fae4586@374.js";
-import define3 from "./993a0c51ef1175ea@1362.js";
+import define1 from "./165e9411d1af7e86@1401.js";
+import define2 from "./698257e86fae4586@378.js";
+import define3 from "./993a0c51ef1175ea@1396.js";
 import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./cb60908738c3dabe@152.js";
 import define7 from "./777fe85658e39c55@470.js";
-import define8 from "./293899bef371e135@268.js";
+import define8 from "./293899bef371e135@290.js";
 
 function _1(md){return(
 md`# Logs Manager
