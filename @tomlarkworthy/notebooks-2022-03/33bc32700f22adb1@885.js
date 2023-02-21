@@ -1,4 +1,3 @@
-// https://observablehq.com/@observablehq/plot-stack@885
 function _1(md){return(
 md`<div style="color: grey; font: 13px/25.5px var(--sans-serif); text-transform: uppercase;"><h1 style="display: none">Stack Transform / Observable Plot</h1><a href="/@observablehq/plot?collection=@observablehq/plot">Observable Plot</a> › <a href="/@observablehq/plot-transforms?collection=@observablehq/plot">Transforms</a> › Stack · <a href="https://github.com/observablehq/plot/blob/main/README.md#stack">API</a></div>
 
