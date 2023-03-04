@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@264
+// https://observablehq.com/@tomlarkworthy/notebook-snapshot@265
 import define1 from "./e1c39d41e8e944b0@378.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -73,7 +73,6 @@ function _notebookSnapshot(modules,runtime,promiseState){return(
         [...runtime._variables].find((v) => v._name === knownVariable)?._module
       )
     : "main";
-
   if (!moduleName) {
     debugger;
     throw new Error(

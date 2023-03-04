@@ -1,12 +1,12 @@
-// https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@1006
+// https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1@1007
 import define1 from "./c5544d2895d5e4ad@39.js";
-import define2 from "./6a703b03d185f279@1002.js";
-import define3 from "./374124b361974cb3@264.js";
+import define2 from "./6a703b03d185f279@1005.js";
+import define3 from "./374124b361974cb3@265.js";
 import define4 from "./5a63548f9c799b76@576.js";
 import define5 from "./6eda90668ae03044@836.js";
 import define6 from "./c7a3b20cec5d4dd9@669.js";
-import define7 from "./0e0b35a92c819d94@434.js";
-import define8 from "./293899bef371e135@278.js";
+import define7 from "./0e0b35a92c819d94@444.js";
+import define8 from "./293899bef371e135@290.js";
 import define9 from "./64641700df65baed@91.js";
 
 function _1(gfx,htl){return(
@@ -219,7 +219,7 @@ endpoint("server", async (req, res) => {
   try {
     await $0.send({ req, res }); // handle in to poll pipeline (unfold across Dataflow)
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(err.code || 500).send(err.message);
   }
 })
 )}

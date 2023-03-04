@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/redis@1002
+// https://observablehq.com/@tomlarkworthy/redis@1005
 import define1 from "./bb2055d580bbbab2@106.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -68,6 +68,7 @@ node_modules/websockify/websockify.js 6380 localhost:6379
 
 The command we use for the demo server protected with ssh with LetsEncrypt certbot ends up as 
 \`\`\`
+killall node;
 nohup node_modules/websockify/websockify.js \\
 --cert /etc/letsencrypt/live/redis.webcode.run/fullchain.pem \\
 --key /etc/letsencrypt/live/redis.webcode.run/privkey.pem \\
