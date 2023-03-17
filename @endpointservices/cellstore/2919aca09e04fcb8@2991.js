@@ -1,4 +1,4 @@
-// https://observablehq.com/@endpointservices/cellstore@2990
+// https://observablehq.com/@endpointservices/cellstore@2991
 import define1 from "./9bed702f80a3797e@402.js";
 import define2 from "./ef672b935bd480fc@623.js";
 import define3 from "./e1e1342567637708@745.js";
@@ -648,7 +648,7 @@ permissions.test("can read is false without reader", () => {
 })
 )}
 
-function _76(md){return(
+function _ui_playground(md){return(
 md`### UI Playground`
 )}
 
@@ -855,7 +855,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["permissions","expect","canRead"], _73);
   main.variable(observer()).define(["permissions","expect","canRead"], _74);
   main.variable(observer()).define(["permissions","expect","canRead"], _75);
-  main.variable(observer()).define(["md"], _76);
+  main.variable(observer("ui_playground")).define("ui_playground", ["md"], _ui_playground);
   main.variable(observer("viewof sample")).define("viewof sample", ["UI","createLogin","defaultApp"], _sample);
   main.variable(observer("sample")).define("sample", ["Generators", "viewof sample"], (G, _) => G.input(_));
   main.variable(observer()).define(["sample"], _78);

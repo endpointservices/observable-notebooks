@@ -1,7 +1,7 @@
 {
   "name": "@endpointservices/cellstore",
-  "main": "2919aca09e04fcb8@2990.js",
-  "version": "2990.0.0",
+  "main": "2919aca09e04fcb8@2991.js",
+  "version": "2991.0.0",
   "homepage": "https://observablehq.com/@endpointservices/cellstore",
   "author": {
     "name": "Endpoint Services",
@@ -9,6 +9,6 @@
   },
   "type": "module",
   "peerDependencies": {
-    "@observablehq/runtime": "4"
+    "@observablehq/runtime": "4 - 5"
   }
 }
