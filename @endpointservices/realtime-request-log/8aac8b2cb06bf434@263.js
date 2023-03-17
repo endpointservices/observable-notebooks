@@ -1,5 +1,5 @@
-// https://observablehq.com/@endpointservices/onversion@261
-import define1 from "./58f3eb7334551ae6@210.js";
+// https://observablehq.com/@endpointservices/onversion@263
+import define1 from "./58f3eb7334551ae6@215.js";
 
 function _1(onVersion,md){return(
 md`# On Version Notebook Hook 
