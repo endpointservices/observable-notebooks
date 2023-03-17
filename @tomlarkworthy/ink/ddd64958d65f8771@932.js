@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/ink@932
-import define1 from "./1d309dbd9697e042@627.js";
-import define2 from "./58f3eb7334551ae6@209.js";
+import define1 from "./1d309dbd9697e042@631.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# Ink in water`
