@@ -9,6 +9,6 @@
   },
   "type": "module",
   "peerDependencies": {
-    "@observablehq/runtime": "4"
+    "@observablehq/runtime": "4 - 5"
   }
 }
