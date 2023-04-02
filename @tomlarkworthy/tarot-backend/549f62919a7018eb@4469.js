@@ -1,18 +1,19 @@
 import define1 from "./576f8943dbfbd395@114.js";
-import define2 from "./374124b361974cb3@265.js";
-import define3 from "./993a0c51ef1175ea@1396.js";
-import define4 from "./3d59cab3a9c819e2@168.js";
-import define5 from "./6eda90668ae03044@836.js";
-import define6 from "./0e0b35a92c819d94@444.js";
-import define7 from "./048a17a165be198d@263.js";
-import define8 from "./0c800138c487d3e1@860.js";
-import define9 from "./698257e86fae4586@378.js";
-import define10 from "./f92778131fd76559@1174.js";
-import define11 from "./92ff66b718c1972f@141.js";
-import define12 from "./653c46ed55693b1f@669.js";
-import define13 from "./9bed702f80a3797e@402.js";
-import define14 from "./dff1e917c89f5e76@1964.js";
-import define15 from "./293899bef371e135@278.js";
+import define2 from "./ef672b935bd480fc@623.js";
+import define3 from "./374124b361974cb3@265.js";
+import define4 from "./993a0c51ef1175ea@1396.js";
+import define5 from "./3d59cab3a9c819e2@168.js";
+import define6 from "./6eda90668ae03044@836.js";
+import define7 from "./0e0b35a92c819d94@444.js";
+import define8 from "./048a17a165be198d@263.js";
+import define9 from "./0c800138c487d3e1@860.js";
+import define10 from "./698257e86fae4586@378.js";
+import define11 from "./f92778131fd76559@1174.js";
+import define12 from "./92ff66b718c1972f@141.js";
+import define13 from "./653c46ed55693b1f@669.js";
+import define14 from "./9bed702f80a3797e@402.js";
+import define15 from "./dff1e917c89f5e76@1964.js";
+import define16 from "./293899bef371e135@278.js";
 
 function _1(md){return(
 md`# Tarot Backend
@@ -30,8 +31,6 @@ The UI is designed hierarchically and assembled into a single cell, following th
 We the API request process across several Observable reactive dataflow cells using a [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue). If a step has a bug, we can then fix that individual line and the trace will continue which makes development very ergonomic. Furthermore, by exploiting [webcode.run](https://webcode.run) live coding, production traffic will be traced in the development notebook, and we can develop and debug directly on prod.
 
 Errors in prod are recorded with [Sentry](https://observablehq.com/@endpointservices/sentry), and active monitoring is performed with [uptimerobot + healthcheck](https://observablehq.com/@endpointservices/healthcheck).
-
-I hope you find [webcode.run](https://webcode.run) + [observable](/) application development interesting. This took about 2 weeks of fulltime work to develop. 
 `
 )}
 
@@ -333,12 +332,17 @@ function _29(md){return(
 md`#### fortuneOutput`
 )}
 
-function _fortuneOutput(DOM,view,textBackground,borderColor,htl){return(
+function _fortuneOutput(DOM,htl,textBackground,view,borderColor){return(
 () => {
   const uid = DOM.uid().id;
+  const textarea = htl.html`<textarea disabled="true" id=${uid} style="width:100%; display:block; box-sizing:border-box; color: white; background-color: ${textBackground}; padding: 10px; border-radius: 10px;" rows=1></textarea>`;
+  setTimeout(() => {
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  }, 0);
+
   return view`<div style="display:block; color: white; background-color: ${textBackground}; padding: 10px; margin: 5px; border-radius: 10px; border: solid ${borderColor};">${[
     "...",
-    htl.html`<textarea disabled="true" id=${uid} style="width:100%; display:block; box-sizing:border-box; color: white; background-color: ${textBackground}; padding: 10px; border-radius: 10px;" rows=10></textarea>`
+    textarea
   ]}<small>
     ⚠️ interpretation by artificial intelligence. For entertainment only.
     </small></div>`;
@@ -350,7 +354,12 @@ fortuneOutput()
 )}
 
 function _32($0){return(
-$0.value = "cool"
+$0.value = `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+ 
+ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+`
 )}
 
 function _33(md){return(
@@ -618,7 +627,9 @@ async function _image(socialData,socialImageInner,findCardsByName,$0)
   if (socialData) {
     return socialImageInner({
       cards: await findCardsByName(socialData.cards),
-      reading: socialData.reading.choices[0].text
+      reading:
+        socialData.reading.choices[0].text ||
+        socialData.reading.choices[0].message.content
     });
   } else {
     const err = new Error("Can't find fortune");
@@ -958,6 +969,7 @@ function _apiServer(endpoint,$0){return(
 endpoint(
   "api",
   async (req, res, ctx) => {
+    debugger;
     // save in a DB, deduplication, rate limit, authentication
     const config = JSON.parse(
       atob(req.query.config || /* base64('{}') = */ "e30=")
@@ -1060,41 +1072,43 @@ function _114(md){return(
 md`#### Call openAI`
 )}
 
-function _openapi_reponse(rateLimitOk,recordMeteredUse,currentUser,config,settings){return(
+function _openapi_reponse(rateLimitOk,recordMeteredUse,currentUser,fetchp,config,settings){return(
 rateLimitOk,
 recordMeteredUse(currentUser.uid),
-fetch("https://api.openai.com/v1/engines/text-davinci-001/completions", {
+fetchp("https://api.openai.com/v1/chat/completions", {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${config.OPENAI_API_KEY}`
   },
   body: JSON.stringify({
-    prompt: `You are a tarot card reader. ${config.name} asks "${config.question}".
-
-You turn three cards over. None are reversed. The first card, representing the past, is the "${config.cards[0]}". The second card, representing the present is the "${config.cards[1]}". The third card, the future, is the "${config.cards[2]}".
-
-you tell ${config.name} the meaning of the cards and their positions.`,
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "user",
+        content: `Pretend you are legendary fortune teller. "${config.name}" asks "${config.question}". The cards are "${config.cards[0]}" (past position), "${config.cards[1]}" (present) and the "${config.cards[2]}" (future). Please respond with just what you would say, including dramatic flare.`
+      }
+    ],
     ...settings
   })
 })
 )}
 
-function _116(md){return(
+function _117(md){return(
 md`#### OpenAI Generation Settings`
 )}
 
 function _settings(){return(
 {
   temperature: 0.9,
-  max_tokens: 250,
+  max_tokens: 1000,
   top_p: 1,
   frequency_penalty: 0,
   presence_penalty: 0
 }
 )}
 
-function _118(md){return(
+function _119(md){return(
 md`#### OpenAI Response`
 )}
 
@@ -1104,7 +1118,7 @@ openapi_reponse.status === 200
   : $0.reject(new Error(await openapi_reponse.text()))
 )}
 
-function _120(md){return(
+function _121(md){return(
 md`#### Record OpenAI Response in History`
 )}
 
@@ -1123,7 +1137,7 @@ function _id(persistHistory,$0,settings,result)
 }
 
 
-function _122(md){return(
+function _123(md){return(
 md`### history`
 )}
 
@@ -1144,7 +1158,7 @@ async ({ name, cards, question, reading, settings } = {}) => {
 }
 )}
 
-function _124(md){return(
+function _125(md){return(
 md`#### OpenAI Text Safety Classification`
 )}
 
@@ -1155,11 +1169,11 @@ contentFilter({
 })
 )}
 
-function _126(md){return(
+function _127(md){return(
 md`### Rate limiting`
 )}
 
-function _127(Inputs,recordMeteredUse,user){return(
+function _128(Inputs,recordMeteredUse,user){return(
 Inputs.button("record use", {
   reduce: () => recordMeteredUse(user.uid)
 })
@@ -1191,7 +1205,7 @@ function _quota(htl,user){return(
 htl.html`<a target="_blank" href="https://console.firebase.google.com/u/0/project/larkworthy-dfb11/database/larkworthy-dfb11-default-rtdb/data/@tomlarkworthy/tarot-backend/users/${user.uid}/history">quota records`
 )}
 
-function _131(md){return(
+function _132(md){return(
 md`### Content Filter
 
 https://beta.openai.com/docs/engines/content-filter
@@ -1276,7 +1290,7 @@ Inputs.button("testContentFilter", {
 })
 )}
 
-function _134(md){return(
+function _135(md){return(
 md`#### uploadObject to Cloud Storage`
 )}
 
@@ -1308,7 +1322,7 @@ async ({ name, access_token, content_type, content } = {}) => {
 }
 )}
 
-function _136(md){return(
+function _137(md){return(
 md`### Generate Social Image`
 )}
 
@@ -1335,11 +1349,11 @@ function _access_token(getAccessTokenFromServiceAccount,config){return(
 getAccessTokenFromServiceAccount(config.ADMIN_SERVICE_ACCOUNT)
 )}
 
-function _140(fortuneImageData){return(
+function _141(fortuneImageData){return(
 fortuneImageData
 )}
 
-function _141(md){return(
+function _142(md){return(
 md`#### uploadImageToCloud`
 )}
 
@@ -1355,7 +1369,7 @@ async function _cloudImage(uploadObject,id,access_token,fortuneImageData){return
 }
 )}
 
-function _143(md){return(
+function _144(md){return(
 md`#### Render page()`
 )}
 
@@ -1414,7 +1428,7 @@ new Runtime().module(notebook, name => {
 <script defer data-domain="thetarot.online" src="https://plausible.io/js/plausible.js"></script>`
 )}
 
-function _145(md){return(
+function _146(md){return(
 md`### upload share page`
 )}
 
@@ -1436,7 +1450,7 @@ async function _uploads(uploadObject,id,access_token,page,config,cloudImage){ret
 }
 )}
 
-function _147(md){return(
+function _148(md){return(
 md`#### End of Pipeline`
 )}
 
@@ -1447,7 +1461,7 @@ function _responder(uploads,classification,$0,id,result)
     if (classification == 0) {
       $0.respond({
         id,
-        reading: result.choices[0].text
+        reading: result.choices[0].message.content
       });
     } else {
       const err = new Error(
@@ -1462,7 +1476,7 @@ function _responder(uploads,classification,$0,id,result)
 }
 
 
-function _149(md){return(
+function _150(md){return(
 md`### clientside user`
 )}
 
@@ -1477,11 +1491,11 @@ async function _user(getContext,invalidation,firebase)
 }
 
 
-function _151(md){return(
+function _152(md){return(
 md`### manual deploy <a target="_blank" href="https://storage.googleapis.com/larkworthy-dfb11.appspot.com/@tomlarkworthy/tarot-backend/pages/index.html">index.html</a>`
 )}
 
-function _152(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
+function _153(Inputs,uploadObject,getAccessTokenFromServiceAccount,ADMIN_SERVICE_ACCOUNT,page){return(
 Inputs.button("update index.html", {
   reduce: async () => {
     await uploadObject({
@@ -1496,11 +1510,11 @@ Inputs.button("update index.html", {
 })
 )}
 
-function _153(md){return(
+function _154(md){return(
 md`### Test server`
 )}
 
-function _154(deploy,page){return(
+function _155(deploy,page){return(
 deploy(
   "index",
   (req, res) => {
@@ -1522,11 +1536,11 @@ function _trackingVariable_e3366d24de62(){return(
 true
 )}
 
-function _158(md){return(
+function _159(md){return(
 md`By exporting the state in a endoint we can sample the state of the server via a flatdata collector.`
 )}
 
-function _159(endpoint,notebookSnapshot){return(
+function _160(endpoint,notebookSnapshot){return(
 endpoint(
   "variables",
   async (req, res) => {
@@ -1547,7 +1561,7 @@ endpoint(
 )
 )}
 
-function _160(md){return(
+function _161(md){return(
 md`## Firebase Backends`
 )}
 
@@ -1579,11 +1593,11 @@ function _adminConfig(){return(
 }
 )}
 
-function _165(md){return(
+function _166(md){return(
 md`## Utilities`
 )}
 
-function _166(md){return(
+function _167(md){return(
 md`### findCardsByName`
 )}
 
@@ -1599,7 +1613,7 @@ async (cardNames) =>
   )
 )}
 
-function _168(md){return(
+function _169(md){return(
 md`### promiseRecursive`
 )}
 
@@ -1626,7 +1640,7 @@ function promiseRecursive(obj) {
 }
 )}
 
-function _170(md){return(
+function _171(md){return(
 md`### textFit v2.3.1 11/2014 by STRML (strml.github.com) (see license in source)`
 )}
 
@@ -1886,15 +1900,15 @@ htl.html`<style>
 </style>`
 )}
 
-function _174(md){return(
+function _175(md){return(
 md`## Dependencies`
 )}
 
-function _187(md){return(
+function _188(md){return(
 md`### Analytics & Backup`
 )}
 
-function _188(footer){return(
+function _189(footer){return(
 footer
 )}
 
@@ -1938,7 +1952,7 @@ export default function define(runtime, observer) {
   main.variable(observer("question")).define("question", ["Generators", "viewof question"], (G, _) => G.input(_));
   main.variable(observer("questionInput")).define("questionInput", ["DOM","view","textBackground","borderColor","htl","QUESTION_MAX_LENGTH"], _questionInput);
   main.variable(observer()).define(["md"], _29);
-  main.variable(observer("fortuneOutput")).define("fortuneOutput", ["DOM","view","textBackground","borderColor","htl"], _fortuneOutput);
+  main.variable(observer("fortuneOutput")).define("fortuneOutput", ["DOM","htl","textBackground","view","borderColor"], _fortuneOutput);
   main.variable(observer("viewof fortuneOutputExample")).define("viewof fortuneOutputExample", ["fortuneOutput"], _fortuneOutputExample);
   main.variable(observer("fortuneOutputExample")).define("fortuneOutputExample", ["Generators", "viewof fortuneOutputExample"], (G, _) => G.input(_));
   main.variable(observer()).define(["viewof fortuneOutputExample"], _32);
@@ -2048,102 +2062,104 @@ export default function define(runtime, observer) {
   main.variable(observer("currentUsersRequestsInLastDay")).define("currentUsersRequestsInLastDay", ["requestsInLastDay","currentUser"], _currentUsersRequestsInLastDay);
   main.variable(observer("rateLimitOk")).define("rateLimitOk", ["currentUsersRequestsInLastDay","viewof config","invalidation"], _rateLimitOk);
   main.variable(observer()).define(["md"], _114);
-  main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","config","settings"], _openapi_reponse);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer("openapi_reponse")).define("openapi_reponse", ["rateLimitOk","recordMeteredUse","currentUser","fetchp","config","settings"], _openapi_reponse);
+  const child2 = runtime.module(define2);
+  main.import("fetchp", child2);
+  main.variable(observer()).define(["md"], _117);
   main.variable(observer("settings")).define("settings", _settings);
-  main.variable(observer()).define(["md"], _118);
+  main.variable(observer()).define(["md"], _119);
   main.variable(observer("result")).define("result", ["openapi_reponse","viewof config"], _result);
-  main.variable(observer()).define(["md"], _120);
+  main.variable(observer()).define(["md"], _121);
   main.variable(observer("id")).define("id", ["persistHistory","viewof config","settings","result"], _id);
-  main.variable(observer()).define(["md"], _122);
+  main.variable(observer()).define(["md"], _123);
   main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
-  main.variable(observer()).define(["md"], _124);
+  main.variable(observer()).define(["md"], _125);
   main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
-  main.variable(observer()).define(["md"], _126);
-  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _127);
+  main.variable(observer()).define(["md"], _127);
+  main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _128);
   main.variable(observer("recordMeteredUse")).define("recordMeteredUse", ["firebase"], _recordMeteredUse);
   main.variable(observer("requestsInLastDay")).define("requestsInLastDay", ["adminFirebase"], _requestsInLastDay);
   main.variable(observer("quota")).define("quota", ["htl","user"], _quota);
-  main.variable(observer()).define(["md"], _131);
+  main.variable(observer()).define(["md"], _132);
   main.variable(observer("contentFilter")).define("contentFilter", _contentFilter);
   main.variable(observer("viewof exampleFilter")).define("viewof exampleFilter", ["Inputs","loremIpsum","contentFilter","OPENAI_API_KEY"], _exampleFilter);
   main.variable(observer("exampleFilter")).define("exampleFilter", ["Generators", "viewof exampleFilter"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _134);
+  main.variable(observer()).define(["md"], _135);
   main.variable(observer("uploadObject")).define("uploadObject", _uploadObject);
-  main.variable(observer()).define(["md"], _136);
+  main.variable(observer()).define(["md"], _137);
   main.variable(observer("fortuneImg")).define("fortuneImg", ["socialImage","id","viewof config","result"], _fortuneImg);
   main.variable(observer("fortuneImageData")).define("fortuneImageData", ["fortuneImg"], _fortuneImageData);
   main.variable(observer("access_token")).define("access_token", ["getAccessTokenFromServiceAccount","config"], _access_token);
-  main.variable(observer()).define(["fortuneImageData"], _140);
-  main.variable(observer()).define(["md"], _141);
+  main.variable(observer()).define(["fortuneImageData"], _141);
+  main.variable(observer()).define(["md"], _142);
   main.variable(observer("cloudImage")).define("cloudImage", ["uploadObject","id","access_token","fortuneImageData"], _cloudImage);
-  main.variable(observer()).define(["md"], _143);
+  main.variable(observer()).define(["md"], _144);
   main.variable(observer("page")).define("page", ["baseURL"], _page);
-  main.variable(observer()).define(["md"], _145);
+  main.variable(observer()).define(["md"], _146);
   main.variable(observer("uploads")).define("uploads", ["uploadObject","id","access_token","page","config","cloudImage"], _uploads);
-  main.variable(observer()).define(["md"], _147);
+  main.variable(observer()).define(["md"], _148);
   main.variable(observer("responder")).define("responder", ["uploads","classification","viewof config","id","result"], _responder);
-  main.variable(observer()).define(["md"], _149);
+  main.variable(observer()).define(["md"], _150);
   main.variable(observer("user")).define("user", ["getContext","invalidation","firebase"], _user);
-  main.variable(observer()).define(["md"], _151);
-  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _152);
-  main.variable(observer()).define(["md"], _153);
-  main.variable(observer()).define(["deploy","page"], _154);
+  main.variable(observer()).define(["md"], _152);
+  main.variable(observer()).define(["Inputs","uploadObject","getAccessTokenFromServiceAccount","ADMIN_SERVICE_ACCOUNT","page"], _153);
+  main.variable(observer()).define(["md"], _154);
+  main.variable(observer()).define(["deploy","page"], _155);
   main.variable(observer("debuggingSection")).define("debuggingSection", ["md"], _debuggingSection);
-  const child2 = runtime.module(define2);
-  main.import("notebookSnapshot", child2);
-  main.import("modules", child2);
+  const child3 = runtime.module(define3);
+  main.import("notebookSnapshot", child3);
+  main.import("modules", child3);
   main.variable(observer("trackingVariable_e3366d24de62")).define("trackingVariable_e3366d24de62", _trackingVariable_e3366d24de62);
-  main.variable(observer()).define(["md"], _158);
-  main.variable(observer()).define(["endpoint","notebookSnapshot"], _159);
-  main.variable(observer()).define(["md"], _160);
-  const child3 = runtime.module(define3).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
-  main.import("firebase", child3);
-  main.import("DocView", child3);
-  const child4 = runtime.module(define3).derive([{name: "adminConfig", alias: "firebaseConfig"}], main);
-  main.import("firebase", "adminFirebase", child4);
+  main.variable(observer()).define(["md"], _159);
+  main.variable(observer()).define(["endpoint","notebookSnapshot"], _160);
+  main.variable(observer()).define(["md"], _161);
+  const child4 = runtime.module(define4).derive([{name: "userConfig", alias: "firebaseConfig"}], main);
+  main.import("firebase", child4);
+  main.import("DocView", child4);
+  const child5 = runtime.module(define4).derive([{name: "adminConfig", alias: "firebaseConfig"}], main);
+  main.import("firebase", "adminFirebase", child5);
   main.variable(observer("userConfig")).define("userConfig", _userConfig);
   main.variable(observer("adminConfig")).define("adminConfig", _adminConfig);
-  main.variable(observer()).define(["md"], _165);
   main.variable(observer()).define(["md"], _166);
+  main.variable(observer()).define(["md"], _167);
   main.variable(observer("findCardsByName")).define("findCardsByName", ["promiseRecursive","cardData","fileAttachments"], _findCardsByName);
-  main.variable(observer()).define(["md"], _168);
+  main.variable(observer()).define(["md"], _169);
   main.variable(observer("promiseRecursive")).define("promiseRecursive", _promiseRecursive);
-  main.variable(observer()).define(["md"], _170);
+  main.variable(observer()).define(["md"], _171);
   main.variable(observer("textFit")).define("textFit", ["HTMLElement"], _textFit);
   main.variable(observer("loremIpsum")).define("loremIpsum", ["require"], _loremIpsum);
   main.variable(observer("font")).define("font", ["htl"], _font);
-  main.variable(observer()).define(["md"], _174);
-  const child5 = runtime.module(define4);
-  main.import("getCards", child5);
-  main.import("images", "cardData", child5);
-  main.import("fileAttachments", child5);
+  main.variable(observer()).define(["md"], _175);
   const child6 = runtime.module(define5);
-  main.import("endpoint", child6);
+  main.import("getCards", child6);
+  main.import("images", "cardData", child6);
+  main.import("fileAttachments", child6);
   const child7 = runtime.module(define6);
-  main.import("flowQueue", child7);
+  main.import("endpoint", child7);
   const child8 = runtime.module(define7);
-  main.import("localStorageView", child8);
+  main.import("flowQueue", child8);
   const child9 = runtime.module(define8);
-  main.import("colorPicker", child9);
+  main.import("localStorageView", child9);
   const child10 = runtime.module(define9);
-  main.import("verifyIdToken", child10);
-  main.import("getAccessTokenFromServiceAccount", child10);
+  main.import("colorPicker", child10);
   const child11 = runtime.module(define10);
-  main.import("view", child11);
-  main.import("bindOneWay", child11);
+  main.import("verifyIdToken", child11);
+  main.import("getAccessTokenFromServiceAccount", child11);
   const child12 = runtime.module(define11);
-  main.import("verticalSliders", child12);
+  main.import("view", child12);
+  main.import("bindOneWay", child12);
   const child13 = runtime.module(define12);
-  main.import("juice", child13);
+  main.import("verticalSliders", child13);
   const child14 = runtime.module(define13);
-  main.import("toc", child14);
+  main.import("juice", child14);
   const child15 = runtime.module(define14);
-  main.import("deploy", child15);
-  main.import("getContext", child15);
+  main.import("toc", child15);
   const child16 = runtime.module(define15);
-  main.import("footer", child16);
-  main.variable(observer()).define(["md"], _187);
-  main.variable(observer()).define(["footer"], _188);
+  main.import("deploy", child16);
+  main.import("getContext", child16);
+  const child17 = runtime.module(define16);
+  main.import("footer", child17);
+  main.variable(observer()).define(["md"], _188);
+  main.variable(observer()).define(["footer"], _189);
   return main;
 }
