@@ -1106,7 +1106,7 @@ md`#### OpenAI Generation Settings`
 function _settings(){return(
 {
   temperature: 0.9,
-  max_tokens: 1000,
+  max_tokens: 500,
   top_p: 1,
   frequency_penalty: 0,
   presence_penalty: 0
