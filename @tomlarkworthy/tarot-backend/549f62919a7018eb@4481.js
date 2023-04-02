@@ -174,7 +174,9 @@ async function _loadPreviousFortune(previousFortune,$0,findCardsByName,baseURL,s
 {
   console.log("loadPreviousFortune");
   if (previousFortune) {
-    $0.fortune.value = previousFortune.reading.choices[0].text;
+    $0.fortune.value =
+      previousFortune.reading.choices[0].text ||
+      previousFortune.reading.choices[0].message.content;
     $0.name.value = previousFortune.name;
     $0.question.value = previousFortune.question;
     $0.cards.cards.value = await findCardsByName(
