@@ -1165,11 +1165,8 @@ function _125(md){return(
 md`#### OpenAI Text Safety Classification`
 )}
 
-function _classification(contentFilter,result,config){return(
-contentFilter({
-  content: result.choices[0].text,
-  API_KEY: config.OPENAI_API_KEY
-})
+function _classification(){return(
+0
 )}
 
 function _127(md){return(
@@ -2077,7 +2074,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _123);
   main.variable(observer("persistHistory")).define("persistHistory", ["adminFirebase"], _persistHistory);
   main.variable(observer()).define(["md"], _125);
-  main.variable(observer("classification")).define("classification", ["contentFilter","result","config"], _classification);
+  main.variable(observer("classification")).define("classification", _classification);
   main.variable(observer()).define(["md"], _127);
   main.variable(observer()).define(["Inputs","recordMeteredUse","user"], _128);
   main.variable(observer("recordMeteredUse")).define("recordMeteredUse", ["firebase"], _recordMeteredUse);
