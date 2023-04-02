@@ -335,10 +335,16 @@ md`#### fortuneOutput`
 function _fortuneOutput(DOM,htl,textBackground,view,borderColor){return(
 () => {
   const uid = DOM.uid().id;
-  const textarea = htl.html`<textarea disabled="true" id=${uid} style="width:100%; display:block; box-sizing:border-box; color: white; background-color: ${textBackground}; padding: 10px; border-radius: 10px;" rows=1></textarea>`;
+  const textarea = htl.html`<textarea disabled="true" id=${uid} style="width:100%; display:block; box-sizing:border-box; color: white; background-color: ${textBackground}; padding: 10px; border-radius: 10px;" rows=10></textarea>`;
+
+  /*
+  textarea.addEventListener("input", () => {
+    textarea.style.height = `${textarea.scrollHeight}px`;
+  });
   setTimeout(() => {
     textarea.style.height = `${textarea.scrollHeight}px`;
   }, 0);
+  */
 
   return view`<div style="display:block; color: white; background-color: ${textBackground}; padding: 10px; margin: 5px; border-radius: 10px; border: solid ${borderColor};">${[
     "...",
