@@ -998,7 +998,7 @@ md`### API Request pipeline`
 )}
 
 function _config(flowQueue){return(
-flowQueue({ timeout_ms: 15000 })
+flowQueue({ timeout_ms: 30000 })
 )}
 
 function _106(config){return(
