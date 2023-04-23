@@ -629,7 +629,7 @@ async function _ai_context(game_history)
         content: entry.response
       }
     ])
-    .slice(-100, -1);
+    .slice(-70, -1);
 }
 
 
