@@ -64,15 +64,19 @@ Plot.plot({
   y: {
     grid: true
   },
-  marks: [Plot.line(game_history, { x: "Date", y: "Close" })]
+  marks: [Plot.line(game_history, { x: "turn", y: "score" })]
 })
 )}
 
-function _7(md){return(
-md`Enter your prompt here, then press start and follow its adventure below`
+function _7(game_history){return(
+game_history
 )}
 
 function _8(md){return(
+md`Enter your prompt here, then press start and follow its adventure below`
+)}
+
+function _9(md){return(
 md`<details>
   <summary>prompt hints</summary>
   <details>
@@ -606,12 +610,8 @@ function _adventure_input(reset,Inputs)
 }
 
 
-function _15(md){return(
+function _16(md){return(
 md`💡 You can manually type \`score\` ^^`
-)}
-
-function _16(score){return(
-score
 )}
 
 function _17(md){return(
@@ -775,8 +775,9 @@ export default function define(runtime, observer) {
   main.variable(observer("model")).define("model", ["Generators", "viewof model"], (G, _) => G.input(_));
   main.variable(observer("settings")).define("settings", _settings);
   main.variable(observer()).define(["Plot","game_history"], _6);
-  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["game_history"], _7);
   main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof system_prompt")).define("viewof system_prompt", ["Inputs","localStorageView"], _system_prompt);
   main.variable(observer("system_prompt")).define("system_prompt", ["Generators", "viewof system_prompt"], (G, _) => G.input(_));
   main.variable(observer("viewof run")).define("viewof run", ["Inputs"], _run);
@@ -788,8 +789,7 @@ export default function define(runtime, observer) {
   main.variable(observer("view")).define("view", ["html","output","htl"], _view);
   main.variable(observer("viewof adventure_input")).define("viewof adventure_input", ["reset","Inputs"], _adventure_input);
   main.variable(observer("adventure_input")).define("adventure_input", ["Generators", "viewof adventure_input"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _15);
-  main.variable(observer()).define(["score"], _16);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer()).define(["md"], _17);
   main.variable(observer()).define(["md"], _18);
   main.variable(observer()).define(["md"], _19);
