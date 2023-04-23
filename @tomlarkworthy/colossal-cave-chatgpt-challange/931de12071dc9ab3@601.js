@@ -61,19 +61,16 @@ function _settings(){return(
 
 function _6(Plot,game_history){return(
 Plot.plot({
-  y: {
-    grid: true
-  },
   marks: [Plot.line(game_history, { x: "turn", y: "score" })]
 })
 )}
 
-function _7(game_history){return(
-game_history
+function _7(md){return(
+md`Enter your prompt here, then press start and follow its adventure below`
 )}
 
-function _8(md){return(
-md`Enter your prompt here, then press start and follow its adventure below`
+function _8(game_history){return(
+game_history
 )}
 
 function _9(md){return(
@@ -708,9 +705,9 @@ function _on_input(adventure_input,game,adventure,$0,Event,$1,$2)
   const masked_input = adventure_input.split("\n").slice(-1);
   const adventure_response = game.advance(masked_input).join(" ");
   const score = parseInt(
-    /(\d+)/.exec(
+    (/(\d+)/.exec(
       adventure.makeState(JSON.parse(JSON.stringify(game))).advance("score")[1]
-    )[1]
+    ) || ["0", "0"])[1]
   );
 
   // Record history
@@ -718,7 +715,7 @@ function _on_input(adventure_input,game,adventure,$0,Event,$1,$2)
     input: adventure_input,
     response: adventure_response,
     score,
-    turn: game.turns
+    turn: ($0.value.slice[-1]?.turn || 0) + 1
   });
   $0.dispatchEvent(new Event("input"));
 
@@ -775,8 +772,8 @@ export default function define(runtime, observer) {
   main.variable(observer("model")).define("model", ["Generators", "viewof model"], (G, _) => G.input(_));
   main.variable(observer("settings")).define("settings", _settings);
   main.variable(observer()).define(["Plot","game_history"], _6);
-  main.variable(observer()).define(["game_history"], _7);
-  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["game_history"], _8);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer("viewof system_prompt")).define("viewof system_prompt", ["Inputs","localStorageView"], _system_prompt);
   main.variable(observer("system_prompt")).define("system_prompt", ["Generators", "viewof system_prompt"], (G, _) => G.input(_));
