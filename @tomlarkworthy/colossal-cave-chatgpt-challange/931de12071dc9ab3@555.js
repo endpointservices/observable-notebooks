@@ -581,7 +581,7 @@ Inputs.button("reset game", {
 )}
 
 function _view(html,output,htl){return(
-htl.html`<div style="height: 200px; overflow: scroll; font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;">
+htl.html`<div style="height: 200px; overflow: scroll; font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; color: #0F0; background: black; padding: 10px">
   ${html`${output}`}
 </div>`
 )}
