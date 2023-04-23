@@ -59,11 +59,20 @@ function _settings(){return(
 }
 )}
 
-function _6(md){return(
-md`Enter your prompt here, then press start and follow its adventure below`
+function _6(Plot,game_history){return(
+Plot.plot({
+  y: {
+    grid: true
+  },
+  marks: [Plot.line(game_history, { x: "Date", y: "Close" })]
+})
 )}
 
 function _7(md){return(
+md`Enter your prompt here, then press start and follow its adventure below`
+)}
+
+function _8(md){return(
 md`<details>
   <summary>prompt hints</summary>
   <details>
@@ -597,25 +606,25 @@ function _adventure_input(reset,Inputs)
 }
 
 
-function _14(md){return(
+function _15(md){return(
 md`💡 You can manually type \`score\` ^^`
 )}
 
-function _15(score){return(
+function _16(score){return(
 score
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`---`
 )}
 
-function _17(md){return(
+function _18(md){return(
 md`## Code
 
 below is the bulk of the implementation`
 )}
 
-function _18(md){return(
+function _19(md){return(
 md`### Open AI`
 )}
 
@@ -678,7 +687,7 @@ function _ai_to_adventure($0,ai_choice,Event)
 }
 
 
-function _23(md){return(
+function _24(md){return(
 md`### [Adventurejs](https://www.npmjs.com/package/adventurejs)`
 )}
 
@@ -708,7 +717,8 @@ function _on_input(adventure_input,game,adventure,$0,Event,$1,$2)
   $0.value.push({
     input: adventure_input,
     response: adventure_response,
-    score
+    score,
+    turn: game.turns
   });
   $0.dispatchEvent(new Event("input"));
 
@@ -764,8 +774,9 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof model")).define("viewof model", ["Inputs"], _model);
   main.variable(observer("model")).define("model", ["Generators", "viewof model"], (G, _) => G.input(_));
   main.variable(observer("settings")).define("settings", _settings);
-  main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["Plot","game_history"], _6);
   main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer("viewof system_prompt")).define("viewof system_prompt", ["Inputs","localStorageView"], _system_prompt);
   main.variable(observer("system_prompt")).define("system_prompt", ["Generators", "viewof system_prompt"], (G, _) => G.input(_));
   main.variable(observer("viewof run")).define("viewof run", ["Inputs"], _run);
@@ -777,16 +788,16 @@ export default function define(runtime, observer) {
   main.variable(observer("view")).define("view", ["html","output","htl"], _view);
   main.variable(observer("viewof adventure_input")).define("viewof adventure_input", ["reset","Inputs"], _adventure_input);
   main.variable(observer("adventure_input")).define("adventure_input", ["Generators", "viewof adventure_input"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["score"], _15);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["score"], _16);
   main.variable(observer()).define(["md"], _17);
   main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["md"], _19);
   main.variable(observer("ai_context")).define("ai_context", ["game_history"], _ai_context);
   main.variable(observer("openAiResponse")).define("openAiResponse", ["run","auto_run","OPENAI_API_KEY","viewof model","viewof system_prompt","ai_context","settings"], _openAiResponse);
   main.variable(observer("ai_choice")).define("ai_choice", ["openAiResponse"], _ai_choice);
   main.variable(observer("ai_to_adventure")).define("ai_to_adventure", ["viewof adventure_input","ai_choice","Event"], _ai_to_adventure);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["md"], _24);
   main.variable(observer("adventure")).define("adventure", _adventure);
   main.variable(observer("game")).define("game", ["reset","adventure"], _game);
   main.variable(observer("on_input")).define("on_input", ["adventure_input","game","adventure","viewof game_history","Event","mutable output","viewof adventure_input"], _on_input);
