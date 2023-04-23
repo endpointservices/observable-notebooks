@@ -731,7 +731,7 @@ function _game_history(reset,Inputs)
 }
 
 
-function _28(md){return(
+function _29(md){return(
 md`### Misc`
 )}
 
@@ -741,7 +741,7 @@ function _ui_loop(view)
 }
 
 
-function _32(footer){return(
+function _33(footer){return(
 footer
 )}
 
@@ -784,12 +784,12 @@ export default function define(runtime, observer) {
   main.variable(observer("output")).define("output", ["mutable output"], _ => _.generator);
   main.variable(observer("viewof game_history")).define("viewof game_history", ["reset","Inputs"], _game_history);
   main.variable(observer("game_history")).define("game_history", ["Generators", "viewof game_history"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["md"], _29);
   main.variable(observer("ui_loop")).define("ui_loop", ["view"], _ui_loop);
   const child1 = runtime.module(define1);
   main.import("localStorageView", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _32);
+  main.variable(observer()).define(["footer"], _33);
   return main;
 }
