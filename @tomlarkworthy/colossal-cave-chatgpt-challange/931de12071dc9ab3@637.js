@@ -709,7 +709,10 @@ function _on_input(adventure_input,game,adventure,$0,Event,$1,$2)
   const adventure_response = game.advance(masked_input).join(" ");
   const score = parseInt(
     (/(\d+)/.exec(
-      adventure.makeState(JSON.parse(JSON.stringify(game))).advance("score")[1]
+      adventure
+        .makeState(JSON.parse(JSON.stringify(game)))
+        .advance("score")
+        .find((x) => x.startsWith("SCORE"))
     ) || ["0", "0"])[1]
   );
 
