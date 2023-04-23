@@ -54,7 +54,7 @@ function _settings(){return(
   temperature: 0.7,
   max_tokens: 500,
   top_p: 1,
-  frequency_penalty: 100,
+  frequency_penalty: 0,
   presence_penalty: 0
 }
 )}
