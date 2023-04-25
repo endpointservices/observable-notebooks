@@ -611,6 +611,10 @@ function _16(md){return(
 md`---`
 )}
 
+function _17(md){return(
+md`---`
+)}
+
 function _delay(Inputs){return(
 Inputs.range([0, 2], {
   value: 2,
@@ -618,13 +622,13 @@ Inputs.range([0, 2], {
 })
 )}
 
-function _18(md){return(
+function _19(md){return(
 md`## Code
 
 below is the bulk of the implementation`
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`### Open AI`
 )}
 
@@ -687,7 +691,7 @@ function _ai_to_adventure($0,ai_choice,Event)
 }
 
 
-function _24(md){return(
+function _25(md){return(
 md`### [Adventurejs](https://www.npmjs.com/package/adventurejs)`
 )}
 
@@ -754,7 +758,7 @@ function _game_history(reset,Inputs)
 }
 
 
-function _30(md){return(
+function _31(md){return(
 md`### Misc`
 )}
 
@@ -764,7 +768,7 @@ function _ui_loop(view)
 }
 
 
-function _34(footer){return(
+function _35(footer){return(
 footer
 )}
 
@@ -793,15 +797,16 @@ export default function define(runtime, observer) {
   main.variable(observer("adventure_input")).define("adventure_input", ["Generators", "viewof adventure_input"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _15);
   main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("viewof delay")).define("viewof delay", ["Inputs"], _delay);
   main.variable(observer("delay")).define("delay", ["Generators", "viewof delay"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _18);
   main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("ai_context")).define("ai_context", ["viewof delay","game_history"], _ai_context);
   main.variable(observer("openAiResponse")).define("openAiResponse", ["run","auto_run","OPENAI_API_KEY","viewof model","viewof system_prompt","ai_context","settings"], _openAiResponse);
   main.variable(observer("ai_choice")).define("ai_choice", ["openAiResponse"], _ai_choice);
   main.variable(observer("ai_to_adventure")).define("ai_to_adventure", ["viewof adventure_input","ai_choice","Event"], _ai_to_adventure);
-  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("adventure")).define("adventure", _adventure);
   main.variable(observer("game")).define("game", ["reset","adventure"], _game);
   main.variable(observer("on_input")).define("on_input", ["adventure_input","game","adventure","viewof game_history","Event","mutable output","viewof adventure_input"], _on_input);
@@ -810,12 +815,12 @@ export default function define(runtime, observer) {
   main.variable(observer("output")).define("output", ["mutable output"], _ => _.generator);
   main.variable(observer("viewof game_history")).define("viewof game_history", ["reset","Inputs"], _game_history);
   main.variable(observer("game_history")).define("game_history", ["Generators", "viewof game_history"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _31);
   main.variable(observer("ui_loop")).define("ui_loop", ["view"], _ui_loop);
   const child1 = runtime.module(define1);
   main.import("localStorageView", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _34);
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }
