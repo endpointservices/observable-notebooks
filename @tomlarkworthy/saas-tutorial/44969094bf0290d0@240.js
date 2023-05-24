@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/stripe@240
 import define1 from "./c0de6bf6c2f598ef@62.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
-import define3 from "./58f3eb7334551ae6@211.js";
+import define3 from "./58f3eb7334551ae6@215.js";
 
 async function _1(html,md,location,FileAttachment){return(
 html`

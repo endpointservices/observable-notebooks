@@ -1,10 +1,10 @@
 // https://observablehq.com/@tomlarkworthy/saas-tutorial@953
-import define1 from "./993a0c51ef1175ea@1375.js";
+import define1 from "./993a0c51ef1175ea@1396.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
 import define3 from "./84e66f78139ac354@829.js";
 import define4 from "./44969094bf0290d0@240.js";
 import define5 from "./1bef71e497eda5fc@189.js";
-import define6 from "./293899bef371e135@278.js";
+import define6 from "./293899bef371e135@290.js";
 
 function _1(html,md){return(
 html`<div class="content">${md`
