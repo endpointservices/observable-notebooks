@@ -1,8 +1,8 @@
 import define1 from "./b5ee47165ef0a032@504.js";
-import define2 from "./a2e58f97fd5e8d7c@736.js";
-import define3 from "./e657c642789a0b68@2027.js";
+import define2 from "./a2e58f97fd5e8d7c@754.js";
+import define3 from "./e657c642789a0b68@2028.js";
 import define4 from "./77f7c3c28a618766@604.js";
-import define5 from "./293899bef371e135@267.js";
+import define5 from "./293899bef371e135@290.js";
 
 async function _1(md,FileAttachment){return(
 md`# IndieWeb Login Wizard
@@ -453,8 +453,8 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["done.gif", {url: new URL("./files/65499dc57229c6ddfbb51e0851e4ea63cc79181703254c691d5bed087573cc1cae5693160a05a1f66f20bd97798cf968061105c2c3c573aa3d8be48f82fdc5b7", import.meta.url), mimeType: "image/gif", toString}],
-    ["IdentityWizard.png", {url: new URL("./files/9f72c3bebf2f334526603bd03c758dee24a67466e1dbc9bf2da3f83c83f08b603c1567a34886ac308c88e2faba6fdaf292bf39dc35e384943070ddf9c627eb45", import.meta.url), mimeType: "image/png", toString}]
+    ["done.gif", {url: new URL("./files/65499dc57229c6ddfbb51e0851e4ea63cc79181703254c691d5bed087573cc1cae5693160a05a1f66f20bd97798cf968061105c2c3c573aa3d8be48f82fdc5b7.gif", import.meta.url), mimeType: "image/gif", toString}],
+    ["IdentityWizard.png", {url: new URL("./files/9f72c3bebf2f334526603bd03c758dee24a67466e1dbc9bf2da3f83c83f08b603c1567a34886ac308c88e2faba6fdaf292bf39dc35e384943070ddf9c627eb45.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
