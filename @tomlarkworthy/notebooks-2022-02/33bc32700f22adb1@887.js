@@ -103,9 +103,9 @@ Plot.plot({
 function _14(md){return(
 md`The stack transform stacks from a zero baseline by default, but this can be changed with the *offset* option. Four offset methods are supported:
 
-* *silhouette* - centered, as proposed by [Havre *et al.*](https://innovis.cpsc.ucalgary.ca/innovis/uploads/Courses/InformationVisualizationDetails2009/Havre2000.pdf)
+* *center* - as proposed by [Havre *et al.*](https://innovis.cpsc.ucalgary.ca/innovis/uploads/Courses/InformationVisualizationDetails2009/Havre2000.pdf)
 * *wiggle* - minimizing movement, as proposed by [Byron & Wattenberg](http://leebyron.com/streamgraph/stackedgraphs_byron_wattenberg.pdf)
-* *expand* - normalized to proportions in [0, 1]
+* *normalize* - normalized to proportions in [0, 1]
 * null - a zero baseline
 
 The first two offsets are also called “streamgraphs” for their fluid appearance.`
@@ -118,7 +118,7 @@ Plot.plot({
     label: "↑ Unemployed (thousands)"
   },
   marks: [
-    Plot.areaY(unemployment, Plot.stackY({offset: "silhouette", x: "date", y: "unemployed", fill: "industry"}))
+    Plot.areaY(unemployment, Plot.stackY({offset: "center", x: "date", y: "unemployed", fill: "industry"}))
   ]
 })
 )}
