@@ -2,7 +2,7 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Interactive Circular Barcode Exploration`
+md`# Circular Barcode Simulator`
 )}
 
 async function _2(FileAttachment,md){return(
@@ -233,7 +233,7 @@ md`
 )}
 
 function _27(md){return(
-md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, once of which is the field-of-view and fixed by hardware.`
+md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed by hardware.`
 )}
 
 function _offset_pinhole(Inputs){return(
@@ -275,7 +275,7 @@ Inputs.toggle({
 )}
 
 function _34(md){return(
-md`With these parameters, we can simulate expected pixel values on our image. Note how adjusting the angle creates the vanishing effect, and note how the field of view further modulates the effect. I have normalized all the params so it's easy to simulate in resolution-independant scales.`
+md`With these parameters, we can simulate expected pixel values for a given projection on our image. Note how adjusting the angle creates the vanishing effect, and note how the field of view further modulates the effect. I have normalized all the params so it's easy to simulate in resolution-independant scales.`
 )}
 
 function _pinhole(width,fov_pinhole,useAngleCoorection,templateData,template){return(
@@ -424,7 +424,7 @@ md`## Grid search best fit
 )}
 
 function _48(md){return(
-md`A stupidly simple way of template matching is exhaustively trying all the pose combinations. This is a three dimensional problem, but with an O(n^4) time complexity. I can just about manage to split each dimension into 50 pieces, but is not enough to solve the problem. I have had more luck using lower steps per dim and manually trimming the search space, but clearly this approach is doomed.`
+md`A stupidly simple way of template matching is exhaustively trying all the pose combinations. This is a three dimensional problem, but with an O(n^4) time complexity. I can just about manage to split each dimension into 50 pieces, but is not enough to solve the problem. I have had more luck using lower steps per dim and manually trimming the search space, then following up with a high step per sim search to find the best match, but clearly, this approach is doomed for a fully automated solition.`
 )}
 
 function _useBestFit(Inputs){return(
@@ -517,7 +517,7 @@ md`## Fine tune with Local Patch Search`
 )}
 
 function _58(md){return(
-md`When in the vicinity of a good match, you can find tune with the following routine, this can drive the match to the local minima`
+md`When in the vicinity of a good match, you can find tune with the following routine.`
 )}
 
 function _precision_patch(Inputs){return(
@@ -595,7 +595,7 @@ After lots of iteration, I am pleased to have achieved accurate template matches
 function _64(md){return(
 md`## Next steps
 
-Grid search is not the path forward. Furthermore, I think intensity-based detection is a bad idea and will switch to feature-based (e.g. edge detection) models to avoid the computation complexity of integrating pixels. Future work will be added to the collection.`
+Grid search is not the path forward. Furthermore, I think intensity-based detection is a bad idea and will switch to feature-based (e.g. edge detection) models to avoid the computation complexity of integrating pixels. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning).`
 )}
 
 function _height(){return(
