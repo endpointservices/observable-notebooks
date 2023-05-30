@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/circular-barcode-simulator",
+  "main": "4fe413fb2e36d2a3@2929.js",
+  "version": "2929.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/circular-barcode-simulator",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}

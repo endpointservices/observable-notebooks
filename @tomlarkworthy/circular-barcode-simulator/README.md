@@ -1,0 +1,33 @@
+# Interactive Circular Barcode Exploration
+
+https://observablehq.com/@tomlarkworthy/circular-barcode-simulator@2929
+
+View this notebook in your browser by running a web server in this folder. For
+example:
+
+~~~sh
+npx http-server
+~~~
+
+Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
+import this module directly into your application. To npm install:
+
+~~~sh
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/d/4fe413fb2e36d2a3@2929.tgz?v=3
+~~~
+
+Then, import your notebook and the runtime as:
+
+~~~js
+import {Runtime, Inspector} from "@observablehq/runtime";
+import define from "@tomlarkworthy/circular-barcode-simulator";
+~~~
+
+To log the value of the cell named “foo”:
+
+~~~js
+const runtime = new Runtime();
+const main = runtime.module(define);
+main.value("foo").then(value => console.log(value));
+~~~
