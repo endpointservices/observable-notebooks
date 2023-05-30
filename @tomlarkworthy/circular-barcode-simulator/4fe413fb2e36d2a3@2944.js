@@ -598,8 +598,12 @@ md`## Next steps
 Grid search is not the path forward. Furthermore, I think intensity-based detection is a bad idea and will switch to feature-based (e.g. edge detection) models to avoid the computation complexity of integrating pixels. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning).`
 )}
 
-function _height(){return(
-401
+function _65(md){return(
+md`---`
+)}
+
+function _66(md){return(
+md`##### extra stuff`
 )}
 
 async function _THREE(require)
@@ -609,10 +613,6 @@ async function _THREE(require)
   return THREE;
 }
 
-
-function _renders(){return(
-0
-)}
 
 function _68(synthetic,htl){return(
 htl.html`<details>
@@ -627,7 +627,15 @@ htl.html`<svg width=1600 xmlns="http://www.w3.org/2000/svg" viewBox="-${template
 </svg>`
 )}
 
-function _71(footer){return(
+function _height(){return(
+401
+)}
+
+function _renders(){return(
+0
+)}
+
+function _73(footer){return(
 footer
 )}
 
@@ -724,15 +732,17 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["Inputs","score_template_fit","current","step_size","viewof offset_pinhole","viewof scale_pinhole","viewof angle_pinhole","Event"], _62);
   main.variable(observer()).define(["FileAttachment","md"], _63);
   main.variable(observer()).define(["md"], _64);
-  main.variable(observer("height")).define("height", _height);
+  main.variable(observer()).define(["md"], _65);
+  main.variable(observer()).define(["md"], _66);
   main.variable(observer("THREE")).define("THREE", ["require"], _THREE);
+  main.variable(observer()).define(["synthetic","htl"], _68);
+  main.variable(observer("synthetic")).define("synthetic", ["template","htl"], _synthetic);
+  main.variable(observer("height")).define("height", _height);
   main.define("initial renders", _renders);
   main.variable(observer("mutable renders")).define("mutable renders", ["Mutable", "initial renders"], (M, _) => new M(_));
   main.variable(observer("renders")).define("renders", ["mutable renders"], _ => _.generator);
-  main.variable(observer()).define(["synthetic","htl"], _68);
-  main.variable(observer("synthetic")).define("synthetic", ["template","htl"], _synthetic);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _71);
+  main.variable(observer()).define(["footer"], _73);
   return main;
 }

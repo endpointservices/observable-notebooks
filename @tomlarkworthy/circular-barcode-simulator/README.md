@@ -1,6 +1,6 @@
 # Circular Barcode Simulator
 
-https://observablehq.com/@tomlarkworthy/circular-barcode-simulator@2937
+https://observablehq.com/@tomlarkworthy/circular-barcode-simulator@2944
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/4fe413fb2e36d2a3@2937.tgz?v=3
+npm install https://api.observablehq.com/d/4fe413fb2e36d2a3@2944.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
