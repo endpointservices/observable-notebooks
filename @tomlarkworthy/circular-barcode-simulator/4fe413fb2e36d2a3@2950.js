@@ -5,7 +5,11 @@ function _1(md){return(
 md`# Circular Barcode Simulator`
 )}
 
-async function _2(FileAttachment,md){return(
+function _2(md){return(
+md`## Low cost Positioning`
+)}
+
+async function _3(FileAttachment,md){return(
 md`I've been thinking for a while about how to do low-cost, high-speed optical positioning for robots ([11 years in fact](https://edinburghhacklab.com/2012/05/optical-localization-to-0-1mm-no-problemo/)!). I said 11 years ago, and I still think it's true today, that we can build robots cheaper by measuring end effectors directly using optical means. However, what stumped me was how to get low latency, high-frequency measurements. Commercial robot arms sample their position at 1 - 100 kHz, yet affordable digital cameras sample at only 30Hz. For optical positioning to be useful for robots, we must close that gap without buying expensive cameras and computers.
 
 A few things have happened in the last 11 years though. [Raspberry PI camera can achieve 1000 frame-per-second](https://hackaday.com/2020/03/11/getting-1000-fps-out-of-the-raspberry-pi-camera/) with a [raspiraw](https://github.com/raspberrypi/raspiraw). It works by reading scan lines directly from the sensor, you can't get lower latency than that, and it's packaged into an easy-to-modify program! So we have the hardware now, but unfortunately, that's not the only obsticle.
@@ -24,7 +28,7 @@ So here we are. Circular barcodes have a nice property that they are readable fr
 Now we still have to program a recognizer and make it efficient for use on a Raspberry PI. This notebook builds a simulator and basic template detector. The template detector within is nowhere near efficient enough for deployment, I am using it just to double check the problem is simulatable and solvable within this reactive notebook environment.`
 )}
 
-function _3(md){return(
+function _4(md){return(
 md`## Camera simulation
 
 [three.js](https://threejs.org/) simulation. This is our model of a camera. You can pan and zoom with the mouse to alter the pose of the barcode relative to the camera.`
@@ -132,7 +136,7 @@ function _overlay(html,width,height,scanY,canvas,invalidation)
 }
 
 
-function _13(md){return(
+function _14(md){return(
 md`## Scan line sampler
 
 We expect to be able to recognise a barcode from a single scan that passes through the center of the barcode. So this section allows you to choose the scan line position and visualize the available signal.`
@@ -158,11 +162,11 @@ function _scanline(renders,pixelBuffer,scanY,width)
 }
 
 
-function _16(Plot,scanline){return(
+function _17(Plot,scanline){return(
 Plot.auto(scanline, {x: "x", y: "v"}).plot({width: 1000})
 )}
 
-function _17(md){return(
+function _18(md){return(
 md`## Barcode Template
 
 To test this problem is possible, we skip barcode decoding and just concentrate on recognizing a *known* barcode pattern. We express the expected barcode as a binary string.`
@@ -185,11 +189,11 @@ template.flatMap((v, i) => [
 ])
 )}
 
-function _20(Plot,templateData){return(
+function _21(Plot,templateData){return(
 Plot.auto(templateData, {x: "x", y: "y", color: "#ff5375"}).plot()
 )}
 
-function _21(md){return(
+function _22(md){return(
 md`## Projecting the template
 
 The barcode will appear somewhere in the scan-line deformed by perspective geometry. Translation and scale are obvious, but more complex is the effect of orientation. Note an evenly spaced barcode will end up observed as a non-evenly spaced pattern due to vanishing distance.`
@@ -199,11 +203,11 @@ function _image2(FileAttachment){return(
 FileAttachment("image@2.png").image({ width: 400 })
 )}
 
-function _23(md){return(
+function _24(md){return(
 md`## Pinhole Camera model `
 )}
 
-function _24(md){return(
+function _25(md){return(
 md`We can calculate the spacings by considering the angle that that the barcode is relative to the camera position.`
 )}
 
@@ -211,7 +215,7 @@ function _image5(FileAttachment){return(
 FileAttachment("image@5.png").image({ width: 400 })
 )}
 
-function _26(md){return(
+function _27(md){return(
 md`
 \`\`\`
    cos(x) * c = cos(a) * b - d
@@ -232,7 +236,7 @@ md`
 `
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed by hardware.`
 )}
 
@@ -263,7 +267,7 @@ Inputs.range([0.00001, Math.PI], {
 })
 )}
 
-function _32(md){return(
+function _33(md){return(
 md`The pinhole model assumes the angle related directly to the pixel coordinates, which leads to very warped images. Real cameras project the angle to a flat plane sensor, which is what the angle correction toggle does below.`
 )}
 
@@ -274,7 +278,7 @@ Inputs.toggle({
 })
 )}
 
-function _34(md){return(
+function _35(md){return(
 md`With these parameters, we can simulate expected pixel values for a given projection on our image. Note how adjusting the angle creates the vanishing effect, and note how the field of view further modulates the effect. I have normalized all the params so it's easy to simulate in resolution-independant scales.`
 )}
 
@@ -309,7 +313,7 @@ function _pinhole(width,fov_pinhole,useAngleCoorection,templateData,template){re
 }
 )}
 
-function _36(Plot,projectedPinholeData){return(
+function _37(Plot,projectedPinholeData){return(
 Plot.auto(projectedPinholeData, {x: "x", y: "y"}).plot()
 )}
 
@@ -324,11 +328,11 @@ Array.from({ length: width }).map((_, x) => ({
 }))
 )}
 
-function _38(md){return(
+function _39(md){return(
 md`## Template Fitting`
 )}
 
-function _39(md){return(
+function _40(md){return(
 md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. This is probably not the best way to calculating error, but its good enough to calibrate the math.
 
 The following plot is reactive to the other parts of the notebook so you can manually adjust this.`
@@ -393,7 +397,7 @@ Inputs.toggle({
 })
 )}
 
-function _46(Plot,showTemplate,fitData,showScan,showError,meanError,width){return(
+function _47(Plot,showTemplate,fitData,showScan,showError,meanError,width){return(
 Plot.plot({
   y: {
     domain: [0, 1]
@@ -418,12 +422,12 @@ Plot.plot({
 })
 )}
 
-function _47(md){return(
+function _48(md){return(
 md`## Grid search best fit
 #### ⚠️ slow!`
 )}
 
-function _48(md){return(
+function _49(md){return(
 md`A stupidly simple way of template matching is exhaustively trying all the pose combinations. This is a three dimensional problem, but with an O(n^4) time complexity. I can just about manage to split each dimension into 50 pieces, but is not enough to solve the problem. I have had more luck using lower steps per dim and manually trimming the search space, then following up with a high step per sim search to find the best match, but clearly, this approach is doomed for a fully automated solition.`
 )}
 
@@ -512,11 +516,11 @@ function _bestFit(useBestFit,offset_range,steps,scale_range,angle_range,score_te
 }
 
 
-function _57(md){return(
+function _58(md){return(
 md`## Fine tune with Local Patch Search`
 )}
 
-function _58(md){return(
+function _59(md){return(
 md`When in the vicinity of a good match, you can find tune with the following routine.`
 )}
 
@@ -542,7 +546,7 @@ function _current(offset_pinhole,angle_pinhole,scale_pinhole){return(
 }
 )}
 
-function _62(Inputs,score_template_fit,current,step_size,$0,$1,$2,Event){return(
+function _63(Inputs,score_template_fit,current,step_size,$0,$1,$2,Event){return(
 Inputs.button("step", {
   reduce: () => {
     let currentScore = score_template_fit(current);
@@ -573,7 +577,7 @@ Inputs.button("step", {
 })
 )}
 
-async function _63(FileAttachment,md){return(
+async function _64(FileAttachment,md){return(
 md`## Results
 
 After lots of iteration, I am pleased to have achieved accurate template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. This notebook can serve as the base fork for better algorithms.
@@ -592,17 +596,17 @@ After lots of iteration, I am pleased to have achieved accurate template matches
 `
 )}
 
-function _64(md){return(
+function _65(md){return(
 md`## Next steps
 
 Grid search is not the path forward. Furthermore, I think intensity-based detection is a bad idea and will switch to feature-based (e.g. edge detection) models to avoid the computation complexity of integrating pixels. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning).`
 )}
 
-function _65(md){return(
+function _66(md){return(
 md`---`
 )}
 
-function _66(md){return(
+function _67(md){return(
 md`##### extra stuff`
 )}
 
@@ -614,7 +618,7 @@ async function _THREE(require)
 }
 
 
-function _68(synthetic,htl){return(
+function _69(synthetic,htl){return(
 htl.html`<details>
   <summary>synthetic image</summary>
   ${synthetic}
@@ -635,7 +639,7 @@ function _renders(){return(
 0
 )}
 
-function _73(footer){return(
+function _74(footer){return(
 footer
 )}
 
@@ -651,8 +655,9 @@ export default function define(runtime, observer) {
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["FileAttachment","md"], _2);
-  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _2);
+  main.variable(observer()).define(["FileAttachment","md"], _3);
+  main.variable(observer()).define(["md"], _4);
   main.variable(observer("viewof imageSource")).define("viewof imageSource", ["Inputs"], _imageSource);
   main.variable(observer("imageSource")).define("imageSource", ["Generators", "viewof imageSource"], (G, _) => G.input(_));
   main.variable(observer("renderer")).define("renderer", ["THREE"], _renderer);
@@ -664,22 +669,22 @@ export default function define(runtime, observer) {
   main.variable(observer("fov")).define("fov", ["Generators", "viewof fov"], (G, _) => G.input(_));
   main.variable(observer("canvas")).define("canvas", ["THREE","camera","renderer","invalidation","width","height","render","html"], _canvas);
   main.variable(observer("overlay")).define("overlay", ["html","width","height","scanY","canvas","invalidation"], _overlay);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
   main.variable(observer("viewof scanY")).define("viewof scanY", ["Inputs","height"], _scanY);
   main.variable(observer("scanY")).define("scanY", ["Generators", "viewof scanY"], (G, _) => G.input(_));
   main.variable(observer("scanline")).define("scanline", ["renders","pixelBuffer","scanY","width"], _scanline);
-  main.variable(observer()).define(["Plot","scanline"], _16);
-  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["Plot","scanline"], _17);
+  main.variable(observer()).define(["md"], _18);
   main.variable(observer("template")).define("template", _template);
   main.variable(observer("templateData")).define("templateData", ["template"], _templateData);
-  main.variable(observer()).define(["Plot","templateData"], _20);
-  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["Plot","templateData"], _21);
+  main.variable(observer()).define(["md"], _22);
   main.variable(observer("image2")).define("image2", ["FileAttachment"], _image2);
-  main.variable(observer()).define(["md"], _23);
   main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("image5")).define("image5", ["FileAttachment"], _image5);
-  main.variable(observer()).define(["md"], _26);
   main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("viewof offset_pinhole")).define("viewof offset_pinhole", ["Inputs"], _offset_pinhole);
   main.variable(observer("offset_pinhole")).define("offset_pinhole", ["Generators", "viewof offset_pinhole"], (G, _) => G.input(_));
   main.variable(observer("viewof scale_pinhole")).define("viewof scale_pinhole", ["Inputs"], _scale_pinhole);
@@ -688,15 +693,15 @@ export default function define(runtime, observer) {
   main.variable(observer("angle_pinhole")).define("angle_pinhole", ["Generators", "viewof angle_pinhole"], (G, _) => G.input(_));
   main.variable(observer("viewof fov_pinhole")).define("viewof fov_pinhole", ["Inputs","camera"], _fov_pinhole);
   main.variable(observer("fov_pinhole")).define("fov_pinhole", ["Generators", "viewof fov_pinhole"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _32);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("viewof useAngleCoorection")).define("viewof useAngleCoorection", ["Inputs"], _useAngleCoorection);
   main.variable(observer("useAngleCoorection")).define("useAngleCoorection", ["Generators", "viewof useAngleCoorection"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _34);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("pinhole")).define("pinhole", ["width","fov_pinhole","useAngleCoorection","templateData","template"], _pinhole);
-  main.variable(observer()).define(["Plot","projectedPinholeData"], _36);
+  main.variable(observer()).define(["Plot","projectedPinholeData"], _37);
   main.variable(observer("projectedPinholeData")).define("projectedPinholeData", ["width","pinhole","offset_pinhole","scale_pinhole","angle_pinhole"], _projectedPinholeData);
-  main.variable(observer()).define(["md"], _38);
   main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["md"], _40);
   main.variable(observer("fitData")).define("fitData", ["width","scanline","pinhole","offset_pinhole","scale_pinhole","angle_pinhole"], _fitData);
   main.variable(observer("meanError")).define("meanError", ["d3","fitData"], _meanError);
   main.variable(observer("score_template_fit")).define("score_template_fit", ["width","scanline","pinhole"], _score_template_fit);
@@ -706,9 +711,9 @@ export default function define(runtime, observer) {
   main.variable(observer("showScan")).define("showScan", ["Generators", "viewof showScan"], (G, _) => G.input(_));
   main.variable(observer("viewof showError")).define("viewof showError", ["Inputs"], _showError);
   main.variable(observer("showError")).define("showError", ["Generators", "viewof showError"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Plot","showTemplate","fitData","showScan","showError","meanError","width"], _46);
-  main.variable(observer()).define(["md"], _47);
+  main.variable(observer()).define(["Plot","showTemplate","fitData","showScan","showError","meanError","width"], _47);
   main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("viewof useBestFit")).define("viewof useBestFit", ["Inputs"], _useBestFit);
   main.variable(observer("useBestFit")).define("useBestFit", ["Generators", "viewof useBestFit"], (G, _) => G.input(_));
   main.variable(observer("viewof steps")).define("viewof steps", ["Inputs"], _steps);
@@ -723,19 +728,19 @@ export default function define(runtime, observer) {
   main.variable(observer("bestFit")).define("bestFit", ["useBestFit","offset_range","steps","scale_range","angle_range","score_template_fit"], _bestFit);
   const child1 = runtime.module(define1);
   main.import("interval", child1);
-  main.variable(observer()).define(["md"], _57);
   main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["md"], _59);
   main.variable(observer("viewof precision_patch")).define("viewof precision_patch", ["Inputs"], _precision_patch);
   main.variable(observer("precision_patch")).define("precision_patch", ["Generators", "viewof precision_patch"], (G, _) => G.input(_));
   main.variable(observer("step_size")).define("step_size", ["precision_patch"], _step_size);
   main.variable(observer("current")).define("current", ["offset_pinhole","angle_pinhole","scale_pinhole"], _current);
-  main.variable(observer()).define(["Inputs","score_template_fit","current","step_size","viewof offset_pinhole","viewof scale_pinhole","viewof angle_pinhole","Event"], _62);
-  main.variable(observer()).define(["FileAttachment","md"], _63);
-  main.variable(observer()).define(["md"], _64);
+  main.variable(observer()).define(["Inputs","score_template_fit","current","step_size","viewof offset_pinhole","viewof scale_pinhole","viewof angle_pinhole","Event"], _63);
+  main.variable(observer()).define(["FileAttachment","md"], _64);
   main.variable(observer()).define(["md"], _65);
   main.variable(observer()).define(["md"], _66);
+  main.variable(observer()).define(["md"], _67);
   main.variable(observer("THREE")).define("THREE", ["require"], _THREE);
-  main.variable(observer()).define(["synthetic","htl"], _68);
+  main.variable(observer()).define(["synthetic","htl"], _69);
   main.variable(observer("synthetic")).define("synthetic", ["template","htl"], _synthetic);
   main.variable(observer("height")).define("height", _height);
   main.define("initial renders", _renders);
@@ -743,6 +748,6 @@ export default function define(runtime, observer) {
   main.variable(observer("renders")).define("renders", ["mutable renders"], _ => _.generator);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _73);
+  main.variable(observer()).define(["footer"], _74);
   return main;
 }
