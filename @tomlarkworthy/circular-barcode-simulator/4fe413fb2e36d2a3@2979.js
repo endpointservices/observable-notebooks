@@ -312,13 +312,11 @@ Array.from({ length: width }).map((_, x) => ({
 )}
 
 function _38(md){return(
-md`## Template Fitting`
+md`## Intensity-based Template Fitting`
 )}
 
 function _39(md){return(
-md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. This is probably not the best way to calculating error, but its good enough to calibrate the math.
-
-The following plot is reactive to the other parts of the notebook so you can manually adjust this.`
+md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. Adjusting other parameters in the notebook updates this plot`
 )}
 
 function _fitData(width,scanline,pinhole,offset_pinhole,scale_pinhole,angle_pinhole){return(
@@ -410,8 +408,8 @@ md`## Grid search best fit
 #### ⚠️ slow!`
 )}
 
-function _48(md){return(
-md`A stupidly simple way of template matching is exhaustively trying all the pose combinations. This is a three dimensional problem, but with an O(n^4) time complexity. I can just about manage to split each dimension into 50 pieces, but is not enough to solve the problem. I have had more luck using lower steps per dim and manually trimming the search space, then following up with a high step per sim search to find the best match, but clearly, this approach is doomed for a fully automated solition.`
+function _48(tex,md){return(
+md`A simple way of template matching is exhaustively trying all the pose combinations. However, this is a three dimensional problem with an ${tex`O(n^4)`} time complexity. My computer can handle 50 steps per dimension, but this is not high enough to solve the problem. I have had luck using 5 steps per dim interactively, manually trimming the search space, then following up with a high step per dimension to get the best match in a small search space. Remember to turn off grid search so you can then fine tune the final estimate.`
 )}
 
 function _useBestFit(Inputs){return(
@@ -695,7 +693,7 @@ export default function define(runtime, observer) {
   main.variable(observer("showError")).define("showError", ["Generators", "viewof showError"], (G, _) => G.input(_));
   main.variable(observer()).define(["Plot","showTemplate","fitData","showScan","showError","meanError","width"], _46);
   main.variable(observer()).define(["md"], _47);
-  main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["tex","md"], _48);
   main.variable(observer("viewof useBestFit")).define("viewof useBestFit", ["Inputs"], _useBestFit);
   main.variable(observer("useBestFit")).define("useBestFit", ["Generators", "viewof useBestFit"], (G, _) => G.input(_));
   main.variable(observer("viewof steps")).define("viewof steps", ["Inputs"], _steps);
