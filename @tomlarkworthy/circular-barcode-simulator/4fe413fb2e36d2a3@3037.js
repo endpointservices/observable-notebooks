@@ -8,7 +8,7 @@ md`# Toward Fast Pose Estimation by Exploiting Circular Barcode Geometry`
 function _2(md){return(
 md`I've spent over a [decade](https://edinburghhacklab.com/2012/05/optical-localization-to-0-1mm-no-problemo/) exploring the potential of low-cost, high-speed optical positioning for robots, aiming to reduce costs through camera-based end effector measurements. However, the challenge lies in achieving low-latency, high-frequency measurements comparable to those of commercial robot arms, which are 10,000 times per second, far beyond the capabilities of affordable 30 frames per second digital cameras. Recent technological advancements have somewhat closed this gap: for instance, a Raspberry PI camera utilizing raspiraw can [reach 1000 frames-per-second](https://hackaday.com/2020/03/11/getting-1000-fps-out-of-the-raspberry-pi-camera/), providing a low-latency hardware solution.
 
-Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the robotics environment and harnessing technologies like circular barcodes which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task. This notebook presents a simulator setup and a basic scan line-based template detector algorithm to verify the feasibility of the approach.`
+Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the robotics environment and harnessing technologies like circular barcodes which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task. This notebook presents a open-source simulator setup and a basic scan line-based template detector algorithm to verify the feasibility of the approach.`
 )}
 
 function _3(md){return(
@@ -561,7 +561,7 @@ Inputs.button("step", {
 async function _63(FileAttachment,md){return(
 md`## Results
 
-After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. 
+After lots of bug fixes, I am pleased that it is possible to achieve very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes as show below.
 
 <figure>
   ${await FileAttachment("image@9.png").image({width: 600})}
@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased to have achieved very good template matche
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice, a drastic reduction in problem complexity.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice, a drastic reduction in underlying problem complexity.
 
 `
 )}
@@ -581,7 +581,7 @@ The theory that circular barcodes can be read at any pose checks out! This demon
 function _64(md){return(
 md`## Next steps
 
-Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a you-only-look-once (YOLO) algorithm to suit hardware. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
+Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a streaming algorithm to suit hardware implementation. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks.`
 )}
 
 function _65(md){return(
