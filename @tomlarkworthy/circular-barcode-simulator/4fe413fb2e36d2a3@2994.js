@@ -2,7 +2,7 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Circular Barcode Simulator`
+md`# Using Circular Barcode for Efficient Pose Estimation`
 )}
 
 function _2(md){return(
@@ -220,7 +220,7 @@ md`
 )}
 
 function _27(md){return(
-md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed by hardware.`
+md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed. So pose estimation on a scan line is a 3 dimensional problem`
 )}
 
 function _offset_pinhole(Inputs){return(
@@ -561,7 +561,7 @@ Inputs.button("step", {
 async function _63(FileAttachment,md){return(
 md`## Results
 
-After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. The theory that circular barcodes can be read at any pose checks out! This notebook can serve as the base fork for better algorithms.
+After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. 
 
 <figure>
   ${await FileAttachment("image@9.png").image({width: 600})}
@@ -573,6 +573,9 @@ After lots of bug fixes, I am pleased to have achieved very good template matche
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes reduce the problem to a 3DOF pose estimation on a 1DOF space. With two scan lines you could retrieve a 5DOF pose. If you know the size of the barcode, you can do full 6DOF estimation without even needed to search the full space.
+
+This notebook can serve as the base fork for better algorithms.
 
 `
 )}
