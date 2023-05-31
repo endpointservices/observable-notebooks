@@ -409,7 +409,7 @@ md`## Grid search best fit
 )}
 
 function _48(tex,md){return(
-md`A simple way of template matching is exhaustively trying all the pose combinations. However, this is a three dimensional problem with an ${tex`O(n^4)`} time complexity. My computer can handle 50 steps per dimension, but this is not high enough to solve the problem. I have had luck using 5 steps per dim interactively, manually trimming the search space, then following up with a high step per dimension to get the best match in a small search space. Remember to turn off grid search so you can then fine tune the final estimate.`
+md`A simple way of template matching is exhaustively trying all the pose combinations. However, this is a three dimensional problem with an ${tex`O(n^4)`} time complexity. My computer can handle 50 steps per dimension, but this is not high enough to solve the problem without help. I have had luck using 5 steps per dim interactively, manually trimming the search space, then following up with a high step per dimension to get the best match in a small search space. Remember to turn off grid search so you can then fine tune the final estimate.`
 )}
 
 function _useBestFit(Inputs){return(
@@ -561,7 +561,7 @@ Inputs.button("step", {
 async function _63(FileAttachment,md){return(
 md`## Results
 
-After lots of iteration, I am pleased to have achieved accurate template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. This notebook can serve as the base fork for better algorithms.
+After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. This notebook can serve as the base fork for better algorithms.
 
 <figure>
   ${await FileAttachment("image@9.png").image({width: 600})}
@@ -570,7 +570,7 @@ After lots of iteration, I am pleased to have achieved accurate template matches
 
 <figure>
   ${await FileAttachment("image@7.png").image({width: 400})}
-  <figcaption>Mean error of 0.014 achieved on the barcode above</figcaption>
+  <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
 
@@ -580,7 +580,7 @@ After lots of iteration, I am pleased to have achieved accurate template matches
 function _64(md){return(
 md`## Next steps
 
-Grid search is not the path forward. Furthermore, I think intensity-based detection is a bad idea and will switch to feature-based (e.g. edge detection) models to avoid the computation complexity of integrating pixels. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning).`
+Grid search is not the path forward. In general, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop in the scoring function. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
 )}
 
 function _65(md){return(
