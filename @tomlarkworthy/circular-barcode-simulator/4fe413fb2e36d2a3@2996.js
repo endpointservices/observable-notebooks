@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased to have achieved very good template matche
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes reduce the problem to a 3DOF pose estimation on a 1DOF space. With two scan lines you could retrieve a 5DOF pose. If you know the size of the barcode, you can do full 6DOF estimation without even needed to search the full space.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes reduce the problem to a 3 degree-of-freedom pose estimation problem on a 1 dimensional space. With two scan lines you could retrieve a 5 dimentional pose. If you knew the size of the barcode, you can do full 6 degree-of-freedom pose estimation without searching the full space.
 
 This notebook can serve as the base fork for better algorithms.
 
