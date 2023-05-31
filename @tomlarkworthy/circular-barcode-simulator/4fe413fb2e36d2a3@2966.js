@@ -16,16 +16,16 @@ A few things have happened in the last 11 years though. [Raspberry PI camera can
 
 The other problem is fast landmark recognition with accurate pose estimation. Computer vision is inherently bandwidth intensive. So I have been thinking about how to make the task easier. But why is object pose detection hard? Firstly, it's slow because of dimensionality, you have to search a 2D image plane for a 6DOF-orientated object. Secondly, it's hard because objects never look the same from frame-to-frame, the so called [correspondence problem](https://dictionary.apa.org/correspondence-problem).
 
-With robotic's we get to redesign the situation to make the problem tractable. Guided by the fact we are aiming for low latency, we can imagine the ideal solution would estimate the pose as the pixels were streamed from the sensor's scan line, very close to the hardware interface. We cannot do a 2D search on a plane in this situation, the information is not local. QR codes nearly solve the problem of correspondence, but they are still slow to match. We need a barcode that can be read, regardless of the orientation of the object. 
+With robotic's we get to redesign the situation to make the problem tractable. Guided by the fact we are aiming for low latency, we can imagine the ideal solution would estimate the pose as the pixels were streamed from the sensor's scan line, very close to the hardware interface. The problem with typical object recognition is we need all pixels in memory before we can do a 2D search on an image rectangle. We can also take inspiration from other solutions to hard image recognition problems. QR barcodes solve the problem of correspondence, but they are still slow to match. Ideally we need a barcode that can be read from a single scan line of image data.
 
 <figure>
   ${await FileAttachment("image.png").image({ width: 400 })}
   <figcaption>Vintage 1970 barcode, image from [www.accuratedata.com](https://www.accuratedata.com/wordpress/index.php/tag/circular-barcodes/)</figcaption>
 </figure>
 
-So here we are. Circular barcodes have a nice property that they are readable from any angle of scan line, and that's true even after perspective deformation (projective geometry preserves straight lines). We can decode one straight from any scan line that passes through the center. A 2D recognition problem becomes 1D recognition. We still have to account for its pose effect within the scan line, but that has gone from 6DOF pose to only 3DOF too. It simplifies the problem a lot. This is not an original thought either, circular barcodes were the ORIGINAL barcode design, exactly for this very reason!
+So here we are. Circular barcodes have a nice property that they are readable from any angle of scan line, and that's true even after perspective deformation (projective geometry preserves straight lines). We can decode one straight from any scan line that passes through the center. A 2D recognition problem becomes 1D recognition. We still have to account for its pose effect within the scan line, but that has gone from 6DOF pose estimation to only 3DOF too. It simplifies the problem a lot. This is not an original thought either, circular barcodes were the ORIGINAL barcode design, exactly for this very reason!
 
-Now we still have to program a recognizer and make it efficient for use on a Raspberry PI. This notebook builds a simulator and basic template detector. The template detector within is nowhere near efficient enough for deployment, I am using it just to double check the problem is simulatable and solvable within this reactive notebook environment.`
+This notebook is a simulator setup and basic scan line-based template detector algorithm. I will use this as a baseline for building an efficient circular barcode detector, whose ultimate purpose is to be run on hardware.`
 )}
 
 function _4(md){return(
