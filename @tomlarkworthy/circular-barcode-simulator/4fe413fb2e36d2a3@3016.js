@@ -581,7 +581,7 @@ The theory that circular barcodes can be read at any pose checks out! This demon
 function _64(md){return(
 md`## Next steps
 
-Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a you-only-look-once (YOLO) algorithm. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
+Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a you-only-look-once (YOLO) algorithm to suit hardware. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
 )}
 
 function _65(md){return(
