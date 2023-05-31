@@ -561,11 +561,11 @@ Inputs.button("step", {
 async function _63(FileAttachment,md){return(
 md`## Results
 
-After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. This notebook can serve as the base fork for better algorithms.
+After lots of bug fixes, I am pleased to have achieved very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes. The theory that circular barcodes can be read at any pose checks out! This notebook can serve as the base fork for better algorithms.
 
 <figure>
   ${await FileAttachment("image@9.png").image({width: 600})}
-  <figcaption>Barcode is angled in two axis</figcaption>
+  <figcaption>I angled the barcode awkwardly to the scan line </figcaption>
 </figure>
 
 <figure>
