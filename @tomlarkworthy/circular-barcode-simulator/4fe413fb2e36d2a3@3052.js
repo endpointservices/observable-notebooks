@@ -122,7 +122,7 @@ function _overlay(html,width,height,scanY,canvas,invalidation)
 function _13(md){return(
 md`## Scan line sampler
 
-We expect to be able to recognise a barcode from a single scan that passes through the center of the barcode. So this section allows you to choose the scan line position and visualize the available signal.`
+We expect to be able to recognize a barcode from a single scan that passes through the center of the barcode. Here you choose the scan line position and visualize the available signal.`
 )}
 
 function _scanY(Inputs,height){return(
@@ -152,7 +152,7 @@ Plot.auto(scanline, {x: "x", y: "v"}).plot({width: 1000})
 function _17(md){return(
 md`## Barcode Template
 
-We skip barcode decoding for now and concentrate on recognising the *known* barcode pattern expressed as a binary string.`
+We skip barcode decoding for now and concentrate on recognizing the *known* barcode pattern expressed as a binary string.`
 )}
 
 function _template()
@@ -179,7 +179,7 @@ Plot.auto(templateData, {x: "x", y: "y", color: "#ff5375"}).plot()
 function _21(md){return(
 md`## Projecting the template
 
-The barcode will appear somewhere in the scan-line deformed by perspective geometry. Translation and scale are obvious, but more complex is the effect of orientation. Note an evenly spaced barcode will end up observed as a non-evenly spaced pattern due to vanishing distance effects`
+The barcode will appear somewhere in the scan line deformed by perspective geometry. Translation and scale are obvious, but more complex is the effect of orientation. Note an evenly spaced barcode will end up observed as a non-evenly spaced pattern due to vanishing distance effects`
 )}
 
 function _image2(FileAttachment){return(
@@ -316,7 +316,7 @@ md`## Estimate the goodness-of-fit of a proposed pose`
 )}
 
 function _39(md){return(
-md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. This visualization is reactive to the parameters elsewhere in the notebook.`
+md`Given the camera model and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. This visualization is reactive to the parameters elsewhere in the notebook.`
 )}
 
 function _fitData(width,scanline,pinhole,offset_pinhole,scale_pinhole,angle_pinhole){return(
@@ -404,12 +404,12 @@ Plot.plot({
 )}
 
 function _47(md){return(
-md`## Grid search best fit
+md`## Grid searching a best fit
 #### ⚠️ slow!`
 )}
 
 function _48(tex,md){return(
-md`A simple way of template matching is exhaustively trying all the pose combinations. However, this is a three dimensional problem with an ${tex`O(n^4)`} time complexity. My computer can handle 50 steps per dimension, but this is not high enough to solve the problem without help. I have had luck using 5 steps per dim interactively, manually trimming the search space, then following up with a high step per dimension to get the best match in a small search space. Remember to turn off grid search so you can then fine tune the final estimate.`
+md`A simple way of template matching is exhaustively trying all the pose combinations. However, this is a three-dimensional problem with an ${tex`O(n^4)`} time complexity. My computer can handle 50 steps per dimension, but this is not high enough to solve the problem without help. I have had luck using 5 steps per dim interactively, manually trimming the search space, then following up with a high step per dimension to get the best match in a small search space. Remember to turn off grid search so you can then fine-tune the final estimate.`
 )}
 
 function _useBestFit(Inputs){return(
@@ -498,7 +498,7 @@ function _bestFit(useBestFit,offset_range,steps,scale_range,angle_range,score_te
 
 
 function _57(md){return(
-md`## Fine tune with Local Patch Search`
+md`## Fine-tune with Local Patch Search`
 )}
 
 function _58(md){return(
@@ -561,7 +561,7 @@ Inputs.button("step", {
 async function _63(FileAttachment,md){return(
 md`## Results
 
-After lots of bug fixes, I am pleased that it is possible to achieve very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes as show below.
+After lots of bug fixes, I am pleased that it is possible to achieve very good template matches, indicating the template is keyed in correctly and we can faithfully predict the template deformation for the camera model. This is true even with high field-of-view camera models and strangely orientated barcodes as shown below.
 
 <figure>
   ${await FileAttachment("image@9.png").image({width: 600})}
@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased that it is possible to achieve very good t
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice, a drastic reduction in underlying problem complexity.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3-degree-of-freedom problem on a 1-dimensional slice, a drastic reduction in underlying problem complexity.
 
 `
 )}
@@ -581,7 +581,7 @@ The theory that circular barcodes can be read at any pose checks out! This demon
 function _64(md){return(
 md`## Next steps
 
-Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a streaming algorithm to suit hardware implementation. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks.`
+Looking forward, I think intensity-based approaches are not going to scale well. So in future work, I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a streaming algorithm to suit hardware implementation. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks.`
 )}
 
 function _65(md){return(
