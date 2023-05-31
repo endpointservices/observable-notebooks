@@ -2,13 +2,13 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Using Circular Barcode for Efficient Pose Estimation`
+md`# Exploiting Circular Barcode Geometry for Efficient Pose Estimation`
 )}
 
 function _2(md){return(
 md`I've spent over a [decade](https://edinburghhacklab.com/2012/05/optical-localization-to-0-1mm-no-problemo/) exploring the potential of low-cost, high-speed optical positioning for robots, aiming to reduce costs through camera-based end effector measurements. However, the challenge lies in achieving low-latency, high-frequency measurements comparable to those of commercial robot arms, which are 10,000 times per second, far beyond the capabilities of affordable 30 frames per second digital cameras. Recent technological advancements have somewhat closed this gap: for instance, a Raspberry PI camera utilizing raspiraw can [reach 1000 frames-per-second](https://hackaday.com/2020/03/11/getting-1000-fps-out-of-the-raspberry-pi-camera/), providing a low-latency hardware solution.
 
-Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the robotics environment and harnessing technologies like circular barcodes which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task. This notebook presents a simulator setup and a basic scan line-based template detector algorithm as a baseline for building an efficient circular barcode detector tailored for this hardware-oriented approach.`
+Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the robotics environment and harnessing technologies like circular barcodes which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task. This notebook presents a simulator setup and a basic scan line-based template detector algorithm to verify the feasibility of the approach.`
 )}
 
 function _3(md){return(
@@ -573,9 +573,7 @@ After lots of bug fixes, I am pleased to have achieved very good template matche
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes reduce the problem to a 3 degree-of-freedom pose estimation problem on a 1 dimensional space. With two scan lines you could retrieve a 5 dimentional pose. If you knew the size of the barcode, you can do full 6 degree-of-freedom pose estimation without searching the full space.
-
-This notebook can serve as the base fork for better algorithms.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can drastically reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice.
 
 `
 )}
