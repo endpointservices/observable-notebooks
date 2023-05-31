@@ -6,7 +6,7 @@ md`# Circular Barcode Simulator`
 )}
 
 function _2(md){return(
-md`## Low cost Positioning`
+md`## For Low cost, High precision Positioning`
 )}
 
 async function _3(FileAttachment,md){return(
