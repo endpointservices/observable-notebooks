@@ -2,7 +2,7 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Exploiting Circular Barcode Geometry for Efficient Pose Estimation`
+md`# Toward Fast Pose Estimation by Exploiting Circular Barcode Geometry`
 )}
 
 function _2(md){return(
@@ -220,7 +220,7 @@ md`
 )}
 
 function _27(md){return(
-md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed. So pose estimation on a scan line is a 3 dimensional problem`
+md`We eventually arrive at the conclusion the size of the barcode and the distance from the camera are the same thing. There are only 4 important parameters, one of which is the field-of-view which is fixed. So pose estimation on a scan line becomes a 3 dimensional problem.`
 )}
 
 function _offset_pinhole(Inputs){return(
@@ -312,11 +312,11 @@ Array.from({ length: width }).map((_, x) => ({
 )}
 
 function _38(md){return(
-md`## Intensity-based Template Fitting`
+md`## Estimate the goodness-of-fit of a proposed pose`
 )}
 
 function _39(md){return(
-md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. Adjusting other parameters in the notebook updates this plot`
+md`Given the camera model, and the parameters of a template projection, we can measure the goodness-of-fit with the mean squared error of pixel intensities. This visualization is reactive to the parameters elsewhere in the notebook.`
 )}
 
 function _fitData(width,scanline,pinhole,offset_pinhole,scale_pinhole,angle_pinhole){return(
