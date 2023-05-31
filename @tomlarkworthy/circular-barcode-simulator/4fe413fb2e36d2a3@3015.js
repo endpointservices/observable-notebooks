@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased to have achieved very good template matche
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can drastically reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3 degree-of-freedom problem on a 1 dimensional slice, a drastic reduction in problem complexity.
 
 `
 )}
@@ -581,7 +581,7 @@ The theory that circular barcodes can be read at any pose checks out! This demon
 function _64(md){return(
 md`## Next steps
 
-Grid search is not the path forward. In general, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop in the scoring function. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
+Looking forward, I think intensity-based approaches are not going to scale well. So in future work I will try a feature-based approach (e.g. edge detection) to avoid the expensive inner loop and explore a you-only-look-once (YOLO) algorithm. Future work will be added to the [realtime optical positioning collection](https://observablehq.com/collection/@tomlarkworthy/realtime-optical-positioning) of notebooks`
 )}
 
 function _65(md){return(
