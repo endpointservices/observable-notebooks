@@ -2,7 +2,7 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Toward Fast Pose Estimation by Exploiting Circular Barcode Geometry`
+md`# Circular Barcodes Simplify Pose Estimation`
 )}
 
 function _2(md){return(
@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased that it is possible to achieve very good t
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3-degree-of-freedom problem on a 1-dimensional slice, a drastic reduction in underlying problem complexity.
+The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3-degree-of-freedom problem on a 1-dimensional slice, a drastic reduction in underlying problem complexity that fits hardware.
 
 `
 )}
