@@ -2,7 +2,7 @@ import define1 from "./b2bbebd2f186ed03@1803.js";
 import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Circular Barcodes Simplify Pose Estimation`
+md`# Simplifying Pose Estimation with Circular Barcodes`
 )}
 
 function _2(md){return(
