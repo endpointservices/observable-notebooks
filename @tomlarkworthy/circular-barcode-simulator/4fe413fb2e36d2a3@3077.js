@@ -6,9 +6,9 @@ md`# Simplifying Pose Estimation with Circular Barcodes`
 )}
 
 function _2(md){return(
-md`A [decade](https://edinburghhacklab.com/2012/05/optical-localization-to-0-1mm-no-problemo/) ago I hoped to build low-cost, high-speed optical positioning for robots, using camera-based end effector measurements. However, the challenge lies in achieving high-frequency measurements comparable to those of commercial robot arms, which measure 10,000 times per second, far beyond the capabilities of affordable 30 frames per second digital cameras. Recent advancements have somewhat closed this gap: for instance, a Raspberry PI camera utilizing raspiraw can [reach 1000 frames-per-second](https://www.youtube.com/watch?v=m3Bs-yhWZ3M), providing a low-latency hardware solution (see also [[1](https://hackaday.com/2019/08/10/660-fps-raspberry-pi-video-captures-the-moment-in-extreme-slo-mo/),2]).
+md`A [decade](https://edinburghhacklab.com/2012/05/optical-localization-to-0-1mm-no-problemo/) ago I hoped to build low-cost, high-speed optical positioning for robots, using camera-based end effector measurements. However, the challenge lies in achieving high-frequency measurements comparable to those of commercial robot arms, which measure 10,000 times per second, far beyond the capabilities of affordable 30 frames per second digital cameras. Recent advancements have somewhat closed this gap: for instance, a Raspberry PI camera utilizing raspiraw can [reach 1007 frames-per-second](https://www.youtube.com/watch?v=m3Bs-yhWZ3M), providing a low-latency hardware solution.
 
-Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the robotics environment and harnessing technologies like circular barcodes which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task. This notebook presents a open-source simulator setup and a basic scan line-based template detector algorithm to verify the feasibility of the approach.`
+Still, the hurdle of fast landmark recognition with accurate pose estimation remains due to the inherent bandwidth intensity of computer vision. The difficulty lies in the variability of object appearances and the high dimensionality of the task, requiring a search for a 6DOF-oriented object in a 2D image plane. However, by redesigning the problem with circular barcodes, which can be read from any angle, we can transform a 2D recognition problem into a simpler 1D task that matches the camera's hardware interface better. This notebook presents a open-source simulator setup and a basic scan line-based template detector algorithm to verify the feasibility of the geometry.`
 )}
 
 function _3(md){return(
@@ -297,7 +297,7 @@ function _pinhole(width,fov_pinhole,useAngleCoorection,templateData,template){re
 )}
 
 function _36(Plot,projectedPinholeData){return(
-Plot.auto(projectedPinholeData, {x: "x", y: "y"}).plot()
+Plot.auto(projectedPinholeData, {x: "x", y: "y", color: "#1ca463"}).plot()
 )}
 
 function _projectedPinholeData(width,pinhole,offset_pinhole,scale_pinhole,angle_pinhole){return(
@@ -573,7 +573,7 @@ After lots of bug fixes, I am pleased that it is possible to achieve very good t
   <figcaption>Mean error of 0.014 achieved on the barcode above. This is what a good fit looks like</figcaption>
 </figure>
 
-The theory that circular barcodes can be read at any pose checks out! This demonstrates circular barcodes can reduce orientated object detection down to a 3-degree-of-freedom problem on a 1-dimensional slice, a drastic reduction in underlying problem complexity that fits hardware.
+The theory that circular barcodes can be read at any pose works out! This demonstrates circular barcodes can reduce orientated object detection down to a 3-degree-of-freedom problem on a 1-dimensional slice, a drastic reduction in underlying problem complexity that fits hardware.
 
 `
 )}
