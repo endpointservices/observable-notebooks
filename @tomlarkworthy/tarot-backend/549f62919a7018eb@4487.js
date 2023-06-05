@@ -602,10 +602,15 @@ Inputs.button("Run social Image flowQueue", {
 )}
 
 function _socialImage($0){return(
-async ({ shareId } = {}) =>
-  $0.send({
-    shareId
-  })
+async ({ shareId } = {}) => {
+  try {
+    $0.send({
+      shareId
+    });
+  } catch (err) {
+    return undefined;
+  }
+}
 )}
 
 function _socialImageParams(flowQueue){return(
@@ -983,8 +988,14 @@ endpoint(
     config.token = req.headers["authorization"]?.split(" ")[1];
     config.OPENAI_API_KEY = ctx.secrets.OPENAI_API_KEY; // Mixin API_KEY from secrets
     config.ADMIN_SERVICE_ACCOUNT = ctx.secrets.secretadmin_service_account_key;
-    const response = await $0.send(config);
-    res.json(response);
+    try {
+      const response = await $0.send(config);
+      res.json(response);
+    } catch (err) {
+      res.status(500).json({
+        error: err.toString()
+      });
+    }
   },
   {
     modifiers: ["orchistrator"],
