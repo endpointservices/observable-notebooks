@@ -604,7 +604,7 @@ Inputs.button("Run social Image flowQueue", {
 function _socialImage($0){return(
 async ({ shareId } = {}) => {
   try {
-    $0.send({
+    return $0.send({
       shareId
     });
   } catch (err) {
