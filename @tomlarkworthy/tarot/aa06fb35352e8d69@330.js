@@ -1,5 +1,5 @@
-import define1 from "./549f62919a7018eb@4483.js";
-import define2 from "./293899bef371e135@290.js";
+import define1 from "./549f62919a7018eb@4485.js";
+import define2 from "./293899bef371e135@293.js";
 
 function _app(transitions,$0){return(
 transitions, $0
@@ -51,6 +51,10 @@ Biggest drag is largest contentful paint takes 8 seconds. This is stated as bein
 Page speed has a helpful display of the order assets are loaded
 
 ${await FileAttachment("image.png").image()}
+
+Jun 5th 2023
+
+Further problems with the crashes becoming unrecoverable. Adding failsafe to queue
 
 
 `

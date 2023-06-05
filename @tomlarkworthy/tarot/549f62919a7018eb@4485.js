@@ -13,10 +13,10 @@ import define12 from "./92ff66b718c1972f@141.js";
 import define13 from "./653c46ed55693b1f@669.js";
 import define14 from "./9bed702f80a3797e@402.js";
 import define15 from "./dff1e917c89f5e76@1964.js";
-import define16 from "./293899bef371e135@290.js";
+import define16 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# Tarot Backend
+md`# Tarot Backend (ChatGPT fortune teller)
  
 Welcome curious traveler to the Tarot backend. Its purpose is to show you how you can make a fully working app entirely from the comfort of an Observable notebook. You can fork this notebook and create your own.
 
