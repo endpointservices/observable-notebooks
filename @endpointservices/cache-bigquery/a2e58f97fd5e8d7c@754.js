@@ -51,7 +51,7 @@ These basic inputs will get you started.
 * [File](/@observablehq/input-file) - choose a local file`
 )}
 
-function _9(md){return(
+function _button(md){return(
 md`---
 
 ### [Button](/@observablehq/input-button) 
@@ -67,7 +67,7 @@ function _11(clicks){return(
 clicks
 )}
 
-function _12(md){return(
+function _toggle(md){return(
 md`---
 
 ### [Toggle](/@observablehq/input-toggle) 
@@ -83,7 +83,7 @@ function _14(mute){return(
 mute
 )}
 
-function _15(md){return(
+function _checkbox(md){return(
 md`---
 
 ### [Checkbox](/@observablehq/input-checkbox) 
@@ -99,7 +99,7 @@ function _17(flavors){return(
 flavors
 )}
 
-function _18(md){return(
+function _radio(md){return(
 md`---
 
 ### [Radio](/@observablehq/input-radio)
@@ -115,7 +115,7 @@ function _20(flavor){return(
 flavor
 )}
 
-function _21(md){return(
+function _range(md){return(
 md`---
 
 ### [Range](/@observablehq/input-range)
@@ -131,7 +131,7 @@ function _23(n){return(
 n
 )}
 
-function _24(md){return(
+function _select(md){return(
 md`---
 
 ### [Select](/@observablehq/input-select)
@@ -430,27 +430,27 @@ export default function define(runtime, observer) {
   main.variable(observer("currentgain")).define("currentgain", ["gain","md"], _currentgain);
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("basics")).define("basics", ["md"], _basics);
-  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("button")).define("button", ["md"], _button);
   main.variable(observer("viewof clicks")).define("viewof clicks", ["Inputs"], _clicks);
   main.variable(observer("clicks")).define("clicks", ["Generators", "viewof clicks"], (G, _) => G.input(_));
   main.variable(observer()).define(["clicks"], _11);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("toggle")).define("toggle", ["md"], _toggle);
   main.variable(observer("viewof mute")).define("viewof mute", ["Inputs"], _mute);
   main.variable(observer("mute")).define("mute", ["Generators", "viewof mute"], (G, _) => G.input(_));
   main.variable(observer()).define(["mute"], _14);
-  main.variable(observer()).define(["md"], _15);
+  main.variable(observer("checkbox")).define("checkbox", ["md"], _checkbox);
   main.variable(observer("viewof flavors")).define("viewof flavors", ["Inputs"], _flavors);
   main.variable(observer("flavors")).define("flavors", ["Generators", "viewof flavors"], (G, _) => G.input(_));
   main.variable(observer()).define(["flavors"], _17);
-  main.variable(observer()).define(["md"], _18);
+  main.variable(observer("radio")).define("radio", ["md"], _radio);
   main.variable(observer("viewof flavor")).define("viewof flavor", ["Inputs"], _flavor);
   main.variable(observer("flavor")).define("flavor", ["Generators", "viewof flavor"], (G, _) => G.input(_));
   main.variable(observer()).define(["flavor"], _20);
-  main.variable(observer()).define(["md"], _21);
+  main.variable(observer("range")).define("range", ["md"], _range);
   main.variable(observer("viewof n")).define("viewof n", ["Inputs"], _n);
   main.variable(observer("n")).define("n", ["Generators", "viewof n"], (G, _) => G.input(_));
   main.variable(observer()).define(["n"], _23);
-  main.variable(observer()).define(["md"], _24);
+  main.variable(observer("select")).define("select", ["md"], _select);
   main.variable(observer("viewof homeState")).define("viewof homeState", ["Inputs","stateNames"], _homeState);
   main.variable(observer("homeState")).define("homeState", ["Generators", "viewof homeState"], (G, _) => G.input(_));
   main.variable(observer()).define(["homeState"], _26);
