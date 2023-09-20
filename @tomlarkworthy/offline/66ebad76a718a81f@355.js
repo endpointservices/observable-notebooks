@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/offline@355
 import define1 from "./dff1e917c89f5e76@1948.js";
-import define2 from "./a2e58f97fd5e8d7c@743.js";
+import define2 from "./a2e58f97fd5e8d7c@756.js";
 import define3 from "./64410923a50764c0@77.js";
 import define4 from "./293899bef371e135@271.js";
 

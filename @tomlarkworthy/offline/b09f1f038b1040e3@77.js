@@ -6,7 +6,7 @@ md`# Starting [Github Action](https://docs.github.com/en/actions) Workflows From
 )}
 
 async function _Octokit(){return(
-await import("https://cdn.skypack.dev/@octokit/core")
+await import("https://cdn.skypack.dev/@octokit/core@2.1.0")
 )}
 
 function _dispatch(Octokit){return(
