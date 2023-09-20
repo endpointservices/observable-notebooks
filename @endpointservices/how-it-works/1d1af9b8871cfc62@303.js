@@ -1,5 +1,5 @@
 import define1 from "./9bed702f80a3797e@402.js";
-import define2 from "./293899bef371e135@271.js";
+import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# A Day in the life of a [WEBcode.run](https://webcode.run) request
