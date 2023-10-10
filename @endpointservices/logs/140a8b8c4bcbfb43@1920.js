@@ -6,7 +6,7 @@ import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./c7a3b20cec5d4dd9@669.js";
 import define6 from "./cb60908738c3dabe@152.js";
 import define7 from "./777fe85658e39c55@470.js";
-import define8 from "./293899bef371e135@290.js";
+import define8 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Logs Manager
