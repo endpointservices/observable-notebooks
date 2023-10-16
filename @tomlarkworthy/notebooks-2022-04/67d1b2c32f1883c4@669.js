@@ -1,11 +1,15 @@
-// https://observablehq.com/@mkfreeman/plot-tooltip@661
 import define1 from "./d2dffac0e42406e8@3045.js";
 import define2 from "./32eeadb67cb4cbcb@1472.js";
 import define3 from "./8d6618bb2d7befdd@199.js";
 
 function _1(md){return(
 md`# Plot Tooltip
-## Two approaches for easily adding tooltips to your plots`
+## Two approaches for easily adding tooltips to your plots
+
+<p style="background: #fffced; box-sizing: border-box; padding: 10px 20px; font-style: italic;">**Update June 2023:** Rejoice 🎉🎉🎉! Plot now has built in support for [pointer interactions](https://observablehq.com/plot/interactions/pointer) using the [tip mark](https://observablehq.com/plot/marks/tip). That's a much more reliable and robust way to create tooltips.
+<br/><br/>
+This notebook will no longer be updated (but it _will not_ be removed)</p>
+`
 )}
 
 function _2(md){return(
