@@ -615,7 +615,7 @@ async ({ shareId } = {}) => {
 
 function _socialImageParams(flowQueue){return(
 flowQueue({
-  timeout_ms: 10000
+  timeout_ms: 15000
 })
 )}
 
@@ -1009,7 +1009,7 @@ md`### API Request pipeline`
 )}
 
 function _config(flowQueue){return(
-flowQueue({ timeout_ms: 30000 })
+flowQueue({ timeout_ms: 45000 })
 )}
 
 function _106(config){return(

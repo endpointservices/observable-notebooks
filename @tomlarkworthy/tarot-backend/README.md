@@ -1,6 +1,6 @@
 # Tarot Backend (ChatGPT fortune teller)
 
-https://observablehq.com/@tomlarkworthy/tarot-backend@4488
+https://observablehq.com/@tomlarkworthy/tarot-backend@4490
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/549f62919a7018eb@4488.tgz?v=3
+npm install https://api.observablehq.com/d/549f62919a7018eb@4490.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

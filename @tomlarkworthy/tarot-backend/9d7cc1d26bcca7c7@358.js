@@ -1,8 +1,9 @@
-// https://observablehq.com/@d3/contours@267
-import define1 from "./a33468b95d0b15b0@808.js";
+import define1 from "./a33468b95d0b15b0@817.js";
 
 function _1(md){return(
-md`# Contours
+md`<div style="color: grey; font: 13px/25.5px var(--sans-serif); text-transform: uppercase;"><h1 style="display: none;">Contours</h1><a href="https://d3js.org/">D3</a> › <a href="/@d3/gallery">Gallery</a></div>
+
+# Contours
 
 Showing the [Goldstein–Price test function](https://en.wikipedia.org/wiki/Test_functions_for_optimization).`
 )}
@@ -124,6 +125,29 @@ function _height(){return(
 600
 )}
 
+function _16(md){return(
+md`---
+Using [Observable Plot](/plot/)’s built-in [contour mark](/plot/marks/contour), we can create the same chart in a few lines—or see the [complete example with custom axes](/@observablehq/plot-goldstein-price-contours). Explicit thresholds are necessary due to the skewed distribution of the value.`
+)}
+
+function _17(Plot,value,d3){return(
+Plot.plot({
+  color: {scheme: "Magma", type: "log", legend: true, width: 300, label: "Value", tickFormat: ","},
+  marks: [
+    Plot.contour({
+      x1: -2,
+      x2: 2,
+      y1: -2,
+      y2: 1,
+      fill: value,
+      stroke: "#fff",
+      strokeOpacity: 0.5,
+      thresholds: d3.range(1, 20).map(n => 2 ** n)
+    })
+  ]
+})
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -142,5 +166,7 @@ export default function define(runtime, observer) {
   main.variable(observer("height")).define("height", _height);
   const child1 = runtime.module(define1);
   main.import("Legend", child1);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["Plot","value","d3"], _17);
   return main;
 }

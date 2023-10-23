@@ -1,5 +1,5 @@
 // https://observablehq.com/@mbostock/saving-svg@114
-import define1 from "./9d7cc1d26bcca7c7@267.js";
+import define1 from "./9d7cc1d26bcca7c7@358.js";
 
 function _1(md){return(
 md`# Saving SVG
