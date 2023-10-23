@@ -1,7 +1,7 @@
 // https://observablehq.com/@endpointservices/how-to-arrow-server@91
 import define1 from "./dff1e917c89f5e76@1964.js";
 import define2 from "./ef672b935bd480fc@623.js";
-import define3 from "./293899bef371e135@290.js";
+import define3 from "./293899bef371e135@293.js";
 
 async function _1(md,FileAttachment){return(
 md`# Serverless arrow file server
