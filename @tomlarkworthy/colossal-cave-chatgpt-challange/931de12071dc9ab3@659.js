@@ -635,7 +635,7 @@ md`### Open AI`
 
 async function _ai_context($0,game_history)
 {
-  await new Promise((next) => setTimeout(next, $0.value));
+  await new Promise((next) => setTimeout(next, $0.value * 1000));
   return game_history
     .flatMap((entry) => [
       {
