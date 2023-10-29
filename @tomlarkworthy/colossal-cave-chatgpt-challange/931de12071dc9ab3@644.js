@@ -38,6 +38,7 @@ Inputs.select(
   [
     "gpt-4",
     "gpt-4-0314",
+    "gpt-3.5-turbo-16k",
     "gpt-4-32k",
     "gpt-4-32k-0314",
     "gpt-3.5-turbo",
@@ -616,7 +617,7 @@ md`---`
 )}
 
 function _delay(Inputs){return(
-Inputs.range([0, 2], {
+Inputs.range([0, 120], {
   value: 2,
   label: "pause between actions"
 })
