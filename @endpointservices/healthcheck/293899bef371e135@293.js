@@ -17,9 +17,7 @@ footer
 
 function _graphic(md,backupNowButton){return(
 md`<small>
-[WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks. Signup for the [webcode newsletter on Substack](https://webcode.substack.com/).
-
-*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* Backups by [backup-to-github](https://observablehq.com/@tomlarkworthy/github-backups). ${backupNowButton()}</small>
+*This notebook collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* The notebook is saved to Github with [backup-to-github](https://observablehq.com/@tomlarkworthy/github-backups). ${backupNowButton()}</small>
 `
 )}
 
