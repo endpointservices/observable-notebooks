@@ -1,6 +1,6 @@
 # Notebook distiller v2
 
-https://observablehq.com/@tomlarkworthy/distiller@728
+https://observablehq.com/@tomlarkworthy/distiller@729
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,8 +13,8 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/3bb9c81923cc627c@728.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/d/3bb9c81923cc627c@729.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
