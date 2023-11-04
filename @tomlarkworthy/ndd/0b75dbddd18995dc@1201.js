@@ -1,6 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/ndd@1183
-import define1 from "./e1c39d41e8e944b0@420.js";
-import define2 from "./293899bef371e135@271.js";
+import define1 from "./e1c39d41e8e944b0@939.js";
+import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
@@ -322,9 +321,11 @@ function interceptVariable(v, invalidation) {
     // Because we are creating a variable it takes 2 events to catch up
     // Its starts in pending state ( 1 extra state unrelated to target variable)
     let skip = 2;
-    const handler = (type) => (...args) => {
-      if (skip-- <= 0) notify(name, type, args[0]);
-    };
+    const handler =
+      (type) =>
+      (...args) => {
+        if (skip-- <= 0) notify(args[1], type, args[0]);
+      };
     const watcher = v._module.variable({
       pending: handler("pending"),
       rejected: handler("rejected"),
@@ -341,7 +342,7 @@ function interceptVariable(v, invalidation) {
       if (v._observer[type]) {
         const old = v._observer[type];
         v._observer[type] = (...args) => {
-          notify(name, type, args[0]);
+          notify(args[1], type, args[0]);
           // The old is often a prototype, so we use Reflect to call it
           Reflect.apply(old, v._observer, args);
         };
