@@ -18,9 +18,11 @@ ndd = _ndd
 
 Thanks to [\`@mootari/access-runtime\`](https://observablehq.com/@mootari/access-runtime) on which this tool builds upon.
 
-### Change log
-| 2023-11-04 | Fixed renaming bug not tracking the new variable name|
-|            | Fixed initial variables not triggering |`
+
+|Date| Change|
+|---|---|
+| 2023-11-04 | Fixed renaming bug not tracking the new variable name
+|            | Fixed initial variables not triggering`
 )}
 
 function __ndd(htl,$0,$1,$2,vizUpdater,vizHolder){return(
