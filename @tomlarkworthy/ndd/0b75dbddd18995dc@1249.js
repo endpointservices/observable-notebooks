@@ -34,6 +34,10 @@ this || // Reuse DOM to keep control state working, but mixin 'vizUpdater'
       `
 )}
 
+function _new_vell(){return(
+1
+)}
+
 function _slider2(Inputs){return(
 Inputs.range([0, 1], { label: "slide me!" })
 )}
@@ -71,7 +75,7 @@ function _periodicThrow(periodicFulfilled)
 }
 
 
-function _9(md){return(
+function _10(md){return(
 md`## State`
 )}
 
@@ -92,11 +96,11 @@ function _endTime(Inputs){return(
 Inputs.input(null)
 )}
 
-function _13(md){return(
+function _14(md){return(
 md`### UI`
 )}
 
-function _14(md){return(
+function _15(md){return(
 md`#### timeline`
 )}
 
@@ -168,7 +172,7 @@ function _viz(endTime,now,windowSecs,reset,events,Plot)
 }
 
 
-function _16(md){return(
+function _17(md){return(
 md`#### timeline holder`
 )}
 
@@ -184,7 +188,7 @@ function _vizUpdater(interceptVariables,vizHolder,viz)
 }
 
 
-function _19(md){return(
+function _20(md){return(
 md`#### reset button`
 )}
 
@@ -192,7 +196,7 @@ function _reset(Inputs){return(
 Inputs.button("reset", { reduce: () => Date.now() })
 )}
 
-function _21(md){return(
+function _22(md){return(
 md`#### pause toggle`
 )}
 
@@ -209,7 +213,7 @@ function _pause(Inputs,$0,Event)
 }
 
 
-function _23(md){return(
+function _24(md){return(
 md`#### break toggler`
 )}
 
@@ -217,7 +221,7 @@ function _breakpoint(Inputs){return(
 Inputs.toggle({ label: "break next?" })
 )}
 
-function _25(md){return(
+function _26(md){return(
 md`#### Time window`
 )}
 
@@ -229,15 +233,15 @@ Inputs.range([1, 60 * 30], {
 })
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`## Implementation`
 )}
 
-function _28(md){return(
+function _29(md){return(
 md`### Get the runtime`
 )}
 
-function _30(md){return(
+function _31(md){return(
 md`find the main module (the notebook itself, not its imports)`
 )}
 
@@ -249,7 +253,7 @@ function _main(modules)
 }
 
 
-function _32(md){return(
+function _33(md){return(
 md`### track notebook variables`
 )}
 
@@ -341,6 +345,18 @@ function _new_cell_11(){return(
 1
 )}
 
+function _new_cell_12(){return(
+""
+)}
+
+function _new_cell_13(){return(
+""
+)}
+
+function _48(new_cell_14){return(
+new_cell_14
+)}
+
 function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
 function interceptVariable(v, invalidation, firstSeen = false) {
   if (excludes.includes(v._name)) return;
@@ -356,7 +372,7 @@ function interceptVariable(v, invalidation, firstSeen = false) {
 
     // Because we are creating a variable it takes 2 events to catch up
     // Its starts in pending state ( 1 extra state unrelated to target variable)
-    let skip = firstSeen ? 1 : 2;
+    let skip = 2;
     const handler =
       (type) =>
       (...args) => {
@@ -393,7 +409,7 @@ function interceptVariable(v, invalidation, firstSeen = false) {
 }
 )}
 
-function _47(footer){return(
+function _51(footer){return(
 footer
 )}
 
@@ -401,6 +417,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("_ndd")).define("_ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizUpdater","vizHolder"], __ndd);
+  main.variable(observer("new_vell")).define("new_vell", _new_vell);
   main.variable(observer("viewof slider2")).define("viewof slider2", ["Inputs"], _slider2);
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
@@ -410,40 +427,40 @@ export default function define(runtime, observer) {
   main.variable(observer("runPeriodics")).define("runPeriodics", ["Generators", "viewof runPeriodics"], (G, _) => G.input(_));
   main.variable(observer("periodicFulfilled")).define("periodicFulfilled", ["runPeriodics","Promises"], _periodicFulfilled);
   main.variable(observer("periodicThrow")).define("periodicThrow", ["periodicFulfilled"], _periodicThrow);
-  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
   main.variable(observer("excludes")).define("excludes", _excludes);
   main.define("initial events", ["reset","WATCHER_PREFIX"], _events);
   main.variable(observer("mutable events")).define("mutable events", ["Mutable", "initial events"], (M, _) => new M(_));
   main.variable(observer("events")).define("events", ["mutable events"], _ => _.generator);
   main.variable(observer("viewof endTime")).define("viewof endTime", ["Inputs"], _endTime);
   main.variable(observer("endTime")).define("endTime", ["Generators", "viewof endTime"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _13);
   main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer("viz")).define("viz", ["endTime","now","windowSecs","reset","events","Plot"], _viz);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("vizHolder")).define("vizHolder", _vizHolder);
   main.variable(observer("vizUpdater")).define("vizUpdater", ["interceptVariables","vizHolder","viz"], _vizUpdater);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("viewof reset")).define("viewof reset", ["Inputs"], _reset);
   main.variable(observer("reset")).define("reset", ["Generators", "viewof reset"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _22);
   main.variable(observer("viewof pause")).define("viewof pause", ["Inputs","viewof endTime","Event"], _pause);
   main.variable(observer("pause")).define("pause", ["Generators", "viewof pause"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["md"], _24);
   main.variable(observer("viewof breakpoint")).define("viewof breakpoint", ["Inputs"], _breakpoint);
   main.variable(observer("breakpoint")).define("breakpoint", ["Generators", "viewof breakpoint"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("viewof windowSecs")).define("viewof windowSecs", ["Inputs"], _windowSecs);
   main.variable(observer("windowSecs")).define("windowSecs", ["Generators", "viewof windowSecs"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _27);
   main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["md"], _29);
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("modules", child1);
   main.import("variables", child1);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _31);
   main.variable(observer("main")).define("main", ["modules"], _main);
-  main.variable(observer()).define(["md"], _32);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("new_cell3")).define("new_cell3", _new_cell3);
   main.variable(observer("new_cell4")).define("new_cell4", _new_cell4);
   main.variable(observer("new_cell5")).define("new_cell5", _new_cell5);
@@ -456,9 +473,12 @@ export default function define(runtime, observer) {
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("new_cell_11")).define("new_cell_11", _new_cell_11);
+  main.variable(observer("new_cell_12")).define("new_cell_12", _new_cell_12);
+  main.variable(observer("new_cell_13")).define("new_cell_13", _new_cell_13);
+  main.variable(observer()).define(["new_cell_14"], _48);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _47);
+  main.variable(observer()).define(["footer"], _51);
   return main;
 }

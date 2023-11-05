@@ -1,6 +1,6 @@
 # Notebook Dataflow Debugger (ndd)
 
-https://observablehq.com/@tomlarkworthy/ndd@1234
+https://observablehq.com/@tomlarkworthy/ndd@1249
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/0b75dbddd18995dc@1234.tgz?v=3
+npm install https://api.observablehq.com/d/0b75dbddd18995dc@1249.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
