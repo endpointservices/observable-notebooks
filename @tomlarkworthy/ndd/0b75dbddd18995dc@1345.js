@@ -296,10 +296,6 @@ function _interceptVariables(mainVariables,interceptVariable,invalidation)
 }
 
 
-function _new_veriable_10(){return(
-2
-)}
-
 function _notify($0,$1,$2){return(
 function notify(name, type, value) {
   if ($0.value) return;
@@ -387,7 +383,7 @@ function interceptVariable(v, invalidation, firstSeen = false) {
 }
 )}
 
-function _42(footer){return(
+function _41(footer){return(
 footer
 )}
 
@@ -441,13 +437,12 @@ export default function define(runtime, observer) {
   main.variable(observer("mainVariables")).define("mainVariables", ["reset","Generators","runtime","main","WATCHER_PREFIX","_","invalidation"], _mainVariables);
   main.variable(observer("mainVariableNames")).define("mainVariableNames", ["mainVariables"], _mainVariableNames);
   main.variable(observer("interceptVariables")).define("interceptVariables", ["mainVariables","interceptVariable","invalidation"], _interceptVariables);
-  main.variable(observer("new_veriable_10")).define("new_veriable_10", _new_veriable_10);
   main.variable(observer("notify")).define("notify", ["viewof pause","mutable events","viewof breakpoint"], _notify);
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _42);
+  main.variable(observer()).define(["footer"], _41);
   return main;
 }
