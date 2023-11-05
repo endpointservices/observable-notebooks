@@ -253,6 +253,18 @@ function _32(md){return(
 md`### track notebook variables`
 )}
 
+function _new_cell3(){return(
+"cool"
+)}
+
+function _new_cell4(){return(
+"foo"
+)}
+
+function _new_cell5(){return(
+"cool"
+)}
+
 function _mainVariables(reset,Generators,runtime,main,WATCHER_PREFIX,_,invalidation){return(
 reset,
 Generators.observe((notify) => {
@@ -360,7 +372,7 @@ function interceptVariable(v, invalidation) {
 }
 )}
 
-function _41(footer){return(
+function _44(footer){return(
 footer
 )}
 
@@ -411,6 +423,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _30);
   main.variable(observer("main")).define("main", ["modules"], _main);
   main.variable(observer()).define(["md"], _32);
+  main.variable(observer("new_cell3")).define("new_cell3", _new_cell3);
+  main.variable(observer("new_cell4")).define("new_cell4", _new_cell4);
+  main.variable(observer("new_cell5")).define("new_cell5", _new_cell5);
   main.variable(observer("mainVariables")).define("mainVariables", ["reset","Generators","runtime","main","WATCHER_PREFIX","_","invalidation"], _mainVariables);
   main.variable(observer("mainVariableNames")).define("mainVariableNames", ["mainVariables"], _mainVariableNames);
   main.variable(observer("interceptVariables")).define("interceptVariables", ["mainVariables","interceptVariable","invalidation"], _interceptVariables);
@@ -420,6 +435,6 @@ export default function define(runtime, observer) {
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _41);
+  main.variable(observer()).define(["footer"], _44);
   return main;
 }
