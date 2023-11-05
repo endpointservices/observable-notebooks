@@ -406,6 +406,10 @@ function interceptVariable(v, invalidation, firstSeen = false) {
     intercept("rejected");
     intercept("pending");
   }
+
+  if (firstSeen && v._value) {
+    notify(v._name, "fulfilled", v._value);
+  }
 }
 )}
 
