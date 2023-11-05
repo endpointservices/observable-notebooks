@@ -276,6 +276,7 @@ Generators.observe((notify) => {
 
   let current = pollVariables();
   const id = setInterval(() => {
+    debugger;
     const sample = pollVariables();
     if (!_.isEqual(current, sample)) {
       current = sample;
@@ -312,6 +313,10 @@ function notify(name, type, value) {
     debugger;
   }
 }
+)}
+
+function _new_vell_6(){return(
+1
 )}
 
 function _WATCHER_PREFIX(){return(
@@ -372,7 +377,7 @@ function interceptVariable(v, invalidation) {
 }
 )}
 
-function _44(footer){return(
+function _45(footer){return(
 footer
 )}
 
@@ -430,11 +435,12 @@ export default function define(runtime, observer) {
   main.variable(observer("mainVariableNames")).define("mainVariableNames", ["mainVariables"], _mainVariableNames);
   main.variable(observer("interceptVariables")).define("interceptVariables", ["mainVariables","interceptVariable","invalidation"], _interceptVariables);
   main.variable(observer("notify")).define("notify", ["viewof pause","mutable events","viewof breakpoint"], _notify);
+  main.variable(observer("new_vell_6")).define("new_vell_6", _new_vell_6);
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _44);
+  main.variable(observer()).define(["footer"], _45);
   return main;
 }
