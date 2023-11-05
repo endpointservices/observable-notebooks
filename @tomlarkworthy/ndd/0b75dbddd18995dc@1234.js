@@ -294,7 +294,14 @@ mainVariables.map((v) => v._name)
 
 function _interceptVariables(mainVariables,interceptVariable,invalidation)
 {
-  mainVariables.forEach((v) => interceptVariable(v, invalidation));
+  mainVariables.forEach((v) =>
+    interceptVariable(
+      v,
+      invalidation,
+      /* first seen */ (this || {})[v._name] === undefined
+    )
+  );
+  return Object.fromEntries(mainVariables.map((v) => [v._name, v]));
 }
 
 
@@ -330,11 +337,17 @@ function _uid(){return(
 () => Math.random().toString(16).substring(3)
 )}
 
+function _new_cell_11(){return(
+1
+)}
+
 function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
-function interceptVariable(v, invalidation) {
+function interceptVariable(v, invalidation, firstSeen = false) {
   if (excludes.includes(v._name)) return;
   const name = v._name || "anon_" + v._observer.id;
-
+  if (firstSeen) {
+    debugger;
+  }
   if (_.isEqual(v._observer, {})) {
     // for views and mutables, no observer is setup
     // we create a synthetic anon variable to watch it
@@ -343,7 +356,7 @@ function interceptVariable(v, invalidation) {
 
     // Because we are creating a variable it takes 2 events to catch up
     // Its starts in pending state ( 1 extra state unrelated to target variable)
-    let skip = 2;
+    let skip = firstSeen ? 1 : 2;
     const handler =
       (type) =>
       (...args) => {
@@ -380,7 +393,7 @@ function interceptVariable(v, invalidation) {
 }
 )}
 
-function _46(footer){return(
+function _47(footer){return(
 footer
 )}
 
@@ -442,9 +455,10 @@ export default function define(runtime, observer) {
   main.variable(observer("new_vell_6")).define("new_vell_6", _new_vell_6);
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
+  main.variable(observer("new_cell_11")).define("new_cell_11", _new_cell_11);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _46);
+  main.variable(observer()).define(["footer"], _47);
   return main;
 }
