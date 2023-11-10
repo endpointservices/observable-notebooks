@@ -1,8 +1,8 @@
 import define1 from "./b5ee47165ef0a032@504.js";
-import define2 from "./a2e58f97fd5e8d7c@754.js";
+import define2 from "./a2e58f97fd5e8d7c@756.js";
 import define3 from "./e657c642789a0b68@2028.js";
 import define4 from "./77f7c3c28a618766@604.js";
-import define5 from "./293899bef371e135@290.js";
+import define5 from "./293899bef371e135@293.js";
 
 async function _1(md,FileAttachment){return(
 md`# IndieWeb Login Wizard

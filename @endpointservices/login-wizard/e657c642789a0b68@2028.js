@@ -7,7 +7,7 @@ import define5 from "./11a5ab8b1b3a51db@1147.js";
 import define6 from "./316f0885d15ab671@65.js";
 import define7 from "./64641700df65baed@91.js";
 import define8 from "@observablehq/banner@463";
-import define9 from "./293899bef371e135@290.js";
+import define9 from "./293899bef371e135@293.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("AuthServerBanner@1.png").url(), "Federated IndieAuth Server")
