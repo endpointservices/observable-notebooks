@@ -272,13 +272,13 @@ function _35(md){return(
 md`With these parameters, we can simulate expected pixel values for a given projection on our image. Note how adjusting the angle creates the vanishing effect, and note how the field of view further modulates the effect. I have normalized all the params so it's easy to simulate in resolution-independant scales.`
 )}
 
-function _pinhole(width,fov_pinhole,useAngleCoorection,templateData,template){return(
+function _pinhole(fov_pinhole,useAngleCoorection,templateData,template){return(
 (
   px,
   model = {
     angle: 0,
     offset: 0,
-    scale: width
+    scale: 1
   }
 ) => {
   const angleCorrection = (px) => {
@@ -687,7 +687,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof useAngleCoorection1")).define("viewof useAngleCoorection1", ["Inputs"], _useAngleCoorection1);
   main.variable(observer("useAngleCoorection1")).define("useAngleCoorection1", ["Generators", "viewof useAngleCoorection1"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _35);
-  main.variable(observer("pinhole")).define("pinhole", ["width","fov_pinhole","useAngleCoorection","templateData","template"], _pinhole);
+  main.variable(observer("pinhole")).define("pinhole", ["fov_pinhole","useAngleCoorection","templateData","template"], _pinhole);
   main.variable(observer()).define(["Plot","projectedPinholeData"], _37);
   main.variable(observer("projectedPinholeData")).define("projectedPinholeData", ["width","pinhole","offset_pinhole","scale_pinhole","angle_pinhole"], _projectedPinholeData);
   main.variable(observer()).define(["md"], _39);
