@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/how-to-arrow-client@104
-import define1 from "./a2e58f97fd5e8d7c@754.js";
+import define1 from "./a2e58f97fd5e8d7c@756.js";
 import define2 from "./293899bef371e135@293.js";
 
 async function _1(md,FileAttachment){return(
