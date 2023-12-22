@@ -1,5 +1,4 @@
-// https://observablehq.com/@endpointservices/footer-with-backups@278
-import define1 from "./a81f2a20664080d3@243.js";
+import define1 from "./a81f2a20664080d3@245.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./1d309dbd9697e042@631.js";
 
@@ -16,13 +15,9 @@ footer
 \`\`\``
 )}
 
-function _graphic(md,width){return(
+function _graphic(md,backupNowButton){return(
 md`<small>
-[WEBCode.run](https://webcode.run) is a developer focussed serverless environment for [Observable](observablehq.com) notebooks.
-
-*Endpoint Services collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* </small>
-
-<iframe src="https://webcode.substack.com/embed" width="${width}" height="250" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+*This notebook collects anonymous usage metrics through [Plausible Analytics](https://observablehq.com/@endpointservices/plausible-analytics). Notebooks are monitored for errors using [sentry.io](https://sentry.io).* The notebook is saved to Github with [backup-to-github](https://observablehq.com/@tomlarkworthy/github-backups). ${backupNowButton()}</small>
 `
 )}
 
@@ -137,7 +132,7 @@ enableGithubBackups({
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("graphic")).define("graphic", ["md","width"], _graphic);
+  main.variable(observer("graphic")).define("graphic", ["md","backupNowButton"], _graphic);
   main.variable(observer("footer")).define("footer", ["viewof backups","plausible_analytics","sentry","graphic"], _footer);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer("plausible_analytics")).define("plausible_analytics", ["html","localStorage","XMLHttpRequest"], _plausible_analytics);
