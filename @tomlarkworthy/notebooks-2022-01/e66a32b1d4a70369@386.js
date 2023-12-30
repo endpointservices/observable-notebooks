@@ -1,8 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/notebooks-2022-01@386
-import define1 from "./67d1b2c32f1883c4@661.js";
+import define1 from "./67d1b2c32f1883c4@669.js";
 import define2 from "./55bed46f68a80641@366.js";
 import define3 from "./ef672b935bd480fc@623.js";
-import define4 from "./293899bef371e135@290.js";
+import define4 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Engaging Notebooks of Jan 2022`
