@@ -2,7 +2,7 @@ import define1 from "./7a77afd2ce564067@459.js";
 import define2 from "./c2dae147641e012a@46.js";
 import define3 from "./ef672b935bd480fc@623.js";
 import define4 from "@observablehq/banner@463";
-import define5 from "./293899bef371e135@290.js";
+import define5 from "./293899bef371e135@293.js";
 
 async function _1(bannerImage,FileAttachment){return(
 bannerImage(await FileAttachment("Weblogin.png").url(), "User signin with IndieWeb weblogin")
