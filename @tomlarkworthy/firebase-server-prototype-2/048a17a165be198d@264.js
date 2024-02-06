@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/local-storage-view@263
 import define1 from "./c2dae147641e012a@46.js";
 import define2 from "./1f41fef8b019cf4e@94.js";
 import define3 from "./58f3eb7334551ae6@209.js";
