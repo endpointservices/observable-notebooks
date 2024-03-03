@@ -2,7 +2,7 @@
 import define1 from "./6eda90668ae03044@836.js";
 import define2 from "./777fe85658e39c55@470.js";
 import define3 from "./b8a500058f806a6b@11.js";
-import define4 from "./293899bef371e135@290.js";
+import define4 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# word2vec`
