@@ -246,6 +246,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
+    ["c01.jpg", {url: new URL("./files/b712c4e7e43ee346e2cb739495a927af210acdaa63ab61b8709f09419774dda6b3639120b2424c82649e505b02f3362669df19c31b7dbe53526751bafd576204.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["c02.jpg", {url: new URL("./files/7aa055d710b0b67c2713f8d793fb6ef480aab6b09b29f6e5ed44bd5d8bb2f153d419dba38da4341af85259f7ce78c8e6ff2bb512c87129fb234c2792a73a7030.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["c03.jpg", {url: new URL("./files/3e2cd5395ec751c7e9c96677d38a3c8d2643503739613b45a719462fce1c346c2b03fea9a240804d9615eede7471c00043b4cd29d0bcbcbcf76a95d99828e4e2.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["c04.jpg", {url: new URL("./files/16194fcfa350eaecf291f11238eac18206068ddd821aafa984d1de5b026b62ed32157cc88aa177f7ba2024afccd262835929b4fffa794b4c08a4a8d0224393c2.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
@@ -314,7 +315,7 @@ export default function define(runtime, observer) {
     ["w02.jpg", {url: new URL("./files/2137b33a40cf7be9d130ba618bfddc4908cc54c01c7d28217f2a52d96fb6ad07cb19bbf9eb2619e211998d003b7043bb57e26697af231d6fe0db08130d76a5a0.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w03.jpg", {url: new URL("./files/91e8800284886c9b3213691cb2fb017dca45c31e334b7e6cc6a45e0a7116074ef2ace03af0d641f92984054b55ac3df9b67acfd43ad3a80ad5e832236a0900c3.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w04.jpg", {url: new URL("./files/ec9f3f418681d9373febc9478bcfa18d1a9bcf999102addf4dac9b18015b31cc6d3787b312a17d04e2e850288da9eeefb4e135752738791541abf0d26d72a074.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
-    ["c01.jpg", {url: new URL("./files/b712c4e7e43ee346e2cb739495a927af210acdaa63ab61b8709f09419774dda6b3639120b2424c82649e505b02f3362669df19c31b7dbe53526751bafd576204.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
+    ["w05.jpg", {url: new URL("./files/78d58e57ac7a2cba613d0b5882ee1debe53bb4bc4fccf49635d5c45e8cd0ba4ea256972d297c5fc01c11d4f850faa57f6e74febf25613cc721618770a5c9c498.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w06.jpg", {url: new URL("./files/c3837f3c375e5495cd027ed85e01922b932e5329b8a6996511c983c28ad774f5ddcdcff2c4c9971f4cfed5f21d95c2593b8c6e2fa2f4a1bd32ced102c53cafd0.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w07.jpg", {url: new URL("./files/8746c6ece228f54c63ebad22d0369df178da84631fec057d7f43432c308d9c79fb4287c17e456dfda9fafc14f0b82702e8d2ab614321a60206e0a80eab28d20c.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w08.jpg", {url: new URL("./files/d35d45ced1f323afb8961ea8fef53fd6a63a238603310ed26abc0ba0a79d444b051dd195c03fe37f10ff7a9ab1038ab3cd4fff7b724f815249124fd74a592fb6.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
@@ -323,8 +324,7 @@ export default function define(runtime, observer) {
     ["w11.jpg", {url: new URL("./files/8d3a6960b442b77ddccca1b387dbc4f5be03126aea431e1431b6aaa87ad86e6da9c1bafa075e3743459119c929de608b3139a17f5d336edec8db43f4fafa89fd.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w12.jpg", {url: new URL("./files/c00ecbd7efbfdde1fca0f8ef6431948d7350d0a0c0df8ac402fcfef114c978fd82e7fa62e0cf2d19a3ad486e0bb3cbb64be465690025db53b62b1ace42aef4c9.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
     ["w13.jpg", {url: new URL("./files/523d1d43e36e7744c4726650147d1908d72700f9937138ba1a5148e302a939e4c04757c60625abc7688a2f8c1670fb9f172ada4aaa2f689d59de5cac88a3ee7c.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
-    ["w14.jpg", {url: new URL("./files/3a892fe11c280d76339a9e9ea91b5482f8b360f59e339cf59645d0a21b925b526d835e528fccaffbec65f3481a73e534a2431efcf788630195804b5c638ecf4e.jpeg", import.meta.url), mimeType: "image/jpeg", toString}],
-    ["w05.jpg", {url: new URL("./files/78d58e57ac7a2cba613d0b5882ee1debe53bb4bc4fccf49635d5c45e8cd0ba4ea256972d297c5fc01c11d4f850faa57f6e74febf25613cc721618770a5c9c498.jpeg", import.meta.url), mimeType: "image/jpeg", toString}]
+    ["w14.jpg", {url: new URL("./files/3a892fe11c280d76339a9e9ea91b5482f8b360f59e339cf59645d0a21b925b526d835e528fccaffbec65f3481a73e534a2431efcf788630195804b5c638ecf4e.jpeg", import.meta.url), mimeType: "image/jpeg", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
