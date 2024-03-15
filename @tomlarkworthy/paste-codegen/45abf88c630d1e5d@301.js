@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/paste-codegen@278
 import define1 from "./293899bef371e135@278.js";
 
 function _1(md){return(
@@ -89,10 +88,20 @@ function _module(modulePath){return(
 import(modulePath)
 )}
 
-function _code(identifier,modulePath,module){return(
+function _code($0,identifier,modulePath,module){return(
 [
   {
-    id: 1,
+    id: 2,
+    value: `---
+#### ${$0.value}
+generated with [paste-codegen](https://observablehq.com/@tomlarkworthy/paste-codegen)`,
+    pinned: false,
+    mode: "md",
+    data: null,
+    name: ""
+  },
+  {
+    id: 3,
     value: `${identifier} = import('${modulePath}')`,
     pinned: false,
     mode: "js",
@@ -102,8 +111,9 @@ function _code(identifier,modulePath,module){return(
 ].concat(
   Object.keys(module)
     .sort()
+    .filter((property) => property !== "default")
     .map((property, i) => ({
-      id: i + 2,
+      id: i + 4,
       value: `${property} = ${identifier}['${property}']`,
       pinned: false,
       mode: "js",
@@ -180,7 +190,7 @@ export default function define(runtime, observer) {
   main.variable(observer("modulePath")).define("modulePath", ["Generators", "viewof modulePath"], (G, _) => G.input(_));
   main.variable(observer("identifier")).define("identifier", ["modulePath","allowedCharacters"], _identifier);
   main.variable(observer("module")).define("module", ["modulePath"], _module);
-  main.variable(observer("code")).define("code", ["identifier","modulePath","module"], _code);
+  main.variable(observer("code")).define("code", ["viewof modulePath","identifier","modulePath","module"], _code);
   main.variable(observer()).define(["Inputs","code"], _10);
   main.variable(observer()).define(["md"], _11);
   main.variable(observer("MIME_TYPE")).define("MIME_TYPE", _MIME_TYPE);

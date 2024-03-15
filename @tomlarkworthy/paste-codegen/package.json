@@ -1,7 +1,7 @@
 {
   "name": "@tomlarkworthy/paste-codegen",
-  "main": "45abf88c630d1e5d@278.js",
-  "version": "278.0.0",
+  "main": "45abf88c630d1e5d@301.js",
+  "version": "301.0.0",
   "homepage": "https://observablehq.com/@tomlarkworthy/paste-codegen",
   "author": {
     "name": "Tom Larkworthy",
@@ -9,6 +9,6 @@
   },
   "type": "module",
   "peerDependencies": {
-    "@observablehq/runtime": "4"
+    "@observablehq/runtime": "4 - 5"
   }
 }
