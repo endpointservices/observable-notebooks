@@ -1,8 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@418
-import define1 from "./293899bef371e135@267.js";
+// https://observablehq.com/@tomlarkworthy/flow-queue@444
+import define1 from "./58f3eb7334551ae6@209.js";
 
-async function _1(FileAttachment,md){return(
-md`# How to convert dataflow to a promise using *flowQueue*
+async function _1(FileAttachment,width,md){return(
+md`# Convert cell computation to a Promise with cell *flowQueue*
 
 
 ~~~js
@@ -11,9 +11,15 @@ import {flowQueue} from '@tomlarkworthy/flow-queue'
 
 ${await FileAttachment("flowQuery@1.svg").image({style: 'width:640px; max-width:100%'})}
 
-A flow queue releases values one-at-a-time onto a Dataflow graph, and collects a response before releasing the next. A *flowQueue* wraps Dataflow with a *promise*. It allows you to *unroll* a function body across dataflow cells, which is sometimes better for code layout and explanation.  
+A flow queue releases values one-at-a-time onto a Dataflow graph, and collects a response before releasing the next. A *flowQueue* wraps Dataflow with a *promise*. It allows you to *unroll* a function body across dataflow cells, which is sometimes better for code layout and explanation. 
 
-In other words, __*flowQueue* provides dataflow programming a functional interface__. Consider the following
+The following video demonstrates its use during development of a webhook. Note a number of cells update as data passes through the system. 
+
+<video controls="controls" width="${Math.min(width, 640)}" height="400" loop name="Video Name">
+  <source src="https://storage.googleapis.com/publicartifacts/blogimages/notebookwebhook.mov">
+</video>
+
+In other words, __*flowQueue* provides dataflow programming with a functional interface__. Consider the following
 
 ~~~js
 aysnc doWork(arg) {
@@ -44,27 +50,28 @@ The next step *r2* depends on the previous step.
 r2 = step2(r1)
 ~~~
 
-To return a result, we call *respond* to the *flowQueue*. This will resolve the *send* promise earlier, and allow the next  to run. (note: viewof)
+To return a result, we call *resolve* to the *flowQueue*. This will resolve the *send* promise earlier, and allow the next  to run. (note: viewof)
 ~~~js
 {
-  viewof head.respond(r2)
+  viewof head.resolve(r2)
 }
 ~~~
 
 ### Optimizations
 
-The *flowQueue* will unblock immediately when *respond* is passed a *promise*.
+The *flowQueue* will unblock immediately when *resolve* is passed a *promise*.
 
 
 ### Errors
 
-Every *send* should lead to a call to *respond*. If you call *respond* an extra time it will throw an Error. If *respond* is not called within *timeout_ms* (1000ms) the promise will reject. 
+Every *send* should lead to a call to *resolve*. If you call *resolve* an extra time it will throw an Error. If *resolve* is not called within *timeout_ms* (1000ms) the promise will reject. 
 `
 )}
 
 function _2(md){return(
 md`## Changelog
 
+2022-05-16 API: resolve changed to *resolve*, as it ends up looking like a promise anyway
 2022-04-13 Bugfix: queue was not recovering after timeout properly.`
 )}
 
@@ -116,7 +123,7 @@ function _flowQueue(htl,Event){return(
     if (q.length > 0) run();
   };
 
-  ui.respond = async (value) => {
+  ui.resolve = async (value) => {
     if (!runningResolve) throw new Error(`No task executing! ${name || ""}`);
     const resolve = runningResolve;
     const reject = runningReject;
@@ -130,6 +137,8 @@ function _flowQueue(htl,Event){return(
       reject(err);
     }
   };
+
+  ui.respond = ui.resolve; // old name
 
   return ui;
 }
@@ -147,7 +156,7 @@ flowQueue()
 )}
 
 function _6($0,sqrt){return(
-$0.respond(Math.sqrt(sqrt))
+$0.resolve(Math.sqrt(sqrt))
 )}
 
 async function _testing(flowQueue)
@@ -175,13 +184,13 @@ testing.createSuite({
 )}
 
 function _9(suite,flowQueue,testing){return(
-suite.test("respond after send resolves", async () => {
+suite.test("resolve after send resolves", async () => {
   const q = flowQueue();
   const prom = q.send("send val");
   testing.expect(q.value).toBe("send val");
-  q.respond("respond val");
+  q.resolve("resolve val");
   const response = await prom;
-  testing.expect(response).toBe("respond val");
+  testing.expect(response).toBe("resolve val");
 })
 )}
 
@@ -192,7 +201,7 @@ flowQueue({ timeout_ms: 100 })
 function _maybeReplyReplier(maybeReply,$0)
 {
   debugger;
-  if (maybeReply === "reply") $0.respond("reply");
+  if (maybeReply === "reply") $0.resolve("reply");
 }
 
 
@@ -211,26 +220,26 @@ suite.test("Unreplied queues recover after timeout_ms", async (done) => {
 )}
 
 function _13(suite,flowQueue,testing){return(
-suite.test("respond with promise", async () => {
+suite.test("resolve with promise", async () => {
   const q = flowQueue();
   const prom = q.send();
-  q.respond(new Promise((resolve) => resolve("respond val")));
+  q.resolve(new Promise((resolve) => resolve("resolve val")));
   const response = await prom;
-  testing.expect(response).toBe("respond val");
+  testing.expect(response).toBe("resolve val");
 })
 )}
 
 function _14(suite,flowQueue,testing){return(
-suite.test("respond without send throws", async () => {
+suite.test("resolve without send throws", async () => {
   const q = flowQueue();
   await testing
-    .expect(q.respond())
+    .expect(q.resolve())
     .rejects.toEqual(Error("No task executing! "));
 })
 )}
 
 function _15(suite,flowQueue,testing){return(
-suite.test("missing respond rejects with timout", async () => {
+suite.test("missing resolve rejects with timout", async () => {
   const q = flowQueue({ timeout_ms: 1 });
   await testing
     .expect(q.send())
@@ -254,10 +263,10 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da", import.meta.url), mimeType: "image/svg+xml", toString}]
+    ["flowQuery@1.svg", {url: new URL("./files/2166d28716de155cb2e835f715303ad5424fafa96abbed2e8ae8be3bda3111ed08a113a82cf3fe6c38446382f338627d45fd0ce40155baaeff770b6c8e76f0da.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["FileAttachment","md"], _1);
+  main.variable(observer()).define(["FileAttachment","width","md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("flowQueue")).define("flowQueue", ["htl","Event"], _flowQueue);
   main.variable(observer()).define(["md"], _4);

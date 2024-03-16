@@ -1,6 +1,6 @@
-# A Causally Consistent Redis Backend for a Firebase-compatible Realtime Database
+# A Causally Consistent Redis Backend for a Realtime Database
 
-https://observablehq.com/@tomlarkworthy/redis-backend-1@4304
+https://observablehq.com/@tomlarkworthy/redis-backend-1@4435
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,8 +13,8 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/de798a70f81e9e09@4304.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/d/de798a70f81e9e09@4435.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

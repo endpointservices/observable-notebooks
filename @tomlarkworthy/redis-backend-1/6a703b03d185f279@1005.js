@@ -1,4 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/redis@1002
+// https://observablehq.com/@tomlarkworthy/redis@1005
 import define1 from "./bb2055d580bbbab2@106.js";
 import define2 from "./58f3eb7334551ae6@209.js";
 
@@ -68,6 +68,7 @@ node_modules/websockify/websockify.js 6380 localhost:6379
 
 The command we use for the demo server protected with ssh with LetsEncrypt certbot ends up as 
 \`\`\`
+killall node;
 nohup node_modules/websockify/websockify.js \\
 --cert /etc/letsencrypt/live/redis.webcode.run/fullchain.pem \\
 --key /etc/letsencrypt/live/redis.webcode.run/privkey.pem \\
@@ -1469,7 +1470,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["redis.png", {url: new URL("./files/f2e998f5d962cffa4b289f4d7c272aaaf390db875a4e6fb75ecd68f6787b10ca040ac26101042cf8a177cd8e492a75c040fd6b5089811e0c8a0b432bbcf80644", import.meta.url), mimeType: "image/png", toString}]
+    ["redis.png", {url: new URL("./files/f2e998f5d962cffa4b289f4d7c272aaaf390db875a4e6fb75ecd68f6787b10ca040ac26101042cf8a177cd8e492a75c040fd6b5089811e0c8a0b432bbcf80644.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
