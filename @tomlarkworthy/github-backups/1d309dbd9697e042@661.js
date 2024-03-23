@@ -93,7 +93,6 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     beforeDispatch: async ({ client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
-      debugger;
     }
   });
 

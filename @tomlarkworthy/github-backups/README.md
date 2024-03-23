@@ -1,6 +1,6 @@
 # Automatically Backup Observable notebooks to Github
 
-https://observablehq.com/@tomlarkworthy/github-backups@660
+https://observablehq.com/@tomlarkworthy/github-backups@661
 
 View this notebook in your browser by running a web server in this folder. For
 example:
