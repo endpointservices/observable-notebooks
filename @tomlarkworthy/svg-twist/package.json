@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/svg-twist",
+  "main": "e81003cebc556f26@466.js",
+  "version": "466.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/svg-twist",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
