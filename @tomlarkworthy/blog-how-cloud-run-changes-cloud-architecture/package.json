@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blog-how-cloud-run-changes-cloud-architecture",
+  "main": "0e993dbc5746f119@1009.js",
+  "version": "1009.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blog-how-cloud-run-changes-cloud-architecture",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
