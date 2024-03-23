@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lazer-simulator",
+  "main": "d64d17147fada500@689.js",
+  "version": "689.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lazer-simulator",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
