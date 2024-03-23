@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/animation",
+  "main": "e34386a07af9b73e@955.js",
+  "version": "955.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/animation",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
