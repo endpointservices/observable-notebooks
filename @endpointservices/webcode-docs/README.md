@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/424a8c8cd1a48f09@220.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/webcode-docs.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
