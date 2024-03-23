@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/infinite-kirigami-the-endless-wall",
+  "main": "61ab49b84209074b@1485.js",
+  "version": "1485.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/infinite-kirigami-the-endless-wall",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
