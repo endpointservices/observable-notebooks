@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/573e072575f28fb9@454.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/weblogin-for-firebase.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
