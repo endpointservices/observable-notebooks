@@ -16,11 +16,11 @@ jobs:
           # We convert this to @tomlarkworthy/github-backups by striping the prefix
           path="${URL/https:\/\/observablehq.com\//}"
           
-          echo 'url:     ${{github.event.client_payload.url}}'
-          echo 'path: ${path}'
+          echo 'url:  ${{github.event.client_payload.url}}'
+          echo "path: ${path}"
           # NOTE: api_key parameter not printed for security reasons, but it may be present
           # Download tar from Observable directly (do not echo, may contain API key)
-          curl 'https://api.observablehq.com/${path}.tgz?v=3&api_key=${{github.event.client_payload.api_key}}' > notebook.tgz
+          curl "https://api.observablehq.com/${path}.tgz?v=3&api_key=${{github.event.client_payload.api_key}}" > notebook.tgz
           
           # Turn on echo of commands now
           set -x
