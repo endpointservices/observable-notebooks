@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/kirigami-turret",
+  "main": "02b9a38d7e04eca4@1009.js",
+  "version": "1009.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/kirigami-turret",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
