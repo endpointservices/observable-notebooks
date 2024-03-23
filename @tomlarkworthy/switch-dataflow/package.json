@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/switch-dataflow",
+  "main": "50610aed8b986e07@169.js",
+  "version": "169.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/switch-dataflow",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
