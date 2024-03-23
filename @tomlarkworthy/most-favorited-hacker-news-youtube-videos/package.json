@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/most-favorited-hacker-news-youtube-videos",
+  "main": "2890e617c1a8b34d@314.js",
+  "version": "314.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/most-favorited-hacker-news-youtube-videos",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
