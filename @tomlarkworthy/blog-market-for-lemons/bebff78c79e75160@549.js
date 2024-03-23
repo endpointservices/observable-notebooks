@@ -3,6 +3,7 @@ import define2 from "./dff1e917c89f5e76@1964.js";
 import define3 from "./c0de6bf6c2f598ef@62.js";
 import define4 from "./11a5ab8b1b3a51db@1161.js";
 import define5 from "./9e9b514f3656a16e@1255.js";
+import define6 from "./dfdb38d5580b5c35@331.js";
 
 function _1(md){return(
 md`# My Blog Theme`
@@ -241,6 +242,10 @@ deploy("netlifyCORSHeaders", (req, res) =>
 )
 )}
 
+function _19(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -267,5 +272,8 @@ export default function define(runtime, observer) {
   const child5 = runtime.module(define5);
   main.import("deployStaticFile", child5);
   main.import("queryDependants", child5);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
+  main.variable(observer()).define(["footer"], _19);
   return main;
 }
