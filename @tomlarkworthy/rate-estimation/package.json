@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/rate-estimation",
+  "main": "ab04437d0ed2887e@759.js",
+  "version": "759.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/rate-estimation",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
