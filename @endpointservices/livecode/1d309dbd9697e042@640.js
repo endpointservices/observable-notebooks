@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/github-backups@631
 import define1 from "./8aac8b2cb06bf434@263.js";
 import define2 from "./b09f1f038b1040e3@77.js";
 import define3 from "./55bed46f68a80641@366.js";
@@ -96,13 +95,12 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     beforeDispatch: async ({ client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
-      
+      debugger;
       // fill in version if needed
       const metadata = await getMetadata2(client_payload.url, {
         version: client_payload.version, // might be undefined
         api_key: ctx.secrets.api_key // might be undefined
       });
-      client_payload.version = metadata.version; // now it is not undefined
       // fill in everything while we are here (title is missing from private notebooks too)
       client_payload.url = metadata.url;
       client_payload.title = metadata.title;
@@ -187,7 +185,6 @@ jobs:
           echo 'title:   \${{github.event.client_payload.title}}'
           echo 'author:  \${{github.event.client_payload.author}}'
           echo 'id:      \${{github.event.client_payload.id}}'
-          echo 'version: \${{github.event.client_payload.version}}'
           # NOTE: api_key parameter not printed for security reasons, but it may be present
           # Download tar from Observable directly (do not echo, may contain API key)
           curl 'https://api.observablehq.com/d/\${{github.event.client_payload.id}}@\${{github.event.client_payload.version}}.tgz?v=3&api_key=\${{github.event.client_payload.api_key}}' > notebook.tgz
@@ -212,7 +209,6 @@ jobs:
             title:   \${{github.event.client_payload.title}}
             author:  \${{github.event.client_payload.author}}
             id:      \${{github.event.client_payload.id}}
-            version: \${{github.event.client_payload.version}}
             '
             git push
           fi
@@ -250,10 +246,26 @@ backupNowButton()
 )}
 
 function _15(md){return(
+md`### Info
+
+endpoint expects a request with the body of the form 
+
+~~~
+{
+    "id": "1d309dbd9697e042",
+    "url": "https://observablehq.com/@tomlarkworthy/github-backups",
+    "title": "Automatically Backup Observable notebooks to Github",
+    "author": "Tom Larkworthy (@tomlarkworthy)",
+    "runtimeVersion": "1"
+}
+~~~`
+)}
+
+function _16(md){return(
 md`## Dependencies`
 )}
 
-function _21(footer){return(
+function _22(footer){return(
 footer
 )}
 
@@ -279,6 +291,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["enableGithubBackups"], _13);
   main.variable(observer()).define(["backupNowButton"], _14);
   main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _16);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
@@ -291,6 +304,6 @@ export default function define(runtime, observer) {
   main.import("metadata", "getMetadata2", child4);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _21);
+  main.variable(observer()).define(["footer"], _22);
   return main;
 }
