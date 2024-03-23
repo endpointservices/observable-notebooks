@@ -1,6 +1,6 @@
 # Lazer Cutting Notebook
 
-https://observablehq.com/@tomlarkworthy/lazer-cutting-notebook@4141
+https://observablehq.com/@tomlarkworthy/lazer-cutting-notebook@4143
 
 View this notebook in your browser by running a web server in this folder. For
 example:

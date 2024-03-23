@@ -1,7 +1,7 @@
 import define1 from "./17c8ce433e1df58e@2457.js";
 import define2 from "./0d64f2229c613239@129.js";
 import define3 from "./f92778131fd76559@1174.js";
-import define4 from "./293899bef371e135@293.js";
+import define4 from "./dfdb38d5580b5c35@331.js";
 
 function _1(md){return(
 md`# Lazer Cutting Notebook
