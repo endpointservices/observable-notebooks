@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/minecraft-servers",
+  "main": "2533465cb90462d7@2239.js",
+  "version": "2239.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/minecraft-servers",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
