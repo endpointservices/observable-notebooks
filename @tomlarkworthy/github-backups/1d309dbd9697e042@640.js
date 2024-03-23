@@ -95,7 +95,7 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
     beforeDispatch: async ({ client_payload } = {}, ctx) => {
       // Mixin the apiKey so Github can access private code exports
       client_payload.api_key = ctx.secrets.api_key;
-      
+      debugger;
       // fill in version if needed
       const metadata = await getMetadata2(client_payload.url, {
         version: client_payload.version, // might be undefined
@@ -256,7 +256,6 @@ endpoint expects a request with the body of the form
     "url": "https://observablehq.com/@tomlarkworthy/github-backups",
     "title": "Automatically Backup Observable notebooks to Github",
     "author": "Tom Larkworthy (@tomlarkworthy)",
-    "version": "631",
     "runtimeVersion": "1"
 }
 ~~~`
