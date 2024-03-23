@@ -1,6 +1,7 @@
 import define1 from "./8aac8b2cb06bf434@263.js";
 import define2 from "./b09f1f038b1040e3@77.js";
 import define3 from "./58f3eb7334551ae6@215.js";
+import define4 from "./ef672b935bd480fc@623.js";
 
 function _1(md){return(
 md`# Automatically Backup [Observable](observablehq.com) notebooks to Github
@@ -52,7 +53,7 @@ function _4(md){return(
 md`### Implementation`
 )}
 
-function _enableGithubBackups(onVersion,dispatchProxyName,createDispatchProxy){return(
+function _enableGithubBackups(onVersion,dispatchProxyName,urlFromId,createDispatchProxy){return(
 function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
   // Create onVersion hook, which simply forwards to the dispatchProxyEndpoint
   onVersion(async ({ id, version } = {}) => {
@@ -64,26 +65,13 @@ function enableGithubBackups({ owner, repo, debugProxy, allow } = {}) {
 
     // Endpoints don't work in the thumbnail process, as they cannot figure out their top level slugs
     // However, as we have the id and version passed in we can derive it.
-    let altDispatchURL = undefined;
-    const metadata = null;
-    if (metadata === null) {
-      // null means it could be a private URL and therefore d/<hex> for only
-      altDispatchURL = `https://webcode.run/observablehq.com/d/${id};${dispatchProxyName(
-        { owner, repo, event_type: "new_notebook_version" }
-      )}`;
-    } else {
-      // else we can lookup the latest URL from metadata
-      const notebookURL = metadata.url.replace("https://", "");
-      altDispatchURL = `https://webcode.run/${notebookURL};${dispatchProxyName({
-        owner,
-        repo,
-        event_type: "new_notebook_version"
-      })}`;
-    }
+    let dispatchURL = `https://webcode.run/observablehq.com/d/${id};${dispatchProxyName(
+      { owner, repo, event_type: "new_notebook_version" }
+    )}`;
     // Now we forward this information to the dispatch function
-    fetch(altDispatchURL, {
+    fetch(dispatchURL, {
       method: "POST",
-      body: JSON.stringify({ ...metadata, id, version })
+      body: JSON.stringify({ url: await urlFromId(id), id, version })
     });
   });
 
@@ -240,21 +228,31 @@ function _16(md){return(
 md`### Utils`
 )}
 
-function _urlFromId(){return(
+function _urlFromId(fetchp){return(
 async (id) => {
-  return (await fetch(`https://api.observablehq.com/d/${id}.js?v=4`)).text();
+  const response = await (
+    await fetchp(`https://api.observablehq.com/document/${id}/head?v=4`)
+  ).json();
+  if (response.slug) {
+    return `https://observablehq.com/@tomlarkworthy/${response.slug}`;
+  }
+  return `https://observablehq.com/d/${id}`;
 }
 )}
 
 function _18(urlFromId){return(
-urlFromId("1d309dbd9697e042")
+urlFromId("d023d6fa23f3afd0")
 )}
 
 function _19(md){return(
 md`## Dependencies`
 )}
 
-function _23(footer){return(
+function _trusted_domain(){return(
+["api.observablehq.com"]
+)}
+
+function _25(footer){return(
 footer
 )}
 
@@ -269,7 +267,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["FileAttachment","md"], _3);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","dispatchProxyName","createDispatchProxy"], _enableGithubBackups);
+  main.variable(observer("enableGithubBackups")).define("enableGithubBackups", ["onVersion","dispatchProxyName","urlFromId","createDispatchProxy"], _enableGithubBackups);
   main.variable(observer()).define(["md"], _6);
   main.variable(observer("backupNowButton")).define("backupNowButton", ["Inputs","html"], _backupNowButton);
   main.variable(observer()).define(["md"], _8);
@@ -281,9 +279,10 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["backupNowButton"], _14);
   main.variable(observer()).define(["md"], _15);
   main.variable(observer()).define(["md"], _16);
-  main.variable(observer("urlFromId")).define("urlFromId", _urlFromId);
+  main.variable(observer("urlFromId")).define("urlFromId", ["fetchp"], _urlFromId);
   main.variable(observer()).define(["urlFromId"], _18);
   main.variable(observer()).define(["md"], _19);
+  main.variable(observer("trusted_domain")).define("trusted_domain", _trusted_domain);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
   const child2 = runtime.module(define2);
@@ -291,6 +290,8 @@ export default function define(runtime, observer) {
   main.import("dispatchProxyName", child2);
   const child3 = runtime.module(define3);
   main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _23);
+  const child4 = runtime.module(define4).derive([{name: "trusted_domain", alias: "ALLOW_DOMAINS"}], main);
+  main.import("fetchp", child4);
+  main.variable(observer()).define(["footer"], _25);
   return main;
 }
