@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/svg-to-gif",
+  "main": "ceef390de11dbbb9@1091.js",
+  "version": "1091.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/svg-to-gif",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
