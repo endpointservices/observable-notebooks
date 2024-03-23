@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/jsqrcode",
+  "main": "43fe20e641b13074@361.js",
+  "version": "361.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/jsqrcode",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
