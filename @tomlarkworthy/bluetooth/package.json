@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/bluetooth",
+  "main": "41a2fdc64870b647@219.js",
+  "version": "219.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/bluetooth",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
