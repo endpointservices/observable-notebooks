@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/2d-spatial-wormhole-warp",
+  "main": "0a8211a56d6af528@1133.js",
+  "version": "1133.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/2d-spatial-wormhole-warp",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
