@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/story-tube-help-the-sad-king",
+  "main": "44c97aa86bc3207b@1155.js",
+  "version": "1155.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/story-tube-help-the-sad-king",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
