@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ilda-laser-show-player",
+  "main": "d2eaf8ad0a3cdfd0@1092.js",
+  "version": "1092.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ilda-laser-show-player",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
