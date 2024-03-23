@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/expression-fuzzer",
+  "main": "202f574491d15810@348.js",
+  "version": "348.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/expression-fuzzer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
