@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/observable-tour",
+  "main": "18c81b2adae8b6f2@1181.js",
+  "version": "1181.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/observable-tour",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
