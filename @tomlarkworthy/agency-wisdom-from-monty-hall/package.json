@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/agency-wisdom-from-monty-hall",
+  "main": "480d4ecd908c3c2e@1013.js",
+  "version": "1013.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/agency-wisdom-from-monty-hall",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
