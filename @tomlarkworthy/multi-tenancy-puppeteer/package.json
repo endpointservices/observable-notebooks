@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/multi-tenancy-puppeteer",
+  "main": "414e48e52cfc3f14@1019.js",
+  "version": "1019.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/multi-tenancy-puppeteer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
