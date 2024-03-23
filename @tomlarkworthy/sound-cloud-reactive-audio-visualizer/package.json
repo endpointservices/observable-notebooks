@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/sound-cloud-reactive-audio-visualizer",
+  "main": "75ca9de6c8daba14@1201.js",
+  "version": "1201.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/sound-cloud-reactive-audio-visualizer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
