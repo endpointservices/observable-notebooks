@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/fast-barcode-scanner",
+  "main": "dc71d195cd6a34f0@1678.js",
+  "version": "1678.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/fast-barcode-scanner",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
