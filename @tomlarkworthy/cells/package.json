@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/cells",
+  "main": "a1ef881a63375797@25.js",
+  "version": "25.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/cells",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
