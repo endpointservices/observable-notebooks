@@ -252,11 +252,7 @@ endpoint expects a request with the body of the form
 
 ~~~
 {
-    "id": "1d309dbd9697e042",
     "url": "https://observablehq.com/@tomlarkworthy/github-backups",
-    "title": "Automatically Backup Observable notebooks to Github",
-    "author": "Tom Larkworthy (@tomlarkworthy)",
-    "runtimeVersion": "1"
 }
 ~~~`
 )}
