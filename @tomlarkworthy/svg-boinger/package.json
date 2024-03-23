@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/svg-boinger",
+  "main": "68ea769c39cb7ff0@804.js",
+  "version": "804.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/svg-boinger",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
