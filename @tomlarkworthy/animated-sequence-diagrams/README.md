@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/4c8138da42ecfcec@186.tgz?v=3
+npm install https://api.observablehq.com/@tomlarkworthy/animated-sequence-diagrams.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
