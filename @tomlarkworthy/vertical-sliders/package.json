@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/vertical-sliders",
+  "main": "92ff66b718c1972f@141.js",
+  "version": "141.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/vertical-sliders",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
