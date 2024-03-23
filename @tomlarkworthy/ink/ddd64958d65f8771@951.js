@@ -1,6 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/ink@932
-import define1 from "./1d309dbd9697e042@631.js";
-import define2 from "./58f3eb7334551ae6@215.js";
+import define1 from "./dfdb38d5580b5c35@331.js";
 
 function _1(md){return(
 md`# Ink in water`
@@ -746,14 +744,7 @@ function* _mainLoop(gl,textureWidth,textureHeight,$0,mouseSplat,advectionProgram
 }
 
 
-function _43(enableGithubBackups){return(
-enableGithubBackups({
-  owner: "endpointservices", // Github username/organization
-  repo: "observable-notebooks" // Github repo
-})
-)}
-
-function _45(footer){return(
+function _43(footer){return(
 footer
 )}
 
@@ -811,10 +802,7 @@ export default function define(runtime, observer) {
   main.variable(observer("splat")).define("splat", ["splatProgram","gl","velocity","canvas","blit","density","pressure"], _splat);
   main.variable(observer("mainLoop")).define("mainLoop", ["gl","textureWidth","textureHeight","mutable mouse","mouseSplat","advectionProgram","velocity","dt","velocityDissipation","blit","density","densityDissipation","curlProgram","curl","vorticityProgram","curlDegree","divergenceProgram","divergence","clearProgram","pressure","pressureProgram","gradienSubtractProgram","displayProgram"], _mainLoop);
   const child1 = runtime.module(define1);
-  main.import("enableGithubBackups", child1);
-  main.variable(observer()).define(["enableGithubBackups"], _43);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _45);
+  main.import("footer", child1);
+  main.variable(observer()).define(["footer"], _43);
   return main;
 }

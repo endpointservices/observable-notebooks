@@ -1,6 +1,6 @@
 # Ink in water
 
-https://observablehq.com/@tomlarkworthy/ink@932
+https://observablehq.com/@tomlarkworthy/ink@951
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/ddd64958d65f8771@932.tgz?v=3
+npm install https://api.observablehq.com/@tomlarkworthy/ink.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
