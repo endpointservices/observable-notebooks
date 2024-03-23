@@ -253,6 +253,7 @@ endpoint expects a request with the body of the form
 ~~~
 {
     "url": "https://observablehq.com/@tomlarkworthy/github-backups",
+    "id": "..." // used to drive the download URL (https://api.observablehq.com/@tomlarkworthy/github-backups@642.tgz?v=3)
     "api_key": "..." // optional
 }
 ~~~`
