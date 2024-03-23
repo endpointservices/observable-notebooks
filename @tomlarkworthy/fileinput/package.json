@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/fileinput",
+  "main": "3d321b3f7d398726@482.js",
+  "version": "482.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/fileinput",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
