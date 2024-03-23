@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blog-firestores-technical-advantages",
+  "main": "47cd9d10429130f6@1022.js",
+  "version": "1022.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blog-firestores-technical-advantages",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
