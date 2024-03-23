@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/animated-kirigami",
+  "main": "137f4f2c887a84f8@1403.js",
+  "version": "1403.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/animated-kirigami",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
