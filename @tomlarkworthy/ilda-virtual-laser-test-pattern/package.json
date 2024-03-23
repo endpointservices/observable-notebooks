@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ilda-virtual-laser-test-pattern",
+  "main": "db107eb5deeac4e6@1055.js",
+  "version": "1055.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ilda-virtual-laser-test-pattern",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
