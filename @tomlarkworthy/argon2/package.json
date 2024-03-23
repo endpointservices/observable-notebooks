@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/argon2",
+  "main": "ac9e81d5836d07ba@261.js",
+  "version": "261.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/argon2",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
