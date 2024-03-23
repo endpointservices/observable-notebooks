@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blog-market-for-lemons",
+  "main": "3cb6f3d69ca46f79@1016.js",
+  "version": "1016.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blog-market-for-lemons",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
