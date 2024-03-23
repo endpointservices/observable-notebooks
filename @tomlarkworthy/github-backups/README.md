@@ -1,6 +1,6 @@
 # Automatically Backup Observable notebooks to Github
 
-https://observablehq.com/@tomlarkworthy/github-backups@643
+https://observablehq.com/@tomlarkworthy/github-backups@660
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/1d309dbd9697e042@643.tgz?v=3
+npm install https://api.observablehq.com/@tomlarkworthy/github-backups.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
