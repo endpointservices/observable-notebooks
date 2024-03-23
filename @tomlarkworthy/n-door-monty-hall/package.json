@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/n-door-monty-hall",
+  "main": "cf62d39d953098d6@354.js",
+  "version": "354.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/n-door-monty-hall",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
