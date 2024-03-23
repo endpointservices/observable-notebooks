@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/grid",
+  "main": "bd9d083ddbe7ce90@1595.js",
+  "version": "1595.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/grid",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
