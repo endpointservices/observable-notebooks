@@ -2,6 +2,7 @@ name: backups
 on:
   repository_dispatch:
     types: [new_notebook_version]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,9 +17,7 @@ jobs:
           path="${URL/https:\/\/observablehq.com\//}"
           
           echo 'url:     ${{github.event.client_payload.url}}'
-          echo 'title:   ${{github.event.client_payload.title}}'
-          echo 'author:  ${{github.event.client_payload.author}}'
-          echo 'id:      ${{github.event.client_payload.id}}'
+          echo 'path: ${path}'
           # NOTE: api_key parameter not printed for security reasons, but it may be present
           # Download tar from Observable directly (do not echo, may contain API key)
           curl 'https://api.observablehq.com/${path}.tgz?v=3&api_key=${{github.event.client_payload.api_key}}' > notebook.tgz
