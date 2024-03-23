@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/3eaa33b4d7cfec41@109.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
