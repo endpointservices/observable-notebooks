@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/merge-dataflow",
+  "main": "532cb8d948df07d3@472.js",
+  "version": "472.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/merge-dataflow",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
