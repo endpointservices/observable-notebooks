@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/aws-serverless-password",
+  "main": "941f1c82ac442f09@743.js",
+  "version": "743.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/aws-serverless-password",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
