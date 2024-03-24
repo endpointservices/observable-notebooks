@@ -1,4 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/copy-code@215
+import define1 from "./dfdb38d5580b5c35@331.js";
+
 function _intro(md){return(
 md`# Copy code to clipboard
 
@@ -88,11 +89,18 @@ function _style(html){return(
 </style>`
 )}
 
+function _6(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer("intro")).define("intro", ["md"], _intro);
   main.variable(observer("installHere")).define("installHere", ["intro","installCopyCode","invalidation"], _installHere);
   main.variable(observer("installCopyCode")).define("installCopyCode", ["style"], _installCopyCode);
   main.variable(observer("style")).define("style", ["html"], _style);
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
+  main.variable(observer()).define(["footer"], _6);
   return main;
 }
