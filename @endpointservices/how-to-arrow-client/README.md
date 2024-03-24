@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/552a5ae0888014fd@104.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/how-to-arrow-client.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
