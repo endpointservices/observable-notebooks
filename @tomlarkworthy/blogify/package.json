@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blogify",
+  "main": "51c98761acf6f466@432.js",
+  "version": "432.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blogify",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
