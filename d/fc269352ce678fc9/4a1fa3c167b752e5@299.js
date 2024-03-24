@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/viewroutine@299
 async function _1(md,FileAttachment){return(
 md`# Composing views across time: viewroutine
 
