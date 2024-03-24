@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/293899bef371e135@293.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/footer-with-backups.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
