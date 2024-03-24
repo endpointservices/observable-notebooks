@@ -1,4 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/viewroutine@304
+import define1 from "./dfdb38d5580b5c35@331.js";
+
 async function _1(md,FileAttachment){return(
 md`# Composing views across time: viewroutine
 
@@ -250,9 +251,16 @@ async function* flashStar() {
 }
 )}
 
+function _24(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["viewroutine.png",new URL("./files/dec489daac2e4a27c49e9ac9241bdba2ecde9687d9d521364238e168fb6567278d156f3d630fe937db02352d6e47556fe14f9ddcb62ecaeb902ac85ea3f83ef9",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["viewroutine.png", {url: new URL("./files/dec489daac2e4a27c49e9ac9241bdba2ecde9687d9d521364238e168fb6567278d156f3d630fe937db02352d6e47556fe14f9ddcb62ecaeb902ac85ea3f83ef9.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
@@ -281,5 +289,8 @@ export default function define(runtime, observer) {
   main.variable(observer("choose")).define("choose", ["htl","Event"], _choose);
   main.variable(observer("flashSquare")).define("flashSquare", ["html","Event","Promises"], _flashSquare);
   main.variable(observer("flashStar")).define("flashStar", ["htl","Event","Promises"], _flashStar);
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
+  main.variable(observer()).define(["footer"], _24);
   return main;
 }

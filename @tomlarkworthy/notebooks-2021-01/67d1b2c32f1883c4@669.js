@@ -1,11 +1,15 @@
-// https://observablehq.com/@mkfreeman/plot-tooltip@565
 import define1 from "./d2dffac0e42406e8@3045.js";
 import define2 from "./32eeadb67cb4cbcb@1472.js";
 import define3 from "./8d6618bb2d7befdd@199.js";
 
 function _1(md){return(
 md`# Plot Tooltip
-## Two approaches for easily adding tooltips to your plots`
+## Two approaches for easily adding tooltips to your plots
+
+<p style="background: #fffced; box-sizing: border-box; padding: 10px 20px; font-style: italic;">**Update June 2023:** Rejoice 🎉🎉🎉! Plot now has built in support for [pointer interactions](https://observablehq.com/plot/interactions/pointer) using the [tip mark](https://observablehq.com/plot/marks/tip). That's a much more reliable and robust way to create tooltips.
+<br/><br/>
+This notebook will no longer be updated (but it _will not_ be removed)</p>
+`
 )}
 
 function _2(md){return(
@@ -215,25 +219,19 @@ function _20(md){return(
 md`## Implementation`
 )}
 
-function _addTooltips(d3,_,id_generator,hover,html){return(
-(chart, hover_styles = { fill: "blue", opacity: 0.5 }) => {
-  let styles = hover_styles;
-  const line_styles = {
-    stroke: "blue",
-    "stroke-width": 3
-  };
+function _addTooltips(d3,id_generator,hover,html){return(
+(chart, styles) => {
+  const stroke_styles = { stroke: "blue", "stroke-width": 3 };
+  const fill_styles = { fill: "blue", opacity: 0.5 };
+
   // Workaround if it's in a figure
   const type = d3.select(chart).node().tagName;
   let wrapper =
     type === "FIGURE" ? d3.select(chart).select("svg") : d3.select(chart);
 
   // Workaround if there's a legend....
-  const numSvgs = d3.select(chart).selectAll("svg").size();
-  if (numSvgs === 2)
-    wrapper = d3
-      .select(chart)
-      .selectAll("svg")
-      .filter((d, i) => i === 1);
+  const svgs = d3.select(chart).selectAll("svg");
+  if (svgs.size() > 1) wrapper = d3.select([...svgs].pop());
   wrapper.style("overflow", "visible"); // to avoid clipping at the edges
 
   // Set pointer events to visibleStroke if the fill is none (e.g., if its a line)
@@ -244,15 +242,15 @@ function _addTooltips(d3,_,id_generator,hover,html){return(
       d3.select(this).attr("fill") === "none"
     ) {
       d3.select(this).style("pointer-events", "visibleStroke");
-      styles = _.isEqual(hover_styles, { fill: "blue", opacity: 0.5 })
-        ? line_styles
-        : hover_styles;
+      if (styles === undefined) styles = stroke_styles;
     }
   });
+  
+  if (styles === undefined) styles = fill_styles;
 
   const tip = wrapper
-    .selectAll(".hover-tip")
-    .data([""])
+    .selectAll(".hover")
+    .data([1])
     .join("g")
     .attr("class", "hover")
     .style("pointer-events", "none")
@@ -262,70 +260,56 @@ function _addTooltips(d3,_,id_generator,hover,html){return(
   const id = id_generator();
 
   // Add the event listeners
-  d3.select(chart)
-    .classed(id, true) // using a class selector so that it doesn't overwrite the ID
-    .selectAll("title")
-    .each(function () {
-      // Get the text out of the title, set it as an attribute on the parent, and remove it
-      const title = d3.select(this); // title element that we want to remove
-      const parent = d3.select(this.parentNode); // visual mark on the screen
-      const t = title.text();
-      if (t) {
-        parent.attr("__title", t).classed("has-title", true);
-        title.remove();
-      }
-      // Mouse events
-      parent
-        .on("mousemove", function (event) {
-          const text = d3.select(this).attr("__title");
-          const pointer = d3.pointer(event, wrapper.node());
-          if (text) tip.call(hover, pointer, text.split("\n"));
-          else tip.selectAll("*").remove();
+  d3.select(chart).classed(id, true); // using a class selector so that it doesn't overwrite the ID
+  wrapper.selectAll("title").each(function () {
+    // Get the text out of the title, set it as an attribute on the parent, and remove it
+    const title = d3.select(this); // title element that we want to remove
+    const parent = d3.select(this.parentNode); // visual mark on the screen
+    const t = title.text();
+    if (t) {
+      parent.attr("__title", t).classed("has-title", true);
+      title.remove();
+    }
+    // Mouse events
+    parent
+      .on("pointerenter pointermove", function (event) {
+        const text = d3.select(this).attr("__title");
+        const pointer = d3.pointer(event, wrapper.node());
+        if (text) tip.call(hover, pointer, text.split("\n"));
+        else tip.selectAll("*").remove();
 
-          // Raise it
-          d3.select(this).raise();
-          // Keep within the parent horizontally
-          const tipSize = tip.node().getBBox();
-          if (pointer[0] + tipSize.x < 0)
-            tip.attr(
-              "transform",
-              `translate(${tipSize.width / 2}, ${pointer[1] + 7})`
-            );
-          else if (pointer[0] + tipSize.width / 2 > wrapper.attr("width"))
-            tip.attr(
-              "transform",
-              `translate(${wrapper.attr("width") - tipSize.width / 2}, ${
-                pointer[1] + 7
-              })`
-            );
-        })
-        .on("mouseout", function (event) {
-          tip.selectAll("*").remove();
-          // Lower it!
-          d3.select(this).lower();
-        });
-    });
+        // Raise it
+        d3.select(this).raise();
+        // Keep within the parent horizontally
+        const tipSize = tip.node().getBBox();
+        if (pointer[0] + tipSize.x < 0)
+          tip.attr(
+            "transform",
+            `translate(${tipSize.width / 2}, ${pointer[1] + 7})`
+          );
+        else if (pointer[0] + tipSize.width / 2 > wrapper.attr("width"))
+          tip.attr(
+            "transform",
+            `translate(${wrapper.attr("width") - tipSize.width / 2}, ${
+              pointer[1] + 7
+            })`
+          );
+      })
+      .on("pointerout", function (event) {
+        tip.selectAll("*").remove();
+        // Lower it!
+        d3.select(this).lower();
+      });
+  });
 
   // Remove the tip if you tap on the wrapper (for mobile)
   wrapper.on("touchstart", () => tip.selectAll("*").remove());
-  // Add styles
-  const style_string = Object.keys(styles)
-    .map((d) => {
-      return `${d}:${styles[d]};`;
-    })
-    .join("");
 
   // Define the styles
-  const style = html`<style>
-      .${id} .has-title {
-       cursor: pointer; 
-       pointer-events: all;
-      }
-      .${id} .has-title:hover {
-        ${style_string}
-    }
-    </style>`;
-  chart.appendChild(style);
+  chart.appendChild(html`<style>
+  .${id} .has-title { cursor: pointer;  pointer-events: all; }
+  .${id} .has-title:hover { ${Object.entries(styles).map(([key, value]) => `${key}: ${value};`).join(" ")} }`);
+
   return chart;
 }
 )}
@@ -411,7 +395,7 @@ export default function define(runtime, observer) {
   main.import("data", "brandData", child1);
   main.variable(observer()).define(["addTooltips","Plot","brandData"], _19);
   main.variable(observer()).define(["md"], _20);
-  main.variable(observer("addTooltips")).define("addTooltips", ["d3","_","id_generator","hover","html"], _addTooltips);
+  main.variable(observer("addTooltips")).define("addTooltips", ["d3","id_generator","hover","html"], _addTooltips);
   main.variable(observer("hover")).define("hover", _hover);
   main.variable(observer("id_generator")).define("id_generator", _id_generator);
   main.variable(observer("Plot")).define("Plot", ["tooltipPlugin","require"], _Plot);

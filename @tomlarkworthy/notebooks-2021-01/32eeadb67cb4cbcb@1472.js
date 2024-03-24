@@ -647,7 +647,12 @@ htl.html
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["penguins.png",new URL("./files/3b12c349e13f0473701a290d17e9a79b07556c06bd498dd87f00b7b5f79475101f627ccbf33e99c5c4ba22dcb2693467871dd718398c5edfa3175a87c50dd4ea",import.meta.url)],["palmer-penguins.csv",new URL("./files/78466fd621db89a8708d6af36834c45c977f3f95c44f91a380bf7c985f03db2d03849aef300f8caa2bce9605f5229fe9813ed4f168c75f9b0abb4e960400faf0",import.meta.url)],["weather.png",new URL("./files/9a74aa4f8addb29c94f8a780f9b6211ffa49fc6cd956d665c85ada864b6ada28fb44e047062a927663f6f7885a8a02cfede8ed60ac79d72130c913b0820ec190",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["penguins.png", {url: new URL("./files/3b12c349e13f0473701a290d17e9a79b07556c06bd498dd87f00b7b5f79475101f627ccbf33e99c5c4ba22dcb2693467871dd718398c5edfa3175a87c50dd4ea.png", import.meta.url), mimeType: "image/png", toString}],
+    ["palmer-penguins.csv", {url: new URL("./files/78466fd621db89a8708d6af36834c45c977f3f95c44f91a380bf7c985f03db2d03849aef300f8caa2bce9605f5229fe9813ed4f168c75f9b0abb4e960400faf0.csv", import.meta.url), mimeType: "text/csv", toString}],
+    ["weather.png", {url: new URL("./files/9a74aa4f8addb29c94f8a780f9b6211ffa49fc6cd956d665c85ada864b6ada28fb44e047062a927663f6f7885a8a02cfede8ed60ac79d72130c913b0820ec190.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
