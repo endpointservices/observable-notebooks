@@ -14,7 +14,7 @@ import this module directly into your application. To npm install:
 
 ~~~sh
 npm install @observablehq/runtime@5
-npm install https://api.observablehq.com/d/1feab0d1a1e71ecc@1733.tgz?v=3
+npm install https://api.observablehq.com/@endpointservices/serverless-cell-tests.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
