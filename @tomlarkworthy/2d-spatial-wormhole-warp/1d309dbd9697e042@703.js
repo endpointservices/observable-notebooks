@@ -240,7 +240,11 @@ async (id) => {
 }
 )}
 
-function _18(md){return(
+function _18(urlFromId){return(
+urlFromId("d023d6fa23f3afd0")
+)}
+
+function _19(md){return(
 md`## Dependencies`
 )}
 
@@ -248,7 +252,7 @@ function _trusted_domain(){return(
 ["api.observablehq.com"]
 )}
 
-function _24(footer){return(
+function _25(footer){return(
 footer
 )}
 
@@ -276,7 +280,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _15);
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("urlFromId")).define("urlFromId", ["fetchp"], _urlFromId);
-  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["urlFromId"], _18);
+  main.variable(observer()).define(["md"], _19);
   main.variable(observer("trusted_domain")).define("trusted_domain", _trusted_domain);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
@@ -287,6 +292,6 @@ export default function define(runtime, observer) {
   main.import("footer", child3);
   const child4 = runtime.module(define4).derive([{name: "trusted_domain", alias: "ALLOW_DOMAINS"}], main);
   main.import("fetchp", child4);
-  main.variable(observer()).define(["footer"], _24);
+  main.variable(observer()).define(["footer"], _25);
   return main;
 }
