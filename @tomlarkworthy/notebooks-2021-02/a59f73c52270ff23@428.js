@@ -1,8 +1,8 @@
-// https://observablehq.com/@tomlarkworthy/notebooks-2021-02@428
-import define1 from "./67d1b2c32f1883c4@565.js";
+// https://observablehq.com/@tomlarkworthy/notebooks-2022-02@428
+import define1 from "./67d1b2c32f1883c4@669.js";
 import define2 from "./55bed46f68a80641@366.js";
-import define3 from "./ef672b935bd480fc@619.js";
-import define4 from "./293899bef371e135@216.js";
+import define3 from "./ef672b935bd480fc@623.js";
+import define4 from "./293899bef371e135@293.js";
 
 function _1(month,md){return(
 md`# Top Notebooks of ${month} 2022`
@@ -318,7 +318,14 @@ footer
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  const fileAttachments = new Map([["tweet_activity_metrics_trendingnotebo2_20220201_20220301_en@1.csv",new URL("./files/8ffb77e2eb384d4eb3da72f77640ad4e0135342cd24f7deb94876dc9d52351c52a6079d39538ddd6e4352e4a9789b55292b4c0f5b4ee763815fddc009acc3c5a",import.meta.url)],["fetchedMeta (2).json",new URL("./files/da685df43d0a31ac559a6548d5bdd5c1d92483adad105b449af4b7eca9763cc6e67fc05f266615e15a336555f4120a720a15b5bf444116e3623f7c68a5087d50",import.meta.url)],["fetchedTags (3).json",new URL("./files/6d570135e86549226eded356fd7014dd3548a10feaf117afcca2c823861fececc11d95c115400b27242594005e956a374146108999511045ab3b330dc2707bb1",import.meta.url)],["fetchedNotebookURL (2).json",new URL("./files/dd127ec740d76110761136b713dc685d984ca2757444f7709b3ef901220c009e59c350ebec106c2f1f62409c948c2427fa9454dd26ec316274f6e3f69951553d",import.meta.url)],["fetchedMetadata (3).json",new URL("./files/067dd226a62449ee708b04976279e6f069d1992769afe671fdf2c5000e59fad8258e08e4fb79fdac762f6b9f56247a6e3d23c8bf0197887089e30234c36d7c5c",import.meta.url)]]);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["tweet_activity_metrics_trendingnotebo2_20220201_20220301_en@1.csv", {url: new URL("./files/8ffb77e2eb384d4eb3da72f77640ad4e0135342cd24f7deb94876dc9d52351c52a6079d39538ddd6e4352e4a9789b55292b4c0f5b4ee763815fddc009acc3c5a.csv", import.meta.url), mimeType: "text/csv", toString}],
+    ["fetchedMeta (2).json", {url: new URL("./files/da685df43d0a31ac559a6548d5bdd5c1d92483adad105b449af4b7eca9763cc6e67fc05f266615e15a336555f4120a720a15b5bf444116e3623f7c68a5087d50.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedTags (3).json", {url: new URL("./files/6d570135e86549226eded356fd7014dd3548a10feaf117afcca2c823861fececc11d95c115400b27242594005e956a374146108999511045ab3b330dc2707bb1.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedNotebookURL (2).json", {url: new URL("./files/dd127ec740d76110761136b713dc685d984ca2757444f7709b3ef901220c009e59c350ebec106c2f1f62409c948c2427fa9454dd26ec316274f6e3f69951553d.json", import.meta.url), mimeType: "application/json", toString}],
+    ["fetchedMetadata (3).json", {url: new URL("./files/067dd226a62449ee708b04976279e6f069d1992769afe671fdf2c5000e59fad8258e08e4fb79fdac762f6b9f56247a6e3d23c8bf0197887089e30234c36d7c5c.json", import.meta.url), mimeType: "application/json", toString}]
+  ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["month","md"], _1);
   main.variable(observer()).define(["data","htl"], _2);

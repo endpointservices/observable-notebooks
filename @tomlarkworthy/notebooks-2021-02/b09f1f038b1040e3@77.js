@@ -1,12 +1,12 @@
-import define1 from "./6eda90668ae03044@803.js";
-import define2 from "./58f3eb7334551ae6@187.js";
+import define1 from "./6eda90668ae03044@836.js";
+import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
 md`# Starting [Github Action](https://docs.github.com/en/actions) Workflows From [Observable](https://observablehq.com/)`
 )}
 
 async function _Octokit(){return(
-await import("https://cdn.skypack.dev/@octokit/core")
+await import("https://cdn.skypack.dev/@octokit/core@2.1.0")
 )}
 
 function _dispatch(Octokit){return(

@@ -1,6 +1,6 @@
 # Top Notebooks of February 2022
 
-https://observablehq.com/@tomlarkworthy/notebooks-2021-02@428
+https://observablehq.com/@tomlarkworthy/notebooks-2022-02@428
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,15 +13,15 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/a59f73c52270ff23@428.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/@tomlarkworthy/notebooks-2021-02.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:
 
 ~~~js
 import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "@tomlarkworthy/notebooks-2021-02";
+import define from "@tomlarkworthy/notebooks-2022-02";
 ~~~
 
 To log the value of the cell named “foo”:
