@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/sign-a-pdf",
+  "main": "f3a7023c0e17e20a@499.js",
+  "version": "499.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/sign-a-pdf",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
