@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/adapting-dataviz",
+  "main": "53a7077a4965a825@531.js",
+  "version": "531.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/adapting-dataviz",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
