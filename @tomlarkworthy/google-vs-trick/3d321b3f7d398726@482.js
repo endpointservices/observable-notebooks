@@ -1,6 +1,6 @@
-// https://observablehq.com/@tomlarkworthy/fileinput@462
 import define1 from "./266e717755b1d175@112.js";
 import define2 from "./f92778131fd76559@1174.js";
+import define3 from "./dfdb38d5580b5c35@331.js";
 
 function _1(md){return(
 md`# Draggable _LocalFile_ _fileInput_ 
@@ -78,6 +78,10 @@ function _4(example_file){return(
 example_file.text()
 )}
 
+function _8(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -89,5 +93,8 @@ export default function define(runtime, observer) {
   main.import("LocalFile", child1);
   const child2 = runtime.module(define2);
   main.import("view", child2);
+  const child3 = runtime.module(define3);
+  main.import("footer", child3);
+  main.variable(observer()).define(["footer"], _8);
   return main;
 }
