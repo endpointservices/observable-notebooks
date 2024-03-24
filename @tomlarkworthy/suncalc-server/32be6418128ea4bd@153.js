@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/suncalc-server@153
 import define1 from "./6eda90668ae03044@836.js";
-import define2 from "./509d6b5d1aebf2a1@215.js";
+import define2 from "./509d6b5d1aebf2a1@236.js";
 import define3 from "./293899bef371e135@278.js";
 
 async function _1(FileAttachment,md){return(
