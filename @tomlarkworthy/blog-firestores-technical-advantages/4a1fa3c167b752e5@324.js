@@ -1,4 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/viewroutine@304
+import define1 from "./dfdb38d5580b5c35@331.js";
+
 async function _1(md,FileAttachment){return(
 md`# Composing views across time: viewroutine
 
@@ -250,6 +251,10 @@ async function* flashStar() {
 }
 )}
 
+function _24(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -284,5 +289,8 @@ export default function define(runtime, observer) {
   main.variable(observer("choose")).define("choose", ["htl","Event"], _choose);
   main.variable(observer("flashSquare")).define("flashSquare", ["html","Event","Promises"], _flashSquare);
   main.variable(observer("flashStar")).define("flashStar", ["htl","Event","Promises"], _flashStar);
+  const child1 = runtime.module(define1);
+  main.import("footer", child1);
+  main.variable(observer()).define(["footer"], _24);
   return main;
 }
