@@ -1,25 +1,40 @@
-import define1 from "./e1c39d41e8e944b0@420.js";
-import define2 from "./293899bef371e135@271.js";
+import define1 from "./e1c39d41e8e944b0@939.js";
+import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
 
-A [moldable](https://moldabledevelopment.com/) tool to find unexpected dataflow events in [Observable](https://observablehq.com/).
+A [moldable](https://moldabledevelopment.com/) development tool to help debug [dataflow problems](https://observablehq.com/@observablehq/how-observable-runs) by visualizing all cell state transitions in the containing notebook ([Twitter](https://twitter.com/tomlarkworthy/status/1543253986026954752) thread). Import into your own notebook when you need to debug a dataflow problem
 
 \`\`\`js
-import {ndd} from '@tomlarkworthy/ndd'
-\`\`\``
+import {_ndd} from '@tomlarkworthy/ndd'
+\`\`\`
+
+So that the debugger does not trigger itself, you must name its containing cell \`ndd\`:
+
+\`\`\`js
+ndd = _ndd
+\`\`\`
+
+Thanks to [\`@mootari/access-runtime\`](https://observablehq.com/@mootari/access-runtime) on which this tool builds upon.
+
+
+|Date| Change|
+|---|---|
+| 2023-11-04 | Fixed renaming bug not tracking the new variable name
+|            | Fixed initial variables not triggering`
 )}
 
-function _ndd(htl,$0,$1,$2,vizHolder){return(
-htl.html`
-<div style="display:flex;flex-wrap:wrap">
-${$0}
-${$1}
-${$2}
-</div>
-${vizHolder}
-`
+function __ndd(htl,$0,$1,$2,vizUpdater,vizHolder){return(
+this || // Reuse DOM to keep control state working, but mixin 'vizUpdater'
+  htl.html`
+      <div style="display:flex;flex-wrap:wrap">
+      ${$0}
+      ${$1}
+      ${$2}
+      </div>
+      ${(vizUpdater, vizHolder)}
+      `
 )}
 
 function _slider2(Inputs){return(
@@ -30,10 +45,9 @@ function _clicker(Inputs){return(
 Inputs.button("Click me!")
 )}
 
-async function _clickerDelay(clicker,Promises,uid)
+function _delayedDependentAsyncComputation(clicker,uid)
 {
-  clicker;
-  await Promises.delay(1000);
+  clicker; // create dependancy on clicker cellto resolve a value
   return uid();
 }
 
@@ -55,8 +69,8 @@ function* _periodicFulfilled(runPeriodics,Promises)
 
 function _periodicThrow(periodicFulfilled)
 {
-  periodicFulfilled;
-  throw new Error();
+  periodicFulfilled; // depends on periodicFulfilled's clock
+  throw new Error(); // throw an error, errors are shown in red
 }
 
 
@@ -65,12 +79,17 @@ md`## State`
 )}
 
 function _excludes(){return(
-["events", "timeline", "viz", "vizUpdater"]
+["events", "viz", "vizUpdater", "ndd", "_ndd"]
 )}
 
-function _events(reset){return(
-reset, []
-)}
+function _events(reset,WATCHER_PREFIX)
+{
+  reset;
+  const val = [];
+  val[WATCHER_PREFIX] = true;
+  return val;
+}
+
 
 function _endTime(Inputs){return(
 Inputs.input(null)
@@ -124,14 +143,8 @@ function _viz(endTime,now,windowSecs,reset,events,Plot)
           text: "name",
           textAnchor: "end",
           dx: -10,
-          fill: (d) => {
-            debugger;
-            return d.type === "pending"
-              ? "pending"
-              : end - d.t < 500
-              ? d.type
-              : "idle";
-          }
+          fill: (d) =>
+            d.type === "pending" ? "pending" : end - d.t < 500 ? d.type : "idle"
         })
       ),
       Plot.tickX(windowedEvents, {
@@ -166,8 +179,9 @@ function _vizHolder(){return(
 document.createElement("div")
 )}
 
-function _vizUpdater(vizHolder,viz)
+function _vizUpdater(interceptVariables,vizHolder,viz)
 {
+  interceptVariables;
   vizHolder.firstChild?.remove();
   vizHolder.appendChild(viz);
 }
@@ -271,7 +285,14 @@ mainVariables.map((v) => v._name)
 
 function _interceptVariables(mainVariables,interceptVariable,invalidation)
 {
-  mainVariables.forEach((v) => interceptVariable(v, invalidation));
+  mainVariables.forEach((v) =>
+    interceptVariable(
+      v,
+      invalidation,
+      /* first seen */ (this || {})[v._name] === undefined
+    )
+  );
+  return Object.fromEntries(mainVariables.map((v) => [v._name, v]));
 }
 
 
@@ -300,10 +321,12 @@ function _uid(){return(
 )}
 
 function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
-function interceptVariable(v, invalidation) {
+function interceptVariable(v, invalidation, firstSeen = false) {
   if (excludes.includes(v._name)) return;
   const name = v._name || "anon_" + v._observer.id;
-
+  if (firstSeen) {
+    debugger;
+  }
   if (_.isEqual(v._observer, {})) {
     // for views and mutables, no observer is setup
     // we create a synthetic anon variable to watch it
@@ -313,9 +336,11 @@ function interceptVariable(v, invalidation) {
     // Because we are creating a variable it takes 2 events to catch up
     // Its starts in pending state ( 1 extra state unrelated to target variable)
     let skip = 2;
-    const handler = (type) => (...args) => {
-      if (skip-- <= 0) notify(name, type, args[0]);
-    };
+    const handler =
+      (type) =>
+      (...args) => {
+        if (skip-- <= 0) notify(args[1], type, args[0]);
+      };
     const watcher = v._module.variable({
       pending: handler("pending"),
       rejected: handler("rejected"),
@@ -332,7 +357,7 @@ function interceptVariable(v, invalidation) {
       if (v._observer[type]) {
         const old = v._observer[type];
         v._observer[type] = (...args) => {
-          notify(name, type, args[0]);
+          notify(args[1], type, args[0]);
           // The old is often a prototype, so we use Reflect to call it
           Reflect.apply(old, v._observer, args);
         };
@@ -344,6 +369,17 @@ function interceptVariable(v, invalidation) {
     intercept("rejected");
     intercept("pending");
   }
+
+  if (firstSeen) {
+    debugger;
+    if (v._value !== undefined) notify(v._name, "fulfilled", v._value);
+    else if (v._promise) {
+      notify(v._name, "pending", undefined);
+      v._promise
+        .then((value) => notify(v._name, "fulfilled", value))
+        .catch((err) => notify(v._name, "rejected", err));
+    }
+  }
 }
 )}
 
@@ -354,19 +390,19 @@ footer
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("ndd")).define("ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizHolder"], _ndd);
+  main.variable(observer("_ndd")).define("_ndd", ["htl","viewof reset","viewof pause","viewof windowSecs","vizUpdater","vizHolder"], __ndd);
   main.variable(observer("viewof slider2")).define("viewof slider2", ["Inputs"], _slider2);
   main.variable(observer("slider2")).define("slider2", ["Generators", "viewof slider2"], (G, _) => G.input(_));
   main.variable(observer("viewof clicker")).define("viewof clicker", ["Inputs"], _clicker);
   main.variable(observer("clicker")).define("clicker", ["Generators", "viewof clicker"], (G, _) => G.input(_));
-  main.variable(observer("clickerDelay")).define("clickerDelay", ["clicker","Promises","uid"], _clickerDelay);
+  main.variable(observer("delayedDependentAsyncComputation")).define("delayedDependentAsyncComputation", ["clicker","uid"], _delayedDependentAsyncComputation);
   main.variable(observer("viewof runPeriodics")).define("viewof runPeriodics", ["Inputs"], _runPeriodics);
   main.variable(observer("runPeriodics")).define("runPeriodics", ["Generators", "viewof runPeriodics"], (G, _) => G.input(_));
   main.variable(observer("periodicFulfilled")).define("periodicFulfilled", ["runPeriodics","Promises"], _periodicFulfilled);
   main.variable(observer("periodicThrow")).define("periodicThrow", ["periodicFulfilled"], _periodicThrow);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer("excludes")).define("excludes", _excludes);
-  main.define("initial events", ["reset"], _events);
+  main.define("initial events", ["reset","WATCHER_PREFIX"], _events);
   main.variable(observer("mutable events")).define("mutable events", ["Mutable", "initial events"], (M, _) => new M(_));
   main.variable(observer("events")).define("events", ["mutable events"], _ => _.generator);
   main.variable(observer("viewof endTime")).define("viewof endTime", ["Inputs"], _endTime);
@@ -376,7 +412,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viz")).define("viz", ["endTime","now","windowSecs","reset","events","Plot"], _viz);
   main.variable(observer()).define(["md"], _16);
   main.variable(observer("vizHolder")).define("vizHolder", _vizHolder);
-  main.variable(observer("vizUpdater")).define("vizUpdater", ["vizHolder","viz"], _vizUpdater);
+  main.variable(observer("vizUpdater")).define("vizUpdater", ["interceptVariables","vizHolder","viz"], _vizUpdater);
   main.variable(observer()).define(["md"], _19);
   main.variable(observer("viewof reset")).define("viewof reset", ["Inputs"], _reset);
   main.variable(observer("reset")).define("reset", ["Generators", "viewof reset"], (G, _) => G.input(_));
