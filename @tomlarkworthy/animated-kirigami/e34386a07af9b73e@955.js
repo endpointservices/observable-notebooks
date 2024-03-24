@@ -1,9 +1,9 @@
-// https://observablehq.com/@tomlarkworthy/animation@935
 import define1 from "./11a5ab8b1b3a51db@1161.js";
 import define2 from "./84e66f78139ac354@829.js";
 import define3 from "./3d9d1394d858ca97@553.js";
 import define4 from "./ab3e70b29c480e6d@83.js";
 import define5 from "./a2e58f97fd5e8d7c@756.js";
+import define6 from "./dfdb38d5580b5c35@331.js";
 
 function _1(md){return(
 md`# UI Animation
@@ -1062,6 +1062,10 @@ function _26(md){return(
 md`### Imports`
 )}
 
+function _33(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -1105,5 +1109,8 @@ export default function define(runtime, observer) {
   main.import("copy", child4);
   const child5 = runtime.module(define5);
   main.import("Range", child5);
+  const child6 = runtime.module(define6);
+  main.import("footer", child6);
+  main.variable(observer()).define(["footer"], _33);
   return main;
 }
