@@ -1,7 +1,7 @@
-import define1 from "./17c8ce433e1df58e@2457.js";
+import define1 from "./17c8ce433e1df58e@2489.js";
 import define2 from "./0d64f2229c613239@129.js";
 import define3 from "./f92778131fd76559@1174.js";
-import define4 from "./dfdb38d5580b5c35@331.js";
+import define4 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
 md`# Lazer Cutting Notebook
@@ -209,6 +209,14 @@ Cartesian frames are not strong without diagonal cross beams. The V2 improves on
 - Fixing a few material thickness mis-calculations`
 )}
 
+function _25(md){return(
+md`### Buying notes. 
+
+We can use the modular system to reenforce off-the-shelf structs
+
+[Allwetterholz KDI 2700 x 45 x 22 mm](https://toom.de/p/allwetterholz-kdi-2700-x-45-x-22-mm/4280164)`
+)}
+
 function _frame_v2_config_raw(Inputs,material_thickness){return(
 Inputs.form({
   lattice_length: Inputs.range([0, 100], {
@@ -241,7 +249,7 @@ function _frame_v2_config(frame_v2_config_raw){return(
 }
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`## n-Joint`
 )}
 
@@ -299,7 +307,7 @@ Array.from({ length: joint_config.n }).map((_, i) => {
 })
 )}
 
-function _n_joint_svg(joint_config,joints_config,frame_v2_config,d3,joint_params,htl,units,joint_arm)
+function _n_joint_svg(joint_config,joints_config,frame_v2_config,d3,joint_params,htl,units,joint_arm,drill_hole)
 {
   const { scale, n, diamter_type, lattice_length } = {
     ...joint_config,
@@ -323,16 +331,17 @@ function _n_joint_svg(joint_config,joints_config,frame_v2_config,d3,joint_params
     -total_height / 2
   } ${total_width} ${total_height}">
       ${Array.from({ length: n }).map((_, i) => joint_arm(joint_params[i]))}
+      ${drill_hole([0, 0])}
     </svg>
   </div>`;
 }
 
 
-function _32(md){return(
+function _33(md){return(
 md`## joint arm`
 )}
 
-function _joint_arm(vectorFromAngle,rotateVector,intercept,svg,finger_clockwise_v1,drill_pattern){return(
+function _joint_arm(vectorFromAngle,rotateVector,intercept,svg,finger_clockwise_v1,drill_hole,drill_pattern){return(
 ({
   body_length,
   angle,
@@ -440,7 +449,8 @@ function _joint_arm(vectorFromAngle,rotateVector,intercept,svg,finger_clockwise_
           )}
           L ${intercept2[0]} ${intercept2[1]}
         "/>
-      ${drill_pattern([lattice_length * 1 + additional_length, 0])}
+      ${drill_hole([lattice_length * 1 + additional_length + 8, 0])}
+      <!--${drill_pattern([lattice_length * 1 + additional_length, 0])}-->
       ${drill_pattern([lattice_length * 2 + additional_length, 0])}
     </g>
   `;
@@ -514,7 +524,7 @@ function _joint_arm_preview(joint_arm_config,frame_v2_config,htl,units,joint_arm
 }
 
 
-function _36(md){return(
+function _37(md){return(
 md`## finger joints V1`
 )}
 
@@ -705,7 +715,7 @@ Inputs.form({
 })
 )}
 
-function _40(md){return(
+function _41(md){return(
 md`# Smoke extraction for Sculpfun S9
 
 Based on this [Video](https://www.youtube.com/watch?v=k7qTE4t4sf8) 
@@ -714,7 +724,7 @@ Based on this [Video](https://www.youtube.com/watch?v=k7qTE4t4sf8)
 - CPAP pipe [10EUR](https://www.amazon.com/SnugellTM-Universal-Premium-Compatible-Respironics/dp/B0883GR4HF?crid=ZVKX9MUB97D9&keywords=CPAP+hose&qid=1675111960&sprefix=cpap+hos,aps,110&sr=8-10&linkCode=sl1&tag=embracemaking-20&linkId=94fca7ba3b3e1a9769a7b519d4dd51c3&language=en_US&ref_=as_li_ss_tl)`
 )}
 
-async function _41(FileAttachment,md){return(
+async function _42(FileAttachment,md){return(
 md`
 We want the smoke extractor to go up and down with the lazer when it is height adjusted => the nozzle if fixed to the height thumb screws.
 
@@ -727,7 +737,7 @@ Attached to the lazer module is a UV hood. It is 17mm deep (lazer is usually adj
 `
 )}
 
-function _42(md){return(
+function _43(md){return(
 md`### Backplate`
 )}
 
@@ -767,7 +777,7 @@ function _nozzle_backplate(htl,units,finger_clockwise_v0)
 }
 
 
-function _44(md){return(
+function _45(md){return(
 md`### Side A`
 )}
 
@@ -804,7 +814,7 @@ function _nozzle_side_a(htl,units,finger_clockwise_v0)
 }
 
 
-function _46(md){return(
+function _47(md){return(
 md`### Side B`
 )}
 
@@ -844,7 +854,7 @@ function _nozzle_side_b(htl,units,finger_clockwise_v0)
 }
 
 
-function _48(md){return(
+function _49(md){return(
 md`### Nozzle entrace`
 )}
 
@@ -879,7 +889,7 @@ function _nozzle_holder(htl,units,material_thickness,finger_clockwise_v0)
 }
 
 
-function _50(md){return(
+function _51(md){return(
 md`### Tube (x14)
 
 You will need to glue a stack of these together. CPAP pipe is 19mm outside diameter so we make a 20mm diameter for a tight fit.`
@@ -913,7 +923,7 @@ function _nozzle_tube_wall(htl,units)
 }
 
 
-function _52(md){return(
+function _53(md){return(
 md`### End`
 )}
 
@@ -945,7 +955,7 @@ function _nozzle_end(htl,units,finger_clockwise_v0)
 }
 
 
-function _54(md){return(
+function _55(md){return(
 md`### Underside`
 )}
 
@@ -977,7 +987,7 @@ function _nozzle_underside(htl,units,finger_clockwise_v0)
 }
 
 
-async function _56(FileAttachment,md){return(
+async function _57(FileAttachment,md){return(
 md`# Moduler Frame System V1
 
 Build large complex boxes and frames from a few pieces
@@ -1032,7 +1042,7 @@ function _drill_pattern(drill_hole){return(
   }
 )}
 
-function _62(md){return(
+function _63(md){return(
 md`### fingers V0`
 )}
 
@@ -1168,7 +1178,7 @@ function _fingers_clockwise_v0_preview(htl,units,finger_clockwise_v0)
 }
 
 
-function _65(md){return(
+function _66(md){return(
 md`### Inner Strut`
 )}
 
@@ -1237,7 +1247,7 @@ function _l_strut_svg(l_strut,trellis,htl,units,finger_clockwise_v0,drill_patter
 }
 
 
-function _68(md){return(
+function _69(md){return(
 md`### Square Frame
 I found this useful for holding the inner struts in place while the finger joints dried`
 )}
@@ -1268,7 +1278,7 @@ function _square_frame_svg(htl,units,length,slop)
 }
 
 
-function _70(md){return(
+function _71(md){return(
 md`### Outer Corner Joint`
 )}
 
@@ -1307,7 +1317,7 @@ function _joint_svg(l_strut,trellis,finger_thickness,htl,units,finger_clockwise_
 }
 
 
-function _72(md){return(
+function _73(md){return(
 md`### Outer T Joint`
 )}
 
@@ -1349,7 +1359,7 @@ function _t_joint_svg(l_strut,trellis,finger_thickness,htl,units,finger_clockwis
 }
 
 
-function _74(md){return(
+function _75(md){return(
 md`### Plus Joint`
 )}
 
@@ -1395,7 +1405,7 @@ function _plus_joint_svg(l_strut,trellis,htl,units,drill_pattern)
 }
 
 
-function _76(md){return(
+function _77(md){return(
 md`# Bed Corner Guide`
 )}
 
@@ -1533,7 +1543,7 @@ function _bench_corner_svg(bench_corner,htl,units,cut_correction,svg)
 }
 
 
-function _79(md){return(
+function _80(md){return(
 md`# Rolling Contact Hand Clamp
 
 <iframe id="player" type="text/html" width="640" height="390"
@@ -1541,7 +1551,7 @@ md`# Rolling Contact Hand Clamp
   frameborder="0"></iframe>`
 )}
 
-function _80(md){return(
+function _81(md){return(
 md`### Assembly
 
 A mates with B, but to get a full structure you need three layers. So one side is A, B, A and the other side is B, A, B. So you need 6 in pieces total. `
@@ -1607,7 +1617,7 @@ function _clampConfigV1(view,Inputs,units){return(
 </div>`
 )}
 
-function _82(md){return(
+function _83(md){return(
 md`### A`
 )}
 
@@ -1681,7 +1691,7 @@ function _clamp_v1_a(clampConfigV1,htl,units)
 }
 
 
-function _84(md){return(
+function _85(md){return(
 md`### B`
 )}
 
@@ -1755,7 +1765,7 @@ function _clamp_v1_b(clampConfigV1,htl,units)
 }
 
 
-function _86(md){return(
+function _87(md){return(
 md`## Clamp V0 (doesn't work)`
 )}
 
@@ -1879,7 +1889,7 @@ function _svg_clamp(clampConfigV0,htl,units)
 }
 
 
-function _89(md){return(
+function _90(md){return(
 md`### Corner shape`
 )}
 
@@ -1976,15 +1986,15 @@ function _download_svg(XMLSerializer){return(
   }
 )}
 
-function _94(md){return(
+function _95(md){return(
 md`# AI Assistant`
 )}
 
-function _95($0){return(
+function _96($0){return(
 $0
 )}
 
-function _96(Inputs,suggestion){return(
+function _97(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -1992,36 +2002,32 @@ Inputs.button("copy code", {
 })
 )}
 
-function _97($0){return(
+function _98($0){return(
 $0
 )}
 
-function _98(md){return(
+function _99(md){return(
 md`## Current Chat context`
 )}
 
-function _99($0){return(
+function _100($0){return(
 $0
 )}
 
-function _100(md){return(
+function _101(md){return(
 md`tick the cells to include in the next prompt`
-)}
-
-function _101($0){return(
-$0
 )}
 
 function _102($0){return(
 $0
 )}
 
-function _103(md){return(
-md`### AI Settings`
+function _103($0){return(
+$0
 )}
 
-function _104($0){return(
-$0
+function _104(md){return(
+md`### AI Settings`
 )}
 
 function _105($0){return(
@@ -2032,11 +2038,15 @@ function _106($0){return(
 $0
 )}
 
-function _107(md){return(
+function _107($0){return(
+$0
+)}
+
+function _108(md){return(
 md`---`
 )}
 
-function _110(background_tasks){return(
+function _111(background_tasks){return(
 background_tasks
 )}
 
@@ -2135,7 +2145,7 @@ function _bindableUISkill(view,md,Inputs,htl,Event){return(
   </div>`
 )}
 
-function _114(footer){return(
+function _115(footer){return(
 footer
 )}
 
@@ -2174,43 +2184,44 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _22);
   main.variable(observer("distance")).define("distance", _distance);
   main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("viewof frame_v2_config_raw")).define("viewof frame_v2_config_raw", ["Inputs","material_thickness"], _frame_v2_config_raw);
   main.variable(observer("frame_v2_config_raw")).define("frame_v2_config_raw", ["Generators", "viewof frame_v2_config_raw"], (G, _) => G.input(_));
   main.variable(observer("frame_v2_config")).define("frame_v2_config", ["frame_v2_config_raw"], _frame_v2_config);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("viewof joint_config")).define("viewof joint_config", ["Inputs"], _joint_config);
   main.variable(observer("joint_config")).define("joint_config", ["Generators", "viewof joint_config"], (G, _) => G.input(_));
   main.variable(observer("viewof joints_config")).define("viewof joints_config", ["Inputs","joint_config"], _joints_config);
   main.variable(observer("joints_config")).define("joints_config", ["Generators", "viewof joints_config"], (G, _) => G.input(_));
   main.variable(observer("joint_params")).define("joint_params", ["joint_config","joints_config","frame_v2_config"], _joint_params);
-  main.variable(observer("n_joint_svg")).define("n_joint_svg", ["joint_config","joints_config","frame_v2_config","d3","joint_params","htl","units","joint_arm"], _n_joint_svg);
-  main.variable(observer()).define(["md"], _32);
-  main.variable(observer("joint_arm")).define("joint_arm", ["vectorFromAngle","rotateVector","intercept","svg","finger_clockwise_v1","drill_pattern"], _joint_arm);
+  main.variable(observer("n_joint_svg")).define("n_joint_svg", ["joint_config","joints_config","frame_v2_config","d3","joint_params","htl","units","joint_arm","drill_hole"], _n_joint_svg);
+  main.variable(observer()).define(["md"], _33);
+  main.variable(observer("joint_arm")).define("joint_arm", ["vectorFromAngle","rotateVector","intercept","svg","finger_clockwise_v1","drill_hole","drill_pattern"], _joint_arm);
   main.variable(observer("viewof joint_arm_config")).define("viewof joint_arm_config", ["Inputs"], _joint_arm_config);
   main.variable(observer("joint_arm_config")).define("joint_arm_config", ["Generators", "viewof joint_arm_config"], (G, _) => G.input(_));
   main.variable(observer("joint_arm_preview")).define("joint_arm_preview", ["joint_arm_config","frame_v2_config","htl","units","joint_arm"], _joint_arm_preview);
-  main.variable(observer()).define(["md"], _36);
+  main.variable(observer()).define(["md"], _37);
   main.variable(observer("finger_clockwise_v1")).define("finger_clockwise_v1", ["material_thickness","distance"], _finger_clockwise_v1);
   main.variable(observer("fingers_clockwise_v1_preview")).define("fingers_clockwise_v1_preview", ["finger_clockwise_v1_config","htl","units","finger_clockwise_v1"], _fingers_clockwise_v1_preview);
   main.variable(observer("viewof finger_clockwise_v1_config")).define("viewof finger_clockwise_v1_config", ["Inputs"], _finger_clockwise_v1_config);
   main.variable(observer("finger_clockwise_v1_config")).define("finger_clockwise_v1_config", ["Generators", "viewof finger_clockwise_v1_config"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _40);
-  main.variable(observer()).define(["FileAttachment","md"], _41);
-  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["FileAttachment","md"], _42);
+  main.variable(observer()).define(["md"], _43);
   main.variable(observer("nozzle_backplate")).define("nozzle_backplate", ["htl","units","finger_clockwise_v0"], _nozzle_backplate);
-  main.variable(observer()).define(["md"], _44);
+  main.variable(observer()).define(["md"], _45);
   main.variable(observer("nozzle_side_a")).define("nozzle_side_a", ["htl","units","finger_clockwise_v0"], _nozzle_side_a);
-  main.variable(observer()).define(["md"], _46);
+  main.variable(observer()).define(["md"], _47);
   main.variable(observer("nozzle_side_b")).define("nozzle_side_b", ["htl","units","finger_clockwise_v0"], _nozzle_side_b);
-  main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("nozzle_holder")).define("nozzle_holder", ["htl","units","material_thickness","finger_clockwise_v0"], _nozzle_holder);
-  main.variable(observer()).define(["md"], _50);
+  main.variable(observer()).define(["md"], _51);
   main.variable(observer("nozzle_tube_wall")).define("nozzle_tube_wall", ["htl","units"], _nozzle_tube_wall);
-  main.variable(observer()).define(["md"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("nozzle_end")).define("nozzle_end", ["htl","units","finger_clockwise_v0"], _nozzle_end);
-  main.variable(observer()).define(["md"], _54);
+  main.variable(observer()).define(["md"], _55);
   main.variable(observer("nozzle_underside")).define("nozzle_underside", ["htl","units","finger_clockwise_v0"], _nozzle_underside);
-  main.variable(observer()).define(["FileAttachment","md"], _56);
+  main.variable(observer()).define(["FileAttachment","md"], _57);
   main.variable(observer("viewof trellis")).define("viewof trellis", ["Inputs"], _trellis);
   main.variable(observer("trellis")).define("trellis", ["Generators", "viewof trellis"], (G, _) => G.input(_));
   main.variable(observer("viewof slop")).define("viewof slop", ["Inputs"], _slop);
@@ -2218,57 +2229,57 @@ export default function define(runtime, observer) {
   main.variable(observer("finger_thickness")).define("finger_thickness", _finger_thickness);
   main.variable(observer("drill_hole")).define("drill_hole", ["svg","trellis"], _drill_hole);
   main.variable(observer("drill_pattern")).define("drill_pattern", ["drill_hole"], _drill_pattern);
-  main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["md"], _63);
   main.variable(observer("finger_clockwise_v0")).define("finger_clockwise_v0", ["finger_thickness","cut_correction"], _finger_clockwise_v0);
   main.variable(observer("fingers_clockwise_v0_preview")).define("fingers_clockwise_v0_preview", ["htl","units","finger_clockwise_v0"], _fingers_clockwise_v0_preview);
-  main.variable(observer()).define(["md"], _65);
+  main.variable(observer()).define(["md"], _66);
   main.variable(observer("viewof l_strut")).define("viewof l_strut", ["Inputs"], _l_strut);
   main.variable(observer("l_strut")).define("l_strut", ["Generators", "viewof l_strut"], (G, _) => G.input(_));
   main.variable(observer("l_strut_svg")).define("l_strut_svg", ["l_strut","trellis","htl","units","finger_clockwise_v0","drill_pattern"], _l_strut_svg);
-  main.variable(observer()).define(["md"], _68);
+  main.variable(observer()).define(["md"], _69);
   main.variable(observer("square_frame_svg")).define("square_frame_svg", ["htl","units","length","slop"], _square_frame_svg);
-  main.variable(observer()).define(["md"], _70);
+  main.variable(observer()).define(["md"], _71);
   main.variable(observer("joint_svg")).define("joint_svg", ["l_strut","trellis","finger_thickness","htl","units","finger_clockwise_v0","drill_pattern"], _joint_svg);
-  main.variable(observer()).define(["md"], _72);
+  main.variable(observer()).define(["md"], _73);
   main.variable(observer("t_joint_svg")).define("t_joint_svg", ["l_strut","trellis","finger_thickness","htl","units","finger_clockwise_v0","drill_pattern"], _t_joint_svg);
-  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["md"], _75);
   main.variable(observer("plus_joint_svg")).define("plus_joint_svg", ["l_strut","trellis","htl","units","drill_pattern"], _plus_joint_svg);
-  main.variable(observer()).define(["md"], _76);
+  main.variable(observer()).define(["md"], _77);
   main.variable(observer("viewof bench_corner")).define("viewof bench_corner", ["Inputs"], _bench_corner);
   main.variable(observer("bench_corner")).define("bench_corner", ["Generators", "viewof bench_corner"], (G, _) => G.input(_));
   main.variable(observer("bench_corner_svg")).define("bench_corner_svg", ["bench_corner","htl","units","cut_correction","svg"], _bench_corner_svg);
-  main.variable(observer()).define(["md"], _79);
   main.variable(observer()).define(["md"], _80);
+  main.variable(observer()).define(["md"], _81);
   main.variable(observer("viewof clampConfigV1")).define("viewof clampConfigV1", ["view","Inputs","units"], _clampConfigV1);
   main.variable(observer("clampConfigV1")).define("clampConfigV1", ["Generators", "viewof clampConfigV1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _82);
+  main.variable(observer()).define(["md"], _83);
   main.variable(observer("clamp_v1_a")).define("clamp_v1_a", ["clampConfigV1","htl","units"], _clamp_v1_a);
-  main.variable(observer()).define(["md"], _84);
+  main.variable(observer()).define(["md"], _85);
   main.variable(observer("clamp_v1_b")).define("clamp_v1_b", ["clampConfigV1","htl","units"], _clamp_v1_b);
-  main.variable(observer()).define(["md"], _86);
+  main.variable(observer()).define(["md"], _87);
   main.variable(observer("viewof clampConfigV0")).define("viewof clampConfigV0", ["view","Inputs","units"], _clampConfigV0);
   main.variable(observer("clampConfigV0")).define("clampConfigV0", ["Generators", "viewof clampConfigV0"], (G, _) => G.input(_));
   main.variable(observer("svg_clamp")).define("svg_clamp", ["clampConfigV0","htl","units"], _svg_clamp);
-  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["md"], _90);
   main.variable(observer("viewof dimensions_l")).define("viewof dimensions_l", ["view","Inputs","units"], _dimensions_l);
   main.variable(observer("dimensions_l")).define("dimensions_l", ["Generators", "viewof dimensions_l"], (G, _) => G.input(_));
   main.variable(observer("svg_l_shape")).define("svg_l_shape", ["dimensions_l","htl","units"], _svg_l_shape);
   main.variable(observer("poll_and_download_svg")).define("poll_and_download_svg", ["download_svg"], _poll_and_download_svg);
   main.variable(observer("download_svg")).define("download_svg", ["XMLSerializer"], _download_svg);
-  main.variable(observer()).define(["md"], _94);
-  main.variable(observer()).define(["viewof prompt"], _95);
-  main.variable(observer()).define(["Inputs","suggestion"], _96);
-  main.variable(observer()).define(["viewof suggestion"], _97);
-  main.variable(observer()).define(["md"], _98);
-  main.variable(observer()).define(["viewof context_viz"], _99);
-  main.variable(observer()).define(["md"], _100);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _101);
-  main.variable(observer()).define(["viewof feedback_prompt"], _102);
-  main.variable(observer()).define(["md"], _103);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _104);
-  main.variable(observer()).define(["viewof api_endpoint"], _105);
-  main.variable(observer()).define(["viewof settings"], _106);
-  main.variable(observer()).define(["md"], _107);
+  main.variable(observer()).define(["md"], _95);
+  main.variable(observer()).define(["viewof prompt"], _96);
+  main.variable(observer()).define(["Inputs","suggestion"], _97);
+  main.variable(observer()).define(["viewof suggestion"], _98);
+  main.variable(observer()).define(["md"], _99);
+  main.variable(observer()).define(["viewof context_viz"], _100);
+  main.variable(observer()).define(["md"], _101);
+  main.variable(observer()).define(["viewof feedback_cells_selector"], _102);
+  main.variable(observer()).define(["viewof feedback_prompt"], _103);
+  main.variable(observer()).define(["md"], _104);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _105);
+  main.variable(observer()).define(["viewof api_endpoint"], _106);
+  main.variable(observer()).define(["viewof settings"], _107);
+  main.variable(observer()).define(["md"], _108);
   const child1 = runtime.module(define1);
   main.import("ask", child1);
   main.import("excludes", child1);
@@ -2297,13 +2308,13 @@ export default function define(runtime, observer) {
   main.import("context_viz", child1);
   const child2 = runtime.module(define2);
   main.import("toc", child2);
-  main.variable(observer()).define(["background_tasks"], _110);
+  main.variable(observer()).define(["background_tasks"], _111);
   const child3 = runtime.module(define3);
   main.import("view", child3);
   main.variable(observer("viewof bindableUISkill")).define("viewof bindableUISkill", ["view","md","Inputs","htl","Event"], _bindableUISkill);
   main.variable(observer("bindableUISkill")).define("bindableUISkill", ["Generators", "viewof bindableUISkill"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], _114);
+  main.variable(observer()).define(["footer"], _115);
   return main;
 }

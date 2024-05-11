@@ -3,6 +3,7 @@ import define2 from "./048a17a165be198d@264.js";
 import define3 from "./0e0b35a92c819d94@444.js";
 import define4 from "./1f41fef8b019cf4e@94.js";
 import define5 from "./f92778131fd76559@1174.js";
+import define6 from "./e793e5cb1f2b5d04@72.js";
 
 function _1(html,md){return(
 md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
@@ -16,6 +17,10 @@ With Roboco-op notebook cells become [skills](https://observablehq.com/@tomlarkw
 Come ask questions or share your discoveries at <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>
 
 A *"blank slate"* notebook is available [here](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate). I recommend forking that over this one because bug fixes won't propagate if you fork this one. This one is good if you want to change the implementation of Roboco-op itself.
+
+
+Changes
+- 2024-05-11 Context is truncated according to max_prompt_tokens, oldest is removed first
 
 TODO:
 - FEATURE: Unified prompting UI
@@ -494,7 +499,11 @@ function _settings(Inputs,view,localStorageView){return(
           "gpt-4",
           "gpt-4-32k",
           "gpt-4-0314",
-          "gpt-4-0613"
+          "gpt-4-0613",
+          "gpt-4-turbo",
+          "gpt-4-turbo-2024-04-09",
+          "gpt-4-turbo-preview",
+          "gpt-4-vision-preview"
         ].sort(),
         { label: "model" }
       )
@@ -504,8 +513,15 @@ function _settings(Inputs,view,localStorageView){return(
       Inputs.range([0, 1], { step: 0.1, value: 0.7, label: "temperature" })
     ]}</div>
     <div>${[
+      "max_prompt_tokens",
+      Inputs.range([1, 12000], {
+        value: 4000,
+        label: "max_tokens sent (oldest are truncated)"
+      })
+    ]}</div>
+    <div>${[
       "max_tokens",
-      Inputs.range([1, 4000], { value: 1000, label: "max_tokens" })
+      Inputs.range([1, 4000], { value: 1000, label: "max_tokens for response" })
     ]}</div>
     <div>${[
       "top_p",
@@ -520,11 +536,12 @@ function _settings(Inputs,view,localStorageView){return(
       Inputs.range([0, 1], { step: 0.1, value: 0, label: "presence_penalty" })
     ]}</div>
   `,
-    localStorageView("NOTEBOOK_WRITER", {
+    localStorageView("NOTEBOOK_WRITER_2", {
       defaultValue: {
-        model: "gpt-3.5-turbo",
+        model: "gpt-4-turbo",
         temperature: 0.7,
-        max_tokens: 1000,
+        max_prompt_tokens: 4000,
+        max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
@@ -934,7 +951,36 @@ function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 90000 })
 )}
 
-async function _openAiResponse(api_endpoint,OPENAI_API_KEY,functions,system_prompt,ask,$0)
+function _prompt_messages(system_prompt,ask){return(
+[
+  {
+    role: "system",
+    content: system_prompt
+  },
+  ...ask
+]
+)}
+
+function _token_analytics(prompt_messages,encode){return(
+{
+  prompt: prompt_messages,
+  prompt_tokens: prompt_messages.map(
+    (p) => encode(p.content || JSON.stringify(p.function_call)).length
+  )
+}
+)}
+
+function _trimmed_prompt(d3,token_analytics,settings)
+{
+  while (d3.sum(token_analytics.prompt_tokens) > settings.max_prompt_tokens) {
+    token_analytics.prompt.splice(1, 1);
+    token_analytics.prompt_tokens.splice(1, 1);
+  }
+  return token_analytics;
+}
+
+
+async function _openAiResponse(api_endpoint,OPENAI_API_KEY,functions,trimmed_prompt,_,$0)
 {
   const response = await fetch(api_endpoint, {
     method: "POST",
@@ -945,14 +991,15 @@ async function _openAiResponse(api_endpoint,OPENAI_API_KEY,functions,system_prom
     body: JSON.stringify({
       functions: functions,
       function_call: { name: "upsert_cell" },
-      messages: [
-        {
-          role: "system",
-          content: system_prompt
-        },
-        ...ask
-      ],
-      ...$0.value
+      messages: trimmed_prompt.prompt,
+      ..._.pick($0.value, [
+        "model",
+        "temperature",
+        "max_tokens",
+        "top_p",
+        "frequency_penalty",
+        "presence_penalty"
+      ])
     })
   });
 
@@ -1075,7 +1122,10 @@ export default function define(runtime, observer) {
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer("openAiResponse")).define("openAiResponse", ["api_endpoint","OPENAI_API_KEY","functions","system_prompt","ask","viewof settings"], _openAiResponse);
+  main.variable(observer("prompt_messages")).define("prompt_messages", ["system_prompt","ask"], _prompt_messages);
+  main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages","encode"], _token_analytics);
+  main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["d3","token_analytics","settings"], _trimmed_prompt);
+  main.variable(observer("openAiResponse")).define("openAiResponse", ["api_endpoint","OPENAI_API_KEY","functions","trimmed_prompt","_","viewof settings"], _openAiResponse);
   main.variable(observer("instruction")).define("instruction", ["openAiResponse","parseJSON","ask"], _instruction);
   main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
   main.variable(observer("parseJSON")).define("parseJSON", ["dirty_json"], _parseJSON);
@@ -1089,6 +1139,8 @@ export default function define(runtime, observer) {
   const child5 = runtime.module(define5);
   main.import("view", child5);
   main.import("cautious", child5);
+  const child6 = runtime.module(define6);
+  main.import("encode", child6);
   main.variable(observer("dirty_json")).define("dirty_json", _dirty_json);
   return main;
 }
