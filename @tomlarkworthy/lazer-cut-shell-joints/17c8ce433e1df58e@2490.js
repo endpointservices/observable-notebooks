@@ -503,7 +503,8 @@ function _settings(Inputs,view,localStorageView){return(
           "gpt-4-turbo",
           "gpt-4-turbo-2024-04-09",
           "gpt-4-turbo-preview",
-          "gpt-4-vision-preview"
+          "gpt-4-vision-preview",
+          "gpt-4o"
         ].sort(),
         { label: "model" }
       )

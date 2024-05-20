@@ -1,4 +1,4 @@
-import define1 from "./17c8ce433e1df58e@2489.js";
+import define1 from "./17c8ce433e1df58e@2490.js";
 import define2 from "./0d64f2229c613239@129.js";
 import define3 from "./f92778131fd76559@1174.js";
 import define4 from "./dfdb38d5580b5c35@334.js";
@@ -58,7 +58,7 @@ function _8(md){return(
 md`## Material settings Notes
 
 - 2mm birch, 280mm, 75 power, 2 passes
-- `
+- 3mm MDF, 280mm, 75 power, 3 passes`
 )}
 
 function _9(md){return(
@@ -528,11 +528,24 @@ function _37(md){return(
 md`## finger joints V1`
 )}
 
-function _finger_clockwise_v1(material_thickness,distance){return(
+function _mod(){return(
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
+)}
+
+function _finger_clockwise_v1(material_thickness,distance,mod){return(
 (
   start,
   end,
-  { offset, finger_depth, finger_width, cut_correction, end_anchor } = {}
+  {
+    offset,
+    finger_depth,
+    finger_width,
+    cut_correction,
+    end_anchor = false,
+    reverse = false
+  } = {}
 ) => {
   finger_width = finger_width || 2;
   finger_depth = finger_depth || material_thickness;
@@ -561,13 +574,17 @@ function _finger_clockwise_v1(material_thickness,distance){return(
     (sin45 * dir[0] + cos45 * dir[1]) * cut_correction
   ];
 
-  let on_outer = true;
+  let on_outer;
 
   if (end_anchor) {
     const dist = distance(start, end);
-    offset = dist % finger_width;
+    offset = (dist % finger_width) + offset;
     on_outer = dist % (finger_width * 2) < finger_width;
+  } else {
+    on_outer = mod(offset, finger_width * 2) <= finger_width;
   }
+
+  if (reverse) on_outer = !on_outer;
 
   // First cut on boundary
   if (on_outer) {
@@ -581,7 +598,7 @@ function _finger_clockwise_v1(material_thickness,distance){return(
   }
 
   for (
-    let i = 1;
+    let i = end_anchor ? 0 : 1;
     (i + offset / finger_width) * finger_width < length - 0.0001;
     i++
   ) {
@@ -667,7 +684,7 @@ function _fingers_clockwise_v1_preview(finger_clockwise_v1_config,htl,units,fing
           height="${total_height}${units}"
           viewBox="0 0 ${total_width} ${total_height}">
       <path stroke="red" fill="white" d="
-        M ${x0} ${y0}
+        M 0 0 
         ${finger_clockwise_v1([x0, y0], [x1, y1], finger_clockwise_v1_config)} 
       "/>
   </div>`;
@@ -711,11 +728,15 @@ Inputs.form({
   end_anchor: Inputs.toggle({
     label: "end_anchor",
     value: false
+  }),
+  reverse: Inputs.toggle({
+    label: "reverse",
+    value: false
   })
 })
 )}
 
-function _41(md){return(
+function _42(md){return(
 md`# Smoke extraction for Sculpfun S9
 
 Based on this [Video](https://www.youtube.com/watch?v=k7qTE4t4sf8) 
@@ -724,7 +745,7 @@ Based on this [Video](https://www.youtube.com/watch?v=k7qTE4t4sf8)
 - CPAP pipe [10EUR](https://www.amazon.com/SnugellTM-Universal-Premium-Compatible-Respironics/dp/B0883GR4HF?crid=ZVKX9MUB97D9&keywords=CPAP+hose&qid=1675111960&sprefix=cpap+hos,aps,110&sr=8-10&linkCode=sl1&tag=embracemaking-20&linkId=94fca7ba3b3e1a9769a7b519d4dd51c3&language=en_US&ref_=as_li_ss_tl)`
 )}
 
-async function _42(FileAttachment,md){return(
+async function _43(FileAttachment,md){return(
 md`
 We want the smoke extractor to go up and down with the lazer when it is height adjusted => the nozzle if fixed to the height thumb screws.
 
@@ -737,7 +758,7 @@ Attached to the lazer module is a UV hood. It is 17mm deep (lazer is usually adj
 `
 )}
 
-function _43(md){return(
+function _44(md){return(
 md`### Backplate`
 )}
 
@@ -777,7 +798,7 @@ function _nozzle_backplate(htl,units,finger_clockwise_v0)
 }
 
 
-function _45(md){return(
+function _46(md){return(
 md`### Side A`
 )}
 
@@ -814,7 +835,7 @@ function _nozzle_side_a(htl,units,finger_clockwise_v0)
 }
 
 
-function _47(md){return(
+function _48(md){return(
 md`### Side B`
 )}
 
@@ -854,7 +875,7 @@ function _nozzle_side_b(htl,units,finger_clockwise_v0)
 }
 
 
-function _49(md){return(
+function _50(md){return(
 md`### Nozzle entrace`
 )}
 
@@ -889,7 +910,7 @@ function _nozzle_holder(htl,units,material_thickness,finger_clockwise_v0)
 }
 
 
-function _51(md){return(
+function _52(md){return(
 md`### Tube (x14)
 
 You will need to glue a stack of these together. CPAP pipe is 19mm outside diameter so we make a 20mm diameter for a tight fit.`
@@ -923,7 +944,7 @@ function _nozzle_tube_wall(htl,units)
 }
 
 
-function _53(md){return(
+function _54(md){return(
 md`### End`
 )}
 
@@ -955,7 +976,7 @@ function _nozzle_end(htl,units,finger_clockwise_v0)
 }
 
 
-function _55(md){return(
+function _56(md){return(
 md`### Underside`
 )}
 
@@ -987,7 +1008,7 @@ function _nozzle_underside(htl,units,finger_clockwise_v0)
 }
 
 
-async function _57(FileAttachment,md){return(
+async function _58(FileAttachment,md){return(
 md`# Moduler Frame System V1
 
 Build large complex boxes and frames from a few pieces
@@ -1042,7 +1063,7 @@ function _drill_pattern(drill_hole){return(
   }
 )}
 
-function _63(md){return(
+function _64(md){return(
 md`### fingers V0`
 )}
 
@@ -1178,7 +1199,7 @@ function _fingers_clockwise_v0_preview(htl,units,finger_clockwise_v0)
 }
 
 
-function _66(md){return(
+function _67(md){return(
 md`### Inner Strut`
 )}
 
@@ -1247,7 +1268,7 @@ function _l_strut_svg(l_strut,trellis,htl,units,finger_clockwise_v0,drill_patter
 }
 
 
-function _69(md){return(
+function _70(md){return(
 md`### Square Frame
 I found this useful for holding the inner struts in place while the finger joints dried`
 )}
@@ -1278,7 +1299,7 @@ function _square_frame_svg(htl,units,length,slop)
 }
 
 
-function _71(md){return(
+function _72(md){return(
 md`### Outer Corner Joint`
 )}
 
@@ -1317,7 +1338,7 @@ function _joint_svg(l_strut,trellis,finger_thickness,htl,units,finger_clockwise_
 }
 
 
-function _73(md){return(
+function _74(md){return(
 md`### Outer T Joint`
 )}
 
@@ -1359,7 +1380,7 @@ function _t_joint_svg(l_strut,trellis,finger_thickness,htl,units,finger_clockwis
 }
 
 
-function _75(md){return(
+function _76(md){return(
 md`### Plus Joint`
 )}
 
@@ -1405,7 +1426,7 @@ function _plus_joint_svg(l_strut,trellis,htl,units,drill_pattern)
 }
 
 
-function _77(md){return(
+function _78(md){return(
 md`# Bed Corner Guide`
 )}
 
@@ -1543,7 +1564,7 @@ function _bench_corner_svg(bench_corner,htl,units,cut_correction,svg)
 }
 
 
-function _80(md){return(
+function _81(md){return(
 md`# Rolling Contact Hand Clamp
 
 <iframe id="player" type="text/html" width="640" height="390"
@@ -1551,7 +1572,7 @@ md`# Rolling Contact Hand Clamp
   frameborder="0"></iframe>`
 )}
 
-function _81(md){return(
+function _82(md){return(
 md`### Assembly
 
 A mates with B, but to get a full structure you need three layers. So one side is A, B, A and the other side is B, A, B. So you need 6 in pieces total. `
@@ -1617,7 +1638,7 @@ function _clampConfigV1(view,Inputs,units){return(
 </div>`
 )}
 
-function _83(md){return(
+function _84(md){return(
 md`### A`
 )}
 
@@ -1691,7 +1712,7 @@ function _clamp_v1_a(clampConfigV1,htl,units)
 }
 
 
-function _85(md){return(
+function _86(md){return(
 md`### B`
 )}
 
@@ -1765,7 +1786,7 @@ function _clamp_v1_b(clampConfigV1,htl,units)
 }
 
 
-function _87(md){return(
+function _88(md){return(
 md`## Clamp V0 (doesn't work)`
 )}
 
@@ -1889,7 +1910,7 @@ function _svg_clamp(clampConfigV0,htl,units)
 }
 
 
-function _90(md){return(
+function _91(md){return(
 md`### Corner shape`
 )}
 
@@ -1974,7 +1995,6 @@ function _download_svg(XMLSerializer){return(
     const serializer = new XMLSerializer();
     const svgStr = serializer.serializeToString(svgEl);
     const filename = svgEl.attributes["filename"]?.value || "image";
-    debugger;
     const dataUri =
       "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgStr);
     const link = document.createElement("a");
@@ -1986,15 +2006,15 @@ function _download_svg(XMLSerializer){return(
   }
 )}
 
-function _95(md){return(
+function _96(md){return(
 md`# AI Assistant`
 )}
 
-function _96($0){return(
+function _97($0){return(
 $0
 )}
 
-function _97(Inputs,suggestion){return(
+function _98(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -2002,36 +2022,32 @@ Inputs.button("copy code", {
 })
 )}
 
-function _98($0){return(
+function _99($0){return(
 $0
 )}
 
-function _99(md){return(
+function _100(md){return(
 md`## Current Chat context`
 )}
 
-function _100($0){return(
+function _101($0){return(
 $0
 )}
 
-function _101(md){return(
+function _102(md){return(
 md`tick the cells to include in the next prompt`
-)}
-
-function _102($0){return(
-$0
 )}
 
 function _103($0){return(
 $0
 )}
 
-function _104(md){return(
-md`### AI Settings`
+function _104($0){return(
+$0
 )}
 
-function _105($0){return(
-$0
+function _105(md){return(
+md`### AI Settings`
 )}
 
 function _106($0){return(
@@ -2042,11 +2058,15 @@ function _107($0){return(
 $0
 )}
 
-function _108(md){return(
+function _108($0){return(
+$0
+)}
+
+function _109(md){return(
 md`---`
 )}
 
-function _111(background_tasks){return(
+function _112(background_tasks){return(
 background_tasks
 )}
 
@@ -2145,7 +2165,7 @@ function _bindableUISkill(view,md,Inputs,htl,Event){return(
   </div>`
 )}
 
-function _115(footer){return(
+function _116(footer){return(
 footer
 )}
 
@@ -2201,27 +2221,28 @@ export default function define(runtime, observer) {
   main.variable(observer("joint_arm_config")).define("joint_arm_config", ["Generators", "viewof joint_arm_config"], (G, _) => G.input(_));
   main.variable(observer("joint_arm_preview")).define("joint_arm_preview", ["joint_arm_config","frame_v2_config","htl","units","joint_arm"], _joint_arm_preview);
   main.variable(observer()).define(["md"], _37);
-  main.variable(observer("finger_clockwise_v1")).define("finger_clockwise_v1", ["material_thickness","distance"], _finger_clockwise_v1);
+  main.variable(observer("mod")).define("mod", _mod);
+  main.variable(observer("finger_clockwise_v1")).define("finger_clockwise_v1", ["material_thickness","distance","mod"], _finger_clockwise_v1);
   main.variable(observer("fingers_clockwise_v1_preview")).define("fingers_clockwise_v1_preview", ["finger_clockwise_v1_config","htl","units","finger_clockwise_v1"], _fingers_clockwise_v1_preview);
   main.variable(observer("viewof finger_clockwise_v1_config")).define("viewof finger_clockwise_v1_config", ["Inputs"], _finger_clockwise_v1_config);
   main.variable(observer("finger_clockwise_v1_config")).define("finger_clockwise_v1_config", ["Generators", "viewof finger_clockwise_v1_config"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _41);
-  main.variable(observer()).define(["FileAttachment","md"], _42);
-  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["FileAttachment","md"], _43);
+  main.variable(observer()).define(["md"], _44);
   main.variable(observer("nozzle_backplate")).define("nozzle_backplate", ["htl","units","finger_clockwise_v0"], _nozzle_backplate);
-  main.variable(observer()).define(["md"], _45);
+  main.variable(observer()).define(["md"], _46);
   main.variable(observer("nozzle_side_a")).define("nozzle_side_a", ["htl","units","finger_clockwise_v0"], _nozzle_side_a);
-  main.variable(observer()).define(["md"], _47);
+  main.variable(observer()).define(["md"], _48);
   main.variable(observer("nozzle_side_b")).define("nozzle_side_b", ["htl","units","finger_clockwise_v0"], _nozzle_side_b);
-  main.variable(observer()).define(["md"], _49);
+  main.variable(observer()).define(["md"], _50);
   main.variable(observer("nozzle_holder")).define("nozzle_holder", ["htl","units","material_thickness","finger_clockwise_v0"], _nozzle_holder);
-  main.variable(observer()).define(["md"], _51);
+  main.variable(observer()).define(["md"], _52);
   main.variable(observer("nozzle_tube_wall")).define("nozzle_tube_wall", ["htl","units"], _nozzle_tube_wall);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _54);
   main.variable(observer("nozzle_end")).define("nozzle_end", ["htl","units","finger_clockwise_v0"], _nozzle_end);
-  main.variable(observer()).define(["md"], _55);
+  main.variable(observer()).define(["md"], _56);
   main.variable(observer("nozzle_underside")).define("nozzle_underside", ["htl","units","finger_clockwise_v0"], _nozzle_underside);
-  main.variable(observer()).define(["FileAttachment","md"], _57);
+  main.variable(observer()).define(["FileAttachment","md"], _58);
   main.variable(observer("viewof trellis")).define("viewof trellis", ["Inputs"], _trellis);
   main.variable(observer("trellis")).define("trellis", ["Generators", "viewof trellis"], (G, _) => G.input(_));
   main.variable(observer("viewof slop")).define("viewof slop", ["Inputs"], _slop);
@@ -2229,57 +2250,57 @@ export default function define(runtime, observer) {
   main.variable(observer("finger_thickness")).define("finger_thickness", _finger_thickness);
   main.variable(observer("drill_hole")).define("drill_hole", ["svg","trellis"], _drill_hole);
   main.variable(observer("drill_pattern")).define("drill_pattern", ["drill_hole"], _drill_pattern);
-  main.variable(observer()).define(["md"], _63);
+  main.variable(observer()).define(["md"], _64);
   main.variable(observer("finger_clockwise_v0")).define("finger_clockwise_v0", ["finger_thickness","cut_correction"], _finger_clockwise_v0);
   main.variable(observer("fingers_clockwise_v0_preview")).define("fingers_clockwise_v0_preview", ["htl","units","finger_clockwise_v0"], _fingers_clockwise_v0_preview);
-  main.variable(observer()).define(["md"], _66);
+  main.variable(observer()).define(["md"], _67);
   main.variable(observer("viewof l_strut")).define("viewof l_strut", ["Inputs"], _l_strut);
   main.variable(observer("l_strut")).define("l_strut", ["Generators", "viewof l_strut"], (G, _) => G.input(_));
   main.variable(observer("l_strut_svg")).define("l_strut_svg", ["l_strut","trellis","htl","units","finger_clockwise_v0","drill_pattern"], _l_strut_svg);
-  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["md"], _70);
   main.variable(observer("square_frame_svg")).define("square_frame_svg", ["htl","units","length","slop"], _square_frame_svg);
-  main.variable(observer()).define(["md"], _71);
+  main.variable(observer()).define(["md"], _72);
   main.variable(observer("joint_svg")).define("joint_svg", ["l_strut","trellis","finger_thickness","htl","units","finger_clockwise_v0","drill_pattern"], _joint_svg);
-  main.variable(observer()).define(["md"], _73);
+  main.variable(observer()).define(["md"], _74);
   main.variable(observer("t_joint_svg")).define("t_joint_svg", ["l_strut","trellis","finger_thickness","htl","units","finger_clockwise_v0","drill_pattern"], _t_joint_svg);
-  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["md"], _76);
   main.variable(observer("plus_joint_svg")).define("plus_joint_svg", ["l_strut","trellis","htl","units","drill_pattern"], _plus_joint_svg);
-  main.variable(observer()).define(["md"], _77);
+  main.variable(observer()).define(["md"], _78);
   main.variable(observer("viewof bench_corner")).define("viewof bench_corner", ["Inputs"], _bench_corner);
   main.variable(observer("bench_corner")).define("bench_corner", ["Generators", "viewof bench_corner"], (G, _) => G.input(_));
   main.variable(observer("bench_corner_svg")).define("bench_corner_svg", ["bench_corner","htl","units","cut_correction","svg"], _bench_corner_svg);
-  main.variable(observer()).define(["md"], _80);
   main.variable(observer()).define(["md"], _81);
+  main.variable(observer()).define(["md"], _82);
   main.variable(observer("viewof clampConfigV1")).define("viewof clampConfigV1", ["view","Inputs","units"], _clampConfigV1);
   main.variable(observer("clampConfigV1")).define("clampConfigV1", ["Generators", "viewof clampConfigV1"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _83);
+  main.variable(observer()).define(["md"], _84);
   main.variable(observer("clamp_v1_a")).define("clamp_v1_a", ["clampConfigV1","htl","units"], _clamp_v1_a);
-  main.variable(observer()).define(["md"], _85);
+  main.variable(observer()).define(["md"], _86);
   main.variable(observer("clamp_v1_b")).define("clamp_v1_b", ["clampConfigV1","htl","units"], _clamp_v1_b);
-  main.variable(observer()).define(["md"], _87);
+  main.variable(observer()).define(["md"], _88);
   main.variable(observer("viewof clampConfigV0")).define("viewof clampConfigV0", ["view","Inputs","units"], _clampConfigV0);
   main.variable(observer("clampConfigV0")).define("clampConfigV0", ["Generators", "viewof clampConfigV0"], (G, _) => G.input(_));
   main.variable(observer("svg_clamp")).define("svg_clamp", ["clampConfigV0","htl","units"], _svg_clamp);
-  main.variable(observer()).define(["md"], _90);
+  main.variable(observer()).define(["md"], _91);
   main.variable(observer("viewof dimensions_l")).define("viewof dimensions_l", ["view","Inputs","units"], _dimensions_l);
   main.variable(observer("dimensions_l")).define("dimensions_l", ["Generators", "viewof dimensions_l"], (G, _) => G.input(_));
   main.variable(observer("svg_l_shape")).define("svg_l_shape", ["dimensions_l","htl","units"], _svg_l_shape);
   main.variable(observer("poll_and_download_svg")).define("poll_and_download_svg", ["download_svg"], _poll_and_download_svg);
   main.variable(observer("download_svg")).define("download_svg", ["XMLSerializer"], _download_svg);
-  main.variable(observer()).define(["md"], _95);
-  main.variable(observer()).define(["viewof prompt"], _96);
-  main.variable(observer()).define(["Inputs","suggestion"], _97);
-  main.variable(observer()).define(["viewof suggestion"], _98);
-  main.variable(observer()).define(["md"], _99);
-  main.variable(observer()).define(["viewof context_viz"], _100);
-  main.variable(observer()).define(["md"], _101);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _102);
-  main.variable(observer()).define(["viewof feedback_prompt"], _103);
-  main.variable(observer()).define(["md"], _104);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _105);
-  main.variable(observer()).define(["viewof api_endpoint"], _106);
-  main.variable(observer()).define(["viewof settings"], _107);
-  main.variable(observer()).define(["md"], _108);
+  main.variable(observer()).define(["md"], _96);
+  main.variable(observer()).define(["viewof prompt"], _97);
+  main.variable(observer()).define(["Inputs","suggestion"], _98);
+  main.variable(observer()).define(["viewof suggestion"], _99);
+  main.variable(observer()).define(["md"], _100);
+  main.variable(observer()).define(["viewof context_viz"], _101);
+  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["viewof feedback_cells_selector"], _103);
+  main.variable(observer()).define(["viewof feedback_prompt"], _104);
+  main.variable(observer()).define(["md"], _105);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _106);
+  main.variable(observer()).define(["viewof api_endpoint"], _107);
+  main.variable(observer()).define(["viewof settings"], _108);
+  main.variable(observer()).define(["md"], _109);
   const child1 = runtime.module(define1);
   main.import("ask", child1);
   main.import("excludes", child1);
@@ -2308,13 +2329,13 @@ export default function define(runtime, observer) {
   main.import("context_viz", child1);
   const child2 = runtime.module(define2);
   main.import("toc", child2);
-  main.variable(observer()).define(["background_tasks"], _111);
+  main.variable(observer()).define(["background_tasks"], _112);
   const child3 = runtime.module(define3);
   main.import("view", child3);
   main.variable(observer("viewof bindableUISkill")).define("viewof bindableUISkill", ["view","md","Inputs","htl","Event"], _bindableUISkill);
   main.variable(observer("bindableUISkill")).define("bindableUISkill", ["Generators", "viewof bindableUISkill"], (G, _) => G.input(_));
   const child4 = runtime.module(define4);
   main.import("footer", child4);
-  main.variable(observer()).define(["footer"], _115);
+  main.variable(observer()).define(["footer"], _116);
   return main;
 }

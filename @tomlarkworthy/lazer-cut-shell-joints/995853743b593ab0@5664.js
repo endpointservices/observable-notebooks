@@ -1,27 +1,355 @@
-import define1 from "./1117987aeab1be0d@4151.js";
-import define2 from "./274d57af526b92e4@97.js";
+import define1 from "./f92778131fd76559@1174.js";
+import define2 from "./1117987aeab1be0d@4174.js";
 import define3 from "./c7a3b20cec5d4dd9@690.js";
-import define4 from "./17c8ce433e1df58e@2489.js";
+import define4 from "./17c8ce433e1df58e@2490.js";
 import define5 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
-md`# Shell Joint Generator for Lazer Cutting`
+md`# Lazer Cutting Box Joint Plan Generator
+`
 )}
 
-function _2(md){return(
-md`## App`
+function _boxParams(view,Inputs)
+{
+  ({
+    prompt:
+      "Generate a UI for a box. It should let the width, height and depth be set with a green build button",
+    time: 1715503629215,
+    comment:
+      "Create a UI for setting up a box with width, height, and depth inputs and a green build button."
+  });
+  const form = view`<div>
+    <h3>Box Template</h3>
+    ${[
+      "width",
+      Inputs.range([0, 1000], { label: "width (mm)", value: 10, step: 0.1 })
+    ]}  
+    ${[
+      "height",
+      Inputs.range([0, 1000], {
+        label: "height (mm)",
+        value: 22,
+        step: 0.1
+      })
+    ]}  
+    ${[
+      "depth",
+      Inputs.range([0, 1000], { label: "depth (mm)", value: 16, step: 0.1 })
+    ]}
+    ${["details", Inputs.toggle({ label: "debug details", value: false })]}
+  `;
+
+  return form;
+}
+
+
+function _apply_box(boxParams,Vector3,$0,Event)
+{
+  ({
+    prompt:
+      "Convert the box template params into an array of rectangular surfaces and assign to surfaces view and also calculate the tight fitting bounds and assign to the bounds view",
+    time: 1715503629215
+  });
+  const params = [boxParams.width, boxParams.height, boxParams.depth].map(
+    (value, dim) => ({
+      constant: value / 2,
+      normal: new Vector3(dim == 0 ? 1 : 0, dim == 1 ? 1 : 0, dim == 2 ? 1 : 0),
+      bounds: [-value / 2, value / 2]
+    })
+  );
+  const w = boxParams.width / 2;
+  const h = boxParams.height / 2;
+  const d = boxParams.depth / 2;
+  $0.value = [
+    // Front face
+    [
+      [-w, -h, d],
+      [w, -h, d],
+      [w, h, d],
+      [-w, h, d]
+    ],
+    // [
+    //   [w, h, d],
+    //   [w, h + 5, d],
+    //   [w - 5, h + 5, d],
+    //   [w - 5, h, d]
+    // ],
+    [
+      // Back face
+      [-w, h, -d],
+      [w, h, -d],
+      [w, -h, -d],
+      [-w, -h, -d]
+    ],
+    // [
+    //   [w - 5, h, -d],
+    //   [w - 5, h + 5, -d],
+    //   [w, h + 5, -d],
+    //   [w, h, -d]
+    // ],
+    // Top face
+    [
+      [-w, h, d],
+      [w, h, d],
+      [w, h, -d],
+      [-w, h, -d]
+    ],
+    // [
+    //   [-w, h, d - 5],
+    //   [-w - 5, h, d - 5],
+    //   [-w - 5, h, d],
+    //   [-w, h, d]
+    // ],
+    // Bottom face
+    [
+      [-w, -h, -d],
+      [w, -h, -d],
+      [w, -h, d],
+      [-w, -h, d]
+    ],
+    // Right face
+    [
+      [w, -h, -d],
+      [w, h, -d],
+      [w, h, d],
+      [w, -h, d]
+    ],
+    // Left face
+    [
+      [-w, -h, d],
+      [-w, h, d],
+      [-w, h, -d],
+      [-w, -h, -d]
+    ]
+    // [
+    //   [-w, h + 5, -d],
+    //   [-w, h, -d],
+    //   [-w, h, -d + 5],
+    //   [-w, h + 5, -d + 5]
+    // ]
+  ];
+  $0.dispatchEvent(new Event("input"));
+  return params;
+}
+
+
+function _flangeParams(view,Inputs){return(
+{
+  prompt:
+    "Write a UI for a Flange Template. Requires flange diameter, inner width, inner heigh, depth",
+  time: 1715628254526,
+  comment:
+    "Create a UI for setting up a flange with inputs for flange diameter, inner width, inner height, and depth, along with a green apply button."
+} &&
+  view`<div>
+    <h3>Flange Template</h3>
+    ${[
+      "flange_diameter",
+      Inputs.range([0, 2000], {
+        label: "Flange Diameter (mm)",
+        value: 40,
+        step: 1
+      })
+    ]}
+    ${[
+      "inner_width",
+      Inputs.range([0, 2000], {
+        label: "Inner Width (mm)",
+        value: 18,
+        step: 1
+      })
+    ]}
+    ${[
+      "inner_height",
+      Inputs.range([0, 2000], {
+        label: "Inner Height (mm)",
+        value: 18,
+        step: 1
+      })
+    ]}
+    ${[
+      "depth",
+      Inputs.range([0, 200], { label: "Depth (mm)", value: 12, step: 1 })
+    ]}
+  `
 )}
 
-function _bounds(){return(
-[
-  [-5, 5], // x is 0 - 2
-  [-5, 5],
-  [-5, 5]
-]
+function _apply_flange(flangeParams,$0,Event)
+{
+  ({
+    prompt:
+      "Convert the flange template params into an array of rectangular surfaces and assign to surfaces view and also calculate the tight fitting bounds and assign to the bounds view. A flange will need 4 rectangles on the base (XZ plane) to form an O shape, then 4 perpendicular rectangular inner sides",
+    time: 1715629264694,
+    comment:
+      "Convert the flange parameters into an array of rectangular surfaces for the base and inner sides, forming an 'O' shape."
+  });
+
+  const { flange_diameter, inner_width, inner_height, depth } = flangeParams;
+
+  const flange_radius = flange_diameter / 2;
+  const outer_rectangles = [
+    [
+      [-(inner_width / 2), 0, -(flange_diameter / 2)],
+      [-(inner_width / 2), 0, inner_height / 2],
+      [-(flange_diameter / 2), 0, inner_height / 2],
+      [-(flange_diameter / 2), 0, -(flange_diameter / 2)]
+    ],
+    [
+      [inner_width / 2, 0, flange_diameter / 2],
+      [inner_width / 2, 0, -inner_height / 2],
+      [flange_diameter / 2, 0, -inner_height / 2],
+      [flange_diameter / 2, 0, flange_diameter / 2]
+    ],
+    [
+      [flange_diameter / 2, 0, -inner_height / 2],
+      [-inner_width / 2, 0, -inner_height / 2],
+      [-inner_width / 2, 0, -flange_diameter / 2],
+      [flange_diameter / 2, 0, -flange_diameter / 2]
+    ],
+    [
+      [-flange_diameter / 2, 0, inner_height / 2],
+      [inner_width / 2, 0, inner_height / 2],
+      [inner_width / 2, 0, flange_diameter / 2],
+      [-flange_diameter / 2, 0, flange_diameter / 2]
+    ]
+  ];
+
+  const inner_rectangles = [
+    // Left
+    [
+      [-(inner_width / 2), 0, -(inner_height / 2)],
+      [-(inner_width / 2), depth, -(inner_height / 2)],
+      [inner_width / 2, depth, -(inner_height / 2)],
+      [inner_width / 2, 0, -(inner_height / 2)]
+    ],
+    // Right
+    [
+      [inner_width / 2, 0, inner_height / 2],
+      [inner_width / 2, depth, inner_height / 2],
+      [-(inner_width / 2), depth, inner_height / 2],
+      [-(inner_width / 2), 0, inner_height / 2]
+    ],
+    // Front
+    [
+      [inner_width / 2, 0, -(inner_height / 2)],
+      [inner_width / 2, depth, -(inner_height / 2)],
+      [inner_width / 2, depth, inner_height / 2],
+      [inner_width / 2, 0, inner_height / 2]
+    ],
+    // Back
+    [
+      [-(inner_width / 2), 0, inner_height / 2],
+      [-(inner_width / 2), depth, inner_height / 2],
+      [-(inner_width / 2), depth, -(inner_height / 2)],
+      [-(inner_width / 2), 0, -(inner_height / 2)]
+    ]
+  ];
+
+  $0.value = [...outer_rectangles, ...inner_rectangles];
+  $0.dispatchEvent(new Event("input"));
+}
+
+
+function _6(renderer,focusPart,htl){return(
+htl.html`<div style="display: flex">
+  ${renderer.domElement}
+  <div>
+    ${focusPart}
+  <div>
+</div>`
 )}
 
-function _surfaces(){return(
-[
+function _stepEffect($0,$1,$2,$3,$4,$5,step,Event)
+{
+  const stepMap = [
+    [0],
+    [1],
+    [2],
+    [3],
+    [2, 3],
+    [1, 2, 3],
+    [4],
+    [2, 3, 5],
+    [2, 5]
+  ];
+  const controls = [
+    $0,
+    $1,
+    $2,
+    $3,
+    $4,
+    $5
+  ];
+  controls.forEach((c) => (c.value = false));
+  stepMap[step].forEach((i) => (controls[i].value = true));
+  controls.forEach((c) => c.dispatchEvent(new Event("input")));
+}
+
+
+function _spin(Inputs){return(
+Inputs.toggle({ label: "spin", value: true })
+)}
+
+function _step(Inputs){return(
+Inputs.range([0, 8], {
+  label: "algorithm step",
+  step: 1,
+  value: 8
+})
+)}
+
+function _focusSurfaceIdx(Inputs,surfaces){return(
+Inputs.range([-1, surfaces.length - 1], {
+  label: "focus surface",
+  value: -1,
+  step: 1
+})
+)}
+
+function _focusPlaneIdx(Inputs,surface_planes){return(
+Inputs.range([-1, surface_planes.length - 1], {
+  label: "focus plane",
+  value: -1,
+  step: 1
+})
+)}
+
+function _focusJointIdx(Inputs,joints){return(
+Inputs.range([-1, joints.length - 1], {
+  label: "focus joint",
+  value: -1,
+  step: 1
+})
+)}
+
+function _scale(Inputs){return(
+Inputs.range([0.01, 10], {
+  label: "part scale",
+  value: 3
+})
+)}
+
+function _material_thickness(Inputs){return(
+Inputs.range([0.01, 8], {
+  label: "material thickness",
+  value: 3
+})
+)}
+
+function _fingerWidth(Inputs){return(
+Inputs.range([0.1, 10], {
+  label: "finger widths",
+  value: 3,
+  step: 0.1
+})
+)}
+
+function _17(md){return(
+md`## Algorithm`
+)}
+
+function _surfaces(Inputs){return(
+Inputs.input([
   // strut 1
   [
     [-10, 1, 1],
@@ -72,90 +400,15 @@ function _surfaces(){return(
     [2, 1, -4],
     [2, -10, -4]
   ]
-]
+])
 )}
 
-function _stepMap(){return(
-[
-  [0],
-  [0, 1],
-  [0, 1, 2, 3],
-  [0, 1, 4],
-  [0, 4],
-  [0, 5],
-  [5],
-  [7],
-  [6, 7]
-]
+function _surface_planes(dedupe,eq,surfaces,surfaceToPlane){return(
+dedupe(eq, surfaces.map(surfaceToPlane))
 )}
 
-function _stepEffect($0,$1,$2,$3,$4,$5,$6,$7,stepMap,step,Event)
-{
-  const controls = [
-    $0,
-    $1,
-    $2,
-    $3,
-    $4,
-    $5,
-    $6,
-    $7
-  ];
-  controls.forEach((c) => (c.value = false));
-  stepMap[step].forEach((i) => (controls[i].value = true));
-  controls.forEach((c) => c.dispatchEvent(new Event("input")));
-}
-
-
-function _spin(Inputs){return(
-Inputs.toggle({ label: "spin", value: true })
-)}
-
-function _step(Inputs,stepMap){return(
-Inputs.range([0, stepMap.length - 1], {
-  label: "algorithm step",
-  step: 1,
-  value: stepMap.length
-})
-)}
-
-function _focusSurface(Inputs,surface_planes){return(
-Inputs.range([-1, surface_planes.length - 1], {
-  label: "focus surface",
-  value: -1,
-  step: 1
-})
-)}
-
-function _focusSurface2(Inputs,surface_planes){return(
-Inputs.range([-1, surface_planes.length - 1], {
-  label: "2nd surface",
-  value: -1,
-  step: 1
-})
-)}
-
-function _focusJoint(Inputs,joints){return(
-Inputs.range([-1, joints.length - 1], {
-  label: "focus joint",
-  value: -1,
-  step: 1
-})
-)}
-
-function _12(renderer,optimizedShapePlot,htl){return(
-htl.html`<div style="display: flex">
-  ${renderer.domElement}
-  ${optimizedShapePlot}
-</div>`
-)}
-
-function _13(visualizeJointGraph,joints){return(
-visualizeJointGraph(joints)
-)}
-
-function _14(md){return(
-md`## Algorithm`
+function _20(md){return(
+md`### Project surfaces to 2D paths and simplify`
 )}
 
 function _showSurfaces(Inputs){return(
@@ -165,482 +418,187 @@ Inputs.toggle({
 })
 )}
 
-function _bounding_planes(Plane,Vector3,bounds){return(
-{
-  prompt:
-    "assign bounding_planes all the Planes of bounds\n\ne.g.\nbounding_planes = [\n  plane\n    .clone()\n    .setFromCoplanarPoints(\n      new Vector3(bounds[0][0], bounds[1][0], bounds[2][0]),\n      new Vector3(bounds[0][0], bounds[1][1], bounds[2][0]),\n      new Vector3(bounds[0][0], bounds[1][0], bounds[2][1])\n    ), ...\n]",
-  time: 1714226611387,
-  comment:
-    "Assign bounding_planes all the Planes of bounds, defining each plane using coplanar points based on the bounds array"
-} && [
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][0], bounds[1][1], bounds[2][0]),
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][1])
-  ),
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][1], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][1], bounds[1][1], bounds[2][0]),
-    new Vector3(bounds[0][1], bounds[1][0], bounds[2][1])
-  ),
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][1], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][1])
-  ),
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][0], bounds[1][1], bounds[2][0]),
-    new Vector3(bounds[0][1], bounds[1][1], bounds[2][0]),
-    new Vector3(bounds[0][0], bounds[1][1], bounds[2][1])
-  ),
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][1], bounds[1][0], bounds[2][0]),
-    new Vector3(bounds[0][0], bounds[1][1], bounds[2][0])
-  ),
-  new Plane().setFromCoplanarPoints(
-    new Vector3(bounds[0][0], bounds[1][0], bounds[2][1]),
-    new Vector3(bounds[0][1], bounds[1][0], bounds[2][1]),
-    new Vector3(bounds[0][0], bounds[1][1], bounds[2][1])
-  )
-]
-)}
-
-function _showBoundingPlanes(Inputs){return(
-Inputs.toggle({
-  label: "show bounding planes?",
-  value: true
-})
-)}
-
-function _surface_planes(dedupe,eq,surfaces,surfaceToPlane){return(
-dedupe(eq, surfaces.map(surfaceToPlane))
-)}
-
-function _seed_lines(dedupe,eq,surface_planes,bounding_planes,intersectPlanes){return(
-dedupe(
-  eq,
-  surface_planes
-    .flatMap((surface_plane) =>
-      [...bounding_planes, ...surface_planes].flatMap((bounding_plane) =>
-        intersectPlanes(surface_plane, bounding_plane)
-      )
-    )
-    .filter((v) => v)
+function _vectorSurfaces(surfaces,Vector3){return(
+surfaces.map((points) =>
+  points.map((point) => new Vector3(...point))
 )
 )}
 
-function _showSeedLines(Inputs){return(
-Inputs.toggle({ label: "show seed lines?", value: true })
+function _focusSurface(vectorSurfaces,focusSurfaceIdx){return(
+vectorSurfaces[focusSurfaceIdx]
 )}
 
-function _seed_vertices(findIntersectingVertices,seed_lines){return(
-findIntersectingVertices(seed_lines)
+function _24(Inputs,surface_planes,$0){return(
+Inputs.bind(
+  Inputs.range([-1, surface_planes.length - 1], {
+    label: "focus plane",
+    value: -1,
+    step: 1
+  }),
+  $0
+)
 )}
 
-function _showSeedVerteces(Inputs){return(
-Inputs.toggle({
-  label: "show seed verteces?",
-  value: true
-})
+function _focusPlane(surface_planes,focusPlaneIdx){return(
+surface_planes[focusPlaneIdx]
 )}
 
-function _vertexConstrainedSimplify(intersectLines,dedupe,eq,Vector3,Line3,optimizeLineConnections){return(
+function _surfacesOnPlaneAsPath(chooseBasis,Vector3,paper)
 {
-  prompt:
-    "Given a list of Line3, that start and end on vertices, but that might overlap other lines. Simplify into minimal segments. The final set of lines should only connect to their immediate vertex neighbours and never cross a vertex. call it vertexConstrainedSimplify ",
-  time: 1714422257633,
-  comment:
-    "Define a function to simplify a list of Line3 into minimal segments without introducing new vertices and ensuring lines only connect immediate vertex neighbors"
-} &&
-  function vertexConstrainedSimplify(lines) {
-    const verticesCandidates = [];
-    const simplifiedLines = [];
-
-    // Collect all vertices
-    lines.forEach((line) => {
-      verticesCandidates.push(line.start);
-      verticesCandidates.push(line.end);
-      lines.forEach((other) => {
-        const intersection = intersectLines(line, other);
-        if (intersection) verticesCandidates.push(intersection);
-      });
-    });
-
-    const vertices = dedupe(eq, verticesCandidates);
-
-    // For each line, split it if it crosses any other vertex
-    lines.forEach((line) => {
-      const points = [line.start, line.end];
-      vertices.forEach((vertex) => {
-        const nearest = line.closestPointToPoint(vertex, true, new Vector3());
-        if (nearest.distanceToSquared(vertex) < 1e-4) {
-          points.push(vertex);
-        }
-      });
-
-      // Sort points along the line's direction
-      points.sort(
-        (a, b) => a.distanceTo(line.start) - b.distanceTo(line.start)
-      );
-
-      // Create new lines between consecutive points
-      for (let i = 0; i < points.length - 1; i++) {
-        if (points[i].distanceToSquared(points[i + 1]) > 1e-3) {
-          const newLine = new Line3(points[i], points[i + 1]);
-          simplifiedLines.push(newLine);
-        }
-      }
-    });
-
-    // Remove duplicate lines
-    return optimizeLineConnections(dedupe(eq, simplifiedLines));
-  }
-)}
-
-function _optimizeLineConnections(Vector3,normalizeLines,Line3){return(
-function optimizeLineConnections(lines, normalized = false) {
-  function areLinesAligned(line1, line2) {
-    // Placeholder function to check if two lines are aligned
-    const direction1 = line1.delta(new Vector3()).normalize();
-    const direction2 = line2.delta(new Vector3()).normalize();
-    return Math.abs(direction1.dot(direction2)) > 0.99999;
-  }
-
-  function updateVertexMapForNewLine(
-    vertexMap,
-    newStart,
-    newEnd,
-    newLine,
-    oldLines
-  ) {
-    // Update vertexMap for the new line, removing old lines
-    [newStart, newEnd].forEach((vertex) => {
-      if (!vertexMap.has(vertex)) vertexMap.set(vertex, []);
-      vertexMap.get(vertex).push(newLine);
-      oldLines.forEach((oldLine) => {
-        const index = vertexMap.get(vertex).indexOf(oldLine);
-        if (index !== -1) vertexMap.get(vertex).splice(index, 1);
-      });
-    });
-  }
-
-  // Normalize lines if not already done
-  if (!normalized) {
-    lines = normalizeLines(lines);
-  }
-
-  let vertexMap = new Map();
-
-  // Initial mapping of vertices to lines
-  lines.forEach((line) => {
-    [line.start, line.end].forEach((vertex) => {
-      if (!vertexMap.has(vertex)) vertexMap.set(vertex, []);
-      vertexMap.get(vertex).push(line);
-    });
+  ({
+    prompt:
+      "Given a plane, and a list of 3d polygons expressed as an array of Vector3, if each point is on the plane, project all the points to a closed paper.js Path",
+    time: 1715634727536,
+    comment:
+      "Define a function to project 3D polygons onto a 2D plane and convert them into closed paper.js Paths."
   });
 
-  let toProcess = true;
-
-  while (toProcess) {
-    toProcess = false; // Assume no further processing is needed unless a change is made
-    let newLines = [];
-
-    vertexMap.forEach((connectedLines, vertex) => {
-      if (connectedLines.length === 1) {
-        // Single connected line, remove it
-        toProcess = true;
-        const [line] = connectedLines;
-        lines = lines.filter((l) => l !== line);
-        vertexMap.delete(vertex);
-        const otherVertex = line.start === vertex ? line.end : line.start;
-        const linesAtOtherVertex = vertexMap.get(otherVertex);
-        if (linesAtOtherVertex) {
-          const index = linesAtOtherVertex.indexOf(line);
-          if (index !== -1) linesAtOtherVertex.splice(index, 1);
-        }
-      } else if (connectedLines.length === 2) {
-        // Check for alignment
-        const [line1, line2] = connectedLines;
-        if (areLinesAligned(line1, line2)) {
-          toProcess = true;
-          const newStart = line1.start === vertex ? line1.end : line1.start;
-          const newEnd = line2.start === vertex ? line2.end : line2.start;
-          const newLine = new Line3(newStart, newEnd);
-          newLines.push(newLine);
-          lines = lines.filter((l) => l !== line1 && l !== line2);
-          vertexMap.delete(vertex);
-          updateVertexMapForNewLine(vertexMap, newStart, newEnd, newLine, [
-            line1,
-            line2
-          ]);
-        }
-      }
-    });
-
-    // Add new lines from this iteration to the list and to the vertex map
-    newLines.forEach((line) => {
-      lines.push(line);
-      [line.start, line.end].forEach((vertex) => {
-        if (!vertexMap.has(vertex)) vertexMap.set(vertex, []);
-        vertexMap.get(vertex).push(line);
-      });
-    });
-  }
-
-  return lines
-    .filter((line) => line.start !== line.end)
-    .reduce((acc, line, i) => {
-      const prev = lines[(i + lines.length - 1) % lines.length];
-      if (prev.end == line.start) {
-        acc.push(line);
-      } else {
-        acc.push(new Line3(line.end, line.start));
-      }
-      return acc;
-    }, []); // filter out degenerate lines (might be better to do this inside the main loop)
-}
-)}
-
-function _convertMapToNearestVertexConnections(Vector3){return(
-{
-  prompt:
-    "write a function that takes a Map of Vector3 => Line3[], and converts to a map of Vector3 => {line, vertex}[]\n\nThe vectors are points, and the Line3 are the line they are on. We are building a map of vertex => vertex. Two vertexes are connected if their line3 instance is the same object. However, we have many coplanar points in a single line, so each vertex should only be connected to its nearest is each direction for each line",
-  time: 1714243308861,
-  comment:
-    "Define a function to convert a map of Vector3 to Line3[] into a map of Vector3 to {line, vertex}[], linking each vertex only to its nearest neighbors in each direction along each line"
-} &&
-  function convertMapToNearestVertexConnections(vertexMap) {
-    const vertexConnections = new Map();
-
-    vertexMap.forEach((lines, vertex) => {
-      const connectedVertices = [];
-
-      lines.forEach((line) => {
-        // Initialize closest vertices in both directions
-        let closestVertexPositive = null;
-        let minDistancePositive = Infinity;
-        let closestVertexNegative = null;
-        let minDistanceNegative = Infinity;
-
-        // Check other vertices on the same line
-        vertexMap.forEach((otherLines, otherVertex) => {
-          if (otherVertex.equals(vertex)) return; // Skip self
-
-          otherLines.forEach((otherLine) => {
-            if (otherLine === line) {
-              // Only consider the same line instances
-              const direction = new Vector3().subVectors(otherVertex, vertex);
-              const distance = direction.length();
-              const dot = direction.dot(line.delta(new Vector3()));
-
-              if (dot > 0 && distance < minDistancePositive) {
-                closestVertexPositive = otherVertex;
-                minDistancePositive = distance;
-              } else if (dot < 0 && distance < minDistanceNegative) {
-                closestVertexNegative = otherVertex;
-                minDistanceNegative = distance;
-              }
-            }
-          });
+  function projectToPath(plane, polygons) {
+    const [basisX, basisY] = chooseBasis(plane);
+    const projectedPoints = polygons.map((polygon) => {
+      try {
+        return polygon.map((point) => {
+          const pointOnPlane = plane.projectPoint(point, new Vector3());
+          if (pointOnPlane.distanceTo(point) > 1e-3) throw new Error();
+          const x = pointOnPlane.dot(basisX);
+          const y = pointOnPlane.dot(basisY);
+          return new paper.Point(x, y);
         });
-
-        if (closestVertexPositive) {
-          connectedVertices.push({ line: line, vertex: closestVertexPositive });
-        }
-        if (closestVertexNegative) {
-          connectedVertices.push({ line: line, vertex: closestVertexNegative });
-        }
-      });
-
-      vertexConnections.set(vertex, connectedVertices);
+      } catch (e) {}
     });
-
-    return vertexConnections;
+    const paths = projectedPoints
+      .filter((d) => d)
+      .map((points) => new paper.Path(points));
+    paths.forEach((path) => {
+      path.closePath();
+      if (path.clockwise) path.reverse();
+    });
+    return paths;
   }
+
+  return projectToPath;
+}
+
+
+function _focusPlaneIdxPaths(focusPlane,surfacesOnPlaneAsPath,vectorSurfaces){return(
+focusPlane
+  ? surfacesOnPlaneAsPath(focusPlane, vectorSurfaces)
+  : []
 )}
 
-function _vertexIndex(convertMapToNearestVertexConnections,seed_vertices){return(
-convertMapToNearestVertexConnections(seed_vertices)
-)}
-
-function _buildLinesOnPlanes(Line3){return(
+function _unionPaths(){return(
 {
   prompt:
-    "Given a map of vertex connections\n\nVector3 {x: -5, y: -5, z: 1} => Array(2) [\n  0: Object {line: Line3, vertex: Vector3}\n  1: Object {line: Line3, vertex: Vector3}\n]\n\nand a list of Plane3 \n\nbuild an array of Line3 where the start and end of each line is a vertex and each line is also on one of the planes",
-  time: 1714243718820,
+    "Write a function to boolean op union a list of paper.js Path elements",
+  time: 1715719615509,
   comment:
-    "Define a function to build an array of Line3 from vertex connections where each line is also on one of the provided planes"
+    "Define a function to perform a union operation on a list of paper.js Path elements."
 } &&
-  function buildLinesOnPlanes(vertexConnections, planes) {
-    const lines = [];
-
-    vertexConnections.forEach((connections, vertex) => {
-      connections.forEach(({ line, vertex: connectedVertex }) => {
-        // Check if the line is coplanar with any of the provided planes
-        for (let plane of planes) {
-          if (
-            plane.distanceToPoint(vertex) < 1e-4 &&
-            plane.distanceToPoint(connectedVertex) < 1e-4
-          ) {
-            // If both vertices are coplanar with the plane, create a line between them
-            const newLine = new Line3(vertex, connectedVertex);
-            lines.push(newLine);
-            break; // Only add the line once, for the first matching plane
-          }
-        }
-      });
-    });
-
-    return lines;
+  function unionPaths(paths) {
+    let unionResult = paths[0];
+    for (let i = 1; i < paths.length; i++) {
+      unionResult = unionResult.unite(paths[i]);
+    }
+    return unionResult;
   }
 )}
 
-function _skeleton_all(vertexConstrainedSimplify,buildLinesOnPlanes,vertexIndex,surface_planes){return(
-vertexConstrainedSimplify(
-  buildLinesOnPlanes(vertexIndex, surface_planes)
+function _reverseInnerPaths(){return(
+{
+  prompt:
+    "iterate a list of paper.js path, find if any paths are inside another path (check if all verteces are inside the path) and if so, call .reverse()",
+  time: 1715971167855,
+  comment:
+    "Define a function to iterate through a list of paper.js paths, reverse any path that is entirely inside another path."
+} &&
+  function reverseInnerPaths(path) {
+    if (!path.children) return path;
+    return path.reorient(true, false);
+  }
+)}
+
+function _focusPlanePath(planePaths,focusPlane){return(
+planePaths.get(focusPlane)
+)}
+
+function _showPlanes(Inputs){return(
+Inputs.toggle({
+  label: "show planes?",
+  value: true
+})
+)}
+
+function _planePaths(mapValues,surface_planes,unionPaths,surfacesOnPlaneAsPath,vectorSurfaces,reverseInnerPaths){return(
+mapValues(
+  new Map(
+    surface_planes.map((plane) => [
+      plane,
+      unionPaths(surfacesOnPlaneAsPath(plane, vectorSurfaces))
+    ])
+  ),
+  (plane, path) => reverseInnerPaths(path)
 )
 )}
 
-function _skeleton(focusSurface,skeleton_all,lineOnPlane,surface_planes){return(
-focusSurface == -1
-  ? skeleton_all
-  : skeleton_all.filter((line) =>
-      lineOnPlane(line, surface_planes[focusSurface])
-    )
+function _33(md){return(
+md`### 2D Path to 3D`
 )}
 
-function _showSkeleton(Inputs){return(
-Inputs.toggle({
-  label: "show skeleton",
-  value: true
-})
-)}
-
-function _filterLinesOnSurfaces(surfaceDistanceToPoint){return(
+function _projectPathTo3D(chooseBasis,Vector3,Line3){return(
 {
   prompt:
-    "Take an array of lines and an array surfaces, and keep only lines that are on the surface",
-  time: 1714287057408,
+    "Given a CompoundPath and a Plane, project the path segments into arrays of Line3. Each array contains a loop for each subpath",
+  time: 1715721277786,
   comment:
-    "Define a function to filter out lines that are not on any of the provided surfaces"
+    "Define a function to project the segments of a CompoundPath into arrays of Line3, each array corresponding to a loop for each subpath."
 } &&
-  function filterLinesOnSurfaces(lines, surfaces) {
-    return lines.filter((line) => {
-      return (
-        surfaces.some((surface) => {
-          // Check if both start and end points of the line are on the surface
-          const distanceToStart = surfaceDistanceToPoint(surface, [
-            line.start.x,
-            line.start.y,
-            line.start.z
-          ]);
-          return distanceToStart < 1e-4;
-        }) &&
-        surfaces.some((surface) => {
-          const distanceToEnd = surfaceDistanceToPoint(surface, [
-            line.end.x,
-            line.end.y,
-            line.end.z
-          ]);
-          return distanceToEnd < 1e-4;
-        })
-      );
-    });
-  }
-)}
+  function projectPathTo3D(path, plane) {
+    const [basisX, basisY] = chooseBasis(plane);
+    const basisZ = plane.normal;
+    const origin = plane.coplanarPoint(new Vector3());
 
-function _prunedSkeleton(filterLinesOnSurfaces,skeleton_all,surfaces){return(
-filterLinesOnSurfaces(skeleton_all, surfaces)
-)}
+    function projectPoint2DTo3D(point2D) {
+      return new Vector3(
+        point2D.x * basisX.x + point2D.y * basisY.x,
+        point2D.x * basisX.y + point2D.y * basisY.y,
+        point2D.x * basisX.z + point2D.y * basisY.z
+      ).add(origin);
+    }
 
-function _groupLinesByPlanes(surfaceToPlane,surface_planes,eq,surfaceDistanceToPoint,dedupe){return(
-{
-  prompt:
-    "Given an array of line3, group into a Map with planes as keys, and arrays of lines as values that are on those planes (a line might be in a few planes.",
-  time: 1714298267328,
-  comment:
-    "Define a function to group lines into a Map with planes as keys, based on whether the lines are coplanar with the planes"
-} &&
-  function groupLinesByPlanes(lines, surfaces) {
-    const map = new Map();
-
-    surfaces.forEach((surface, i) => {
-      const derivedPlane = surfaceToPlane(surface);
-      const plane = surface_planes.find((element) => eq(element, derivedPlane));
-      lines.forEach((line) => {
-        // Check if both points of the line are coplanar with the plane
-        if (
-          Math.abs(surfaceDistanceToPoint(surface, line.start)) < 1e-4 &&
-          Math.abs(surfaceDistanceToPoint(surface, line.end)) < 1e-4
-        ) {
-          if (!map.has(plane)) {
-            map.set(plane, []);
-          }
-          map.get(plane).push(line);
-        }
+    if (path.children)
+      return path.children.map((subPath) => {
+        return subPath.segments.map((segment) => {
+          const start = projectPoint2DTo3D(segment.point);
+          const end = projectPoint2DTo3D(segment.next.point);
+          return new Line3(start, end);
+        });
       });
-    });
-    map.forEach((lines, plane) => map.set(plane, dedupe(eq, lines)));
-    return map;
-  }
-)}
-
-function _groupedLinesAll(groupLinesByPlanes,prunedSkeleton,surfaces){return(
-groupLinesByPlanes(prunedSkeleton, surfaces)
-)}
-
-function _showPrunedSkeleton(Inputs){return(
-Inputs.toggle({
-  label: "show pruned skeleton",
-  value: true
-})
-)}
-
-function _groupedLines(focusSurface,groupedLinesAll,lineOnPlane,surface_planes){return(
-focusSurface == -1
-  ? groupedLinesAll
-  : new Map(
-      [...groupedLinesAll.entries()].filter(([plane, lines]) =>
-        lines.some((line) => lineOnPlane(line, surface_planes[focusSurface]))
-      )
-    )
-)}
-
-function _37(md){return(
-md`TODO: projectLinesOntoPlane. concaveman is useful coz it fixes ordering, but it tends to take shortcuts on corners unless lines are over sampled`
-)}
-
-function _projectLinesOntoPlane(generateEvenlySpacedPoints,Vector3,chooseBasis,concaveman,dedupe,eq){return(
-{
-  prompt:
-    "write a function to convert a map of Plane => Line3[] to a Map of the projected vectors onto the plane as 3D cordinates represented as an array of length 2",
-  time: 1714299349500,
-  comment:
-    "Define a function to convert a map of Plane to Vector3[] into a map of the projected vectors onto the plane as 2D coordinates"
-} &&
-  function projectVectorsOntoPlane(planeLineMap) {
-    const projectedMap = new Map();
-    planeLineMap.forEach((lines, plane) => {
-      const vectors = lines.flatMap((line) =>
-        generateEvenlySpacedPoints(line, 20)
-      );
-      const normal = plane.normal.clone();
-      const projectedVectors = vectors.map((vector) => {
-        const pointOnPlane = plane.projectPoint(vector, new Vector3());
-        const [basisX, basisY] = chooseBasis(plane);
-
-        // Project the point onto the plane using the basis vectors
-        const x = pointOnPlane.dot(basisX);
-        const y = pointOnPlane.dot(basisY);
-
-        return [x, y];
+    else {
+      return path.segments.map((segment) => {
+        const start = projectPoint2DTo3D(segment.point);
+        const end = projectPoint2DTo3D(segment.next.point);
+        return new Line3(start, end);
       });
-      projectedMap.set(plane, concaveman(dedupe(eq, projectedVectors)));
-    });
-
-    return projectedMap;
+    }
   }
+)}
+
+function _showEdges(Inputs){return(
+Inputs.toggle({ value: true, label: "show edges" })
+)}
+
+function _edges(mapValues,planePaths,projectPathTo3D){return(
+mapValues(planePaths, (plane, path) =>
+  projectPathTo3D(path, plane).flat()
+)
+)}
+
+function _focusEdges(focusPlane,edges){return(
+focusPlane ? edges.get(focusPlane) : undefined
+)}
+
+function _focusEdgesAll(edges){return(
+edges
 )}
 
 function _showShapes(Inputs){return(
@@ -650,20 +608,31 @@ Inputs.toggle({
 })
 )}
 
-function _shapes2D(projectLinesOntoPlane,groupedLinesAll){return(
-projectLinesOntoPlane(groupedLinesAll)
+function _shapes2D(mapValues,planePaths){return(
+mapValues(planePaths, (plane, path) => {
+  if (path.children)
+    return path.children.map((subPath) => {
+      return subPath.segments.map((segment) => [
+        segment.point.x,
+        segment.point.y
+      ]);
+    });
+  else {
+    return path.segments.map((segment) => [[segment.point.x, segment.point.y]]);
+  }
+})
 )}
 
-function _targetShape(shapes2D,surface_planes,focusSurface){return(
-shapes2D.get(surface_planes[focusSurface])
+function _targetShape(shapes2D,focusPlane){return(
+shapes2D.get(focusPlane)
 )}
 
 function _shapePlot(targetShape,plotShape2D){return(
-targetShape && plotShape2D(targetShape)
+targetShape && plotShape2D(targetShape.flat())
 )}
 
 function _43(md){return(
-md`#### Generating part adjacency map`
+md`### Find Joints`
 )}
 
 function _44(Inputs,surface_planes,$0){return(
@@ -677,65 +646,20 @@ Inputs.bind(
 )
 )}
 
-function _createEdges(chooseBasis,Vector3,Line3){return(
-{
-  prompt:
-    "createEdges Given a Plane and an array of 2D points  [x, y][], create an array of Vector3. Use the same basis and coordinate systems use in createShape",
-  time: 1714556118018,
-  comment:
-    "Define a function to convert an array of 2D points into an array of Vector3 on a Plane using the same basis and coordinate system as used in createShape"
-} &&
-  function createEdges(plane, points) {
-    const [basisX, basisY] = chooseBasis(plane);
-    const origin = plane.coplanarPoint(new Vector3());
-    const vertices = points.map((point) => {
-      const xComponent = basisX.clone().multiplyScalar(point[0]);
-      const yComponent = basisY.clone().multiplyScalar(point[1]);
-      return new Vector3().addVectors(origin, xComponent).add(yComponent);
-    });
-    return vertices.reduce((vs, v, i) => {
-      vs.push(new Line3(vertices[i], vertices[(i + 1) % vertices.length]));
-      return vs;
-    }, []);
-  }
+function _optimizedShape2D(shapes2D){return(
+shapes2D
 )}
 
-function _shapes3D(mapValues,shapes2D,createEdges,optimizeLineConnections){return(
-mapValues(mapValues(shapes2D, createEdges), (plane, lines) =>
-  optimizeLineConnections(lines)
-)
-)}
-
-function _showShapes3D(Inputs){return(
-Inputs.toggle({
-  label: "show shapes 3D",
-  value: true
-})
-)}
-
-function _targetShape3d(createEdges,surface_planes,focusSurface,targetShape){return(
-createEdges(surface_planes[focusSurface], targetShape)
-)}
-
-function _optimizedShape2D(mapValues,shapes3D,dedupe,eq,shape3DTo2D){return(
-mapValues(shapes3D, (plane, lines) =>
-  dedupe(eq, shape3DTo2D(plane, lines))
-)
-)}
-
-function _optimizedFocusShape(optimizedShape2D,surface_planes,focusSurface){return(
-optimizedShape2D.get(surface_planes[focusSurface])
-)}
-
-function _optimizedFocusShape2(optimizedShape2D,surface_planes,focusSurface2){return(
-optimizedShape2D.get(surface_planes[focusSurface2])
+function _optimizedFocusShape(optimizedShape2D,surface_planes,focusPlaneIdx){return(
+optimizedShape2D.get(surface_planes[focusPlaneIdx])
 )}
 
 function _optimizedShapePlot(optimizedFocusShape,plotShape2D){return(
-optimizedFocusShape && plotShape2D(optimizedFocusShape)
+optimizedFocusShape &&
+  plotShape2D(optimizedFocusShape.flat())
 )}
 
-function _findShapeConnections(intersectShapes,rad2deg,angleBetweenPlanes){return(
+function _findShapeConnections(intersectShapes,rad2deg,angleBetweenPlanes,Vector3){return(
 {
   prompt:
     "Find a list of connections between shapes encoded as a map of Plane => Line3[]. A connection is a shared edge list, and the two shapes (plane1, plane2, edges1, edges2). Use intersectShapes pairwise.",
@@ -764,7 +688,9 @@ function _findShapeConnections(intersectShapes,rad2deg,angleBetweenPlanes){retur
             lines1: lines1,
             lines2: lines2,
             sharedEdges: edges,
-            angle: rad2deg(angleBetweenPlanes(plane1, plane2))
+            angle: rad2deg(
+              angleBetweenPlanes(plane1, plane2, edges[0].delta(new Vector3()))
+            )
           });
         }
       }
@@ -774,11 +700,11 @@ function _findShapeConnections(intersectShapes,rad2deg,angleBetweenPlanes){retur
   }
 )}
 
-function _joints(findShapeConnections,shapes3D){return(
-findShapeConnections(shapes3D)
+function _joints(findShapeConnections,edges){return(
+findShapeConnections(edges)
 )}
 
-function _55(Inputs,joints,$0){return(
+function _50(Inputs,joints,$0){return(
 Inputs.bind(
   Inputs.range([-1, joints.length - 1], {
     label: "focus joint",
@@ -789,11 +715,11 @@ Inputs.bind(
 )
 )}
 
-function _targetJoint(joints,focusJoint){return(
-joints[focusJoint]
+function _targetJoint(joints,focusJointIdx){return(
+joints[focusJointIdx]
 )}
 
-function _visualizeJointGraph(dot,shapes3D,toString,targetJoint){return(
+function _visualizeJointGraph(dot,edges,toString,targetJoint,focusPlane){return(
 {
   prompt: "visualize the joint graph using graph viz.",
   time: 1715259707115,
@@ -802,13 +728,15 @@ function _visualizeJointGraph(dot,shapes3D,toString,targetJoint){return(
 } &&
   function visualizeJointGraph(joints) {
     return dot`digraph G { 
-      ${[...shapes3D.keys()]
+      ${[...edges.keys()]
         .map(
           (plane) =>
             `"${toString(plane)}" [color="${
               targetJoint &&
               (targetJoint.plane1 === plane || targetJoint.plane2 === plane)
                 ? "red"
+                : focusPlane && focusPlane == plane
+                ? "green"
                 : "black"
             }"]`
         )
@@ -830,8 +758,12 @@ function _visualizeJointGraph(dot,shapes3D,toString,targetJoint){return(
   }
 )}
 
-function _58(md){return(
-md`### Joint Sculpting`
+function _53(visualizeJointGraph,joints){return(
+visualizeJointGraph(joints)
+)}
+
+function _54(md){return(
+md`### Generate Parts`
 )}
 
 function _neighbourhood(){return(
@@ -839,8 +771,27 @@ function _neighbourhood(){return(
   connections.filter((c) => c.plane1 == plane || c.plane2 == plane)
 )}
 
-function _focusNeighbourhood(neighbourhood,surface_planes,focusSurface,joints){return(
-neighbourhood(surface_planes[focusSurface], joints)
+function _focusNeighbourhood(neighbourhood,focusPlane,joints){return(
+neighbourhood(focusPlane, joints)
+)}
+
+function _neighbourhoods(surface_planes,neighbourhood,joints){return(
+new Map(
+  surface_planes.map((plane) => [plane, neighbourhood(plane, joints)])
+)
+)}
+
+function _focusBoundaries(focusPlane,boundaries){return(
+focusPlane && boundaries.get(focusPlane)
+)}
+
+function _boundaries(surface_planes,projectPathTo3D,planePaths){return(
+new Map(
+  surface_planes.map((plane) => [
+    plane,
+    projectPathTo3D(planePaths.get(plane), plane)
+  ])
+)
 )}
 
 function _generatePerimeterPlan(intersectLines,eq,Line3){return(
@@ -851,7 +802,7 @@ function _generatePerimeterPlan(intersectLines,eq,Line3){return(
   comment:
     "Define a function to generate a plan for adjusting the perimeter of an object to insert special joints on the shared edges. This involves walking the boundary and replacing parts of it with joints where shared edges intersect."
 } &&
-  function generatePerimeterPlan(joints, boundary) {
+  function generatePerimeterPlan(plane, joints, boundary) {
     const plans = [];
     for (let i = 0; i < boundary.length; i++) {
       const edge = boundary[i];
@@ -913,10 +864,19 @@ function _generatePerimeterPlan(intersectLines,eq,Line3){return(
               sharedEdge.start === nearest
                 ? sharedEdge
                 : new Line3(sharedEdge.end, sharedEdge.start);
+            const oppositePlane =
+              connection.plane1 == plane
+                ? connection.plane2
+                : connection.plane1;
+            const extension = 
             plans.push({
               plan: "box",
               edge: jointEdge,
-              joint: connection
+              joint: connection,
+              polarity: connection.plane1 == plane,
+              direction: oppositePlane.normal,
+              plane,
+              oppositePlane
             });
             openConnections.splice(
               openConnections.findIndex((e) => e == connection),
@@ -943,77 +903,128 @@ function _projectPlan(chooseBasis,Vector3){return(
       new Vector3()
     );
     const endPointOnPlane = plane.projectPoint(step.edge.end, new Vector3());
+    const dirOnPlane =
+      step.direction && plane.projectPoint(step.direction, new Vector3());
+    const start = [
+      startPointOnPlane.dot(basisX),
+      startPointOnPlane.dot(basisY)
+    ];
+    const end = [endPointOnPlane.dot(basisX), endPointOnPlane.dot(basisY)];
+    const delta = [start[0] - end[0], start[1] - end[1]];
+    const magnitude = Math.sqrt(delta[0] * delta[0] + delta[1] * delta[1]);
+    const outward = [delta[1] / magnitude, -delta[0] / magnitude];
+    let cutParams = {};
+    if (step.direction) {
+      const cutDirection = [dirOnPlane.dot(basisX), dirOnPlane.dot(basisY)];
+      cutParams = {
+        cutDirection,
+        cutType:
+          outward[0] * cutDirection[0] + outward[1] * cutDirection[1] > 0
+            ? "extend"
+            : "retract"
+      };
+    }
     return {
       ...step,
-      start: [startPointOnPlane.dot(basisX), startPointOnPlane.dot(basisY)],
-      end: [endPointOnPlane.dot(basisX), endPointOnPlane.dot(basisY)]
+      start,
+      end,
+      outward,
+      ...cutParams
     };
   });
 }
 )}
 
-function _focusPlan(projectPlan,surface_planes,focusSurface,generatePerimeterPlan,focusNeighbourhood,createEdges,optimizedFocusShape){return(
-projectPlan(
-  surface_planes[focusSurface],
-  generatePerimeterPlan(
-    focusNeighbourhood,
-    createEdges(surface_planes[focusSurface], optimizedFocusShape)
+function _focusPlan(focusPlane,projectPlan,generatePerimeterPlan,focusNeighbourhood,focusBoundaries){return(
+focusPlane &&
+  projectPlan(
+    focusPlane,
+    generatePerimeterPlan(
+      focusPlane,
+      focusNeighbourhood,
+      focusBoundaries.flat()
+    )
   )
+)}
+
+function _plans(surface_planes,projectPlan,generatePerimeterPlan,neighbourhoods,boundaries){return(
+new Map(
+  surface_planes.map((plane) => [
+    plane,
+    projectPlan(
+      plane,
+      generatePerimeterPlan(
+        plane,
+        neighbourhoods.get(plane),
+        boundaries.get(plane).flat()
+      )
+    )
+  ])
 )
 )}
 
-function _64(Inputs,surface_planes,$0){return(
-Inputs.bind(
-  Inputs.range([-1, surface_planes.length - 1], {
-    label: "focus surface",
-    value: -1,
-    step: 1
-  }),
-  $0
+function _planViz(Plot){return(
+(plan) =>
+  Plot.plot({
+    grid: true,
+    inset: 10,
+    x: {
+      label: "x"
+    },
+    y: {
+      label: "y"
+    },
+    color: {
+      legend: true
+    },
+    marks: [
+      Plot.link(plan, {
+        x1: (d) => d.start[0],
+        y1: (d) => d.start[1],
+        x2: (d) => d.end[0],
+        y2: (d) => d.end[1],
+        stroke: (d) => d.plan,
+        markerEnd: "arrow"
+      }),
+      Plot.vector(plan, {
+        x: (d) => (d.start[0] + d.end[0]) / 2,
+        y: (d) => (d.start[1] + d.end[1]) / 2,
+        rotate: (d) => (Math.atan2(d.outward[0], d.outward[1]) * 180) / Math.PI,
+        length: 10,
+        stroke: "cyan",
+        anchor: "start"
+      }),
+      Plot.vector(
+        plan.filter((s) => s.plan == "box"),
+        {
+          x: (d) => (d.start[0] + d.end[0]) / 2,
+          y: (d) => (d.start[1] + d.end[1]) / 2,
+          rotate: (d) =>
+            (Math.atan2(d.cutDirection[0], d.cutDirection[1]) * 180) / Math.PI,
+          length: 10,
+          stroke: "red",
+          anchor: "start"
+        }
+      )
+    ]
+  })
+)}
+
+function _focusPlanViz(focusPlan,planViz){return(
+focusPlan && planViz(focusPlan)
+)}
+
+function _showPlan(Inputs){return(
+Inputs.toggle({ label: "show plan", value: true })
+)}
+
+function _planBlobs(mapValues,plans,toBlobUrl,planViz){return(
+mapValues(plans, (plane, plan) =>
+  toBlobUrl(planViz(plan).querySelector("svg[viewBox]"))
 )
 )}
 
-function _65(Plot,focusPlan){return(
-Plot.plot({
-  grid: true,
-  inset: 10,
-  x: {
-    label: "x"
-  },
-  y: {
-    label: "y"
-  },
-  color: {
-    legend: true
-  },
-  marks: [
-    Plot.link(focusPlan, {
-      x1: (d) => d.start[0],
-      y1: (d) => d.start[1],
-      x2: (d) => d.end[0],
-      y2: (d) => d.end[1],
-      stroke: (d) => d.plan,
-      markerEnd: "arrow"
-    })
-  ]
-})
-)}
-
-function _material_thickness(Inputs){return(
-Inputs.range([0.01, 8], {
-  label: "material thickness",
-  value: 0.01
-})
-)}
-
-function _scale(Inputs){return(
-Inputs.range([0.01, 10], {
-  label: "scale",
-  value: 1
-})
-)}
-
-function _planToSVG(material_thickness,d3,htl,angleToFingerExtension,angleToFingerRetraction,finger_clockwise_v1){return(
+function _planToSVG(material_thickness,d3,htl,download_svg,angleToFingerExtension,angleToFingerRetraction,finger_clockwise_v1,fingerWidth){return(
 (plan, { scale = 5, thickness = material_thickness } = {}) => {
   const maxX =
     d3.max(plan, (step) => Math.max(step.start[0], step.end[0])) +
@@ -1029,7 +1040,8 @@ function _planToSVG(material_thickness,d3,htl,angleToFingerExtension,angleToFing
     thickness * 2;
   const total_width = maxX - minX;
   const total_height = maxY - minY;
-  return htl.svg`<div 
+  let svgEl = undefined;
+  const element = htl.svg`<div 
     style=" transform-origin: top left;
             transform: scale(${scale});
             width: ${total_width * scale}mm;
@@ -1037,6 +1049,8 @@ function _planToSVG(material_thickness,d3,htl,angleToFingerExtension,angleToFing
     ">
     <svg  class="lzr"
           filename="part"
+          style="cursor: pointer"
+          onclick = ${(evt) => download_svg(evt.target)}
           width="${total_width}mm"
           height="${total_height}mm"
           viewBox="${minX} ${minY} ${total_width} ${total_height}">
@@ -1048,6 +1062,8 @@ function _planToSVG(material_thickness,d3,htl,angleToFingerExtension,angleToFing
               L ${step.end[0]} ${step.end[1]}
             `;
           } else if (step.plan === "box") {
+            const start = step.start;
+            const end = step.end;
             const settings = {
               extension: angleToFingerExtension(step.joint.angle, {
                 thickness
@@ -1056,43 +1072,85 @@ function _planToSVG(material_thickness,d3,htl,angleToFingerExtension,angleToFing
                 thickness
               })
             };
-            const delta = [
-              step.start[0] - step.end[0],
-              step.start[1] - step.end[1]
+            const offset = [
+              step.cutType == "extend"
+                ? step.outward[0] * settings.extension
+                : -step.outward[0] * settings.retraction,
+              step.cutType == "extend"
+                ? step.outward[1] * settings.extension
+                : -step.outward[1] * settings.retraction
             ];
-            const magnitude = Math.sqrt(
-              delta[0] * delta[0] + delta[1] * delta[1]
-            );
-            const outward = [delta[1] / magnitude, -delta[0] / magnitude];
-            const offsetStart = [
-              step.end[0] + outward[0] * settings.extension,
-              step.end[1] + outward[1] * settings.extension
-            ];
-            const offsetEnd = [
-              step.start[0] + outward[0] * settings.extension,
-              step.start[1] + outward[1] * settings.extension
-            ];
+            const offsetStart = [end[0] + offset[0], end[1] + offset[1]];
+            const offsetEnd = [start[0] + offset[0], start[1] + offset[1]];
             return `
-              M ${step.end[0]} ${step.end[1]}
-              L ${offsetStart[0]} ${offsetStart[1]}
+              M ${end[0]} ${end[1]}
               ${finger_clockwise_v1(offsetStart, offsetEnd, {
                 finger_depth: settings.extension + settings.retraction,
-                finger_width: 0.2
+                finger_width: fingerWidth,
+                reverse: step.polarity,
+                end_anchor: step.polarity
               })}
-              L ${step.start[0]} ${step.start[1]}
+              L ${start[0]} ${start[1]}
             `;
           }
         })}
       "/>
   </div>`;
+  svgEl = element.querySelector("svg");
+  return element;
 }
 )}
 
-function _70(planToSVG,focusPlan,scale){return(
-planToSVG(focusPlan, { scale })
+function _70(Inputs,surface_planes,$0){return(
+Inputs.bind(
+  Inputs.range([-1, surface_planes.length - 1], {
+    label: "focus plane",
+    value: -1,
+    step: 1
+  }),
+  $0
+)
 )}
 
-function _71(md){return(
+function _showPart(Inputs){return(
+Inputs.toggle({
+  label: "show parts",
+  value: true
+})
+)}
+
+function _partsSVG(mapValues,plans,planToSVG,material_thickness){return(
+mapValues(plans, (plane, plan) =>
+  planToSVG(plan, { scale: 5, thickness: material_thickness })
+)
+)}
+
+function _73(focusPlan,planToSVG,scale)
+{
+  debugger;
+  return focusPlan && planToSVG(focusPlan, { scale });
+}
+
+
+function _74(md){return(
+md`### Parts to Blobs`
+)}
+
+function _partBlobs(mapValues,partsSVG,toBlobUrl){return(
+mapValues(partsSVG, (plane, svg) =>
+  toBlobUrl(svg.querySelector("svg"))
+)
+)}
+
+function _focusBlobURL(focusPlane,partBlobs){return(
+focusPlane && partBlobs.get(focusPlane)
+)}
+
+function _focusPart(focusPlan,planToSVG,scale){return(
+focusPlan && planToSVG(focusPlan, { scale })
+)}
+
+function _78(md){return(
 md`## Math`
 )}
 
@@ -1104,12 +1162,8 @@ function _rad2deg(){return(
 (rads) => rads * (180 / Math.PI)
 )}
 
-function _74(md){return(
-md`TODO: Angle between planes is not signed in the way I would want`
-)}
-
-function _angleBetweenPlanes(){return(
-(plane1, plane2) => {
+function _angleBetweenPlanes(THREE){return(
+function angleBetweenPlanes(plane1, plane2, axis) {
   // Calculate the dot product of the normals
   let dot = plane1.normal.dot(plane2.normal);
 
@@ -1120,6 +1174,19 @@ function _angleBetweenPlanes(){return(
   // Calculate the cosine of the angle between the planes
   let cosTheta = dot / (magnitude1 * magnitude2);
   let angleRadians = Math.acos(Math.min(Math.max(cosTheta, -1), 1));
+
+  // Calculate the cross product of the normal vectors to get the axis of rotation
+  let cross = new THREE.Vector3();
+  cross.crossVectors(plane1.normal, plane2.normal);
+
+  // Calculate the dot product of the cross product and the edge vector
+  let sign = cross.dot(axis);
+
+  // Determine the sign of the angle
+  if (sign < 0) {
+    angleRadians = -angleRadians;
+  }
+
   return angleRadians;
 }
 )}
@@ -1128,7 +1195,8 @@ function _angleBetweenPlanesExample(rad2deg,angleBetweenPlanes,Plane,Vector3){re
 rad2deg(
   angleBetweenPlanes(
     new Plane(new Vector3(0, 1, 0), 0),
-    new Plane(new Vector3(1, 0, 0), 0)
+    new Plane(new Vector3(1, 0, 0), 0),
+    new Vector3(0, 0, -1)
   )
 )
 )}
@@ -1153,7 +1221,7 @@ function _eq(Plane,Vector3,Line3){return(
         a.reduce((acc, item, i) => acc && eq(item, b[i]), true)
       );
     } else if (a instanceof Vector3 && b instanceof Vector3) {
-      return a.equals(b, epsilon);
+      return eq(a.x, b.x) && eq(a.y, b.y) && eq(a.z, b.z);
     } else if (a instanceof Line3 && b instanceof Line3) {
       const aDir = a.delta(new Vector3().normalize());
       const bDir = b.delta(new Vector3()).normalize();
@@ -1163,6 +1231,8 @@ function _eq(Plane,Vector3,Line3){return(
         (a.start.distanceToSquared(b.end) < epsilon * epsilon &&
           a.end.distanceToSquared(b.start) < epsilon * epsilon)
       );
+    } else if (typeof a == "number" && typeof b == "number") {
+      return Math.abs(a - b) < epsilon;
     }
     return a == b;
   }
@@ -1534,6 +1604,36 @@ function _extendLine(Vector3,Line3){return(
   }
 )}
 
+function _getBoundingBoxCorners(){return(
+{
+  prompt:
+    "Take an array of 2d points [x, y][] and return a new array with 4 points that are in the corners of the axis aligned bounding box",
+  time: 1716111412768,
+  comment:
+    "Define a function to return the four corner points of the axis-aligned bounding box for an array of 2D points."
+} &&
+  function getBoundingBoxCorners(boundaries) {
+    const xValues = boundaries.flatMap((points) =>
+      points.map((point) => point[0])
+    );
+    const yValues = boundaries.flatMap((points) =>
+      points.map((point) => point[1])
+    );
+
+    const minX = Math.min(...xValues);
+    const maxX = Math.max(...xValues);
+    const minY = Math.min(...yValues);
+    const maxY = Math.max(...yValues);
+
+    return [
+      [minX, minY],
+      [minX, maxY],
+      [maxX, maxY],
+      [maxX, minY]
+    ];
+  }
+)}
+
 function _shape3DTo2D(chooseBasis,Vector3){return(
 {
   prompt:
@@ -1556,14 +1656,14 @@ function _shape3DTo2D(chooseBasis,Vector3){return(
   })
 )}
 
-function _91(shape3DTo2D,targetJoint)
+function _98(shape3DTo2D,targetJoint)
 {
   debugger;
   return shape3DTo2D(targetJoint.plane1, targetJoint.lines1);
 }
 
 
-function _92(targetJoint){return(
+function _99(targetJoint){return(
 targetJoint.lines1
 )}
 
@@ -1711,11 +1811,11 @@ function _isInsideShape3DExample(isInsideShape3D,Vector3,targetJoint)
 }
 
 
-function _98(targetJoint){return(
+function _105(targetJoint){return(
 targetJoint.plane1
 )}
 
-function _99(targetJoint){return(
+function _106(targetJoint){return(
 targetJoint.lines1
 )}
 
@@ -1780,7 +1880,7 @@ function _intersectShapesExample(intersectShapes,targetJoint)
 }
 
 
-function _102(md){return(
+function _109(md){return(
 md`## String`
 )}
 
@@ -1814,6 +1914,15 @@ function toString(obj) {
 }
 )}
 
+function _toBlobUrl(XMLSerializer){return(
+(svg) =>
+  URL.createObjectURL(
+    new Blob([new XMLSerializer().serializeToString(svg)], {
+      type: "image/svg+xml"
+    })
+  )
+)}
+
 function _geometrySuite(createSuite){return(
 {
   prompt: "Write a test suite for testing our geometry functions",
@@ -1823,7 +1932,7 @@ function _geometrySuite(createSuite){return(
 } && createSuite({ name: "Geometry Tests" })
 )}
 
-function _106(geometrySuite,Line3,Vector3,expect,intersectLines){return(
+function _114(geometrySuite,Line3,Vector3,expect,intersectLines){return(
 geometrySuite.test("intersectLines example", () => {
   const l1 = new Line3(new Vector3(0, 0, -1), new Vector3(1, 0, -1));
   const l2 = new Line3(new Vector3(0, 0, 0), new Vector3(0, 0, -1));
@@ -1913,7 +2022,34 @@ function _testIntersectPlanesRandom(geometrySuite,Plane,Vector3,XZ,intersectPlan
   })
 )}
 
-function _109(md){return(
+function _test3Dto2D(geometrySuite,Plane,Vector3,unionPaths,surfacesOnPlaneAsPath,projectPathTo3D,expect){return(
+geometrySuite.test(
+  "surfacesOnPlaneAsPath and projectPathTo3D round trip",
+  () => {
+    const plane = new Plane(
+      new Vector3().randomDirection(),
+      Math.random() * 2 - 1
+    );
+    const a = plane.projectPoint(
+      new Vector3().randomDirection().multiplyScalar(20),
+      new Vector3()
+    );
+    const b = plane.projectPoint(
+      new Vector3().randomDirection().multiplyScalar(20),
+      new Vector3()
+    );
+
+    const path = unionPaths(surfacesOnPlaneAsPath(plane, [[a, b]]));
+
+    const edges = projectPathTo3D(path, plane);
+
+    expect(a.distanceTo(edges[0].start) < 1e-3 || a.distanceTo(edges[0].end));
+    expect(b.distanceTo(edges[0].start) < 1e-3 || b.distanceTo(edges[0].end));
+  }
+)
+)}
+
+function _118(md){return(
 md`# Planes`
 )}
 
@@ -1942,22 +2078,51 @@ function _chooseBasis(THREE){return(
     const normal = plane.normal.clone().normalize();
 
     // Choose the basis vectors depending on the closest major plane (XY, XZ, or YZ)
-    if (Math.abs(normal.dot(new THREE.Vector3(0, 0, 1))) > 0.9) {
-      // XY plane
-      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)];
-    } else if (Math.abs(normal.dot(new THREE.Vector3(0, 1, 0))) > 0.9) {
-      // XZ plane
-      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 1)];
-    } else if (Math.abs(normal.dot(new THREE.Vector3(1, 0, 0))) > 0.9) {
-      // YZ plane
+    if (normal.dot(new THREE.Vector3(1, 0, 0)) > 0.9) {
+      // Aligned with X-axis (right face)
+      return [new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, -1)];
+    } else if (normal.dot(new THREE.Vector3(-1, 0, 0)) > 0.9) {
+      // Aligned with -X-axis (left face)
       return [new THREE.Vector3(0, 1, 0), new THREE.Vector3(0, 0, 1)];
+    } else if (normal.dot(new THREE.Vector3(0, 1, 0)) > 0.9) {
+      // Aligned with Y-axis (top face)
+      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 1)];
+    } else if (normal.dot(new THREE.Vector3(0, -1, 0)) > 0.9) {
+      // Aligned with -Y-axis (bottom face)
+      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, -1)];
+    } else if (normal.dot(new THREE.Vector3(0, 0, 1)) > 0.9) {
+      // Aligned with Z-axis (front face)
+      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, -1, 0)];
+    } else if (normal.dot(new THREE.Vector3(0, 0, -1)) > 0.9) {
+      // Aligned with -Z-axis (back face)
+      return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)];
     }
+
     // Default to XY plane if none of the conditions match
     return [new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 1, 0)];
   }
 )}
 
-function _114(md){return(
+function _123(focusPlane){return(
+focusPlane
+)}
+
+function _124(Inputs,surface_planes,$0){return(
+Inputs.bind(
+  Inputs.range([-1, surface_planes.length - 1], {
+    label: "focus plane",
+    value: -1,
+    step: 1
+  }),
+  $0
+)
+)}
+
+function _125(focusPlane){return(
+focusPlane
+)}
+
+function _126(md){return(
 md`## Meshes`
 )}
 
@@ -1985,6 +2150,73 @@ function _createPlaneMesh(THREE,Vector3){return(
       plane.normal
     );
     mesh.quaternion.copy(quaternion);
+    mesh.position.copy(plane.coplanarPoint(new Vector3()));
+
+    return mesh;
+  }
+)}
+
+function _createShape(THREE,loader,chooseBasis,Vector3){return(
+{
+  prompt:
+    "createShape. Given a Plane and an array of 2D points  [x, y][], a color and an opacity, build a positioned Mesh using ShapeGeometry ",
+  time: 1714307169388,
+  comment:
+    "Define a function to create a Mesh from a ShapeGeometry defined by a Plane and an array of 2D points, with specified color and opacity"
+} &&
+  function createShape(
+    plane,
+    boundaries,
+    { color = 0x00ff00, opacity = 1, blobURL } = {}
+  ) {
+    const shape = new THREE.Shape();
+    const max = [boundaries[0][0][0], boundaries[0][0][1]];
+    const min = [boundaries[0][0][0], boundaries[0][0][1]];
+
+    // Start at the first point
+    boundaries.forEach((points) => {
+      shape.moveTo(points[0][0], points[0][1]);
+
+      // Line to each subsequent point
+      points.slice(1).forEach((point) => {
+        if (point[0] < min[0]) min[0] = point[0];
+        if (point[1] < min[1]) min[1] = point[1];
+        if (point[0] > max[0]) max[0] = point[0];
+        if (point[1] > max[1]) max[1] = point[1];
+        shape.lineTo(point[0], point[1]);
+      });
+      shape.lineTo(points[0][0], points[0][1]); // close the shape
+    });
+    let texture = undefined;
+    if (blobURL) {
+      texture = loader.load(blobURL);
+      texture.repeat.set(1 / (max[0] - min[0]), -1 / (max[1] - min[1]));
+      texture.offset.set(
+        -min[0] / (max[0] - min[0]),
+        min[1] / (max[1] - min[1])
+      );
+      texture.center.set(0, 1);
+    }
+    const geometry = new THREE.ShapeGeometry(shape);
+    const material = new THREE.MeshBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide,
+      transparent: opacity < 1,
+      opacity: opacity,
+      ...(blobURL && { map: texture })
+    });
+
+    const mesh = new THREE.Mesh(geometry, material);
+
+    // Set the position and orientation of the mesh to match the plane
+    const [basisX, basisY] = chooseBasis(plane);
+    const basisZ = new THREE.Vector3().crossVectors(basisX, basisY).normalize();
+    const rotationMatrix = new THREE.Matrix4().makeBasis(
+      basisX,
+      basisY,
+      basisZ
+    );
+    mesh.applyMatrix4(rotationMatrix);
     mesh.position.copy(plane.coplanarPoint(new Vector3()));
 
     return mesh;
@@ -2145,50 +2377,6 @@ function _createRectangularMesh(THREE){return(
   }
 )}
 
-function _createShape(THREE,chooseBasis,Vector3){return(
-{
-  prompt:
-    "createShape. Given a Plane and an array of 2D points  [x, y][], a color and an opacity, build a positioned Mesh using ShapeGeometry ",
-  time: 1714307169388,
-  comment:
-    "Define a function to create a Mesh from a ShapeGeometry defined by a Plane and an array of 2D points, with specified color and opacity"
-} &&
-  function createShape(plane, points, color = 0x00ff00, opacity = 0.5) {
-    const shape = new THREE.Shape();
-    // Start at the first point
-    shape.moveTo(points[0][0], points[0][1]);
-
-    // Line to each subsequent point
-    points.slice(1).forEach((point) => {
-      shape.lineTo(point[0], point[1]);
-    });
-    shape.lineTo(points[0][0], points[0][1]); // close the shape
-
-    const geometry = new THREE.ShapeGeometry(shape);
-    const material = new THREE.MeshBasicMaterial({
-      color: color,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: opacity
-    });
-
-    const mesh = new THREE.Mesh(geometry, material);
-
-    // Set the position and orientation of the mesh to match the plane
-    const [basisX, basisY] = chooseBasis(plane);
-    const basisZ = new THREE.Vector3().crossVectors(basisX, basisY).normalize();
-    const rotationMatrix = new THREE.Matrix4().makeBasis(
-      basisX,
-      basisY,
-      basisZ
-    );
-    mesh.applyMatrix4(rotationMatrix);
-    mesh.position.copy(plane.coplanarPoint(new Vector3()));
-
-    return mesh;
-  }
-)}
-
 function _createSimpleLight(Vector3,THREE){return(
 {
   prompt:
@@ -2223,7 +2411,7 @@ function _createSimpleLight(Vector3,THREE){return(
   }
 )}
 
-function _123(md){return(
+function _135(md){return(
 md`## Plots`
 )}
 
@@ -2234,36 +2422,36 @@ function _plotShape2D(Plot){return(
   })
 )}
 
-function _125(md){return(
+function _137(md){return(
 md`## Scene`
 )}
 
-function _scene(THREE,showSeedLines,seed_lines,createInfiniteLine,showSeedVerteces,seed_vertices,createPoint,showSkeleton,skeleton,createLineSegment,showPrunedSkeleton,groupedLines,showSurfaces,surfaces,createRectangularMesh,showBoundingPlanes,addBoxMeshesFrombounds,bounds,showShapes,targetShape,shapes2D,createShape,focusSurface,surface_planes,focusSurface2,showShapes3D,shapes3D,targetJoint)
+function _138(shapes2D){return(
+shapes2D
+)}
+
+function _139(Inputs,surface_planes,$0){return(
+Inputs.bind(
+  Inputs.range([-1, surface_planes.length - 1], {
+    label: "focus plane",
+    value: -1,
+    step: 1
+  }),
+  $0
+)
+)}
+
+function _loader(THREE){return(
+new THREE.TextureLoader()
+)}
+
+function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,showSurfaces,focusSurfaceIdx,surfaces,createRectangularMesh,showShapes,targetShape,shapes2D,createShape,focusPlane,targetJoint,showPlan,showPart,planBlobs,getBoundingBoxCorners,partBlobs)
 {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
 
-  if (showSeedLines) {
-    seed_lines.forEach((line) => {
-      scene.add(createInfiniteLine(line, 0xffff00));
-    });
-  }
-  if (showSeedVerteces) {
-    seed_vertices.keys().forEach((v) => {
-      scene.add(
-        createPoint(v, {
-          color: 0xff0000
-        })
-      );
-    });
-  }
-  if (showSkeleton) {
-    skeleton.forEach((line) => {
-      scene.add(createLineSegment(line, 0x00ffff));
-    });
-  }
-  if (showPrunedSkeleton) {
-    groupedLines.forEach((lines) => {
+  if (showEdges && edges) {
+    (focusEdges ? [focusEdges] : edges).forEach((lines) => {
       lines.forEach((line) => {
         scene.add(createLineSegment(line, 0xff00ff));
         scene.add(
@@ -2280,56 +2468,34 @@ function _scene(THREE,showSeedLines,seed_lines,createInfiniteLine,showSeedVertec
     });
   }
   if (showSurfaces) {
-    surfaces.forEach((surface) => {
-      scene.add(createRectangularMesh(...surface, 0xffffff, 0.9));
-    });
-  }
-  if (showBoundingPlanes) {
-    addBoxMeshesFrombounds(scene, bounds);
+    (focusSurfaceIdx !== -1 ? [surfaces[focusSurfaceIdx]] : surfaces).forEach(
+      (surface) => {
+        scene.add(createRectangularMesh(...surface, 0xcd7f32, 0.3));
+      }
+    );
   }
   if (showShapes) {
     if (targetShape === undefined) {
       shapes2D.forEach((points, plane) => {
-        scene.add(createShape(plane, points, 0xffffff, 0.4));
-      });
-    }
-    if (focusSurface !== -1) {
-      scene.add(
-        createShape(
-          surface_planes[focusSurface],
-          shapes2D.get(surface_planes[focusSurface]),
-          0xffffff,
-          0.4
-        )
-      );
-    }
-    if (focusSurface2 !== -1) {
-      scene.add(
-        createShape(
-          surface_planes[focusSurface2],
-          shapes2D.get(surface_planes[focusSurface2]),
-          0xffffff,
-          0.4
-        )
-      );
-    }
-  }
-  if (showShapes3D) {
-    shapes3D.forEach((lines, plane) => {
-      lines.forEach((line) => {
-        scene.add(createLineSegment(line, 0x00ffff));
+        const mesh = createShape(plane, points, {
+          color: 0xffffff,
+          opacity: 0.4
+        });
+        scene.add(mesh);
         scene.add(
-          createPoint(line.start, {
-            color: 0x00ffff
-          })
-        );
-        scene.add(
-          createPoint(line.end, {
-            color: 0x00ffff
-          })
+          new THREE.ArrowHelper(plane.normal, mesh.position, 25, 0xff0000)
         );
       });
-    });
+    } else {
+      const mesh = createShape(focusPlane, shapes2D.get(focusPlane), {
+        color: 0xffffff,
+        opacity: 0.4
+      });
+      scene.add(mesh);
+      scene.add(
+        new THREE.ArrowHelper(focusPlane.normal, mesh.position, 25, 0xff0000)
+      );
+    }
   }
   if (targetJoint) {
     [
@@ -2364,9 +2530,27 @@ function _scene(THREE,showSeedLines,seed_lines,createInfiniteLine,showSeedVertec
       });
     });
   }
+  if (showPlan || showPart) {
+    (focusPlane ? [focusPlane] : planBlobs.keys()).forEach((plane) => {
+      const mesh = createShape(
+        plane,
+        [getBoundingBoxCorners(shapes2D.get(plane))],
+        {
+          color: 0xffffff,
+          opacity: 1,
+          blobURL: showPlan ? planBlobs.get(plane) : partBlobs.get(plane)
+        }
+      );
+      scene.add(mesh);
+    });
+  }
   return scene;
 }
 
+
+function _142(planBlobs){return(
+planBlobs
+)}
 
 function _height(){return(
 600
@@ -2421,8 +2605,8 @@ function _addBoxMeshesFrombounds(Vector3,createRectangularMesh){return(
   }
 )}
 
-function _130(groupedLines){return(
-groupedLines
+function _146(focusEdges){return(
+focusEdges
 )}
 
 function _camera(width,height,THREE,Vector3)
@@ -2432,7 +2616,7 @@ function _camera(width,height,THREE,Vector3)
   const near = 1;
   const far = 1000;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.set(2, 10, -20);
+  camera.position.set(0, 30, -100);
   camera.lookAt(new Vector3(0, 0, 0));
   return camera;
 }
@@ -2462,7 +2646,7 @@ function* _render_loop(spin,rotateCameraAroundOrigin,camera,Vector3,renderer,sce
 }
 
 
-function _134(md){return(
+function _150(md){return(
 md`## THREE Basics`
 )}
 
@@ -2505,7 +2689,7 @@ async function _THREE(require)
 }
 
 
-function _145(md){return(
+function _160(md){return(
 md`## Paper.js Basics`
 )}
 
@@ -2544,7 +2728,7 @@ function _intersections(line,polygon){return(
 line.getIntersections(polygon)
 )}
 
-function _151(md){return(
+function _166(md){return(
 md`## Finger Joints`
 )}
 
@@ -2656,7 +2840,7 @@ function _jointScene(THREE,createLineSegment,Line3,Vector3)
 }
 
 
-function _156(jointScene,sideA,sideB,invalidation)
+function _171(jointScene,sideA,sideB,invalidation)
 {
   jointScene.add(sideA);
   jointScene.add(sideB);
@@ -2697,7 +2881,7 @@ function _jointWorld(width,height,THREE,Vector3,jointScene,invalidation)
 }
 
 
-function _158(jointWorld,$0,htl){return(
+function _173(jointWorld,$0,htl){return(
 htl.html`<div style="display: flex">
   ${jointWorld.renderer.domElement}
   ${$0}
@@ -2811,7 +2995,7 @@ Plot.plot({
 })
 )}
 
-function _168(auto_fit_fingers,$0,angleToFingerRetraction,jointAngle,$1,angleToFingerExtension,Event)
+function _183(auto_fit_fingers,$0,angleToFingerRetraction,jointAngle,$1,angleToFingerExtension,Event)
 {
   if (auto_fit_fingers) {
     $0.value = angleToFingerRetraction(jointAngle);
@@ -2823,13 +3007,13 @@ function _168(auto_fit_fingers,$0,angleToFingerRetraction,jointAngle,$1,angleToF
 }
 
 
-function _169(sideB,Vector3,deg2rad,jointAngle)
+function _184(sideB,Vector3,deg2rad,jointAngle)
 {
   sideB.quaternion.setFromAxisAngle(new Vector3(1, 0, 0), deg2rad(jointAngle));
 }
 
 
-function* _170(jointWorld,jointScene)
+function* _185(jointWorld,jointScene)
 {
   while (true) {
     jointWorld.renderer.render(jointScene, jointWorld.camera);
@@ -2838,15 +3022,15 @@ function* _170(jointWorld,jointScene)
 }
 
 
-function _171(md){return(
+function _186(md){return(
 md`# [Robocoop](https://observablehq.com/@tomlarkworthy/robocoop) Assistant`
 )}
 
-function _172($0){return(
+function _187($0){return(
 $0
 )}
 
-function _173(Inputs,suggestion){return(
+function _188(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -2854,15 +3038,15 @@ Inputs.button("copy code", {
 })
 )}
 
-function _174($0){return(
+function _189($0){return(
 $0
 )}
 
-function _175(md){return(
+function _190(md){return(
 md`## Current Chat context`
 )}
 
-function _176($0){return(
+function _191($0){return(
 $0
 )}
 
@@ -2936,139 +3120,150 @@ ${tex`
 `
 )}
 
-function _178(md){return(
+function _193(md){return(
 md`tick the cells to include in the next prompt`
 )}
 
-function _179($0){return(
+function _194($0){return(
 $0
 )}
 
-function _180($0){return(
+function _195($0){return(
 $0
 )}
 
-function _181(md){return(
+function _196(md){return(
 md`### AI Settings`
 )}
 
-function _182($0){return(
+function _197($0){return(
 $0
 )}
 
-function _183($0){return(
+function _198($0){return(
 $0
 )}
 
-function _184($0){return(
+function _199($0){return(
 $0
 )}
 
-function _185(background_tasks){return(
+function _200(background_tasks){return(
 background_tasks
 )}
 
-function _187(md){return(
+function _202(md){return(
 md`---`
 )}
 
-function _190(footer){return(
+function _205(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["md"], _2);
-  main.variable(observer("bounds")).define("bounds", _bounds);
-  main.variable(observer("surfaces")).define("surfaces", _surfaces);
-  main.variable(observer("stepMap")).define("stepMap", _stepMap);
-  main.variable(observer("stepEffect")).define("stepEffect", ["viewof showSurfaces","viewof showBoundingPlanes","viewof showSeedLines","viewof showSeedVerteces","viewof showSkeleton","viewof showPrunedSkeleton","viewof showShapes","viewof showShapes3D","stepMap","step","Event"], _stepEffect);
+  main.variable(observer("viewof boxParams")).define("viewof boxParams", ["view","Inputs"], _boxParams);
+  main.variable(observer("boxParams")).define("boxParams", ["Generators", "viewof boxParams"], (G, _) => G.input(_));
+  main.variable(observer("apply_box")).define("apply_box", ["boxParams","Vector3","viewof surfaces","Event"], _apply_box);
+  main.variable(observer("viewof flangeParams")).define("viewof flangeParams", ["view","Inputs"], _flangeParams);
+  main.variable(observer("flangeParams")).define("flangeParams", ["Generators", "viewof flangeParams"], (G, _) => G.input(_));
+  main.variable(observer("apply_flange")).define("apply_flange", ["flangeParams","viewof surfaces","Event"], _apply_flange);
+  main.variable(observer()).define(["renderer","focusPart","htl"], _6);
+  main.variable(observer("stepEffect")).define("stepEffect", ["viewof showSurfaces","viewof showPlanes","viewof showEdges","viewof showShapes","viewof showPlan","viewof showPart","step","Event"], _stepEffect);
   main.variable(observer("viewof spin")).define("viewof spin", ["Inputs"], _spin);
   main.variable(observer("spin")).define("spin", ["Generators", "viewof spin"], (G, _) => G.input(_));
-  main.variable(observer("viewof step")).define("viewof step", ["Inputs","stepMap"], _step);
+  main.variable(observer("viewof step")).define("viewof step", ["Inputs"], _step);
   main.variable(observer("step")).define("step", ["Generators", "viewof step"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusSurface")).define("viewof focusSurface", ["Inputs","surface_planes"], _focusSurface);
-  main.variable(observer("focusSurface")).define("focusSurface", ["Generators", "viewof focusSurface"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusSurface2")).define("viewof focusSurface2", ["Inputs","surface_planes"], _focusSurface2);
-  main.variable(observer("focusSurface2")).define("focusSurface2", ["Generators", "viewof focusSurface2"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusJoint")).define("viewof focusJoint", ["Inputs","joints"], _focusJoint);
-  main.variable(observer("focusJoint")).define("focusJoint", ["Generators", "viewof focusJoint"], (G, _) => G.input(_));
-  main.variable(observer()).define(["renderer","optimizedShapePlot","htl"], _12);
-  main.variable(observer()).define(["visualizeJointGraph","joints"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer("viewof showSurfaces")).define("viewof showSurfaces", ["Inputs"], _showSurfaces);
-  main.variable(observer("showSurfaces")).define("showSurfaces", ["Generators", "viewof showSurfaces"], (G, _) => G.input(_));
-  main.variable(observer("bounding_planes")).define("bounding_planes", ["Plane","Vector3","bounds"], _bounding_planes);
-  main.variable(observer("viewof showBoundingPlanes")).define("viewof showBoundingPlanes", ["Inputs"], _showBoundingPlanes);
-  main.variable(observer("showBoundingPlanes")).define("showBoundingPlanes", ["Generators", "viewof showBoundingPlanes"], (G, _) => G.input(_));
-  main.variable(observer("surface_planes")).define("surface_planes", ["dedupe","eq","surfaces","surfaceToPlane"], _surface_planes);
-  main.variable(observer("seed_lines")).define("seed_lines", ["dedupe","eq","surface_planes","bounding_planes","intersectPlanes"], _seed_lines);
-  main.variable(observer("viewof showSeedLines")).define("viewof showSeedLines", ["Inputs"], _showSeedLines);
-  main.variable(observer("showSeedLines")).define("showSeedLines", ["Generators", "viewof showSeedLines"], (G, _) => G.input(_));
-  main.variable(observer("seed_vertices")).define("seed_vertices", ["findIntersectingVertices","seed_lines"], _seed_vertices);
-  main.variable(observer("viewof showSeedVerteces")).define("viewof showSeedVerteces", ["Inputs"], _showSeedVerteces);
-  main.variable(observer("showSeedVerteces")).define("showSeedVerteces", ["Generators", "viewof showSeedVerteces"], (G, _) => G.input(_));
-  main.variable(observer("vertexConstrainedSimplify")).define("vertexConstrainedSimplify", ["intersectLines","dedupe","eq","Vector3","Line3","optimizeLineConnections"], _vertexConstrainedSimplify);
-  main.variable(observer("optimizeLineConnections")).define("optimizeLineConnections", ["Vector3","normalizeLines","Line3"], _optimizeLineConnections);
-  main.variable(observer("convertMapToNearestVertexConnections")).define("convertMapToNearestVertexConnections", ["Vector3"], _convertMapToNearestVertexConnections);
-  main.variable(observer("vertexIndex")).define("vertexIndex", ["convertMapToNearestVertexConnections","seed_vertices"], _vertexIndex);
-  main.variable(observer("buildLinesOnPlanes")).define("buildLinesOnPlanes", ["Line3"], _buildLinesOnPlanes);
-  main.variable(observer("skeleton_all")).define("skeleton_all", ["vertexConstrainedSimplify","buildLinesOnPlanes","vertexIndex","surface_planes"], _skeleton_all);
-  main.variable(observer("skeleton")).define("skeleton", ["focusSurface","skeleton_all","lineOnPlane","surface_planes"], _skeleton);
-  main.variable(observer("viewof showSkeleton")).define("viewof showSkeleton", ["Inputs"], _showSkeleton);
-  main.variable(observer("showSkeleton")).define("showSkeleton", ["Generators", "viewof showSkeleton"], (G, _) => G.input(_));
-  main.variable(observer("filterLinesOnSurfaces")).define("filterLinesOnSurfaces", ["surfaceDistanceToPoint"], _filterLinesOnSurfaces);
-  main.variable(observer("prunedSkeleton")).define("prunedSkeleton", ["filterLinesOnSurfaces","skeleton_all","surfaces"], _prunedSkeleton);
-  main.variable(observer("groupLinesByPlanes")).define("groupLinesByPlanes", ["surfaceToPlane","surface_planes","eq","surfaceDistanceToPoint","dedupe"], _groupLinesByPlanes);
-  main.variable(observer("groupedLinesAll")).define("groupedLinesAll", ["groupLinesByPlanes","prunedSkeleton","surfaces"], _groupedLinesAll);
-  main.variable(observer("viewof showPrunedSkeleton")).define("viewof showPrunedSkeleton", ["Inputs"], _showPrunedSkeleton);
-  main.variable(observer("showPrunedSkeleton")).define("showPrunedSkeleton", ["Generators", "viewof showPrunedSkeleton"], (G, _) => G.input(_));
-  main.variable(observer("groupedLines")).define("groupedLines", ["focusSurface","groupedLinesAll","lineOnPlane","surface_planes"], _groupedLines);
-  main.variable(observer()).define(["md"], _37);
-  main.variable(observer("projectLinesOntoPlane")).define("projectLinesOntoPlane", ["generateEvenlySpacedPoints","Vector3","chooseBasis","concaveman","dedupe","eq"], _projectLinesOntoPlane);
-  main.variable(observer("viewof showShapes")).define("viewof showShapes", ["Inputs"], _showShapes);
-  main.variable(observer("showShapes")).define("showShapes", ["Generators", "viewof showShapes"], (G, _) => G.input(_));
-  main.variable(observer("shapes2D")).define("shapes2D", ["projectLinesOntoPlane","groupedLinesAll"], _shapes2D);
-  main.variable(observer("targetShape")).define("targetShape", ["shapes2D","surface_planes","focusSurface"], _targetShape);
-  main.variable(observer("shapePlot")).define("shapePlot", ["targetShape","plotShape2D"], _shapePlot);
-  main.variable(observer()).define(["md"], _43);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusSurface"], _44);
-  main.variable(observer("createEdges")).define("createEdges", ["chooseBasis","Vector3","Line3"], _createEdges);
-  main.variable(observer("shapes3D")).define("shapes3D", ["mapValues","shapes2D","createEdges","optimizeLineConnections"], _shapes3D);
-  main.variable(observer("viewof showShapes3D")).define("viewof showShapes3D", ["Inputs"], _showShapes3D);
-  main.variable(observer("showShapes3D")).define("showShapes3D", ["Generators", "viewof showShapes3D"], (G, _) => G.input(_));
-  main.variable(observer("targetShape3d")).define("targetShape3d", ["createEdges","surface_planes","focusSurface","targetShape"], _targetShape3d);
-  main.variable(observer("optimizedShape2D")).define("optimizedShape2D", ["mapValues","shapes3D","dedupe","eq","shape3DTo2D"], _optimizedShape2D);
-  main.variable(observer("optimizedFocusShape")).define("optimizedFocusShape", ["optimizedShape2D","surface_planes","focusSurface"], _optimizedFocusShape);
-  main.variable(observer("optimizedFocusShape2")).define("optimizedFocusShape2", ["optimizedShape2D","surface_planes","focusSurface2"], _optimizedFocusShape2);
-  main.variable(observer("optimizedShapePlot")).define("optimizedShapePlot", ["optimizedFocusShape","plotShape2D"], _optimizedShapePlot);
-  main.variable(observer("findShapeConnections")).define("findShapeConnections", ["intersectShapes","rad2deg","angleBetweenPlanes"], _findShapeConnections);
-  main.variable(observer("joints")).define("joints", ["findShapeConnections","shapes3D"], _joints);
-  main.variable(observer()).define(["Inputs","joints","viewof focusJoint"], _55);
-  main.variable(observer("targetJoint")).define("targetJoint", ["joints","focusJoint"], _targetJoint);
-  main.variable(observer("visualizeJointGraph")).define("visualizeJointGraph", ["dot","shapes3D","toString","targetJoint"], _visualizeJointGraph);
-  main.variable(observer()).define(["md"], _58);
-  main.variable(observer("neighbourhood")).define("neighbourhood", _neighbourhood);
-  main.variable(observer("focusNeighbourhood")).define("focusNeighbourhood", ["neighbourhood","surface_planes","focusSurface","joints"], _focusNeighbourhood);
-  main.variable(observer("generatePerimeterPlan")).define("generatePerimeterPlan", ["intersectLines","eq","Line3"], _generatePerimeterPlan);
-  main.variable(observer("projectPlan")).define("projectPlan", ["chooseBasis","Vector3"], _projectPlan);
-  main.variable(observer("focusPlan")).define("focusPlan", ["projectPlan","surface_planes","focusSurface","generatePerimeterPlan","focusNeighbourhood","createEdges","optimizedFocusShape"], _focusPlan);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusSurface"], _64);
-  main.variable(observer()).define(["Plot","focusPlan"], _65);
-  const child1 = runtime.module(define1);
-  main.import("finger_clockwise_v1", child1);
-  main.variable(observer("viewof material_thickness")).define("viewof material_thickness", ["Inputs"], _material_thickness);
-  main.variable(observer("material_thickness")).define("material_thickness", ["Generators", "viewof material_thickness"], (G, _) => G.input(_));
+  main.variable(observer("viewof focusSurfaceIdx")).define("viewof focusSurfaceIdx", ["Inputs","surfaces"], _focusSurfaceIdx);
+  main.variable(observer("focusSurfaceIdx")).define("focusSurfaceIdx", ["Generators", "viewof focusSurfaceIdx"], (G, _) => G.input(_));
+  main.variable(observer("viewof focusPlaneIdx")).define("viewof focusPlaneIdx", ["Inputs","surface_planes"], _focusPlaneIdx);
+  main.variable(observer("focusPlaneIdx")).define("focusPlaneIdx", ["Generators", "viewof focusPlaneIdx"], (G, _) => G.input(_));
+  main.variable(observer("viewof focusJointIdx")).define("viewof focusJointIdx", ["Inputs","joints"], _focusJointIdx);
+  main.variable(observer("focusJointIdx")).define("focusJointIdx", ["Generators", "viewof focusJointIdx"], (G, _) => G.input(_));
   main.variable(observer("viewof scale")).define("viewof scale", ["Inputs"], _scale);
   main.variable(observer("scale")).define("scale", ["Generators", "viewof scale"], (G, _) => G.input(_));
-  main.variable(observer("planToSVG")).define("planToSVG", ["material_thickness","d3","htl","angleToFingerExtension","angleToFingerRetraction","finger_clockwise_v1"], _planToSVG);
-  main.variable(observer()).define(["planToSVG","focusPlan","scale"], _70);
-  main.variable(observer()).define(["md"], _71);
+  main.variable(observer("viewof material_thickness")).define("viewof material_thickness", ["Inputs"], _material_thickness);
+  main.variable(observer("material_thickness")).define("material_thickness", ["Generators", "viewof material_thickness"], (G, _) => G.input(_));
+  main.variable(observer("viewof fingerWidth")).define("viewof fingerWidth", ["Inputs"], _fingerWidth);
+  main.variable(observer("fingerWidth")).define("fingerWidth", ["Generators", "viewof fingerWidth"], (G, _) => G.input(_));
+  const child1 = runtime.module(define1);
+  main.import("view", child1);
+  main.import("cautious", child1);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer("viewof surfaces")).define("viewof surfaces", ["Inputs"], _surfaces);
+  main.variable(observer("surfaces")).define("surfaces", ["Generators", "viewof surfaces"], (G, _) => G.input(_));
+  main.variable(observer("surface_planes")).define("surface_planes", ["dedupe","eq","surfaces","surfaceToPlane"], _surface_planes);
+  main.variable(observer()).define(["md"], _20);
+  main.variable(observer("viewof showSurfaces")).define("viewof showSurfaces", ["Inputs"], _showSurfaces);
+  main.variable(observer("showSurfaces")).define("showSurfaces", ["Generators", "viewof showSurfaces"], (G, _) => G.input(_));
+  main.variable(observer("vectorSurfaces")).define("vectorSurfaces", ["surfaces","Vector3"], _vectorSurfaces);
+  main.variable(observer("focusSurface")).define("focusSurface", ["vectorSurfaces","focusSurfaceIdx"], _focusSurface);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _24);
+  main.variable(observer("focusPlane")).define("focusPlane", ["surface_planes","focusPlaneIdx"], _focusPlane);
+  main.variable(observer("surfacesOnPlaneAsPath")).define("surfacesOnPlaneAsPath", ["chooseBasis","Vector3","paper"], _surfacesOnPlaneAsPath);
+  main.variable(observer("focusPlaneIdxPaths")).define("focusPlaneIdxPaths", ["focusPlane","surfacesOnPlaneAsPath","vectorSurfaces"], _focusPlaneIdxPaths);
+  main.variable(observer("unionPaths")).define("unionPaths", _unionPaths);
+  main.variable(observer("reverseInnerPaths")).define("reverseInnerPaths", _reverseInnerPaths);
+  main.variable(observer("focusPlanePath")).define("focusPlanePath", ["planePaths","focusPlane"], _focusPlanePath);
+  main.variable(observer("viewof showPlanes")).define("viewof showPlanes", ["Inputs"], _showPlanes);
+  main.variable(observer("showPlanes")).define("showPlanes", ["Generators", "viewof showPlanes"], (G, _) => G.input(_));
+  main.variable(observer("planePaths")).define("planePaths", ["mapValues","surface_planes","unionPaths","surfacesOnPlaneAsPath","vectorSurfaces","reverseInnerPaths"], _planePaths);
+  main.variable(observer()).define(["md"], _33);
+  main.variable(observer("projectPathTo3D")).define("projectPathTo3D", ["chooseBasis","Vector3","Line3"], _projectPathTo3D);
+  main.variable(observer("viewof showEdges")).define("viewof showEdges", ["Inputs"], _showEdges);
+  main.variable(observer("showEdges")).define("showEdges", ["Generators", "viewof showEdges"], (G, _) => G.input(_));
+  main.variable(observer("edges")).define("edges", ["mapValues","planePaths","projectPathTo3D"], _edges);
+  main.variable(observer("focusEdges")).define("focusEdges", ["focusPlane","edges"], _focusEdges);
+  main.variable(observer("focusEdgesAll")).define("focusEdgesAll", ["edges"], _focusEdgesAll);
+  main.variable(observer("viewof showShapes")).define("viewof showShapes", ["Inputs"], _showShapes);
+  main.variable(observer("showShapes")).define("showShapes", ["Generators", "viewof showShapes"], (G, _) => G.input(_));
+  main.variable(observer("shapes2D")).define("shapes2D", ["mapValues","planePaths"], _shapes2D);
+  main.variable(observer("targetShape")).define("targetShape", ["shapes2D","focusPlane"], _targetShape);
+  main.variable(observer("shapePlot")).define("shapePlot", ["targetShape","plotShape2D"], _shapePlot);
+  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _44);
+  main.variable(observer("optimizedShape2D")).define("optimizedShape2D", ["shapes2D"], _optimizedShape2D);
+  main.variable(observer("optimizedFocusShape")).define("optimizedFocusShape", ["optimizedShape2D","surface_planes","focusPlaneIdx"], _optimizedFocusShape);
+  main.variable(observer("optimizedShapePlot")).define("optimizedShapePlot", ["optimizedFocusShape","plotShape2D"], _optimizedShapePlot);
+  main.variable(observer("findShapeConnections")).define("findShapeConnections", ["intersectShapes","rad2deg","angleBetweenPlanes","Vector3"], _findShapeConnections);
+  main.variable(observer("joints")).define("joints", ["findShapeConnections","edges"], _joints);
+  main.variable(observer()).define(["Inputs","joints","viewof focusJointIdx"], _50);
+  main.variable(observer("targetJoint")).define("targetJoint", ["joints","focusJointIdx"], _targetJoint);
+  main.variable(observer("visualizeJointGraph")).define("visualizeJointGraph", ["dot","edges","toString","targetJoint","focusPlane"], _visualizeJointGraph);
+  main.variable(observer()).define(["visualizeJointGraph","joints"], _53);
+  main.variable(observer()).define(["md"], _54);
+  main.variable(observer("neighbourhood")).define("neighbourhood", _neighbourhood);
+  main.variable(observer("focusNeighbourhood")).define("focusNeighbourhood", ["neighbourhood","focusPlane","joints"], _focusNeighbourhood);
+  main.variable(observer("neighbourhoods")).define("neighbourhoods", ["surface_planes","neighbourhood","joints"], _neighbourhoods);
+  main.variable(observer("focusBoundaries")).define("focusBoundaries", ["focusPlane","boundaries"], _focusBoundaries);
+  main.variable(observer("boundaries")).define("boundaries", ["surface_planes","projectPathTo3D","planePaths"], _boundaries);
+  main.variable(observer("generatePerimeterPlan")).define("generatePerimeterPlan", ["intersectLines","eq","Line3"], _generatePerimeterPlan);
+  main.variable(observer("projectPlan")).define("projectPlan", ["chooseBasis","Vector3"], _projectPlan);
+  main.variable(observer("focusPlan")).define("focusPlan", ["focusPlane","projectPlan","generatePerimeterPlan","focusNeighbourhood","focusBoundaries"], _focusPlan);
+  main.variable(observer("plans")).define("plans", ["surface_planes","projectPlan","generatePerimeterPlan","neighbourhoods","boundaries"], _plans);
+  main.variable(observer("planViz")).define("planViz", ["Plot"], _planViz);
+  main.variable(observer("focusPlanViz")).define("focusPlanViz", ["focusPlan","planViz"], _focusPlanViz);
+  main.variable(observer("viewof showPlan")).define("viewof showPlan", ["Inputs"], _showPlan);
+  main.variable(observer("showPlan")).define("showPlan", ["Generators", "viewof showPlan"], (G, _) => G.input(_));
+  main.variable(observer("planBlobs")).define("planBlobs", ["mapValues","plans","toBlobUrl","planViz"], _planBlobs);
+  const child2 = runtime.module(define2);
+  main.import("finger_clockwise_v1", child2);
+  main.import("download_svg", child2);
+  main.variable(observer("planToSVG")).define("planToSVG", ["material_thickness","d3","htl","download_svg","angleToFingerExtension","angleToFingerRetraction","finger_clockwise_v1","fingerWidth"], _planToSVG);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _70);
+  main.variable(observer("viewof showPart")).define("viewof showPart", ["Inputs"], _showPart);
+  main.variable(observer("showPart")).define("showPart", ["Generators", "viewof showPart"], (G, _) => G.input(_));
+  main.variable(observer("partsSVG")).define("partsSVG", ["mapValues","plans","planToSVG","material_thickness"], _partsSVG);
+  main.variable(observer()).define(["focusPlan","planToSVG","scale"], _73);
+  main.variable(observer()).define(["md"], _74);
+  main.variable(observer("partBlobs")).define("partBlobs", ["mapValues","partsSVG","toBlobUrl"], _partBlobs);
+  main.variable(observer("focusBlobURL")).define("focusBlobURL", ["focusPlane","partBlobs"], _focusBlobURL);
+  main.variable(observer("focusPart")).define("focusPart", ["focusPlan","planToSVG","scale"], _focusPart);
+  main.variable(observer()).define(["md"], _78);
   main.variable(observer("deg2rad")).define("deg2rad", _deg2rad);
   main.variable(observer("rad2deg")).define("rad2deg", _rad2deg);
-  main.variable(observer()).define(["md"], _74);
-  main.variable(observer("angleBetweenPlanes")).define("angleBetweenPlanes", _angleBetweenPlanes);
+  main.variable(observer("angleBetweenPlanes")).define("angleBetweenPlanes", ["THREE"], _angleBetweenPlanes);
   main.variable(observer("angleBetweenPlanesExample")).define("angleBetweenPlanesExample", ["rad2deg","angleBetweenPlanes","Plane","Vector3"], _angleBetweenPlanesExample);
   main.variable(observer("eq")).define("eq", ["Plane","Vector3","Line3"], _eq);
   main.variable(observer("dedupe")).define("dedupe", _dedupe);
@@ -3083,52 +3278,62 @@ export default function define(runtime, observer) {
   main.variable(observer("surfaceDistanceToPoint")).define("surfaceDistanceToPoint", ["Vector3","Triangle"], _surfaceDistanceToPoint);
   main.variable(observer("generateEvenlySpacedPoints")).define("generateEvenlySpacedPoints", ["THREE"], _generateEvenlySpacedPoints);
   main.variable(observer("extendLine")).define("extendLine", ["Vector3","Line3"], _extendLine);
+  main.variable(observer("getBoundingBoxCorners")).define("getBoundingBoxCorners", _getBoundingBoxCorners);
   main.variable(observer("shape3DTo2D")).define("shape3DTo2D", ["chooseBasis","Vector3"], _shape3DTo2D);
-  main.variable(observer()).define(["shape3DTo2D","targetJoint"], _91);
-  main.variable(observer()).define(["targetJoint"], _92);
+  main.variable(observer()).define(["shape3DTo2D","targetJoint"], _98);
+  main.variable(observer()).define(["targetJoint"], _99);
   main.variable(observer("shape2DToPath")).define("shape2DToPath", ["paper"], _shape2DToPath);
   main.variable(observer("findIntersectionTransitions")).define("findIntersectionTransitions", ["intersectPlanes","extendLine","intersectLines","dedupe","eq","Vector3"], _findIntersectionTransitions);
   main.variable(observer("findIntersectionTransitionsExample")).define("findIntersectionTransitionsExample", ["findIntersectionTransitions","targetJoint"], _findIntersectionTransitionsExample);
   main.variable(observer("isInsideShape3D")).define("isInsideShape3D", ["chooseBasis","shape3DTo2D","shape2DToPath","paper","Vector3"], _isInsideShape3D);
   main.variable(observer("isInsideShape3DExample")).define("isInsideShape3DExample", ["isInsideShape3D","Vector3","targetJoint"], _isInsideShape3DExample);
-  main.variable(observer()).define(["targetJoint"], _98);
-  main.variable(observer()).define(["targetJoint"], _99);
+  main.variable(observer()).define(["targetJoint"], _105);
+  main.variable(observer()).define(["targetJoint"], _106);
   main.variable(observer("intersectShapes")).define("intersectShapes", ["findIntersectionTransitions","Vector3","isInsideShape3D","Line3"], _intersectShapes);
   main.variable(observer("intersectShapesExample")).define("intersectShapesExample", ["intersectShapes","targetJoint"], _intersectShapesExample);
-  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["md"], _109);
   main.variable(observer("parseVector3")).define("parseVector3", ["Vector3"], _parseVector3);
   main.variable(observer("toString")).define("toString", _toString);
+  main.variable(observer("toBlobUrl")).define("toBlobUrl", ["XMLSerializer"], _toBlobUrl);
   main.variable(observer("viewof geometrySuite")).define("viewof geometrySuite", ["createSuite"], _geometrySuite);
   main.variable(observer("geometrySuite")).define("geometrySuite", ["Generators", "viewof geometrySuite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _106);
+  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _114);
   main.variable(observer("testIntersectLinesRandom")).define("testIntersectLinesRandom", ["geometrySuite","Vector3","Line3","intersectLines","expect"], _testIntersectLinesRandom);
   main.variable(observer("testIntersectPlanesRandom")).define("testIntersectPlanesRandom", ["geometrySuite","Plane","Vector3","XZ","intersectPlanes","expect"], _testIntersectPlanesRandom);
-  main.variable(observer()).define(["md"], _109);
+  main.variable(observer("test3Dto2D")).define("test3Dto2D", ["geometrySuite","Plane","Vector3","unionPaths","surfacesOnPlaneAsPath","projectPathTo3D","expect"], _test3Dto2D);
+  main.variable(observer()).define(["md"], _118);
   main.variable(observer("XY")).define("XY", ["Plane","Vector3"], _XY);
   main.variable(observer("XZ")).define("XZ", ["Plane","Vector3"], _XZ);
   main.variable(observer("YZ")).define("YZ", ["Plane","Vector3"], _YZ);
   main.variable(observer("chooseBasis")).define("chooseBasis", ["THREE"], _chooseBasis);
-  main.variable(observer()).define(["md"], _114);
+  main.variable(observer()).define(["focusPlane"], _123);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _124);
+  main.variable(observer()).define(["focusPlane"], _125);
+  main.variable(observer()).define(["md"], _126);
   main.variable(observer("createPlaneMesh")).define("createPlaneMesh", ["THREE","Vector3"], _createPlaneMesh);
+  main.variable(observer("createShape")).define("createShape", ["THREE","loader","chooseBasis","Vector3"], _createShape);
   main.variable(observer("createRectangleMesh")).define("createRectangleMesh", ["Vector3","THREE"], _createRectangleMesh);
   main.variable(observer("createInfiniteLine")).define("createInfiniteLine", ["THREE","Vector3"], _createInfiniteLine);
   main.variable(observer("createLineSegment")).define("createLineSegment", ["THREE"], _createLineSegment);
   main.variable(observer("createPoint")).define("createPoint", ["THREE"], _createPoint);
   main.variable(observer("createRectangularMesh")).define("createRectangularMesh", ["THREE"], _createRectangularMesh);
-  main.variable(observer("createShape")).define("createShape", ["THREE","chooseBasis","Vector3"], _createShape);
   main.variable(observer("createSimpleLight")).define("createSimpleLight", ["Vector3","THREE"], _createSimpleLight);
-  main.variable(observer()).define(["md"], _123);
+  main.variable(observer()).define(["md"], _135);
   main.variable(observer("plotShape2D")).define("plotShape2D", ["Plot"], _plotShape2D);
-  main.variable(observer()).define(["md"], _125);
-  main.variable(observer("scene")).define("scene", ["THREE","showSeedLines","seed_lines","createInfiniteLine","showSeedVerteces","seed_vertices","createPoint","showSkeleton","skeleton","createLineSegment","showPrunedSkeleton","groupedLines","showSurfaces","surfaces","createRectangularMesh","showBoundingPlanes","addBoxMeshesFrombounds","bounds","showShapes","targetShape","shapes2D","createShape","focusSurface","surface_planes","focusSurface2","showShapes3D","shapes3D","targetJoint"], _scene);
+  main.variable(observer()).define(["md"], _137);
+  main.variable(observer()).define(["shapes2D"], _138);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _139);
+  main.variable(observer("loader")).define("loader", ["THREE"], _loader);
+  main.variable(observer("scene")).define("scene", ["THREE","showEdges","edges","focusEdges","createLineSegment","createPoint","showSurfaces","focusSurfaceIdx","surfaces","createRectangularMesh","showShapes","targetShape","shapes2D","createShape","focusPlane","targetJoint","showPlan","showPart","planBlobs","getBoundingBoxCorners","partBlobs"], _scene);
+  main.variable(observer()).define(["planBlobs"], _142);
   main.variable(observer("height")).define("height", _height);
   main.variable(observer("rotateCameraAroundOrigin")).define("rotateCameraAroundOrigin", ["THREE"], _rotateCameraAroundOrigin);
   main.variable(observer("addBoxMeshesFrombounds")).define("addBoxMeshesFrombounds", ["Vector3","createRectangularMesh"], _addBoxMeshesFrombounds);
-  main.variable(observer()).define(["groupedLines"], _130);
+  main.variable(observer()).define(["focusEdges"], _146);
   main.variable(observer("camera")).define("camera", ["width","height","THREE","Vector3"], _camera);
   main.variable(observer("renderer")).define("renderer", ["THREE","width","height","camera","scene","invalidation"], _renderer);
   main.variable(observer("render_loop")).define("render_loop", ["spin","rotateCameraAroundOrigin","camera","Vector3","renderer","scene"], _render_loop);
-  main.variable(observer()).define(["md"], _134);
+  main.variable(observer()).define(["md"], _150);
   main.variable(observer("Vector3")).define("Vector3", ["THREE"], _Vector3);
   main.variable(observer("vector3")).define("vector3", ["Vector3"], _vector3);
   main.variable(observer("Line3")).define("Line3", ["THREE"], _Line3);
@@ -3137,25 +3342,23 @@ export default function define(runtime, observer) {
   main.variable(observer("Plane")).define("Plane", ["THREE"], _Plane);
   main.variable(observer("plane")).define("plane", ["Plane"], _plane);
   main.variable(observer("THREE")).define("THREE", ["require"], _THREE);
-  const child2 = runtime.module(define2);
-  main.import("concaveman", child2);
   const child3 = runtime.module(define3);
   main.import("createSuite", child3);
   main.import("expect", child3);
-  main.variable(observer()).define(["md"], _145);
+  main.variable(observer()).define(["md"], _160);
   main.variable(observer("paper_canvas")).define("paper_canvas", ["htl"], _paper_canvas);
   main.variable(observer("paper")).define("paper", ["require"], _paper);
   main.variable(observer("polygon")).define("polygon", ["paper"], _polygon);
   main.variable(observer("line")).define("line", ["paper"], _line);
   main.variable(observer("intersections")).define("intersections", ["line","polygon"], _intersections);
-  main.variable(observer()).define(["md"], _151);
+  main.variable(observer()).define(["md"], _166);
   main.variable(observer("sideA")).define("sideA", ["createBoxJointSide","materialThickness","fingerAdd","fingerSubtract"], _sideA);
   main.variable(observer("sideB")).define("sideB", ["createBoxJointSide","materialThickness","fingerSubtract","fingerAdd"], _sideB);
   main.variable(observer("createBoxJointSide")).define("createBoxJointSide", ["THREE"], _createBoxJointSide);
   main.variable(observer("jointScene")).define("jointScene", ["THREE","createLineSegment","Line3","Vector3"], _jointScene);
-  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _156);
+  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _171);
   main.variable(observer("jointWorld")).define("jointWorld", ["width","height","THREE","Vector3","jointScene","invalidation"], _jointWorld);
-  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _158);
+  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _173);
   main.variable(observer("viewof jointAngle")).define("viewof jointAngle", ["Inputs"], _jointAngle);
   main.variable(observer("jointAngle")).define("jointAngle", ["Generators", "viewof jointAngle"], (G, _) => G.input(_));
   main.variable(observer("viewof materialThickness")).define("viewof materialThickness", ["Inputs"], _materialThickness);
@@ -3171,25 +3374,25 @@ export default function define(runtime, observer) {
   main.variable(observer("fingerData")).define("fingerData", ["angleToFingerRetraction","angleToFingerExtension"], _fingerData);
   main.variable(observer("viewof fingerMeasures")).define("viewof fingerMeasures", ["Plot","height","jointAngle","fingerData"], _fingerMeasures);
   main.variable(observer("fingerMeasures")).define("fingerMeasures", ["Generators", "viewof fingerMeasures"], (G, _) => G.input(_));
-  main.variable(observer()).define(["auto_fit_fingers","viewof fingerSubtract","angleToFingerRetraction","jointAngle","viewof fingerAdd","angleToFingerExtension","Event"], _168);
-  main.variable(observer()).define(["sideB","Vector3","deg2rad","jointAngle"], _169);
-  main.variable(observer()).define(["jointWorld","jointScene"], _170);
-  main.variable(observer()).define(["md"], _171);
-  main.variable(observer()).define(["viewof prompt"], _172);
-  main.variable(observer()).define(["Inputs","suggestion"], _173);
-  main.variable(observer()).define(["viewof suggestion"], _174);
-  main.variable(observer()).define(["md"], _175);
-  main.variable(observer()).define(["viewof context_viz"], _176);
+  main.variable(observer()).define(["auto_fit_fingers","viewof fingerSubtract","angleToFingerRetraction","jointAngle","viewof fingerAdd","angleToFingerExtension","Event"], _183);
+  main.variable(observer()).define(["sideB","Vector3","deg2rad","jointAngle"], _184);
+  main.variable(observer()).define(["jointWorld","jointScene"], _185);
+  main.variable(observer()).define(["md"], _186);
+  main.variable(observer()).define(["viewof prompt"], _187);
+  main.variable(observer()).define(["Inputs","suggestion"], _188);
+  main.variable(observer()).define(["viewof suggestion"], _189);
+  main.variable(observer()).define(["md"], _190);
+  main.variable(observer()).define(["viewof context_viz"], _191);
   main.variable(observer("markdown_skill")).define("markdown_skill", ["md","mermaid","htl","tex"], _markdown_skill);
-  main.variable(observer()).define(["md"], _178);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _179);
-  main.variable(observer()).define(["viewof feedback_prompt"], _180);
-  main.variable(observer()).define(["md"], _181);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _182);
-  main.variable(observer()).define(["viewof api_endpoint"], _183);
-  main.variable(observer()).define(["viewof settings"], _184);
-  main.variable(observer()).define(["background_tasks"], _185);
-  main.variable(observer()).define(["md"], _187);
+  main.variable(observer()).define(["md"], _193);
+  main.variable(observer()).define(["viewof feedback_cells_selector"], _194);
+  main.variable(observer()).define(["viewof feedback_prompt"], _195);
+  main.variable(observer()).define(["md"], _196);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _197);
+  main.variable(observer()).define(["viewof api_endpoint"], _198);
+  main.variable(observer()).define(["viewof settings"], _199);
+  main.variable(observer()).define(["background_tasks"], _200);
+  main.variable(observer()).define(["md"], _202);
   const child4 = runtime.module(define4);
   main.import("ask", child4);
   main.import("excludes", child4);
@@ -3218,6 +3421,6 @@ export default function define(runtime, observer) {
   main.import("context_viz", child4);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _190);
+  main.variable(observer()).define(["footer"], _205);
   return main;
 }

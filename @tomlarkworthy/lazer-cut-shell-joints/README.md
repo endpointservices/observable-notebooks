@@ -1,6 +1,6 @@
-# Shell Joint Generator for Lazer Cutting
+# Lazer Cutting Box Joint Plan Generator
 
-https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@4256
+https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@5664
 
 View this notebook in your browser by running a web server in this folder. For
 example:
