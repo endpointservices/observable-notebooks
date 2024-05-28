@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/tabbed-pane-view",
+  "main": "84194c694539e103@2333.js",
+  "version": "2333.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/tabbed-pane-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
