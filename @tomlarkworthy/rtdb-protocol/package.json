@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/rtdb-protocol",
+  "main": "6a287b937f2ed9b1@1622.js",
+  "version": "1622.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/rtdb-protocol",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
