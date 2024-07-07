@@ -29,6 +29,7 @@ md`
 #### Roadmap
 
 - Mortise Joints
+- Round SVG to reduce size
 
 
 #### Ideas
@@ -360,8 +361,8 @@ md`### File Importer`
 
 function _file(Inputs){return(
 Inputs.file({
-  label: "OBJ file",
-  accept: ".obj,.fbx",
+  label: "Assert file (obk, gltf, fbx)",
+  accept: ".obj,.fbx,.gltf",
   required: true
 })
 )}
@@ -436,7 +437,7 @@ Inputs.range([0, 100], {
 )}
 
 function _rescale(Inputs){return(
-Inputs.range([0.1, 10], { label: "rescale", value: 1 })
+Inputs.range([0.1, 100], { label: "rescale", value: 1 })
 )}
 
 function _invert_normals(Inputs){return(
@@ -552,6 +553,82 @@ async function _apply_fbx(file,THREE,invert_normals,rescale,$0,Event,$1)
 }
 
 
+async function _apply_gltf(file,THREE,invert_normals,rescale,$0,Event,$1)
+{
+  ({
+    prompt:
+      "apply_gltf nearly works but the geometry is not possitioned correctly in world space",
+    time: 1720285209792,
+    comment:
+      "Update the apply_gltf function to ensure geometry is transformed to world coordinates correctly by applying the world matrix transformation to each vertex."
+  });
+
+  const gltfData = await file.arrayBuffer();
+  const loader = new THREE.GLTFLoader();
+
+  const { scene } = await new Promise((resolve, reject) => {
+    loader.parse(gltfData, "", resolve, reject);
+  });
+
+  const faces = [];
+
+  scene.updateMatrixWorld(true); // Ensure world matrices are up to date
+
+  scene.traverse((child) => {
+    const vertices = [];
+    if (child.isMesh) {
+      const geometry = child.geometry;
+      const positionAttribute = geometry.getAttribute("position");
+
+      for (let i = 0; i < positionAttribute.count; i++) {
+        const vertex = new THREE.Vector3().fromBufferAttribute(
+          positionAttribute,
+          i
+        );
+        vertex.applyMatrix4(child.matrixWorld); // Apply world matrix transformation
+        vertices.push(vertex);
+      }
+
+      const index = geometry.index;
+      if (index) {
+        for (let i = 0; i < index.count; i += 3) {
+          const a = index.getX(i);
+          const b = index.getX(i + 1);
+          const c = index.getX(i + 2);
+
+          if (invert_normals) {
+            faces.push([vertices[a], vertices[c], vertices[b]]);
+          } else {
+            faces.push([vertices[a], vertices[b], vertices[c]]);
+          }
+        }
+      } else {
+        for (let i = 0; i < positionAttribute.count; i += 3) {
+          const a = i;
+          const b = i + 1;
+          const c = i + 2;
+          if (invert_normals) {
+            faces.push([vertices[a], vertices[c], vertices[b]]);
+          } else {
+            faces.push([vertices[a], vertices[b], vertices[c]]);
+          }
+        }
+      }
+    }
+  });
+
+  const s = faces.map((points) =>
+    points.map((p) => [p.x * rescale, p.y * rescale, p.z * rescale])
+  );
+
+  $0.value = s;
+  $0.dispatchEvent(new Event("input"));
+  $1.value = file.name;
+  $1.dispatchEvent(new Event("input"));
+  return s;
+}
+
+
 function _exclude_planes(Inputs,surface_planes_unfiltered,toString){return(
 Inputs.select(surface_planes_unfiltered, {
   multiple: true,
@@ -560,7 +637,7 @@ Inputs.select(surface_planes_unfiltered, {
 })
 )}
 
-function _23(renderer,focusPart,htl){return(
+function _24(renderer,focusPart,htl){return(
 htl.html`<div style="display: flex">
   ${renderer.domElement}
   <div>
@@ -603,7 +680,7 @@ async function _downloadButton(filename,zip,partBlobs,button)
 }
 
 
-function _26(md){return(
+function _27(md){return(
 md`## Visualisation Controls`
 )}
 
@@ -611,7 +688,7 @@ function _spin(Inputs){return(
 Inputs.toggle({ label: "spin", value: true })
 )}
 
-function _28(Inputs,$0,$1,$2,$3,$4,htl){return(
+function _29(Inputs,$0,$1,$2,$3,$4,htl){return(
 htl.html`<div style="display: grid;">
   ${Inputs.bind(Inputs.toggle({label: "surfaces"}), $0)}
   ${Inputs.bind(Inputs.toggle({label: "edges"}), $1)}
@@ -629,17 +706,17 @@ Inputs.range([0, 9], {
 })
 )}
 
-function _focusSurfaceIdx(Inputs,surfaces){return(
-Inputs.range([-1, surfaces.length - 1], {
-  label: "focus surface",
+function _focusPlaneIdx(Inputs,planePaths){return(
+Inputs.range([-1, [...planePaths.keys()].length - 1], {
+  label: "focus plane",
   value: -1,
   step: 1
 })
 )}
 
-function _focusPlaneIdx(Inputs,planePaths){return(
-Inputs.range([-1, [...planePaths.keys()].length - 1], {
-  label: "focus plane",
+function _focusSurfaceIdx(Inputs,surfaces){return(
+Inputs.range([-1, surfaces.length - 1], {
+  label: "focus surface",
   value: -1,
   step: 1
 })
@@ -701,7 +778,7 @@ function _stepEffect($0,$1,$2,$3,$4,$5,step,Event)
 }
 
 
-function _38(md){return(
+function _39(md){return(
 md`## Algorithm`
 )}
 
@@ -770,7 +847,7 @@ surface_planes_unfiltered.filter(
 )
 )}
 
-function _42(md){return(
+function _43(md){return(
 md`### Project surfaces to 2D paths and simplify`
 )}
 
@@ -791,7 +868,7 @@ function _focusSurface(vectorSurfaces,focusSurfaceIdx){return(
 vectorSurfaces[focusSurfaceIdx]
 )}
 
-function _46(Inputs,surface_planes,$0){return(
+function _47(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -976,7 +1053,7 @@ mapValues(planePathsTrimmed, (plane, path) => {
 })
 )}
 
-function _58(Inputs,surface_planes,$0){return(
+function _59(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -991,7 +1068,7 @@ function _focusPlanePath(planePaths,focusPlane){return(
 planePaths.get(focusPlane)
 )}
 
-function _60(Plot,focusPlanePath){return(
+function _61(Plot,focusPlanePath){return(
 Plot.plot({
   marks: [
     (focusPlanePath.children || [focusPlanePath]).map((child, i) => {
@@ -1008,7 +1085,7 @@ Plot.plot({
 })
 )}
 
-function _61(md){return(
+function _62(md){return(
 md`### 2D Path to 3D`
 )}
 
@@ -1112,11 +1189,11 @@ targetShape &&
   })
 )}
 
-function _71(md){return(
+function _72(md){return(
 md`### Find Joints`
 )}
 
-function _72(Inputs,surface_planes,$0){return(
+function _73(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus surface",
@@ -1215,7 +1292,7 @@ function _joints(findShapeConnections,edges)
 }
 
 
-function _78(Inputs,joints,$0){return(
+function _79(Inputs,joints,$0){return(
 Inputs.bind(
   Inputs.range([-1, joints.length - 1], {
     label: "focus joint",
@@ -1269,11 +1346,11 @@ function _visualizeJointGraph(dot,edges,toString,focusJoint,focusPlane){return(
   }
 )}
 
-function _81(visualizeJointGraph,joints){return(
+function _82(visualizeJointGraph,joints){return(
 visualizeJointGraph(joints)
 )}
 
-function _82(md){return(
+function _83(md){return(
 md`### Generate Plan`
 )}
 
@@ -1344,7 +1421,7 @@ function _focusBoundariesPlot(focusBoundaries,chooseBasis,focusPlane,Plot)
 }
 
 
-function _90(line3){return(
+function _91(line3){return(
 line3
 )}
 
@@ -1754,7 +1831,7 @@ mapValues(projectedPlans, (plane, plans) =>
 )
 )}
 
-function _104(Inputs,surface_planes,$0){return(
+function _105(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -1765,7 +1842,7 @@ Inputs.bind(
 )
 )}
 
-function _105(angleToFingerRetraction,material_thickness){return(
+function _106(angleToFingerRetraction,material_thickness){return(
 angleToFingerRetraction(155, { thickness: material_thickness })
 )}
 
@@ -1899,7 +1976,7 @@ function _showPlan(Inputs){return(
 Inputs.toggle({ label: "show plan", value: true })
 )}
 
-function _110(md){return(
+function _111(md){return(
 md`### Draw Part`
 )}
 
@@ -1939,6 +2016,7 @@ function _planToSVG(material_thickness,d3,htl,download_svg,strokeWidth,distance2
           width="${total_width}mm"
           height="${total_height}mm"
           viewBox="${minX} ${minY} ${total_width} ${total_height}">
+    
       <path stroke="red" stroke-width="${strokeWidth / scale}" fill="none" d="
         ${plan.map((step, i) => {
           if (step.plan === "move") {
@@ -2016,14 +2094,14 @@ mapValues(plans, (plane, plan) =>
 )
 )}
 
-function _115(focusPlan,planToSVG,scale)
+function _116(focusPlan,planToSVG,scale)
 {
   debugger;
   return focusPlan && planToSVG(focusPlan, { scale });
 }
 
 
-function _116(md){return(
+function _117(md){return(
 md`### Parts to Blobs`
 )}
 
@@ -2041,7 +2119,7 @@ function _focusPart(focusPlan,planToSVG,scale){return(
 focusPlan && planToSVG(focusPlan, { scale })
 )}
 
-function _120(md){return(
+function _121(md){return(
 md`## Box Joint Cuts`
 )}
 
@@ -2186,7 +2264,7 @@ function _jointScene(THREE,createLineSegment,Line3,Vector3)
 }
 
 
-function _125(jointScene,sideA,sideB,invalidation)
+function _126(jointScene,sideA,sideB,invalidation)
 {
   jointScene.add(sideA);
   jointScene.add(sideB);
@@ -2227,7 +2305,7 @@ function _jointWorld(width,height,THREE,Vector3,jointScene,invalidation)
 }
 
 
-function _127(jointWorld,$0,htl){return(
+function _128(jointWorld,$0,htl){return(
 htl.html`<div style="display: flex">
   ${jointWorld.renderer.domElement}
   ${$0}
@@ -2304,7 +2382,7 @@ function _angleToFingerExtension(deg2rad){return(
 }
 )}
 
-function _130(angleToFingerRetraction){return(
+function _131(angleToFingerRetraction){return(
 angleToFingerRetraction(0, { thickness: 1 })
 )}
 
@@ -2410,7 +2488,7 @@ function _autoFitFinger(jointToyParams,$0,angleToFingerRetraction,angleToFingerE
 }
 
 
-function* _136(jointWorld,jointScene)
+function* _137(jointWorld,jointScene)
 {
   while (true) {
     jointWorld.renderer.render(jointScene, jointWorld.camera);
@@ -2419,7 +2497,7 @@ function* _136(jointWorld,jointScene)
 }
 
 
-function _137(md){return(
+function _138(md){return(
 md`## Box Joint Segment`
 )}
 
@@ -2698,7 +2776,7 @@ function _download_svg(XMLSerializer){return(
   }
 )}
 
-function _143(md){return(
+function _144(md){return(
 md`## Math`
 )}
 
@@ -3535,7 +3613,7 @@ function _intersectShapesExample(intersectShapes,exampleShapes)
 }
 
 
-function _178(md){return(
+function _179(md){return(
 md`## String`
 )}
 
@@ -3587,7 +3665,7 @@ function _geometrySuite(createSuite){return(
 } && createSuite({ name: "Geometry Tests" })
 )}
 
-function _183(geometrySuite,Line3,Vector3,expect,intersectLines){return(
+function _184(geometrySuite,Line3,Vector3,expect,intersectLines){return(
 geometrySuite.test("intersectLines example", () => {
   const l1 = new Line3(new Vector3(0, 0, -1), new Vector3(1, 0, -1));
   const l2 = new Line3(new Vector3(0, 0, 0), new Vector3(0, 0, -1));
@@ -3704,7 +3782,7 @@ geometrySuite.test(
 )
 )}
 
-function _187(md){return(
+function _188(md){return(
 md`# Planes`
 )}
 
@@ -3766,11 +3844,11 @@ function _chooseBasis(THREE){return(
   }
 )}
 
-function _192(focusPlane){return(
+function _193(focusPlane){return(
 focusPlane
 )}
 
-function _193(Inputs,surface_planes,$0){return(
+function _194(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -3781,11 +3859,11 @@ Inputs.bind(
 )
 )}
 
-function _194(focusPlane){return(
+function _195(focusPlane){return(
 focusPlane
 )}
 
-function _195(md){return(
+function _196(md){return(
 md`## Meshes`
 )}
 
@@ -4020,7 +4098,7 @@ function _createSimpleLight(Vector3,THREE){return(
   }
 )}
 
-function _203(md){return(
+function _204(md){return(
 md`## Plots`
 )}
 
@@ -4031,15 +4109,15 @@ function _plotShape2D(Plot){return(
   })
 )}
 
-function _205(md){return(
+function _206(md){return(
 md`## Scene`
 )}
 
-function _206(shapes2D){return(
+function _207(shapes2D){return(
 shapes2D
 )}
 
-function _207(Inputs,surface_planes,$0){return(
+function _208(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -4157,7 +4235,7 @@ function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,s
 }
 
 
-function _210(planBlobs){return(
+function _211(planBlobs){return(
 planBlobs
 )}
 
@@ -4183,7 +4261,7 @@ function _rotateCameraAroundOrigin(THREE){return(
   }
 )}
 
-function _213(focusEdges){return(
+function _214(focusEdges){return(
 focusEdges
 )}
 
@@ -4224,7 +4302,7 @@ function* _render_loop(spin,rotateCameraAroundOrigin,camera,Vector3,renderer,sce
 }
 
 
-function _217(md){return(
+function _218(md){return(
 md`## THREE Basics`
 )}
 
@@ -4269,11 +4347,14 @@ async function _THREE(require)
   THREE.FBXLoader = (
     await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/FBXLoader.js?module")
   ).FBXLoader;
+  THREE.GLTFLoader = (
+    await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js?module")
+  ).GLTFLoader;
   return THREE;
 }
 
 
-function _227(md){return(
+function _228(md){return(
 md`## Paper.js Basics`
 )}
 
@@ -4312,15 +4393,15 @@ function _intersections(line,polygon){return(
 line.getIntersections(polygon)
 )}
 
-function _233(md){return(
+function _234(md){return(
 md`# [Robocoop](https://observablehq.com/@tomlarkworthy/robocoop) Assistant`
 )}
 
-function _234($0){return(
+function _235($0){return(
 $0
 )}
 
-function _235(Inputs,suggestion){return(
+function _236(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -4328,15 +4409,15 @@ Inputs.button("copy code", {
 })
 )}
 
-function _236($0){return(
+function _237($0){return(
 $0
 )}
 
-function _237(md){return(
+function _238(md){return(
 md`## Current Chat context`
 )}
 
-function _238($0){return(
+function _239($0){return(
 $0
 )}
 
@@ -4410,24 +4491,20 @@ ${tex`
 `
 )}
 
-function _240(md){return(
+function _241(md){return(
 md`tick the cells to include in the next prompt`
-)}
-
-function _241($0){return(
-$0
 )}
 
 function _242($0){return(
 $0
 )}
 
-function _243(md){return(
-md`### AI Settings`
+function _243($0){return(
+$0
 )}
 
-function _244($0){return(
-$0
+function _244(md){return(
+md`### AI Settings`
 )}
 
 function _245($0){return(
@@ -4438,15 +4515,19 @@ function _246($0){return(
 $0
 )}
 
-function _247(background_tasks){return(
+function _247($0){return(
+$0
+)}
+
+function _248(background_tasks){return(
 background_tasks
 )}
 
-function _249(md){return(
+function _250(md){return(
 md`---`
 )}
 
-function _253(footer){return(
+function _254(footer){return(
 footer
 )}
 
@@ -4483,22 +4564,23 @@ export default function define(runtime, observer) {
   main.variable(observer("invert_normals")).define("invert_normals", ["Generators", "viewof invert_normals"], (G, _) => G.input(_));
   main.variable(observer("apply_obj")).define("apply_obj", ["parseObjFile","objText","THREE","viewof surfaces","Event","viewof filename","file"], _apply_obj);
   main.variable(observer("apply_fbx")).define("apply_fbx", ["file","THREE","invert_normals","rescale","viewof surfaces","Event","viewof filename"], _apply_fbx);
+  main.variable(observer("apply_gltf")).define("apply_gltf", ["file","THREE","invert_normals","rescale","viewof surfaces","Event","viewof filename"], _apply_gltf);
   main.variable(observer("viewof exclude_planes")).define("viewof exclude_planes", ["Inputs","surface_planes_unfiltered","toString"], _exclude_planes);
   main.variable(observer("exclude_planes")).define("exclude_planes", ["Generators", "viewof exclude_planes"], (G, _) => G.input(_));
-  main.variable(observer()).define(["renderer","focusPart","htl"], _23);
+  main.variable(observer()).define(["renderer","focusPart","htl"], _24);
   main.variable(observer("viewof filename")).define("viewof filename", ["Inputs"], _filename);
   main.variable(observer("filename")).define("filename", ["Generators", "viewof filename"], (G, _) => G.input(_));
   main.variable(observer("downloadButton")).define("downloadButton", ["filename","zip","partBlobs","button"], _downloadButton);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _27);
   main.variable(observer("viewof spin")).define("viewof spin", ["Inputs"], _spin);
   main.variable(observer("spin")).define("spin", ["Generators", "viewof spin"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","viewof showSurfaces","viewof showEdges","viewof showPlanes","viewof showPlan","viewof showParts","htl"], _28);
+  main.variable(observer()).define(["Inputs","viewof showSurfaces","viewof showEdges","viewof showPlanes","viewof showPlan","viewof showParts","htl"], _29);
   main.variable(observer("viewof step")).define("viewof step", ["Inputs"], _step);
   main.variable(observer("step")).define("step", ["Generators", "viewof step"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusSurfaceIdx")).define("viewof focusSurfaceIdx", ["Inputs","surfaces"], _focusSurfaceIdx);
-  main.variable(observer("focusSurfaceIdx")).define("focusSurfaceIdx", ["Generators", "viewof focusSurfaceIdx"], (G, _) => G.input(_));
   main.variable(observer("viewof focusPlaneIdx")).define("viewof focusPlaneIdx", ["Inputs","planePaths"], _focusPlaneIdx);
   main.variable(observer("focusPlaneIdx")).define("focusPlaneIdx", ["Generators", "viewof focusPlaneIdx"], (G, _) => G.input(_));
+  main.variable(observer("viewof focusSurfaceIdx")).define("viewof focusSurfaceIdx", ["Inputs","surfaces"], _focusSurfaceIdx);
+  main.variable(observer("focusSurfaceIdx")).define("focusSurfaceIdx", ["Generators", "viewof focusSurfaceIdx"], (G, _) => G.input(_));
   main.variable(observer("viewof focusJointIdx")).define("viewof focusJointIdx", ["Inputs","joints"], _focusJointIdx);
   main.variable(observer("focusJointIdx")).define("focusJointIdx", ["Generators", "viewof focusJointIdx"], (G, _) => G.input(_));
   main.variable(observer("viewof scale")).define("viewof scale", ["Inputs"], _scale);
@@ -4511,17 +4593,17 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("view", child1);
   main.import("cautious", child1);
-  main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["md"], _39);
   main.variable(observer("viewof surfaces")).define("viewof surfaces", ["Inputs"], _surfaces);
   main.variable(observer("surfaces")).define("surfaces", ["Generators", "viewof surfaces"], (G, _) => G.input(_));
   main.variable(observer("surface_planes_unfiltered")).define("surface_planes_unfiltered", ["dedupe","eq","surfaces","surfaceToPlane"], _surface_planes_unfiltered);
   main.variable(observer("surface_planes")).define("surface_planes", ["surface_planes_unfiltered","exclude_planes"], _surface_planes);
-  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["md"], _43);
   main.variable(observer("viewof showSurfaces")).define("viewof showSurfaces", ["Inputs"], _showSurfaces);
   main.variable(observer("showSurfaces")).define("showSurfaces", ["Generators", "viewof showSurfaces"], (G, _) => G.input(_));
   main.variable(observer("vectorSurfaces")).define("vectorSurfaces", ["surfaces","Vector3"], _vectorSurfaces);
   main.variable(observer("focusSurface")).define("focusSurface", ["vectorSurfaces","focusSurfaceIdx"], _focusSurface);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _46);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _47);
   main.variable(observer("focusPlane")).define("focusPlane", ["planePaths","focusPlaneIdx"], _focusPlane);
   main.variable(observer("surfacesOnPlaneAsPath")).define("surfacesOnPlaneAsPath", ["chooseBasis","Vector3","paper"], _surfacesOnPlaneAsPath);
   main.variable(observer("focusPlaneIdxPaths")).define("focusPlaneIdxPaths", ["focusPlane","surfacesOnPlaneAsPath","vectorSurfaces"], _focusPlaneIdxPaths);
@@ -4534,10 +4616,10 @@ export default function define(runtime, observer) {
   main.variable(observer("simplifyPath")).define("simplifyPath", ["eq"], _simplifyPath);
   main.variable(observer("planePathsTrimmed")).define("planePathsTrimmed", ["filterPathsByMinDimension","unionPlanePaths","minThickness"], _planePathsTrimmed);
   main.variable(observer("planePaths")).define("planePaths", ["mapValues","planePathsTrimmed","simplifyPath"], _planePaths);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _58);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _59);
   main.variable(observer("focusPlanePath")).define("focusPlanePath", ["planePaths","focusPlane"], _focusPlanePath);
-  main.variable(observer()).define(["Plot","focusPlanePath"], _60);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["Plot","focusPlanePath"], _61);
+  main.variable(observer()).define(["md"], _62);
   main.variable(observer("projectPathTo3D")).define("projectPathTo3D", ["chooseBasis","Vector3","Line3"], _projectPathTo3D);
   main.variable(observer("viewof showEdges")).define("viewof showEdges", ["Inputs"], _showEdges);
   main.variable(observer("showEdges")).define("showEdges", ["Generators", "viewof showEdges"], (G, _) => G.input(_));
@@ -4549,18 +4631,18 @@ export default function define(runtime, observer) {
   main.variable(observer("shapes2D")).define("shapes2D", ["mapValues","planePaths"], _shapes2D);
   main.variable(observer("targetShape")).define("targetShape", ["shapes2D","focusPlane"], _targetShape);
   main.variable(observer("shapePlot")).define("shapePlot", ["targetShape","Plot"], _shapePlot);
-  main.variable(observer()).define(["md"], _71);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _72);
+  main.variable(observer()).define(["md"], _72);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _73);
   main.variable(observer("optimizedShape2D")).define("optimizedShape2D", ["shapes2D"], _optimizedShape2D);
   main.variable(observer("optimizedFocusShape")).define("optimizedFocusShape", ["optimizedShape2D","planePaths","focusPlaneIdx"], _optimizedFocusShape);
   main.variable(observer("optimizedShapePlot")).define("optimizedShapePlot", ["optimizedFocusShape","Plot"], _optimizedShapePlot);
   main.variable(observer("findShapeConnections")).define("findShapeConnections", ["intersectShapes","rad2deg","angleBetweenPlanes","Vector3"], _findShapeConnections);
   main.variable(observer("joints")).define("joints", ["findShapeConnections","edges"], _joints);
-  main.variable(observer()).define(["Inputs","joints","viewof focusJointIdx"], _78);
+  main.variable(observer()).define(["Inputs","joints","viewof focusJointIdx"], _79);
   main.variable(observer("focusJoint")).define("focusJoint", ["joints","focusJointIdx"], _focusJoint);
   main.variable(observer("visualizeJointGraph")).define("visualizeJointGraph", ["dot","edges","toString","focusJoint","focusPlane"], _visualizeJointGraph);
-  main.variable(observer()).define(["visualizeJointGraph","joints"], _81);
-  main.variable(observer()).define(["md"], _82);
+  main.variable(observer()).define(["visualizeJointGraph","joints"], _82);
+  main.variable(observer()).define(["md"], _83);
   main.variable(observer("neighbourhood")).define("neighbourhood", _neighbourhood);
   main.variable(observer("neighbourhoods")).define("neighbourhoods", ["surface_planes","neighbourhood","joints"], _neighbourhoods);
   main.variable(observer("focusNeighbourhood")).define("focusNeighbourhood", ["neighbourhood","focusPlane","joints"], _focusNeighbourhood);
@@ -4568,7 +4650,7 @@ export default function define(runtime, observer) {
   main.variable(observer("boundaries")).define("boundaries", ["planePaths","projectPathTo3D"], _boundaries);
   main.variable(observer("focusBoundaries")).define("focusBoundaries", ["focusPlane","boundaries"], _focusBoundaries);
   main.variable(observer("focusBoundariesPlot")).define("focusBoundariesPlot", ["focusBoundaries","chooseBasis","focusPlane","Plot"], _focusBoundariesPlot);
-  main.variable(observer()).define(["line3"], _90);
+  main.variable(observer()).define(["line3"], _91);
   main.variable(observer("generatePerimeterPlan")).define("generatePerimeterPlan", ["intersectLines","eq","Line3"], _generatePerimeterPlan);
   main.variable(observer("perimeterPlans")).define("perimeterPlans", ["planePaths","boundaries","generatePerimeterPlan","neighbourhoods"], _perimeterPlans);
   main.variable(observer("focusPermiterPlan")).define("focusPermiterPlan", ["perimeterPlans","focusPlane"], _focusPermiterPlan);
@@ -4582,51 +4664,51 @@ export default function define(runtime, observer) {
   main.variable(observer("computeCorner")).define("computeCorner", ["intersect2d"], _computeCorner);
   main.variable(observer("computeStepInteractions")).define("computeStepInteractions", ["computeStepInteraction","distance2DSquared","computeCorner","d3"], _computeStepInteractions);
   main.variable(observer("plans")).define("plans", ["mapValues","projectedPlans","computeStepInteractions"], _plans);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _104);
-  main.variable(observer()).define(["angleToFingerRetraction","material_thickness"], _105);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _105);
+  main.variable(observer()).define(["angleToFingerRetraction","material_thickness"], _106);
   main.variable(observer("focusPlan")).define("focusPlan", ["plans","focusPlane"], _focusPlan);
   main.variable(observer("planViz")).define("planViz", ["Plot","width","d3","material_thickness"], _planViz);
   main.variable(observer("focusPlanViz")).define("focusPlanViz", ["focusPlan","planViz"], _focusPlanViz);
   main.variable(observer("viewof showPlan")).define("viewof showPlan", ["Inputs"], _showPlan);
   main.variable(observer("showPlan")).define("showPlan", ["Generators", "viewof showPlan"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _110);
+  main.variable(observer()).define(["md"], _111);
   main.variable(observer("planBlobs")).define("planBlobs", ["mapValues","plans","toBlobUrl","planViz"], _planBlobs);
   main.variable(observer("planToSVG")).define("planToSVG", ["material_thickness","d3","htl","download_svg","strokeWidth","distance2DSquared","finger_clockwise_v1","fingerWidth"], _planToSVG);
   main.variable(observer("viewof showParts")).define("viewof showParts", ["Inputs"], _showParts);
   main.variable(observer("showParts")).define("showParts", ["Generators", "viewof showParts"], (G, _) => G.input(_));
   main.variable(observer("partsSVG")).define("partsSVG", ["mapValues","plans","planToSVG","material_thickness"], _partsSVG);
-  main.variable(observer()).define(["focusPlan","planToSVG","scale"], _115);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer()).define(["focusPlan","planToSVG","scale"], _116);
+  main.variable(observer()).define(["md"], _117);
   main.variable(observer("partBlobs")).define("partBlobs", ["mapValues","partsSVG","toBlobUrl"], _partBlobs);
   main.variable(observer("focusBlobURL")).define("focusBlobURL", ["focusPlane","partBlobs"], _focusBlobURL);
   main.variable(observer("focusPart")).define("focusPart", ["focusPlan","planToSVG","scale"], _focusPart);
-  main.variable(observer()).define(["md"], _120);
+  main.variable(observer()).define(["md"], _121);
   main.variable(observer("sideA")).define("sideA", ["THREE","jointToyParams","createBoxJointSide","createLineSegment","Line3","Vector3"], _sideA);
   main.variable(observer("sideB")).define("sideB", ["THREE","jointToyParams","createBoxJointSide","createLineSegment","Line3","Vector3"], _sideB);
   main.variable(observer("createBoxJointSide")).define("createBoxJointSide", ["THREE"], _createBoxJointSide);
   main.variable(observer("jointScene")).define("jointScene", ["THREE","createLineSegment","Line3","Vector3"], _jointScene);
-  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _125);
+  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _126);
   main.variable(observer("jointWorld")).define("jointWorld", ["width","height","THREE","Vector3","jointScene","invalidation"], _jointWorld);
-  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _127);
+  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _128);
   main.variable(observer("viewof jointToyParams")).define("viewof jointToyParams", ["view","Inputs"], _jointToyParams);
   main.variable(observer("jointToyParams")).define("jointToyParams", ["Generators", "viewof jointToyParams"], (G, _) => G.input(_));
   main.variable(observer("angleToFingerExtension")).define("angleToFingerExtension", ["deg2rad"], _angleToFingerExtension);
-  main.variable(observer()).define(["angleToFingerRetraction"], _130);
+  main.variable(observer()).define(["angleToFingerRetraction"], _131);
   main.variable(observer("angle_applier")).define("angle_applier", ["sideA","Vector3","deg2rad","jointToyParams","sideB"], _angle_applier);
   main.variable(observer("angleToFingerRetraction")).define("angleToFingerRetraction", ["deg2rad","angleToFingerExtension"], _angleToFingerRetraction);
   main.variable(observer("fingerData")).define("fingerData", ["angleToFingerRetraction","jointToyParams","angleToFingerExtension"], _fingerData);
   main.variable(observer("viewof fingerMeasures")).define("viewof fingerMeasures", ["Plot","height","jointToyParams","fingerData"], _fingerMeasures);
   main.variable(observer("fingerMeasures")).define("fingerMeasures", ["Generators", "viewof fingerMeasures"], (G, _) => G.input(_));
   main.variable(observer("autoFitFinger")).define("autoFitFinger", ["jointToyParams","viewof jointToyParams","angleToFingerRetraction","angleToFingerExtension","Event"], _autoFitFinger);
-  main.variable(observer()).define(["jointWorld","jointScene"], _136);
-  main.variable(observer()).define(["md"], _137);
+  main.variable(observer()).define(["jointWorld","jointScene"], _137);
+  main.variable(observer()).define(["md"], _138);
   main.variable(observer("units")).define("units", _units);
   main.variable(observer("finger_clockwise_v1")).define("finger_clockwise_v1", ["distance2DSquared","material_thickness","mod"], _finger_clockwise_v1);
   main.variable(observer("fingers_clockwise_v1_preview")).define("fingers_clockwise_v1_preview", ["finger_clockwise_v1_config","htl","units","finger_clockwise_v1"], _fingers_clockwise_v1_preview);
   main.variable(observer("viewof finger_clockwise_v1_config")).define("viewof finger_clockwise_v1_config", ["Inputs"], _finger_clockwise_v1_config);
   main.variable(observer("finger_clockwise_v1_config")).define("finger_clockwise_v1_config", ["Generators", "viewof finger_clockwise_v1_config"], (G, _) => G.input(_));
   main.variable(observer("download_svg")).define("download_svg", ["XMLSerializer"], _download_svg);
-  main.variable(observer()).define(["md"], _143);
+  main.variable(observer()).define(["md"], _144);
   main.variable(observer("mod")).define("mod", _mod);
   main.variable(observer("exampleShapes")).define("exampleShapes", ["Plane","Vector3","THREE"], _exampleShapes);
   main.variable(observer("deg2rad")).define("deg2rad", _deg2rad);
@@ -4661,25 +4743,25 @@ export default function define(runtime, observer) {
   main.variable(observer("isInsideShape3DExample")).define("isInsideShape3DExample", ["isInsideShape3D","Vector3","exampleShapes"], _isInsideShape3DExample);
   main.variable(observer("intersectShapes")).define("intersectShapes", ["findIntersectionTransitions","Vector3","isInsideShape3D","Line3"], _intersectShapes);
   main.variable(observer("intersectShapesExample")).define("intersectShapesExample", ["intersectShapes","exampleShapes"], _intersectShapesExample);
-  main.variable(observer()).define(["md"], _178);
+  main.variable(observer()).define(["md"], _179);
   main.variable(observer("parseVector3")).define("parseVector3", ["Vector3"], _parseVector3);
   main.variable(observer("toString")).define("toString", _toString);
   main.variable(observer("toBlobUrl")).define("toBlobUrl", ["XMLSerializer"], _toBlobUrl);
   main.variable(observer("viewof geometrySuite")).define("viewof geometrySuite", ["createSuite"], _geometrySuite);
   main.variable(observer("geometrySuite")).define("geometrySuite", ["Generators", "viewof geometrySuite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _183);
+  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _184);
   main.variable(observer("testIntersectLinesRandom")).define("testIntersectLinesRandom", ["geometrySuite","Vector3","Line3","intersectLines","expect"], _testIntersectLinesRandom);
   main.variable(observer("testIntersectPlanesRandom")).define("testIntersectPlanesRandom", ["geometrySuite","Plane","Vector3","XZ","intersectPlanes","expect"], _testIntersectPlanesRandom);
   main.variable(observer("test3Dto2D")).define("test3Dto2D", ["geometrySuite","Plane","Vector3","unionPaths","surfacesOnPlaneAsPath","projectPathTo3D","expect"], _test3Dto2D);
-  main.variable(observer()).define(["md"], _187);
+  main.variable(observer()).define(["md"], _188);
   main.variable(observer("XY")).define("XY", ["Plane","Vector3"], _XY);
   main.variable(observer("XZ")).define("XZ", ["Plane","Vector3"], _XZ);
   main.variable(observer("YZ")).define("YZ", ["Plane","Vector3"], _YZ);
   main.variable(observer("chooseBasis")).define("chooseBasis", ["THREE"], _chooseBasis);
-  main.variable(observer()).define(["focusPlane"], _192);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _193);
-  main.variable(observer()).define(["focusPlane"], _194);
-  main.variable(observer()).define(["md"], _195);
+  main.variable(observer()).define(["focusPlane"], _193);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _194);
+  main.variable(observer()).define(["focusPlane"], _195);
+  main.variable(observer()).define(["md"], _196);
   main.variable(observer("createPlaneMesh")).define("createPlaneMesh", ["THREE","Vector3"], _createPlaneMesh);
   main.variable(observer("createShape")).define("createShape", ["THREE","loader","chooseBasis","Vector3"], _createShape);
   main.variable(observer("createInfiniteLine")).define("createInfiniteLine", ["THREE","Vector3"], _createInfiniteLine);
@@ -4687,21 +4769,21 @@ export default function define(runtime, observer) {
   main.variable(observer("createPoint")).define("createPoint", ["THREE"], _createPoint);
   main.variable(observer("createMesh")).define("createMesh", ["THREE"], _createMesh);
   main.variable(observer("createSimpleLight")).define("createSimpleLight", ["Vector3","THREE"], _createSimpleLight);
-  main.variable(observer()).define(["md"], _203);
+  main.variable(observer()).define(["md"], _204);
   main.variable(observer("plotShape2D")).define("plotShape2D", ["Plot"], _plotShape2D);
-  main.variable(observer()).define(["md"], _205);
-  main.variable(observer()).define(["shapes2D"], _206);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _207);
+  main.variable(observer()).define(["md"], _206);
+  main.variable(observer()).define(["shapes2D"], _207);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _208);
   main.variable(observer("loader")).define("loader", ["THREE"], _loader);
   main.variable(observer("scene")).define("scene", ["THREE","showEdges","edges","focusEdges","createLineSegment","createPoint","showSurfaces","focusSurfaceIdx","surfaces","createMesh","showShapes","targetShape","shapes2D","createShape","focusPlane","focusJoint","showPlan","showParts","planBlobs","getBoundingBoxCorners","partBlobs"], _scene);
-  main.variable(observer()).define(["planBlobs"], _210);
+  main.variable(observer()).define(["planBlobs"], _211);
   main.variable(observer("height")).define("height", _height);
   main.variable(observer("rotateCameraAroundOrigin")).define("rotateCameraAroundOrigin", ["THREE"], _rotateCameraAroundOrigin);
-  main.variable(observer()).define(["focusEdges"], _213);
+  main.variable(observer()).define(["focusEdges"], _214);
   main.variable(observer("camera")).define("camera", ["width","height","THREE","Vector3"], _camera);
   main.variable(observer("renderer")).define("renderer", ["THREE","width","height","camera","scene","invalidation"], _renderer);
   main.variable(observer("render_loop")).define("render_loop", ["spin","rotateCameraAroundOrigin","camera","Vector3","renderer","scene"], _render_loop);
-  main.variable(observer()).define(["md"], _217);
+  main.variable(observer()).define(["md"], _218);
   main.variable(observer("Vector3")).define("Vector3", ["THREE"], _Vector3);
   main.variable(observer("vector3")).define("vector3", ["Vector3"], _vector3);
   main.variable(observer("Line3")).define("Line3", ["THREE"], _Line3);
@@ -4713,28 +4795,28 @@ export default function define(runtime, observer) {
   const child2 = runtime.module(define2);
   main.import("createSuite", child2);
   main.import("expect", child2);
-  main.variable(observer()).define(["md"], _227);
+  main.variable(observer()).define(["md"], _228);
   main.variable(observer("paper_canvas")).define("paper_canvas", ["htl"], _paper_canvas);
   main.variable(observer("paper")).define("paper", ["require"], _paper);
   main.variable(observer("polygon")).define("polygon", ["paper"], _polygon);
   main.variable(observer("line")).define("line", ["paper"], _line);
   main.variable(observer("intersections")).define("intersections", ["line","polygon"], _intersections);
-  main.variable(observer()).define(["md"], _233);
-  main.variable(observer()).define(["viewof prompt"], _234);
-  main.variable(observer()).define(["Inputs","suggestion"], _235);
-  main.variable(observer()).define(["viewof suggestion"], _236);
-  main.variable(observer()).define(["md"], _237);
-  main.variable(observer()).define(["viewof context_viz"], _238);
+  main.variable(observer()).define(["md"], _234);
+  main.variable(observer()).define(["viewof prompt"], _235);
+  main.variable(observer()).define(["Inputs","suggestion"], _236);
+  main.variable(observer()).define(["viewof suggestion"], _237);
+  main.variable(observer()).define(["md"], _238);
+  main.variable(observer()).define(["viewof context_viz"], _239);
   main.variable(observer("markdown_skill")).define("markdown_skill", ["md","mermaid","htl","tex"], _markdown_skill);
-  main.variable(observer()).define(["md"], _240);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _241);
-  main.variable(observer()).define(["viewof feedback_prompt"], _242);
-  main.variable(observer()).define(["md"], _243);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _244);
-  main.variable(observer()).define(["viewof api_endpoint"], _245);
-  main.variable(observer()).define(["viewof settings"], _246);
-  main.variable(observer()).define(["background_tasks"], _247);
-  main.variable(observer()).define(["md"], _249);
+  main.variable(observer()).define(["md"], _241);
+  main.variable(observer()).define(["viewof feedback_cells_selector"], _242);
+  main.variable(observer()).define(["viewof feedback_prompt"], _243);
+  main.variable(observer()).define(["md"], _244);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _245);
+  main.variable(observer()).define(["viewof api_endpoint"], _246);
+  main.variable(observer()).define(["viewof settings"], _247);
+  main.variable(observer()).define(["background_tasks"], _248);
+  main.variable(observer()).define(["md"], _250);
   const child3 = runtime.module(define3);
   main.import("ask", child3);
   main.import("excludes", child3);
@@ -4767,6 +4849,6 @@ export default function define(runtime, observer) {
   main.import("button", child4);
   const child5 = runtime.module(define5);
   main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _253);
+  main.variable(observer()).define(["footer"], _254);
   return main;
 }
