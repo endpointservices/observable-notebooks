@@ -4,7 +4,7 @@ import define3 from "./11a5ab8b1b3a51db@1161.js";
 import define4 from "./dff1e917c89f5e76@1964.js";
 import define5 from "./c2dae147641e012a@46.js";
 import define6 from "./9c498948145037d2@140.js";
-import define7 from "./dfdb38d5580b5c35@331.js";
+import define7 from "./dfdb38d5580b5c35@334.js";
 
 async function _1(md,resize,FileAttachment,bluetoothLink){return(
 md`# Dash Robot SDK for Observable
