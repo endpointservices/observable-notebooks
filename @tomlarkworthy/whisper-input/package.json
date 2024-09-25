@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/whisper-input",
+  "main": "04318fffe4df9d1e@2458.js",
+  "version": "2458.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/whisper-input",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
