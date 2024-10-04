@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/productionization",
+  "main": "87bcb9c5d7171ab6@2766.js",
+  "version": "2766.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/productionization",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
