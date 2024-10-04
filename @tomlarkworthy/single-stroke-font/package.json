@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/single-stroke-font",
+  "main": "3320366aab57935b@564.js",
+  "version": "564.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/single-stroke-font",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
