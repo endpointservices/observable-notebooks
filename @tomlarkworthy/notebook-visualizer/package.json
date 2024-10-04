@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-visualizer",
+  "main": "44399ffb645dcfdb@440.js",
+  "version": "440.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-visualizer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
