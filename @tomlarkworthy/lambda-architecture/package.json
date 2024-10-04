@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lambda-architecture",
+  "main": "88880374fa37e852@2497.js",
+  "version": "2497.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lambda-architecture",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
