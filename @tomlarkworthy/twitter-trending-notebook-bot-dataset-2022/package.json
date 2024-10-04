@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/twitter-trending-notebook-bot-dataset-2022",
+  "main": "07294d5db0300c69@268.js",
+  "version": "268.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/twitter-trending-notebook-bot-dataset-2022",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
