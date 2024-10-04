@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/simplest-cms",
+  "main": "5fd338ce7d05396f@45.js",
+  "version": "45.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/simplest-cms",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
