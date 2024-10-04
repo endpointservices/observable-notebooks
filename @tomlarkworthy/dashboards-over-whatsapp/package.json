@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dashboards-over-whatsapp",
+  "main": "4e796c3f3029f09e@1164.js",
+  "version": "1164.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dashboards-over-whatsapp",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
