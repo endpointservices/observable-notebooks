@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/chatgpt-notebook-generator-test-1",
+  "main": "15b44bae216a8c08@135.js",
+  "version": "135.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/chatgpt-notebook-generator-test-1",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
