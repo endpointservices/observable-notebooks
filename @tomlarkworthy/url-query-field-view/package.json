@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/url-query-field-view",
+  "main": "1a271ff51d899f30@486.js",
+  "version": "486.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/url-query-field-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
