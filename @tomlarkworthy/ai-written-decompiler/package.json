@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ai-written-decompiler",
+  "main": "e3a019069a130d79@3282.js",
+  "version": "3282.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ai-written-decompiler",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
