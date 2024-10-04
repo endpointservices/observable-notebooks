@@ -1,4 +1,4 @@
-import define1 from "./17c8ce433e1df58e@2965.js";
+import define1 from "./17c8ce433e1df58e@3253.js";
 
 function _1(md){return(
 md`# \`highlight()\` values to [roboco-op](https://observablehq.com/d/9ed286bafcced0c3?collection=@tomlarkworthy/robocoop)
@@ -48,7 +48,10 @@ ${customJsonFormatter(value, { max_length })}
           get: () => value
         },
         robocoop: {
-          get: () => ({ type: "json", value: customJsonFormatter(value) })
+          get: () => ({
+            type: "json",
+            value: customJsonFormatter(value, { max_length })
+          })
         }
       }
     ))

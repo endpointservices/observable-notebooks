@@ -324,9 +324,6 @@ function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
 function interceptVariable(v, invalidation, firstSeen = false) {
   if (excludes.includes(v._name)) return;
   const name = v._name || "anon_" + v._observer.id;
-  if (firstSeen) {
-    debugger;
-  }
   if (_.isEqual(v._observer, {})) {
     // for views and mutables, no observer is setup
     // we create a synthetic anon variable to watch it
@@ -371,7 +368,6 @@ function interceptVariable(v, invalidation, firstSeen = false) {
   }
 
   if (firstSeen) {
-    debugger;
     if (v._value !== undefined) notify(v._name, "fulfilled", v._value);
     else if (v._promise) {
       notify(v._name, "pending", undefined);

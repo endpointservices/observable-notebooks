@@ -1,33 +1,75 @@
-import define1 from "./0b75dbddd18995dc@1373.js";
+import define1 from "./0b75dbddd18995dc@1374.js";
 import define2 from "./5845e1ca935fea5a@225.js";
 import define3 from "./048a17a165be198d@264.js";
 import define4 from "./0e0b35a92c819d94@444.js";
 import define5 from "./1f41fef8b019cf4e@94.js";
 import define6 from "./f92778131fd76559@1176.js";
 import define7 from "./e793e5cb1f2b5d04@72.js";
-import define8 from "./04318fffe4df9d1e@2458.js";
-import define9 from "./9ed286bafcced0c3@2930.js";
-import define10 from "./dfdb38d5580b5c35@334.js";
+import define8 from "./04318fffe4df9d1e@2460.js";
+import define9 from "./9ed286bafcced0c3@2931.js";
 
-function _1(html,md){return(
+function _1(md){return(
 md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
 
 Robocoop is a different approach to building an AI coding assistant. In Robocoop, the LLM context is paired with code so it can be hand edited, imported, deleted and forked at any point during development. Its like Chat + Computational Notebook + RAG all wrapped into one.
 
-In Roboco-op, a notebook cell is code, execution, a prompt and an AI assist **in a single atomic unit of remixability**. The chat context is a summation over all the cells. You can edit _anything_ at _any_ time, in _any_ order **without losing state**. **The notebook _is_ the LLM state**. The AI will build upon whatever curated knowledge base that has been laid out.
 
-[quickstart](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate) 
+Roboco-op blends [Observablehq.com](https://observablehq.com/)'s reactive notebooks with an **open source** userspace AI coding assistant. Observable notebooks are a unique coding environment because the code development and runtime state are mixed together. This means Robocoop can write code, a human can edit, and the LLM read the output of program fragments all within a single fluid environment.
+`
+)}
 
+function _2(md){return(
+md`### [Forkable Quickstart Notebook](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate)
+
+A *"blank slate"* notebook is available [here](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate) which you should fork from for new projects. There are a selection of pre-packaged skill [here](https://observablehq.com/@tomlarkworthy/robocoop-skills) which can be copied and pasted into notebooks to provide specific expertise.`
+)}
+
+function _3(md){return(
+md`### Automatic Source <--> LLM Context
+
+In Roboco-op, a notebook cell is: code, execution, a prompt and an AI context **in a single atomic unit**. The chat context is a summation over all the cell's source code. You can edit _anything_ at _any_ time, in _any_ order **without losing state**. **The notebook _is_ the LLM state**. The AI will build upon whatever curated knowledge base that has been laid out via in-context learning.
+`
+)}
+
+function _4(html,md){return(
+md`### Copy and Paste Domain expertise with Skills
 ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/8cNRZUZSSS8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
 
-With Roboco-op notebook cells can become copy and pasteable [skills](https://observablehq.com/@tomlarkworthy/robocoop-skills) that can be assembled and adjusted into a situational expert. You can move the cells across notebook, correct them manually, and the LLM will jam from whatever is there for its next completion. Because the notebook (hosted on [Observable](https://observablehq.com/), not affiliated) is also a computational medium and the LLM speaks code, it is easy to check its responses for precision by running immediately. The environment supports reactive Javascript, Dataviz, and diagram drawing and recomputes code fragments reactively. The small code snippets Observable supports is an ideal interface for iterating and scaling LLM technologies.
+With Roboco-op notebook cells can become copy and pasteable [skills](https://observablehq.com/@tomlarkworthy/robocoop-skills) that can be assembled and adjusted into a situational expert. You can move the cells across notebook, correct them manually, and the LLM will jam from whatever is there for its next completion.
 
-Come ask questions or share your discoveries at <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>
+`
+)}
 
-A *"blank slate"* notebook is available [here](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate) which you should fork from for new projects. There are a selection of pre-packaged skill [here](https://observablehq.com/@tomlarkworthy/robocoop-skills) which can be copied and pasted into notebooks to provide specific expertise.
+function _5(html,md){return(
+md`### \`highlight(<expr>)\` to bring runtime values into LLM context
+
+${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/RAEYuWhWtY4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
 
 
+Roboco-op automatically synchronises notebook source code, but you can also programatically bring runtime **values** into the LLM context too, just by calling the function \`highlight\`. This is useful for making AI informed decisions based on program state, for example, summerizing information pulled from a network call, or for informing code changes based on test suite feedback.
+
+Test-driven-development using \`highlight\` is such a powerful technique for producing production quality code that we have a template to fork directly from [here](https://observablehq.com/@tomlarkworthy/ai-tdd-template)`
+)}
+
+function _6(highlight){return(
+highlight(Math.random())
+)}
+
+function _7(md){return(
+md`### RAG brings Observable general knowledge`
+)}
+
+function _8(md){return(
+md`### More
+
+
+Browse the main Roboco-op notebook ecosystem [here](https://observablehq.com/@tomlarkworthy/robocoop?collection=@tomlarkworthy/robocoop), or ask questions in <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>`
+)}
+
+function _9(md){return(
+md`
 Changes
+- 2024-10-15 Added highlight and a bunch of bug fixes
 - 2024-05-11 Context is truncated according to max_prompt_tokens, oldest is removed first
 
 TODO:
@@ -35,94 +77,14 @@ TODO:
   - dynamic GPT model selection per prompt
   - regenerate response 
 - BUG(minor): Renaming variable does not update feedback variables
-- BUG(medium): LLM is presented code with $1 instead of variable names`
+- BUG(medium): LLM is presented code with $1 instead of variable names
+- Investigate Summarization (https://github.com/jimmc414/1filellm)
+- Investiage RAG`
 )}
 
-function _2(md){return(
-md`## Random cells generated by Roboco-op`
+function _10(md){return(
+md`## Random Cell Made by Roboco-op`
 )}
-
-function _hexbin_heatmap(Plot,olympians){return(
-{
-  prompt:
-    'Create a Hexbin heatmap of Olympic athletes aaccording to their weight and height which are filled with a color that encodes frequency. Use the inbuilt dataset "olympians" variable',
-  time: 1699296536008,
-  comment:
-    "Create a Hexbin heatmap of Olympic athletes according to their weight and height filled with a color that encodes frequency."
-} &&
-  Plot.dot(
-    olympians,
-    Plot.hexbin({ fill: "count" }, { x: "weight", y: "height" })
-  ).plot({ color: { scheme: "YlGnBu" } })
-)}
-
-function _blob_url(XMLSerializer,hexbin_heatmap){return(
-{
-  prompt: "convert the hexbin_heatmap SVGElement to blob URL ",
-  time: 1699302857881,
-  comment: "Convert the hexbin_heatmap SVGElement to blob URL"
-} &&
-  URL.createObjectURL(
-    new Blob([new XMLSerializer().serializeToString(hexbin_heatmap)], {
-      type: "image/svg+xml"
-    })
-  )
-)}
-
-function _THREE(){return(
-{
-  prompt: "Import threeJS with orbit controls as THREE",
-  time: 1699299731104,
-  comment: "Importing three.js with orbit controls as three"
-} &&
-  Promise.all([
-    import("https://esm.sh/three"),
-    import("https://esm.sh/three/examples/jsm/controls/OrbitControls.js")
-  ]).then(([THREE, { OrbitControls }]) => ({ ...THREE, OrbitControls }))
-)}
-
-function _demo_scene(THREE,width,blob_url)
-{
-  ({
-    prompt: "create a THREE cool demo scene using blob_url as a texture",
-    time: 1699303031445,
-    comment:
-      "Creating a 3D scene with a rotating cube using three.js. The cube is textured with the blob URL of the hexbin heatmap SVG."
-  });
-  const height = 500;
-  // Create a scene
-  const scene = new THREE.Scene();
-
-  // Create a camera
-  const camera = new THREE.PerspectiveCamera(15, width / height, 0.1, 1000);
-  camera.position.z = 5;
-
-  // Create a renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(width, height);
-
-  // Create a cube
-  const geometry = new THREE.BoxGeometry(1, 1, 1);
-  const loader = new THREE.TextureLoader();
-  const material = new THREE.MeshBasicMaterial({ map: loader.load(blob_url) });
-  const cube = new THREE.Mesh(geometry, material);
-  scene.add(cube);
-
-  // Create an animation loop
-  const animate = () => {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-  };
-  animate();
-
-  // Enable orbit controls
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-  return renderer.domElement;
-}
-
 
 function _pong_game(width)
 {
@@ -194,80 +156,18 @@ function _pong_game(width)
 }
 
 
-function _neon_tictactoe_game()
-{
-  ({
-    prompt: "Create a tick tack toe game using neon colors",
-    time: 1699470230338,
-    comment: "Creating a tic-tac-toe game with neon colors"
-  });
-
-  // Create the canvas and get the 2D context
-  const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d");
-
-  // Define the size of the game board
-  canvas.width = 300;
-  canvas.height = 300;
-  const cellSize = 100;
-
-  // Initialize the game board
-  let board = Array(3)
-    .fill()
-    .map(() => Array(3).fill(""));
-  let currentPlayer = "X";
-
-  // Function to draw the game board
-  const drawBoard = () => {
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i <= 2; i++) {
-      for (let j = 0; j <= 2; j++) {
-        context.strokeStyle = "#00FF00"; // Neon green for the grid
-        context.strokeRect(i * cellSize, j * cellSize, cellSize, cellSize);
-        context.font = "50px sans-serif";
-        context.fillStyle = currentPlayer === "X" ? "#FF00FF" : "#00FFFF"; // Neon pink for player X, neon cyan for player O
-        context.fillText(
-          board[i][j],
-          i * cellSize + cellSize / 3,
-          j * cellSize + (2 * cellSize) / 3
-        );
-      }
-    }
-  };
-
-  // Function to handle click events
-  const handleClick = (event) => {
-    let x = Math.floor(event.offsetX / cellSize);
-    let y = Math.floor(event.offsetY / cellSize);
-    if (board[x][y] === "") {
-      board[x][y] = currentPlayer;
-      currentPlayer = currentPlayer === "X" ? "O" : "X";
-    }
-    drawBoard();
-  };
-
-  // Attach the click event listener to the canvas
-  canvas.addEventListener("click", handleClick);
-
-  // Draw the initial game board
-  drawBoard();
-
-  return canvas;
-}
-
-
-function _9(md){return(
-md`## Prompt Interface 🤗
+function _12(md){return(
+md`## Prompt Interface
 `
 )}
 
-function _prompt(whisperInput,OPENAI_API_KEY,view,Inputs,bindOneWay)
+function _prompt(whisperInput,OPENAI_API_KEY,view,cautious,Inputs,invalidation)
 {
   const whisper = whisperInput({
     API_KEY: OPENAI_API_KEY
   });
   const ui = view`<div>
-      ${whisper}
+      ${cautious(() => whisper)}
       ${[
         "...",
         Inputs.textarea({
@@ -278,13 +178,18 @@ function _prompt(whisperInput,OPENAI_API_KEY,view,Inputs,bindOneWay)
         })
       ]}
     </div>`;
-  bindOneWay(ui, whisper);
+  // bindOneWay(ui, whisper);
+  invalidation.then(
+    whisper.addEventListener("input", () => {
+      ui.value = whisper.value;
+    })
+  );
 
   return ui;
 }
 
 
-function _11(Inputs,cellsToClipboard,suggestion){return(
+function _14(Inputs,cellsToClipboard,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => cellsToClipboard([suggestion])
 })
@@ -299,13 +204,13 @@ Inputs.textarea({
 })
 )}
 
-function _13(md){return(
+function _16(md){return(
 md`## Current Chat context`
 )}
 
-function _context_viz(Inputs,context,html,inspect){return(
+function _context_viz(Inputs,extension_context_previous,context,html,inspect){return(
 Inputs.table(
-  context.map((r) => ({
+  [...extension_context_previous, ...context].map((r) => ({
     role: r.role,
     content_or_function_call: r.content || r.function_call
   })),
@@ -323,7 +228,7 @@ Inputs.table(
 )
 )}
 
-function _15(md){return(
+function _18(md){return(
 md`### AI Settings`
 )}
 
@@ -394,13 +299,7 @@ function _settings(Inputs,view,models,localStorageView){return(
 } &&
   Inputs.bind(
     view`
-    <div>${[
-      "model",
-      Inputs.select(
-        models.sort(),
-        { label: "model" }
-      )
-    ]}</div>
+    <div>${["model", Inputs.select(models.sort(), { label: "model" })]}</div>
     <div>${[
       "temperature",
       Inputs.range([0, 1], { step: 0.1, value: 0.7, label: "temperature" })
@@ -414,7 +313,10 @@ function _settings(Inputs,view,models,localStorageView){return(
     ]}</div>
     <div>${[
       "max_tokens",
-      Inputs.range([1, 4000], { value: 1000, label: "max_tokens for response" })
+      Inputs.range([1, 32000], {
+        value: 1000,
+        label: "max_tokens for response"
+      })
     ]}</div>
     <div>${[
       "top_p",
@@ -450,34 +352,41 @@ You are a notebook programming assisten for Observablehq notebook. You may respo
 
 If the question requires clarification, you can generate a markdown cell to express your questions in prose.
 
-When a cell is updated I may respond with relevant outputs. 
 
 EXAMPLES
 ========
 
-user: import <LIBRARY>
+user:
+import <LIBRARY>
 
+assistant:
 upsert_cell({
   cell_name: "<LIBRARY>",
   code: "import("https://esm.sh/<LIBRARY>@2.5.0")"
 })
 
-user: create an SVG element
+user:
+create an SVG element
 
+assistant:
 upsert_cell({
   cell_name: "svg",
   code: "htl.html\`<svg>\`"
 })
 
-user: create an UI for temperate variable from -10 to 10
+user:
+create an UI for temperate variable from -10 to 10
 
+assistant:
 upsert_cell({
   cell_name: "viewof temperature",
   code: "Inputs.range([-10, 10], {label: "set the temperature"})"
 })
 
-user: create a 1 second counter
+user:
+create a 1 second counter
 
+assistant:
 upsert_cell({
   cell_name: "counter",
   code: "{\n  \n\n  let count = 0;\n  const interval = setInter…lidated\n  return () => clearInterval(interval);\n}"
@@ -485,12 +394,13 @@ upsert_cell({
 `
 )}
 
-function _22(md){return(
+function _25(md){return(
 md`## Roboco-op Implementation below`
 )}
 
-function _background_tasks(on_prompt,update_context,api_call_response,interceptVariables)
+function _background_tasks(find_context_extensions,on_prompt,update_context,api_call_response,interceptVariables)
 {
+  find_context_extensions;
   on_prompt;
   update_context;
   api_call_response;
@@ -539,21 +449,46 @@ function _response(on_prompt){return(
 on_prompt
 )}
 
-function _on_prompt($0,$1,prompt)
+async function _on_prompt(extension_context,prompt,$0,Event,$1,$2)
 {
-  console.log("on_prompt");
-  return $0.send([
+  const extension_context_now = await extension_context({
+    question: prompt
+  });
+  $0.value = extension_context_now;
+  $0.dispatchEvent(new Event("input"));
+  const payload = [
+    ...extension_context_now,
     ...$1.value,
     {
       role: "user",
       content: prompt
     }
-  ]);
+  ];
+  console.log("on_prompt", payload);
+  return $2.send(payload);
 }
 
 
-function _29(md){return(
-md`### Context Construction`
+function _32(md){return(
+md`## Extensions`
+)}
+
+function _context_extensions(Inputs){return(
+Inputs.input(new Set())
+)}
+
+function _find_context_extensions($0,cells)
+{
+  $0.value = new Set(
+    cells
+      .filter((cell) => cell.variable?._value?.robocoop?.onContext)
+      .map((cell) => cell.variable?._value?.robocoop?.onContext)
+  );
+}
+
+
+function _35(md){return(
+md`### Reactive Context Construction`
 )}
 
 function _update_context(unprompted_context,prompted_context,highlight_context,_,$0)
@@ -571,6 +506,10 @@ function _update_context(unprompted_context,prompted_context,highlight_context,_
 
 function _context(){return(
 undefined
+)}
+
+function _extension_context_previous(Inputs){return(
+Inputs.input([])
 )}
 
 function _unprompted_context(cells){return(
@@ -616,6 +555,16 @@ cells
   ])
 )}
 
+function _extension_context($0){return(
+async ({ question }) => {
+  const context = [];
+  await Promise.all(
+    [...$0.value].map((fn) => fn({ question, context }))
+  );
+  return context;
+}
+)}
+
 function _highlight_context(cells){return(
 Object.entries(cells)
   .flatMap(([k, cell]) =>
@@ -636,14 +585,14 @@ The cell \`${cell.cell_name}\` defined as
 ${cell.code}
 ~~~
 evaluated to
-~~~${robocoop.json}
+~~~${robocoop.type}
 ${robocoop.value}
 ~~~
 `
   }))
 )}
 
-function _35(md){return(
+function _43(md){return(
 md`### Cell Analysis`
 )}
 
@@ -786,6 +735,8 @@ Object.fromEntries(
 
 function _excludes(mandatory_excludes){return(
 [
+  "mutable find_context_extensions",
+  "find_context_extensions",
   "cautious",
   "flowQueue",
   "localStorageView",
@@ -898,7 +849,7 @@ function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 180000 })
 )}
 
-function _48(ask){return(
+function _56(ask){return(
 console.log("Ask", ask)
 )}
 
@@ -931,10 +882,6 @@ function _trimmed_prompt(d3,token_analytics,settings)
   return token_analytics;
 }
 
-
-function _52($0){return(
-$0.value
-)}
 
 function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY,functions){return(
 (model) => {
@@ -977,7 +924,7 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY,functions){return(
       settings: {
         model: model,
         temperature: 1,
-        max_completion_tokens: $0.value.max_prompt_tokens,
+        max_completion_tokens: $0.value.max_tokens,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
@@ -1031,8 +978,9 @@ async function _openAiResponse(trimmed_prompt,modelConfig,$0,OPENAI_API_KEY,api_
 
   if (response.status !== 200)
     throw new Error(`${response.status}: ${await response.text()}`);
-
-  return response.json();
+  const responseJson = response.json();
+  console.log("Received", await responseJson);
+  return responseJson;
 }
 
 
@@ -1066,18 +1014,25 @@ function _instruction(openAiResponse,$0,processO1,ask,parseJSON)
 }
 
 
+function _content(processO1,openAiResponse){return(
+processO1(openAiResponse.choices[0].message.content)
+)}
+
 function _processO1(parseJSON){return(
 function processO1(content) {
   if (content.startsWith("```json"))
     return parseJSON(content.substring(7, content.length - 4));
-  if (content.startsWith("```javascript"))
-    return parseJSON(content.substring(13, content.length - 4));
+  if (content.startsWith("```javascript")) {
+    const substring = content.substring(13, content.length - 4);
+    try {
+      return parseJSON(substring);
+    } catch (e) {
+      console.log(substring, e);
+      throw e;
+    }
+  }
   return content;
 }
-)}
-
-function _api_call_response($0,instruction){return(
-$0.resolve(instruction) && instruction
 )}
 
 function _parseJSON(dirty_json){return(
@@ -1086,12 +1041,19 @@ function _parseJSON(dirty_json){return(
     return JSON.parse(str);
   } catch (e) {
     try {
-      return eval("(" + str + ")");
+      let upsert_result = undefined;
+      const upsert_cell = (args) => (upsert_result = args);
+      const eval_result = eval("(" + str + ")");
+      return upsert_result || eval_result;
     } catch (e) {
       return dirty_json.parse(str);
     }
   }
 }
+)}
+
+function _api_call_response($0,instruction){return(
+$0.resolve(instruction) && instruction
 )}
 
 function _acorn(require){return(
@@ -1102,30 +1064,29 @@ function _dirty_json(){return(
 import("https://cdn.skypack.dev/dirty-json@0.9.2?min")
 )}
 
-function _71(footer){return(
-footer
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.variable(observer()).define(["html","md"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("hexbin_heatmap")).define("hexbin_heatmap", ["Plot","olympians"], _hexbin_heatmap);
-  main.variable(observer("blob_url")).define("blob_url", ["XMLSerializer","hexbin_heatmap"], _blob_url);
-  main.variable(observer("THREE")).define("THREE", _THREE);
-  main.variable(observer("demo_scene")).define("demo_scene", ["THREE","width","blob_url"], _demo_scene);
-  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
-  main.variable(observer("neon_tictactoe_game")).define("neon_tictactoe_game", _neon_tictactoe_game);
+  main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["html","md"], _4);
+  main.variable(observer()).define(["html","md"], _5);
+  main.variable(observer()).define(["highlight"], _6);
+  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer("viewof prompt")).define("viewof prompt", ["whisperInput","OPENAI_API_KEY","view","Inputs","bindOneWay"], _prompt);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer("viewof prompt")).define("viewof prompt", ["whisperInput","OPENAI_API_KEY","view","cautious","Inputs","invalidation"], _prompt);
   main.variable(observer("prompt")).define("prompt", ["Generators", "viewof prompt"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _11);
+  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _14);
   main.variable(observer("viewof suggestion")).define("viewof suggestion", ["Inputs","formatted_instruction"], _suggestion);
   main.variable(observer("suggestion")).define("suggestion", ["Generators", "viewof suggestion"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _13);
-  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","context","html","inspect"], _context_viz);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","extension_context_previous","context","html","inspect"], _context_viz);
   main.variable(observer("context_viz")).define("context_viz", ["Generators", "viewof context_viz"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _18);
   main.variable(observer("models")).define("models", _models);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
@@ -1136,23 +1097,30 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof settings")).define("viewof settings", ["Inputs","view","models","localStorageView"], _settings);
   main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
   main.variable(observer("system_prompt")).define("system_prompt", _system_prompt);
-  main.variable(observer()).define(["md"], _22);
-  main.variable(observer("background_tasks")).define("background_tasks", ["on_prompt","update_context","api_call_response","interceptVariables"], _background_tasks);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("background_tasks")).define("background_tasks", ["find_context_extensions","on_prompt","update_context","api_call_response","interceptVariables"], _background_tasks);
   main.variable(observer("viewof user_variable_filters")).define("viewof user_variable_filters", ["Inputs","localStorageView"], _user_variable_filters);
   main.variable(observer("user_variable_filters")).define("user_variable_filters", ["Generators", "viewof user_variable_filters"], (G, _) => G.input(_));
   main.variable(observer("ndd")).define("ndd", ["_ndd"], _ndd);
   main.variable(observer("formatted_instruction")).define("formatted_instruction", ["response"], _formatted_instruction);
   main.variable(observer("response")).define("response", ["on_prompt"], _response);
-  main.variable(observer("on_prompt")).define("on_prompt", ["viewof ask","mutable context","prompt"], _on_prompt);
-  main.variable(observer()).define(["md"], _29);
+  main.variable(observer("on_prompt")).define("on_prompt", ["extension_context","prompt","viewof extension_context_previous","Event","mutable context","viewof ask"], _on_prompt);
+  main.variable(observer()).define(["md"], _32);
+  main.variable(observer("viewof context_extensions")).define("viewof context_extensions", ["Inputs"], _context_extensions);
+  main.variable(observer("context_extensions")).define("context_extensions", ["Generators", "viewof context_extensions"], (G, _) => G.input(_));
+  main.variable(observer("find_context_extensions")).define("find_context_extensions", ["viewof context_extensions","cells"], _find_context_extensions);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("update_context")).define("update_context", ["unprompted_context","prompted_context","highlight_context","_","mutable context"], _update_context);
   main.define("initial context", _context);
   main.variable(observer("mutable context")).define("mutable context", ["Mutable", "initial context"], (M, _) => new M(_));
   main.variable(observer("context")).define("context", ["mutable context"], _ => _.generator);
+  main.variable(observer("viewof extension_context_previous")).define("viewof extension_context_previous", ["Inputs"], _extension_context_previous);
+  main.variable(observer("extension_context_previous")).define("extension_context_previous", ["Generators", "viewof extension_context_previous"], (G, _) => G.input(_));
   main.variable(observer("unprompted_context")).define("unprompted_context", ["cells"], _unprompted_context);
   main.variable(observer("prompted_context")).define("prompted_context", ["cells"], _prompted_context);
+  main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
   main.variable(observer("highlight_context")).define("highlight_context", ["cells"], _highlight_context);
-  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["md"], _43);
   main.variable(observer("find_prompt")).define("find_prompt", ["acorn"], _find_prompt);
   main.variable(observer("cells")).define("cells", ["code","find_prompt"], _cells);
   main.variable(observer("observableDefinitionToCode")).define("observableDefinitionToCode", ["acorn"], _observableDefinitionToCode);
@@ -1167,17 +1135,17 @@ export default function define(runtime, observer) {
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ask"], _48);
+  main.variable(observer()).define(["ask"], _56);
   main.variable(observer("prompt_messages")).define("prompt_messages", ["viewof settings","system_prompt","ask"], _prompt_messages);
   main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages","encode"], _token_analytics);
   main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["d3","token_analytics","settings"], _trimmed_prompt);
-  main.variable(observer()).define(["viewof settings"], _52);
   main.variable(observer("modelConfig")).define("modelConfig", ["viewof settings","ANTHROPIC_API_KEY","OPENAI_API_KEY","functions"], _modelConfig);
   main.variable(observer("openAiResponse")).define("openAiResponse", ["trimmed_prompt","modelConfig","viewof settings","OPENAI_API_KEY","api_endpoint"], _openAiResponse);
   main.variable(observer("instruction")).define("instruction", ["openAiResponse","viewof settings","processO1","ask","parseJSON"], _instruction);
+  main.variable(observer("content")).define("content", ["processO1","openAiResponse"], _content);
   main.variable(observer("processO1")).define("processO1", ["parseJSON"], _processO1);
-  main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
   main.variable(observer("parseJSON")).define("parseJSON", ["dirty_json"], _parseJSON);
+  main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
   const child1 = runtime.module(define1).derive(["excludes"], main);
   main.import("_ndd", child1);
   main.import("viewof reset", child1);
@@ -1205,8 +1173,5 @@ export default function define(runtime, observer) {
   const child9 = runtime.module(define9);
   main.import("highlight", child9);
   main.variable(observer("dirty_json")).define("dirty_json", _dirty_json);
-  const child10 = runtime.module(define10);
-  main.import("footer", child10);
-  main.variable(observer()).define(["footer"], _71);
   return main;
 }
