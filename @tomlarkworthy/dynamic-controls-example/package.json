@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dynamic-controls-example",
+  "main": "c6c614ecdc6bb481@181.js",
+  "version": "181.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dynamic-controls-example",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
