@@ -1,5 +1,5 @@
-import define1 from "./17c8ce433e1df58e@2490.js";
-import define2 from "./f92778131fd76559@1174.js";
+import define1 from "./17c8ce433e1df58e@3253.js";
+import define2 from "./f92778131fd76559@1176.js";
 import define3 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
@@ -47,12 +47,14 @@ function _tabbedPane(view,htl){return(
   </div>`;
 
     function switchTab(index) {
-      container.querySelectorAll(".tab").forEach((tab, i) => {
+      container.querySelectorAll(":scope > .tabs > .tab").forEach((tab, i) => {
         tab.classList.toggle("active", i === index);
       });
-      container.querySelectorAll(".tab-panel").forEach((panel, i) => {
-        panel.style.display = i === index ? "block" : "none";
-      });
+      container
+        .querySelectorAll(":scope > .tab-content > .tab-panel")
+        .forEach((panel, i) => {
+          panel.style.display = i === index ? "block" : "none";
+        });
     }
 
     return container;
@@ -62,7 +64,11 @@ function _tabbedPane(view,htl){return(
 function _controls(tabbedPane,Inputs){return(
 tabbedPane({
   left: Inputs.range([0, 1]),
-  right: Inputs.range([0, 10])
+  right: Inputs.range([0, 10]),
+  nested: tabbedPane({
+    text: Inputs.text(),
+    textarea: Inputs.textarea()
+  })
 })
 )}
 
@@ -79,7 +85,7 @@ Inputs.bind(Inputs.range([0, 10]), $0.right)
 )}
 
 function _7(md){return(
-md`## Made with AI + the Bindable UI Skill`
+md`## Made with Robocoop + the Bindable UI Skill`
 )}
 
 function _8($0){return(
