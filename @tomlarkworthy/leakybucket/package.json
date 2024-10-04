@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/leakybucket",
+  "main": "3fa6bd56f8d9c742@157.js",
+  "version": "157.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/leakybucket",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
