@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-skills",
+  "main": "c087cd984171e13b@2881.js",
+  "version": "2881.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-skills",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
