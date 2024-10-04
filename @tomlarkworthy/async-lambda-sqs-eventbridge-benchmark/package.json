@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/async-lambda-sqs-eventbridge-benchmark",
+  "main": "963a020f5ea01a56@69.js",
+  "version": "69.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/async-lambda-sqs-eventbridge-benchmark",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
