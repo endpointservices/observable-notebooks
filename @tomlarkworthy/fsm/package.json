@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/fsm",
+  "main": "38a22fd9c3d0ef68@285.js",
+  "version": "285.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/fsm",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
