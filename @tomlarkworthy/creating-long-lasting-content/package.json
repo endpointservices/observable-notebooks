@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/creating-long-lasting-content",
+  "main": "6b0187dda2885117@278.js",
+  "version": "278.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/creating-long-lasting-content",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
