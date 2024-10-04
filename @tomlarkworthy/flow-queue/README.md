@@ -1,6 +1,6 @@
 # Convert cell computation to a Promise with cell flowQueue
 
-https://observablehq.com/@tomlarkworthy/flow-queue@440
+https://observablehq.com/@tomlarkworthy/flow-queue@444
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -13,8 +13,8 @@ Or, use the [Observable Runtime](https://github.com/observablehq/runtime) to
 import this module directly into your application. To npm install:
 
 ~~~sh
-npm install @observablehq/runtime@4
-npm install https://api.observablehq.com/d/0e0b35a92c819d94@440.tgz?v=3
+npm install @observablehq/runtime@5
+npm install https://api.observablehq.com/@tomlarkworthy/flow-queue.tgz?v=3
 ~~~
 
 Then, import your notebook and the runtime as:

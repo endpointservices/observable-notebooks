@@ -1,7 +1,7 @@
 {
   "name": "@tomlarkworthy/flow-queue",
-  "main": "0e0b35a92c819d94@440.js",
-  "version": "440.0.0",
+  "main": "0e0b35a92c819d94@444.js",
+  "version": "444.0.0",
   "homepage": "https://observablehq.com/@tomlarkworthy/flow-queue",
   "author": {
     "name": "Tom Larkworthy",
@@ -9,6 +9,6 @@
   },
   "type": "module",
   "peerDependencies": {
-    "@observablehq/runtime": "4"
+    "@observablehq/runtime": "4 - 5"
   }
 }
