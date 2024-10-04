@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/imgchooser",
+  "main": "4927d59142ebc15a@2851.js",
+  "version": "2851.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/imgchooser",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
