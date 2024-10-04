@@ -1,6 +1,6 @@
 # Colossal Cave ChatGPT Challenge
 
-https://observablehq.com/@tomlarkworthy/colossal-cave-chatgpt-challange@659
+https://observablehq.com/@tomlarkworthy/colossal-cave-chatgpt-challange@663
 
 View this notebook in your browser by running a web server in this folder. For
 example:

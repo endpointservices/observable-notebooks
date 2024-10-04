@@ -36,13 +36,24 @@ Inputs.bind(
 function _model(Inputs){return(
 Inputs.select(
   [
-    "gpt-4",
-    "gpt-4-0314",
-    "gpt-3.5-turbo-16k",
-    "gpt-4-32k",
-    "gpt-4-32k-0314",
+    "gpt-3.5-turbo-1106",
     "gpt-3.5-turbo",
-    "gpt-3.5-turbo-0301"
+    "gpt-3.5-turbo-0301",
+    "gpt-3.5-turbo-0613",
+    "gpt-3.5-turbo-16k",
+    "gpt-3.5-turbo-16k-0613",
+    "gpt-3.5-turbo-instruct",
+    "gpt-3.5-turbo-instruct-0914",
+    "gpt-4-1106-preview",
+    "gpt-4",
+    "gpt-4-32k",
+    "gpt-4-0314",
+    "gpt-4-0613",
+    "gpt-4-turbo",
+    "gpt-4-turbo-2024-04-09",
+    "gpt-4-turbo-preview",
+    "gpt-4-vision-preview",
+    "gpt-4o"
   ].sort(),
   {
     label: "model"
@@ -74,7 +85,7 @@ function _8(md){return(
 md`<details>
   <summary>prompt hints</summary>
   <details>
-    <summary>Score 2: Game mechanics only</summary>
+    <summary>Score 2 (GPT 3.5 and 4o): Game mechanics only</summary>
 ${md`
 ~~~
 Act as a player in a 1970 text adventure game trying to get a good score. I will read the description and YOU MUST RESPOND WITH TWO WORDS. One VERB and one NOUN. DO NOT add any additional words or a different form. Do not apologize. DO NOT ASK A QUESTION.
@@ -356,7 +367,7 @@ blast
 `}
     </details>
     <details>
-    <summary>Score 93, Walkthrough + Chain of Thought</summary>
+    <summary>Score (GPT3.5: 93, GPT4o: 97), Walkthrough + Chain of Thought</summary>
 ${md`
 
 To help the assistant keep its place in the walkthrough I numbered the steps and asked it to output the step before the command. It performed so well that the context token size grew large enough to require truncation. It can't achieve a perfect score though because there are random elements in the game like the dwarves that mess the run up.
@@ -364,7 +375,9 @@ To help the assistant keep its place in the walkthrough I numbered the steps and
 ~~~
 Act as a player in a 1970 text adventure game trying to get a good score.
 
-I will read the description and YOU MUST RESPOND WITH WITH THE STEP NUMBER ON THE FIRST LINE AND THE NEXT COMMAND ON THE SECOND LINE. Here are the commands
+I will read the description and YOU MUST RESPOND WITH WITH THE STEP NUMBER ON THE FIRST LINE AND THE NEXT COMMAND ON THE SECOND LINE. If you are dealing with a random event like the dwarves, omit the STEP NUMBER 
+
+This is a walkthrough for the 350-point version of the Colossal Caves Adventure by Crowther and Woods. It begins at the start of the game outside the building, and is (more or less) the exact commands needed to win the game with the maximum number of points. This walkthrough will not solve any of the versions which have more total points. It assumes that you don't find the first dwarf (the one who throws the axe) before completing the first trip into the cave (else you'll have too many items to carry). It also assumes that you will pick up the axe as soon as you see it, and kill the other dwarves you see as you see them, and retrieve the axe afterwards. It also assumes that the pirate doesn't steal any treasure until you actually get into the maze of twisty little passages, all alike, or else you'll have to modify the chest-retrieval bit to account for it. Due to these random events, and certain other ones like passages occasionally dumping you into the same room you left from, this is not an exact walkthrough, and feeding the inputs shown into the game via input redirection will not work (unfortunately). You have to deal with the extra events as they happen, and maybe try several times before circumstances work out and you win the game.
 
 1. e
 2. get lamp
