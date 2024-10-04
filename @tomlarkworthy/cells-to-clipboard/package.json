@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/cells-to-clipboard",
+  "main": "5845e1ca935fea5a@225.js",
+  "version": "225.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/cells-to-clipboard",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
