@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blueswireless-2022-06-14",
+  "main": "9a2ceb5198f88a0f@686.js",
+  "version": "686.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blueswireless-2022-06-14",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
