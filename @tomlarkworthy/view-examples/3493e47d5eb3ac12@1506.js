@@ -1,7 +1,7 @@
-import define1 from "./f92778131fd76559@1174.js";
+import define1 from "./f92778131fd76559@1176.js";
 import define2 from "./84e66f78139ac354@829.js";
 import define3 from "./10134c5b92ee515d@869.js";
-import define4 from "./dfdb38d5580b5c35@331.js";
+import define4 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
 md`# View Composition Examples
