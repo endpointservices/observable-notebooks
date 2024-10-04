@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/view@1174
 import define1 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
@@ -145,7 +144,6 @@ md`Array bindings are mutable, you can write DOM components to the viewof layer`
 function _18(Inputs,$0,Event){return(
 Inputs.button("Add a slider", {
   reduce: () => {
-    debugger;
     $0.elements = [
       ...$0.elements,
       Inputs.range() // Add another viewof
@@ -460,7 +458,7 @@ function _bindOneWay(MutationObserver,Event)
     const targetEvent = eventof(target);
     const onsource = () => {
       set(target, source);
-      target.dispatchEvent(new Event(targetEvent, { bubles: true }));
+      target.dispatchEvent(new Event(targetEvent, { bubbles: true }));
     };
     onsource();
     source.addEventListener(sourceEvent, onsource);
