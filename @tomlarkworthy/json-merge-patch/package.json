@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/json-merge-patch",
+  "main": "043457d2830a6d48@78.js",
+  "version": "78.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/json-merge-patch",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
