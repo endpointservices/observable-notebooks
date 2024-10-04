@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/x-ray-slurper",
+  "main": "486254c21a5fa78f@2501.js",
+  "version": "2501.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/x-ray-slurper",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
