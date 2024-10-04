@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-blank-slate",
+  "main": "ae2987be1d73ac7e@2763.js",
+  "version": "2763.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-blank-slate",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
