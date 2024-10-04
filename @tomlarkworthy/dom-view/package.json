@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dom-view",
+  "main": "56b204c6d7cdb801@31.js",
+  "version": "31.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dom-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
