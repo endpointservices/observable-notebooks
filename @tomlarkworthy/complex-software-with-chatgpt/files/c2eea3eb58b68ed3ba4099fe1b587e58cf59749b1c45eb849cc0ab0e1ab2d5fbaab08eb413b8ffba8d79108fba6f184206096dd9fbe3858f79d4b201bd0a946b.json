@@ -1,0 +1,2124 @@
+{
+  "first_public_version": null,
+  "paused_version": null,
+  "published_versions": [],
+  "events": [
+    {
+      "type": "create",
+      "version": 2201,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:44:10.458Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2203,
+      "node_id": 2202,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:46:12.795Z",
+      "is_new": true,
+      "node_name": "markdown_skill"
+    },
+    {
+      "type": "modify_node",
+      "version": 2205,
+      "node_id": 2204,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:48:58.368Z",
+      "is_new": true,
+      "node_name": "game_architecture"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2206,
+      "node_id": 2204,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:49:17.768Z"
+    },
+    {
+      "type": "move_node",
+      "version": 2207,
+      "node_id": 2204,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:49:58.877Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2209,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:12.447Z",
+      "is_new": true,
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2210,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:26.335Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2211,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:30.520Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2212,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:41.480Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2213,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:47.541Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2214,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:51:57.546Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2216,
+      "node_id": 2215,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:52:09.381Z",
+      "is_new": true,
+      "node_value_start": "new Entity()"
+    },
+    {
+      "type": "remove_node",
+      "version": 2217,
+      "node_id": 2215,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:52:12.019Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2218,
+      "node_id": 2208,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:52:52.062Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2220,
+      "node_id": 2219,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:53:26.797Z",
+      "is_new": true,
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2221,
+      "node_id": 2219,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:53:35.706Z",
+      "node_name": "entity_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 2223,
+      "node_id": 2222,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T22:57:27.180Z",
+      "is_new": true,
+      "node_name": "entity_design"
+    },
+    {
+      "type": "modify_node",
+      "version": 2225,
+      "node_id": 2224,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:02:26.656Z",
+      "is_new": true,
+      "node_name": "dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2227,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:01.476Z",
+      "is_new": true,
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2228,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:13.403Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2229,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:14.933Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2230,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:28.430Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2231,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:47.450Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2232,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:05:55.170Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2233,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:06:01.606Z",
+      "node_name": "dynamic_dependency_injection"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2234,
+      "node_id": 2226,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:07:08.044Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2236,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:10:13.797Z",
+      "is_new": true,
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2237,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:12:07.852Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2238,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:12:38.154Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2239,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:12:42.962Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2240,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:14:01.557Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2241,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:14:42.494Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2242,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-12T23:15:02.831Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2243,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:21:29.201Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2245,
+      "node_id": 2244,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:21:53.891Z",
+      "is_new": true,
+      "node_name": "RenderSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2246,
+      "node_id": 2244,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:21:57.999Z",
+      "node_name": "RenderSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2247,
+      "node_id": 2244,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:22:01.189Z",
+      "node_name": "RenderSystem"
+    },
+    {
+      "type": "remove_node",
+      "version": 2248,
+      "node_id": 2244,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:23:05.386Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2250,
+      "node_id": 2249,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:24:38.703Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2252,
+      "node_id": 2251,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:26:36.277Z",
+      "is_new": true,
+      "node_name": "createDependency"
+    },
+    {
+      "type": "modify_node",
+      "version": 2253,
+      "node_id": 2251,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:27:22.564Z",
+      "node_name": "addDependency"
+    },
+    {
+      "type": "modify_node",
+      "version": 2255,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:28:00.473Z",
+      "is_new": true,
+      "node_value_start": "addDependency(\"BaseSystem\", class Syste"
+    },
+    {
+      "type": "modify_node",
+      "version": 2256,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:28:22.840Z",
+      "node_value_start": "addDependency(\"BaseSystem\", class Syste"
+    },
+    {
+      "type": "modify_node",
+      "version": 2257,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:28:27.945Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2258,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:28:36.940Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2259,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:28:43.862Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2260,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:29:52.987Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2261,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:30:29.368Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2262,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:30:36.912Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2263,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:30:48.858Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2264,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:31:12.680Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "remove_node",
+      "version": 2266,
+      "node_id": 2265,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:36:11.434Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2268,
+      "node_id": 2267,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:36:13.762Z",
+      "is_new": true,
+      "node_name": "caller_id"
+    },
+    {
+      "type": "modify_node",
+      "version": 2270,
+      "node_id": 2269,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:36:21.110Z",
+      "is_new": true,
+      "node_value_start": "caller_id()"
+    },
+    {
+      "type": "remove_node",
+      "version": 2271,
+      "node_id": 2269,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:36:56.572Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2272,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:38:39.342Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "remove_node",
+      "version": 2273,
+      "node_id": 2251,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:38:42.629Z"
+    },
+    {
+      "type": "move_node",
+      "version": 2274,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:38:49.439Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2275,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:38:54.077Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2276,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:38:58.505Z",
+      "node_value_start": "deps.add(\"BaseSystem\", class System {})"
+    },
+    {
+      "type": "modify_node",
+      "version": 2277,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:39:03.522Z",
+      "node_value_start": "deps_v0.add(\"BaseSystem\", class System "
+    },
+    {
+      "type": "modify_node",
+      "version": 2278,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:39:10.887Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2279,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:39:25.765Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2280,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:39:39.583Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2281,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:40:06.063Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2282,
+      "node_id": 2267,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:40:56.699Z",
+      "node_name": "caller_id"
+    },
+    {
+      "type": "modify_node",
+      "version": 2283,
+      "node_id": 2267,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:41:07.490Z",
+      "node_name": "caller_id"
+    },
+    {
+      "type": "modify_node",
+      "version": 2284,
+      "node_id": 2267,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:41:16.048Z",
+      "node_name": "caller_id"
+    },
+    {
+      "type": "modify_node",
+      "version": 2286,
+      "node_id": 2285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:42:55.228Z",
+      "is_new": true,
+      "node_name": "System"
+    },
+    {
+      "type": "modify_node",
+      "version": 2288,
+      "node_id": 2287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:44:11.071Z",
+      "is_new": true,
+      "node_value_start": "new Map()"
+    },
+    {
+      "type": "modify_node",
+      "version": 2289,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:45:18.728Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2290,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T07:45:22.372Z",
+      "node_name": "deps_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2291,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:32:09.683Z",
+      "node_value_start": "${await FileAttachment(\"DALL·E 2023-11-"
+    },
+    {
+      "type": "modify_title",
+      "version": 2292,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:32:09.907Z",
+      "title": "Dynamic Dependancy Injection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2293,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:32:23.094Z",
+      "node_value_start": "# Dynamic Dependancy Injection\n"
+    },
+    {
+      "type": "modify_node",
+      "version": 2294,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:36:56.161Z",
+      "node_value_start": "# Dynamic Dependancy Injection\n\n\n"
+    },
+    {
+      "type": "modify_node",
+      "version": 2296,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:38:19.519Z",
+      "is_new": true,
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2297,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:40:12.502Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2299,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:41:39.032Z",
+      "is_new": true,
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2300,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:42:51.810Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2301,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:43:02.861Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2302,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:43:34.199Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2304,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:43:56.237Z",
+      "is_new": true,
+      "node_value_start": "deps_v2.resolve(\"BaseSyste,\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2305,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:44:21.257Z",
+      "node_value_start": "deps_v2.resolve(\"BaseSystem\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2307,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:44:31.662Z",
+      "is_new": true,
+      "node_value_start": "deps_v2.register()"
+    },
+    {
+      "type": "modify_node",
+      "version": 2308,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:44:34.545Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2309,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:44:42.121Z",
+      "node_value_start": "deps_v2.register(class {})"
+    },
+    {
+      "type": "modify_node",
+      "version": 2310,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:45:03.107Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2311,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:46:38.257Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2312,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:47:26.729Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2313,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:48:18.877Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2314,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:48:35.798Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2315,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:48:47.075Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2316,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:48:56.967Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2317,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:49:19.715Z",
+      "node_name": "deps_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2318,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:49:50.116Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2319,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:49:58.501Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2320,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:50:14.706Z",
+      "node_name": "deps_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2321,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:51:22.379Z",
+      "node_value_start": "deps_v2.register(\"BaseSystem\", class {}"
+    },
+    {
+      "type": "modify_node",
+      "version": 2322,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:51:36.274Z",
+      "node_value_start": "deps_v2.register(\"BaseSystem\", class {}"
+    },
+    {
+      "type": "modify_node",
+      "version": 2324,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:51:41.883Z",
+      "is_new": true,
+      "node_value_start": "deps_v3.register(\"BaseSystem\", class {}"
+    },
+    {
+      "type": "modify_node",
+      "version": 2325,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:51:44.651Z",
+      "node_value_start": "deps_v2.register(\"BaseSystem\", class {}"
+    },
+    {
+      "type": "remove_node",
+      "version": 2326,
+      "node_id": 2285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:27.152Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2327,
+      "node_id": 2235,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:27.152Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2328,
+      "node_id": 2287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:27.152Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2329,
+      "node_id": 2254,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:32.549Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2330,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:48.098Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "remove_node",
+      "version": 2331,
+      "node_id": 2295,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:53:58.476Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2332,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:02.010Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2333,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:06.212Z",
+      "node_value_start": "deps.resolve(\"BaseSystem\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2334,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:08.478Z",
+      "node_value_start": "deps.register(\"BaseSystem\", class {}, 1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2335,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:12.533Z",
+      "node_value_start": "deps.register(\"BaseSystem\", class {}, 1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2336,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:19.843Z",
+      "node_value_start": "deps.register(\"BaseSystem\", class {}, 2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2337,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:54:24.482Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo\", 2)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2338,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:55:04.923Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo2\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2339,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:55:09.890Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo3\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2340,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T18:58:30.170Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2342,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:03:46.721Z",
+      "is_new": true,
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2343,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:04:09.112Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2344,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:04:36.740Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2345,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:04:43.809Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2346,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:04:51.710Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2347,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:04:59.223Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2348,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:05:06.805Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2349,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:05:11.839Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2350,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:05:16.655Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "move_node",
+      "version": 2351,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:06:46.827Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2353,
+      "node_id": 2352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:06:59.347Z",
+      "is_new": true,
+      "node_name": "deps1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2354,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:13.250Z",
+      "node_value_start": "dep1.resolve(\"BaseSystem\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2355,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:18.286Z",
+      "node_value_start": "deps1.register(\"BaseSystem\", class {}, "
+    },
+    {
+      "type": "modify_node",
+      "version": 2356,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:19.936Z",
+      "node_value_start": "deps1.resolve(\"BaseSystem\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2357,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:22.475Z",
+      "node_value_start": "deps1.register(\"BaseSystem\", \"foo3\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2358,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:26.364Z",
+      "node_value_start": "deps1.register(\"BaseSystem\", \"foo4\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2359,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:07:36.025Z",
+      "node_value_start": "deps1.register(\"BaseSystem\", \"foo5\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2360,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:13:05.968Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2361,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:13:11.375Z",
+      "node_name": "self_triggering_loop_detection"
+    },
+    {
+      "type": "modify_node",
+      "version": 2362,
+      "node_id": 2352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:13:29.903Z",
+      "node_name": "deps1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2363,
+      "node_id": 2352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:14:08.157Z",
+      "node_name": "deps1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2364,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:14:13.192Z",
+      "node_value_start": "deps1.register(\"BaseSystem\", \"foo6\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2365,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:01.406Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2366,
+      "node_id": 2303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:18.735Z",
+      "node_value_start": "deps.resolve(\"BaseSystem\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2367,
+      "node_id": 2306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:20.883Z",
+      "node_value_start": "deps.register(\"BaseSystem\", class {}, 1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2368,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:23.555Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo6\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2369,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:27.162Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo7\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2370,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:29.663Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo8\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2371,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:20:34.936Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo9\", 3)"
+    },
+    {
+      "type": "remove_node",
+      "version": 2372,
+      "node_id": 2352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:21:17.496Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2373,
+      "node_id": 2341,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:21:22.562Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2374,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:21:29.904Z",
+      "node_value_start": "deps.register(\"BaseSystem\", \"foo10\", 3)"
+    },
+    {
+      "type": "modify_node",
+      "version": 2375,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:22:05.183Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2376,
+      "node_id": 2219,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:23:07.581Z",
+      "node_name": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2378,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:28:03.708Z",
+      "is_new": true,
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2379,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:28:19.311Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2380,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:28:31.416Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "remove_node",
+      "version": 2381,
+      "node_id": 2323,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:28:50.768Z"
+    },
+    {
+      "type": "move_node",
+      "version": 2382,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:29:52.417Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2384,
+      "node_id": 2383,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:31:40.809Z",
+      "is_new": true,
+      "node_name": "view"
+    },
+    {
+      "type": "modify_node",
+      "version": 2385,
+      "node_id": 2383,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:31:56.615Z",
+      "node_name": "view"
+    },
+    {
+      "type": "modify_node",
+      "version": 2387,
+      "node_id": 2386,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:32:13.703Z",
+      "is_new": true,
+      "node_value_start": "deps.resolve(\"view\")"
+    },
+    {
+      "type": "modify_node",
+      "version": 2388,
+      "node_id": 2386,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:35:46.590Z",
+      "node_name": "view"
+    },
+    {
+      "type": "modify_node",
+      "version": 2389,
+      "node_id": 2383,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:35:54.977Z",
+      "node_name": "view_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2391,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:37:06.292Z",
+      "is_new": true,
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2392,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:37:12.658Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2393,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T19:37:43.106Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2395,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:09:57.601Z",
+      "is_new": true,
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2396,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:10:47.314Z",
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2397,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:11:20.702Z",
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2399,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:12:37.387Z",
+      "is_new": true,
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2400,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:12:40.266Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "move_node",
+      "version": 2401,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:12:52.973Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2404,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:14:46.528Z",
+      "is_new": true,
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2406,
+      "node_id": 2405,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:15:09.107Z",
+      "is_new": true,
+      "node_value_start": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2407,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:18:52.763Z",
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2408,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:21:09.810Z",
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2409,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:21:46.714Z",
+      "node_name": "ticker"
+    },
+    {
+      "type": "modify_node",
+      "version": 2410,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:21:56.263Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2412,
+      "node_id": 2411,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:23:51.078Z",
+      "is_new": true,
+      "node_name": "ticker_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2413,
+      "node_id": 2411,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:23:54.338Z",
+      "node_name": "ticker_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2414,
+      "node_id": 2411,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:24:33.645Z",
+      "node_name": "ticker_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2415,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:25:11.422Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2416,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:25:34.990Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2417,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:25:40.260Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2418,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:26:37.189Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2419,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:27:07.162Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2420,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:27:24.960Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2421,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:27:30.601Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2422,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:27:33.556Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "remove_node",
+      "version": 2423,
+      "node_id": 2405,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:27:55.429Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2424,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:28:36.259Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2425,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:29:26.173Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2426,
+      "node_id": 2411,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:29:31.325Z",
+      "node_name": "ticker_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2427,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:30:11.747Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2428,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:30:52.566Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2429,
+      "node_id": 2219,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:31:10.396Z",
+      "node_name": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2431,
+      "node_id": 2430,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:31:36.613Z",
+      "is_new": true,
+      "node_value_start": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2432,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:31:52.071Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2433,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:32:08.812Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2434,
+      "node_id": 2219,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:32:20.737Z",
+      "node_name": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2435,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:32:33.019Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2436,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:32:39.554Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2438,
+      "node_id": 2437,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:35:26.369Z",
+      "is_new": true,
+      "node_value_start": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 2439,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:37:31.698Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2440,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:37:46.771Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2441,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:38:38.527Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2442,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:38:53.990Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2443,
+      "node_id": 2394,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:39:37.497Z",
+      "node_name": "ticker_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2444,
+      "node_id": 2411,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:39:43.298Z",
+      "node_name": "ticker_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2445,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:40:49.576Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2446,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:42:51.852Z",
+      "node_name": "PhysicsSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2447,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:42:59.402Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2448,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:44:37.778Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2449,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:45:00.424Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2450,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:46:50.030Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2451,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:47:01.657Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2452,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:47:26.704Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2453,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:48:13.302Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2454,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:53:16.184Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2456,
+      "node_id": 2455,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:53:40.035Z",
+      "is_new": true,
+      "node_name": "draw_circle"
+    },
+    {
+      "type": "modify_node",
+      "version": 2457,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:54:06.399Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2458,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:55:19.151Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2459,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:55:30.813Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2460,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:55:35.655Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2461,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T20:59:40.048Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2462,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:01:03.926Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2463,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:02:08.130Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2464,
+      "node_id": 2383,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:03:55.381Z",
+      "node_name": "view_v0"
+    },
+    {
+      "type": "modify_node",
+      "version": 2465,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:04:29.938Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2466,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:06:14.796Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2467,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:06:16.899Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2468,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:06:22.665Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2469,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:06:30.730Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2470,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:06:34.946Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2471,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:08:03.529Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2472,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:08:49.427Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2473,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:09:05.509Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2474,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:09:14.970Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2475,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:09:49.118Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2476,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:09:56.623Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2477,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:09:59.892Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2478,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:12:38.715Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2479,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:12:45.441Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2480,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:12:53.375Z",
+      "node_name": "RendererSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2481,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:16:19.623Z",
+      "node_name": "add_entity_button"
+    },
+    {
+      "type": "modify_node",
+      "version": 2482,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-13T21:18:01.503Z",
+      "node_name": "view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2483,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-14T07:28:41.175Z",
+      "node_value_start": "# Make a Game Part I\n\n\n"
+    },
+    {
+      "type": "modify_title",
+      "version": 2484,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-14T07:28:41.300Z",
+      "title": "Make a Game Part I"
+    },
+    {
+      "type": "modify_node",
+      "version": 2485,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-14T18:57:38.778Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2486,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T21:32:32.799Z",
+      "node_value_start": "# Make a Game Part I - Ideation and Arc"
+    },
+    {
+      "type": "modify_title",
+      "version": 2487,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T21:32:33.007Z",
+      "title": "Make a Game Part I - Ideation and Architecture"
+    }
+  ],
+  "merges": [],
+  "users": [
+    {
+      "id": "5215f6ec4a999d40",
+      "github_login": "tomlarkworthy",
+      "avatar_url": "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+      "login": "tomlarkworthy",
+      "name": "Tom Larkworthy",
+      "bio": "Tech Lead at Taktile.\nFormerly Firebase, Google",
+      "home_url": "https://taktile.com",
+      "tier": "pro",
+      "following_count": 24,
+      "followers_count": 30,
+      "following": false
+    }
+  ],
+  "identifiers": [
+    [
+      0,
+      {
+        "node_value_start": "${await FileAttachment(\"DALL·E 2023-11-1"
+      }
+    ],
+    [
+      81,
+      {
+        "node_value_start": "viewof prompt"
+      }
+    ],
+    [
+      1014,
+      {
+        "node_value_start": "Inputs.button(\"copy code\", {\n  reduce: ("
+      }
+    ],
+    [
+      105,
+      {
+        "node_value_start": "viewof suggestion"
+      }
+    ],
+    [
+      1463,
+      {
+        "node_value_start": "## Current Chat context"
+      }
+    ],
+    [
+      1252,
+      {
+        "node_value_start": "viewof context_viz"
+      }
+    ],
+    [
+      1470,
+      {
+        "node_value_start": "tick the cells to include in the next pr"
+      }
+    ],
+    [
+      1473,
+      {
+        "node_value_start": "viewof feedback_cells_selector"
+      }
+    ],
+    [
+      1542,
+      {
+        "node_value_start": "feedback_prompt"
+      }
+    ],
+    [
+      1692,
+      {
+        "node_value_start": "### AI Settings"
+      }
+    ],
+    [
+      29,
+      {
+        "node_value_start": "viewof OPENAI_API_KEY"
+      }
+    ],
+    [
+      2061,
+      {
+        "node_value_start": "viewof api_endpoint"
+      }
+    ],
+    [
+      2163,
+      {
+        "node_value_start": "viewof settings"
+      }
+    ],
+    [
+      2193,
+      {
+        "node_value_start": "---"
+      }
+    ],
+    [
+      2114,
+      {
+        "node_value_start": "import {\n  ask,\n  excludes,\n  cells,\n  u"
+      }
+    ],
+    [
+      2179,
+      {
+        "node_name": "workers"
+      }
+    ]
+  ]
+}

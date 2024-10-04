@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/complex-software-with-chatgpt",
+  "main": "e02656b7cf50983a@6540.js",
+  "version": "6540.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/complex-software-with-chatgpt",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}

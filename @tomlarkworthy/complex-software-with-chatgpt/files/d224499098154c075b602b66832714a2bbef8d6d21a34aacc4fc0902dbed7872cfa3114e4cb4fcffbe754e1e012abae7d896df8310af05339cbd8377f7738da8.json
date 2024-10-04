@@ -1,0 +1,1565 @@
+{
+  "first_public_version": null,
+  "paused_version": null,
+  "published_versions": [],
+  "events": [
+    {
+      "type": "create",
+      "version": 4245,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:53:03.960Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4246,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:53:10.173Z",
+      "node_value_start": "# Make a Game Part VII - Audio\n\n\n"
+    },
+    {
+      "type": "modify_title",
+      "version": 4247,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:53:10.367Z",
+      "title": "Make a Game Part VII - Audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4248,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:53:18.509Z",
+      "node_value_start": "# Make a Game Part VIII - Audio\n\n\n"
+    },
+    {
+      "type": "modify_title",
+      "version": 4249,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:53:18.509Z",
+      "title": "Make a Game Part VIII - Audio"
+    },
+    {
+      "type": "remove_node",
+      "version": 4250,
+      "node_id": 4045,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4251,
+      "node_id": 3998,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4252,
+      "node_id": 4059,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4253,
+      "node_id": 4117,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4254,
+      "node_id": 4123,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4255,
+      "node_id": 4126,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T09:54:07.296Z"
+    },
+    {
+      "type": "insert_node",
+      "version": 4256,
+      "node_id": 4256,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:31:47.538Z",
+      "node_name": "pop284862"
+    },
+    {
+      "type": "move_node",
+      "version": 4257,
+      "node_id": 4256,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:32:05.072Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4274,
+      "node_id": 4273,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:32:17.574Z",
+      "is_new": true,
+      "node_value_start": "### Audio"
+    },
+    {
+      "type": "move_node",
+      "version": 4275,
+      "node_id": 81,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:32:30.211Z"
+    },
+    {
+      "type": "move_node",
+      "version": 4277,
+      "node_id": 4231,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:32:38.007Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4284,
+      "node_id": 4231,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:32:49.221Z",
+      "node_value_start": "### Sidequest Filtering\n\niterating on t"
+    },
+    {
+      "type": "modify_node",
+      "version": 4286,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:36:42.739Z",
+      "is_new": true,
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4288,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:36:57.726Z",
+      "is_new": true,
+      "node_name": "audio"
+    },
+    {
+      "type": "remove_node",
+      "version": 4289,
+      "node_id": 4256,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:36:59.692Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4290,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:37:19.660Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4291,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:39:37.616Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4292,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:39:54.847Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4293,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:41:18.755Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4294,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:41:30.256Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4295,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:41:49.340Z",
+      "node_name": "audio"
+    },
+    {
+      "type": "modify_node",
+      "version": 4297,
+      "node_id": 4296,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:43:31.569Z",
+      "is_new": true,
+      "node_value_start": "audio[\"shot\"]"
+    },
+    {
+      "type": "modify_node",
+      "version": 4298,
+      "node_id": 4296,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:43:38.061Z",
+      "node_value_start": "audio[\"shot\"].play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4300,
+      "node_id": 4299,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:18.024Z",
+      "is_new": true,
+      "node_value_start": "import \"sample\" from \"@tomlarkworthy/au"
+    },
+    {
+      "type": "modify_node",
+      "version": 4301,
+      "node_id": 4299,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:27.523Z",
+      "node_value_start": "import { sample } from \"@tomlarkworthy/"
+    },
+    {
+      "type": "resolve_dependency",
+      "version": 4302,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:27.742Z",
+      "specifier": "@twitter/density-plot@4159",
+      "specifier_type": "notebook",
+      "value": "13a3f0db163beab4@4159"
+    },
+    {
+      "type": "resolve_dependency",
+      "version": 4303,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:27.742Z",
+      "specifier": "@observablehq/htl",
+      "specifier_type": "notebook",
+      "value": "11a5ab8b1b3a51db@1161"
+    },
+    {
+      "type": "resolve_dependency",
+      "version": 4304,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:27.742Z",
+      "specifier": "@observablehq/inputs",
+      "specifier_type": "notebook",
+      "value": "a2e58f97fd5e8d7c@756"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4305,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:47:53.276Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4307,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:48:15.825Z",
+      "is_new": true,
+      "node_value_start": "sample({\n  loop: false,\n  gain: 0.4,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 4308,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:48:22.248Z",
+      "node_value_start": "sample({\n  loop: false,\n  gain: 0.4,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 4309,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:48:29.120Z",
+      "node_value_start": "sample({\n  loop: false,\n  gain: 0.4,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 4310,
+      "node_id": 4299,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:48:41.933Z",
+      "node_value_start": "import { sample, audioContext } from \"@"
+    },
+    {
+      "type": "modify_node",
+      "version": 4311,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:48:48.065Z",
+      "node_value_start": "sample({\n  loop: false,\n  gain: 0.4,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 4312,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:52:23.312Z",
+      "node_name": "pop"
+    },
+    {
+      "type": "modify_node",
+      "version": 4314,
+      "node_id": 4313,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:52:27.438Z",
+      "is_new": true,
+      "node_value_start": "pop"
+    },
+    {
+      "type": "modify_node",
+      "version": 4315,
+      "node_id": 4313,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:52:41.214Z",
+      "node_value_start": "pop.play()"
+    },
+    {
+      "type": "remove_node",
+      "version": 4316,
+      "node_id": 4313,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:52:51.201Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4317,
+      "node_id": 4287,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:52:55.480Z"
+    },
+    {
+      "type": "move_node",
+      "version": 4318,
+      "node_id": 4299,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:53:02.844Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4319,
+      "node_id": 4299,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:53:04.954Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4320,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:53:08.212Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4321,
+      "node_id": 4306,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:53:20.940Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4323,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:54:39.907Z",
+      "is_new": true,
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4324,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:55:20.576Z",
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4325,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:55:23.884Z",
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4327,
+      "node_id": 4326,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:55:39.111Z",
+      "is_new": true,
+      "node_value_start": "player"
+    },
+    {
+      "type": "modify_node",
+      "version": 4328,
+      "node_id": 4326,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:55:45.854Z",
+      "node_value_start": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4329,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:01.647Z",
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4330,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:06.598Z",
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "modify_node",
+      "version": 4331,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:23.921Z",
+      "node_name": "soundEffectPlayer"
+    },
+    {
+      "type": "remove_node",
+      "version": 4332,
+      "node_id": 4326,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:28.753Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4333,
+      "node_id": 4285,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:34.660Z",
+      "node_name": "selectedSound"
+    },
+    {
+      "type": "modify_node",
+      "version": 4334,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:40.884Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4335,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:56:44.838Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4336,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:59:08.397Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4337,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T14:59:36.005Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4338,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:00:09.122Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4339,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:00:24.870Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4340,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:00:29.732Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "modify_node",
+      "version": 4341,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:01:25.410Z",
+      "node_name": "sampleAdjuster"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4342,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:01:54.005Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4344,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:02:56.328Z",
+      "is_new": true,
+      "node_name": "manual"
+    },
+    {
+      "type": "modify_node",
+      "version": 4345,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:03:16.841Z",
+      "node_name": "manual"
+    },
+    {
+      "type": "modify_node",
+      "version": 4346,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:03:28.776Z",
+      "node_name": "shot"
+    },
+    {
+      "type": "modify_node",
+      "version": 4348,
+      "node_id": 4347,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:03:52.892Z",
+      "is_new": true,
+      "node_value_start": "shot"
+    },
+    {
+      "type": "modify_node",
+      "version": 4349,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:04:15.475Z",
+      "node_name": "shot"
+    },
+    {
+      "type": "modify_node",
+      "version": 4350,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:04:17.329Z",
+      "node_name": "shot"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4351,
+      "node_id": 4343,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:04:23.529Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4353,
+      "node_id": 4352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:04:44.336Z",
+      "is_new": true,
+      "node_name": "alarm"
+    },
+    {
+      "type": "modify_node",
+      "version": 4354,
+      "node_id": 4352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:04:57.944Z",
+      "node_name": "alarm"
+    },
+    {
+      "type": "modify_node",
+      "version": 4355,
+      "node_id": 4352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:05:21.375Z",
+      "node_name": "alarm"
+    },
+    {
+      "type": "modify_node",
+      "version": 4356,
+      "node_id": 4352,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:06:23.845Z",
+      "node_name": "alarm"
+    },
+    {
+      "type": "remove_node",
+      "version": 4358,
+      "node_id": 4357,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:06:42.472Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4360,
+      "node_id": 4359,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:06:58.180Z",
+      "is_new": true,
+      "node_name": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4361,
+      "node_id": 4359,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:07:05.570Z",
+      "node_name": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4362,
+      "node_id": 4359,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:07:08.276Z",
+      "node_name": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4363,
+      "node_id": 4347,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:07:28.328Z",
+      "node_value_start": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4364,
+      "node_id": 4359,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:07:45.515Z",
+      "node_name": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4366,
+      "node_id": 4365,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:08:05.511Z",
+      "is_new": true,
+      "node_value_start": "explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4368,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:08:40.236Z",
+      "is_new": true,
+      "node_value_start": "viewof explode"
+    },
+    {
+      "type": "modify_node",
+      "version": 4369,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:08:45.719Z",
+      "node_value_start": "viewof explode.queryElement()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4370,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:09:57.596Z",
+      "node_value_start": "viewof explode.play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4371,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:10:01.817Z",
+      "node_value_start": "explode.play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4372,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:11:45.119Z",
+      "node_value_start": "viewof explode.play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4373,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:16.439Z",
+      "node_value_start": "viewof alarm.play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4374,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:19.636Z",
+      "node_value_start": "viewof alarm.stop()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4375,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:31.809Z",
+      "node_value_start": "viewof alarm.play()"
+    },
+    {
+      "type": "modify_node",
+      "version": 4376,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:34.281Z",
+      "node_value_start": "viewof alarm.stop()"
+    },
+    {
+      "type": "remove_node",
+      "version": 4377,
+      "node_id": 4367,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:43.052Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4378,
+      "node_id": 4359,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:13:47.819Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4379,
+      "node_id": 4322,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:14:18.556Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 4380,
+      "node_id": 4296,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:18:06.919Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4382,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:18:36.261Z",
+      "is_new": true,
+      "node_name": "EnemyAlarmSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4383,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:18:40.631Z",
+      "node_name": "EnemyAlarmSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4384,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:18:43.343Z",
+      "node_name": "EnemyAlarmSystem"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4385,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:06.906Z"
+    },
+    {
+      "type": "pin_node",
+      "version": 4386,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:08.028Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4387,
+      "node_id": 4381,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:08.737Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4389,
+      "node_id": 4388,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:19.895Z",
+      "is_new": true,
+      "node_name": "LazerShotSoundSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4390,
+      "node_id": 4388,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:31.825Z",
+      "node_name": "LazerShotSoundSystem"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4391,
+      "node_id": 4388,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:20:33.281Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4393,
+      "node_id": 4392,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:23:40.477Z",
+      "is_new": true,
+      "node_name": "LazerShotSoundSystem_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 4394,
+      "node_id": 4392,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:23:44.187Z",
+      "node_name": "LazerShotSoundSystem_v2"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4395,
+      "node_id": 4392,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:23:46.113Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4397,
+      "node_id": 4396,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:25:51.305Z",
+      "is_new": true,
+      "node_name": "BoulderExplodeSoundSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4398,
+      "node_id": 4396,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:25:55.245Z",
+      "node_name": "BoulderExplodeSoundSystem"
+    },
+    {
+      "type": "unpin_node",
+      "version": 4399,
+      "node_id": 4396,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:25:56.899Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4400,
+      "node_id": 2757,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:29:34.417Z",
+      "node_name": "gameState"
+    },
+    {
+      "type": "modify_node",
+      "version": 4402,
+      "node_id": 4401,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:31:06.153Z",
+      "is_new": true,
+      "node_name": "RestartGameOnSpaceSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4403,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:32:03.514Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 4404,
+      "node_id": 4401,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:32:15.028Z",
+      "node_name": "RestartGameOnSpaceSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4405,
+      "node_id": 4401,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T15:32:34.251Z",
+      "node_name": "RestartGameOnSpaceSystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 4406,
+      "node_id": 3127,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:51:08.998Z",
+      "node_name": "RendererSystem_v5"
+    },
+    {
+      "type": "insert_node",
+      "version": 4407,
+      "node_id": 4407,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:51:14.723Z",
+      "node_value_start": "\n        );*/\n      }\n    }\n  }\n\n  deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 4408,
+      "node_id": 3127,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:51:14.723Z",
+      "node_name": "RendererSystem_v5"
+    },
+    {
+      "type": "remove_node",
+      "version": 4409,
+      "node_id": 4407,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:51:21.166Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 4410,
+      "node_id": 3127,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:51:22.300Z",
+      "node_name": "RendererSystem_v5"
+    },
+    {
+      "type": "modify_node",
+      "version": 4411,
+      "node_id": 3127,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-12-03T18:53:32.306Z",
+      "node_name": "RendererSystem_v5"
+    }
+  ],
+  "merges": [],
+  "users": [
+    {
+      "id": "5215f6ec4a999d40",
+      "github_login": "tomlarkworthy",
+      "avatar_url": "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+      "login": "tomlarkworthy",
+      "name": "Tom Larkworthy",
+      "bio": "Tech Lead at Taktile.\nFormerly Firebase, Google",
+      "home_url": "https://taktile.com",
+      "tier": "pro",
+      "following_count": 24,
+      "followers_count": 30,
+      "following": false
+    }
+  ],
+  "identifiers": [
+    [
+      0,
+      {
+        "node_value_start": "# Make a Game Part VII - Boxing\n\n\n"
+      }
+    ],
+    [
+      2849,
+      {
+        "node_value_start": "import { view } from \"@tomlarkworthy/vie"
+      }
+    ],
+    [
+      3436,
+      {
+        "node_value_start": "### State"
+      }
+    ],
+    [
+      2298,
+      {
+        "node_name": "deps"
+      }
+    ],
+    [
+      2219,
+      {
+        "node_name": "entities"
+      }
+    ],
+    [
+      2757,
+      {
+        "node_name": "gameState"
+      }
+    ],
+    [
+      2693,
+      {
+        "node_name": "keysPressed"
+      }
+    ],
+    [
+      3431,
+      {
+        "node_value_start": "### Refactored Routines"
+      }
+    ],
+    [
+      3419,
+      {
+        "node_name": "collisionDetection_v1"
+      }
+    ],
+    [
+      3422,
+      {
+        "node_name": "spawnEntity_v1"
+      }
+    ],
+    [
+      3425,
+      {
+        "node_name": "randomizeVelocity_v1"
+      }
+    ],
+    [
+      3428,
+      {
+        "node_name": "removeEntity_v1"
+      }
+    ],
+    [
+      3445,
+      {
+        "node_name": "generateAsset_v1"
+      }
+    ],
+    [
+      3448,
+      {
+        "node_value_start": "### Update Game"
+      }
+    ],
+    [
+      3457,
+      {
+        "node_name": "PlayerControl_v7"
+      }
+    ],
+    [
+      3503,
+      {
+        "node_name": "BulletBolouder_v6"
+      }
+    ],
+    [
+      3510,
+      {
+        "node_name": "PlayerBoulderCollisionSystem"
+      }
+    ],
+    [
+      2507,
+      {
+        "node_name": "assets"
+      }
+    ],
+    [
+      2267,
+      {
+        "node_name": "caller_id"
+      }
+    ],
+    [
+      2306,
+      {
+        "node_value_start": "deps.register(\"BaseSystem\", class {}, 1)"
+      }
+    ],
+    [
+      2411,
+      {
+        "node_name": "ticker_v1"
+      }
+    ],
+    [
+      2504,
+      {
+        "node_name": "assets_v1"
+      }
+    ],
+    [
+      2527,
+      {
+        "node_name": "player_entity"
+      }
+    ],
+    [
+      2559,
+      {
+        "node_name": "PhysicsSystem_v2"
+      }
+    ],
+    [
+      2649,
+      {
+        "node_name": "WorldWrap"
+      }
+    ],
+    [
+      2624,
+      {
+        "node_name": "projectile_asset"
+      }
+    ],
+    [
+      2731,
+      {
+        "node_name": "boulder_template"
+      }
+    ],
+    [
+      2743,
+      {
+        "node_name": "small_boulder_template"
+      }
+    ],
+    [
+      2956,
+      {
+        "node_name": "ship_template_v3"
+      }
+    ],
+    [
+      3042,
+      {
+        "node_name": "score_template"
+      }
+    ],
+    [
+      3051,
+      {
+        "node_name": "lives_template"
+      }
+    ],
+    [
+      3068,
+      {
+        "node_name": "HUDSystem"
+      }
+    ],
+    [
+      3108,
+      {
+        "node_name": "boulder_generator_v1"
+      }
+    ],
+    [
+      3127,
+      {
+        "node_name": "RendererSystem_v5"
+      }
+    ],
+    [
+      3037,
+      {
+        "node_value_start": "gameState"
+      }
+    ],
+    [
+      3261,
+      {
+        "node_value_start": "entities"
+      }
+    ],
+    [
+      3163,
+      {
+        "node_name": "CleanupSystem"
+      }
+    ],
+    [
+      3252,
+      {
+        "node_value_start": "entities"
+      }
+    ],
+    [
+      3165,
+      {
+        "node_name": "BoulderGenerationSystem"
+      }
+    ],
+    [
+      3167,
+      {
+        "node_name": "GameOverSystem"
+      }
+    ],
+    [
+      3169,
+      {
+        "node_name": "LifeLostSystem"
+      }
+    ],
+    [
+      3218,
+      {
+        "node_name": "enemy_ship_template_v4"
+      }
+    ],
+    [
+      3224,
+      {
+        "node_name": "EnemyShipSystem"
+      }
+    ],
+    [
+      3283,
+      {
+        "node_name": "EnemyShipSystem_v2"
+      }
+    ],
+    [
+      3606,
+      {
+        "node_name": "PlayerLazerEnemyCollisionSystem"
+      }
+    ],
+    [
+      3459,
+      {
+        "node_value_start": "deps.resolve(\"generateUIPanel\")"
+      }
+    ],
+    [
+      3324,
+      {
+        "node_name": "EnemyLazerSystem"
+      }
+    ],
+    [
+      3354,
+      {
+        "node_name": "enemyLazer_template"
+      }
+    ],
+    [
+      3875,
+      {
+        "node_name": "generateNeonGlowFilter_v6"
+      }
+    ],
+    [
+      3654,
+      {
+        "node_name": "generateNeonGlowFilterPreview"
+      }
+    ],
+    [
+      3767,
+      {
+        "node_value_start": "generateNeonGlowFilterPreview"
+      }
+    ],
+    [
+      3763,
+      {
+        "node_name": "NeonFilterApplicationSystem"
+      }
+    ],
+    [
+      3825,
+      {
+        "node_value_start": "entities"
+      }
+    ],
+    [
+      2994,
+      {
+        "node_name": "startGameButton_v2"
+      }
+    ],
+    [
+      3402,
+      {
+        "node_name": "PlayerHitByLazerSystem"
+      }
+    ],
+    [
+      2803,
+      {
+        "node_name": "game_view"
+      }
+    ],
+    [
+      3914,
+      {
+        "node_name": "backdrop"
+      }
+    ],
+    [
+      3926,
+      {
+        "node_name": "generateUIPanel_v2"
+      }
+    ],
+    [
+      3940,
+      {
+        "node_name": "positionView"
+      }
+    ],
+    [
+      3943,
+      {
+        "node_name": "positionStartButton"
+      }
+    ],
+    [
+      3948,
+      {
+        "node_name": "game"
+      }
+    ],
+    [
+      3957,
+      {
+        "node_value_start": "positionView"
+      }
+    ],
+    [
+      3971,
+      {
+        "node_name": "game_view_v3"
+      }
+    ],
+    [
+      3985,
+      {
+        "node_name": "crtWarpAdjustment"
+      }
+    ],
+    [
+      3991,
+      {
+        "node_name": "CRTWarpFilterSystem"
+      }
+    ],
+    [
+      3998,
+      {
+        "node_name": "crtWarpAdjustmentGenerator"
+      }
+    ],
+    [
+      4045,
+      {
+        "node_name": "crtWarpAdjustmentGenerator_v2"
+      }
+    ],
+    [
+      4064,
+      {
+        "node_value_start": "html`<h4>crtWarpDisplacementMap</h4><img"
+      }
+    ],
+    [
+      4095,
+      {
+        "node_name": "warpImageTest"
+      }
+    ],
+    [
+      4091,
+      {
+        "node_name": "crtWarpAdjustmentGenerator_v3"
+      }
+    ],
+    [
+      4059,
+      {
+        "node_name": "crtWarpDisplacementMap"
+      }
+    ],
+    [
+      4117,
+      {
+        "node_name": "crtWarpDisplacementMap_v2"
+      }
+    ],
+    [
+      4123,
+      {
+        "node_name": "crtWarpDisplacementMap_v3"
+      }
+    ],
+    [
+      4126,
+      {
+        "node_name": "crtWarpDisplacementMap_v4"
+      }
+    ],
+    [
+      4231,
+      {
+        "node_value_start": "### Sidequest\n\niterating on the filter o"
+      }
+    ],
+    [
+      4235,
+      {
+        "node_name": "crtWarpDisplacementMap_v5"
+      }
+    ],
+    [
+      81,
+      {
+        "node_value_start": "viewof prompt"
+      }
+    ],
+    [
+      4079,
+      {
+        "node_value_start": "Sound Effects from <a href=\"https://pixa"
+      }
+    ],
+    [
+      1014,
+      {
+        "node_value_start": "Inputs.button(\"copy code\", {\n  reduce: ("
+      }
+    ],
+    [
+      105,
+      {
+        "node_value_start": "viewof suggestion"
+      }
+    ],
+    [
+      1463,
+      {
+        "node_value_start": "## Current Chat context"
+      }
+    ],
+    [
+      1252,
+      {
+        "node_value_start": "viewof context_viz"
+      }
+    ],
+    [
+      1470,
+      {
+        "node_value_start": "tick the cells to include in the next pr"
+      }
+    ],
+    [
+      1473,
+      {
+        "node_value_start": "viewof feedback_cells_selector"
+      }
+    ],
+    [
+      1542,
+      {
+        "node_value_start": "feedback_prompt"
+      }
+    ],
+    [
+      1692,
+      {
+        "node_value_start": "### AI Settings"
+      }
+    ],
+    [
+      29,
+      {
+        "node_value_start": "viewof OPENAI_API_KEY"
+      }
+    ],
+    [
+      2061,
+      {
+        "node_value_start": "viewof api_endpoint"
+      }
+    ],
+    [
+      2163,
+      {
+        "node_value_start": "viewof settings"
+      }
+    ],
+    [
+      2193,
+      {
+        "node_value_start": "---"
+      }
+    ],
+    [
+      4083,
+      {
+        "node_value_start": "source[\"crtWarpDisplacementMap\"]"
+      }
+    ],
+    [
+      2114,
+      {
+        "node_value_start": "import {\n  source,\n  code,\n  ask,\n  excl"
+      }
+    ],
+    [
+      2179,
+      {
+        "node_name": "workers"
+      }
+    ]
+  ]
+}

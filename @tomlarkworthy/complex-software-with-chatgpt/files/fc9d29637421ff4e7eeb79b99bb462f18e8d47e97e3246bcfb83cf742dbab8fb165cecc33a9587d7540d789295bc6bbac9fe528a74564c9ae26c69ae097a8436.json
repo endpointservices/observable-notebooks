@@ -1,0 +1,2338 @@
+{
+  "first_public_version": null,
+  "paused_version": null,
+  "published_versions": [],
+  "events": [
+    {
+      "type": "create",
+      "version": 2800,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:32:47.589Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2801,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:32:53.208Z",
+      "node_value_start": "# Make a Game Part III\n\n\n"
+    },
+    {
+      "type": "modify_title",
+      "version": 2802,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:32:53.541Z",
+      "title": "Make a Game Part III"
+    },
+    {
+      "type": "modify_node",
+      "version": 2804,
+      "node_id": 2803,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:34:52.657Z",
+      "is_new": true,
+      "node_name": "view"
+    },
+    {
+      "type": "remove_node",
+      "version": 2805,
+      "node_id": 2781,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:35:02.502Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2806,
+      "node_id": 2390,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:35:43.641Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2807,
+      "node_id": 2430,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:35:47.745Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2808,
+      "node_id": 2398,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:35:53.879Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2809,
+      "node_id": 2556,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:36:09.671Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2810,
+      "node_id": 2377,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:36:18.418Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2811,
+      "node_id": 2570,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:36:38.312Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2812,
+      "node_id": 2513,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:36:45.079Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2813,
+      "node_id": 2509,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:36:58.704Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2814,
+      "node_id": 2594,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:37:09.217Z",
+      "node_name": "ship_template_v2"
+    },
+    {
+      "type": "remove_node",
+      "version": 2815,
+      "node_id": 2585,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:37:15.733Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2816,
+      "node_id": 2627,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:37:25.230Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2817,
+      "node_id": 2658,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:37:30.983Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2818,
+      "node_id": 2747,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:37:59.059Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2820,
+      "node_id": 2819,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:40:13.979Z",
+      "is_new": true,
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2821,
+      "node_id": 2819,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:40:20.977Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "remove_node",
+      "version": 2822,
+      "node_id": 2594,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-17T18:41:02.207Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2823,
+      "node_id": 2202,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:34:13.747Z",
+      "node_name": "markdown_skill"
+    },
+    {
+      "type": "modify_node",
+      "version": 2825,
+      "node_id": 2824,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:34:46.409Z",
+      "is_new": true,
+      "node_name": "bindableUISkill"
+    },
+    {
+      "type": "modify_node",
+      "version": 2827,
+      "node_id": 2826,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:00.793Z",
+      "is_new": true,
+      "node_value_start": "import { view } from \"@tomlarkworthy/vi"
+    },
+    {
+      "type": "remove_node",
+      "version": 2828,
+      "node_id": 2826,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:06.687Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2829,
+      "node_id": 2824,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof bindableUISkill = ({\n  prom"
+    },
+    {
+      "type": "modify_node",
+      "version": 2830,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof deps = {\n  ({\n    prompt:\n "
+    },
+    {
+      "type": "modify_node",
+      "version": 2831,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "game_view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2832,
+      "node_id": 2578,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "RendererSystem_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2833,
+      "node_id": 2624,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "projectile_asset"
+    },
+    {
+      "type": "modify_node",
+      "version": 2834,
+      "node_id": 2649,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "WorldWrap"
+    },
+    {
+      "type": "modify_node",
+      "version": 2835,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2836,
+      "node_id": 2743,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "small_boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2837,
+      "node_id": 2759,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "GameLoop_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2838,
+      "node_id": 2803,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "game_view"
+    },
+    {
+      "type": "modify_node",
+      "version": 2839,
+      "node_id": 2819,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2840,
+      "node_id": 81,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof prompt"
+    },
+    {
+      "type": "modify_node",
+      "version": 2841,
+      "node_id": 105,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof suggestion"
+    },
+    {
+      "type": "modify_node",
+      "version": 2842,
+      "node_id": 1252,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof context_viz"
+    },
+    {
+      "type": "modify_node",
+      "version": 2843,
+      "node_id": 1473,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof feedback_cells_selector"
+    },
+    {
+      "type": "modify_node",
+      "version": 2844,
+      "node_id": 29,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof OPENAI_API_KEY"
+    },
+    {
+      "type": "modify_node",
+      "version": 2845,
+      "node_id": 2061,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof api_endpoint"
+    },
+    {
+      "type": "modify_node",
+      "version": 2846,
+      "node_id": 2163,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "game_viewof settings"
+    },
+    {
+      "type": "modify_node",
+      "version": 2847,
+      "node_id": 2114,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:35:52.580Z",
+      "node_value_start": "import {\n  ask,\n  excludes,\n  cells,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 2848,
+      "node_id": 2824,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:02.930Z",
+      "node_name": "bindableUISkill"
+    },
+    {
+      "type": "modify_node",
+      "version": 2850,
+      "node_id": 2849,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:11.522Z",
+      "is_new": true,
+      "node_value_start": "import { view } from \"@tomlarkworthy/vi"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2851,
+      "node_id": 2824,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:13.632Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2852,
+      "node_id": 2849,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:14.628Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2853,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:23.232Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2854,
+      "node_id": 2298,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_name": "deps"
+    },
+    {
+      "type": "modify_node",
+      "version": 2855,
+      "node_id": 81,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof prompt"
+    },
+    {
+      "type": "modify_node",
+      "version": 2856,
+      "node_id": 105,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof suggestion"
+    },
+    {
+      "type": "modify_node",
+      "version": 2857,
+      "node_id": 1252,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof context_viz"
+    },
+    {
+      "type": "modify_node",
+      "version": 2858,
+      "node_id": 1473,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof feedback_cells_selector"
+    },
+    {
+      "type": "modify_node",
+      "version": 2859,
+      "node_id": 29,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof OPENAI_API_KEY"
+    },
+    {
+      "type": "modify_node",
+      "version": 2860,
+      "node_id": 2061,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof api_endpoint"
+    },
+    {
+      "type": "modify_node",
+      "version": 2861,
+      "node_id": 2163,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "viewof settings"
+    },
+    {
+      "type": "modify_node",
+      "version": 2862,
+      "node_id": 2114,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:36:55.861Z",
+      "node_value_start": "import {\n  ask,\n  excludes,\n  cells,\n  "
+    },
+    {
+      "type": "modify_node",
+      "version": 2864,
+      "node_id": 2863,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:37:24.631Z",
+      "is_new": true,
+      "node_value_start": "entities"
+    },
+    {
+      "type": "move_node",
+      "version": 2865,
+      "node_id": 2803,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:43:25.977Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2867,
+      "node_id": 2819,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:44:23.216Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2868,
+      "node_id": 2863,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:54:47.141Z",
+      "node_name": "assets_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2869,
+      "node_id": 2771,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:55:10.402Z",
+      "node_name": "GravitySystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2870,
+      "node_id": 2771,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:55:13.636Z",
+      "node_name": "GravitySystem"
+    },
+    {
+      "type": "modify_node",
+      "version": 2871,
+      "node_id": 2863,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:55:15.047Z",
+      "node_name": "assets_v2"
+    },
+    {
+      "type": "remove_node",
+      "version": 2872,
+      "node_id": 2863,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:55:53.391Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2873,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:56:30.554Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2874,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:56:48.622Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2875,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:56:50.532Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2876,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:57:01.550Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2877,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:57:41.394Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2878,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T11:59:11.368Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2879,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:00:19.078Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2880,
+      "node_id": 2403,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:00:35.164Z",
+      "node_name": "game_view_v1"
+    },
+    {
+      "type": "modify_node",
+      "version": 2881,
+      "node_id": 2624,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:00:35.164Z",
+      "node_name": "projectile_asset"
+    },
+    {
+      "type": "modify_node",
+      "version": 2882,
+      "node_id": 2731,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:00:35.164Z",
+      "node_name": "boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2883,
+      "node_id": 2743,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:00:35.164Z",
+      "node_name": "small_boulder_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 2885,
+      "node_id": 2884,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:01:49.131Z",
+      "is_new": true,
+      "node_name": "player_entity"
+    },
+    {
+      "type": "remove_node",
+      "version": 2886,
+      "node_id": 2884,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:01:53.470Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2888,
+      "node_id": 2887,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:03:19.810Z",
+      "is_new": true,
+      "node_name": "ship_template_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2889,
+      "node_id": 2887,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:03:31.125Z",
+      "node_name": "ship_template_v2"
+    },
+    {
+      "type": "remove_node",
+      "version": 2890,
+      "node_id": 2771,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:04:21.404Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2892,
+      "node_id": 2891,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:06:07.444Z",
+      "is_new": true,
+      "node_name": "gameLoopSettings"
+    },
+    {
+      "type": "modify_node",
+      "version": 2894,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:08:15.236Z",
+      "is_new": true,
+      "node_name": "gameLoop"
+    },
+    {
+      "type": "modify_node",
+      "version": 2895,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:09:16.571Z",
+      "node_name": "gameLoop"
+    },
+    {
+      "type": "modify_node",
+      "version": 2896,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:09:50.326Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2897,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:11:51.774Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2898,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:11:55.756Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2899,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:12:42.106Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2900,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:12:46.667Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2901,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:12:57.834Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "remove_node",
+      "version": 2902,
+      "node_id": 2891,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:13:12.494Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2903,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:13:16.250Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2904,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:14:52.105Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2905,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:15:03.818Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2906,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:15:11.586Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2907,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:15:27.098Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2908,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:15:43.213Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2909,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:15:57.213Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2910,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:16:01.297Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2911,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:16:03.580Z",
+      "node_name": "GameLoop_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2913,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:17:06.718Z",
+      "is_new": true,
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "remove_node",
+      "version": 2914,
+      "node_id": 2893,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:17:41.001Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2915,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:17:44.329Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2916,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:17:46.391Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2917,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:17:49.458Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2918,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:18:14.715Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2919,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:18:49.204Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2920,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:18:57.854Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2921,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:19:25.203Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2922,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:19:41.276Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2923,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:19:47.466Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2924,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:19:53.426Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2925,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:20:21.370Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2926,
+      "node_id": 2912,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:20:34.368Z",
+      "node_name": "GameLoop_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2928,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:48:01.159Z",
+      "is_new": true,
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "move_node",
+      "version": 2929,
+      "node_id": 2803,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:48:18.560Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2931,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:49:32.913Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2932,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:49:39.268Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2933,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:51:16.762Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2934,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:52:03.470Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2935,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:52:15.462Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2936,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:52:21.800Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2937,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:52:50.244Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2938,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:53:15.720Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2939,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:53:40.231Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2940,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:54:39.071Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2941,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T12:57:38.301Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 2943,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:07:09.602Z",
+      "is_new": true,
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2944,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:07:22.459Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2945,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:12:36.328Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2946,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:12:57.823Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2947,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:14:25.801Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2948,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:14:30.744Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2949,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:14:50.632Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2950,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:14:52.754Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2951,
+      "node_id": 2942,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:15:08.853Z",
+      "node_name": "game_view_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 2953,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:22:25.967Z",
+      "is_new": true,
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2954,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:24:00.984Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2955,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:27:44.323Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 2957,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:33:48.161Z",
+      "is_new": true,
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2958,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:34:13.329Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2959,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:36:37.727Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2960,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:36:52.192Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2961,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:37:00.705Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2962,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:37:23.545Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2963,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:37:52.965Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2964,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:38:55.919Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2965,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:39:15.942Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2966,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:39:36.058Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2967,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:40:00.390Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2968,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:40:40.694Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2969,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:40:40.694Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2970,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:42:15.143Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2971,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:42:23.455Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2972,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:43:33.242Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2973,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:43:53.837Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2974,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:43:59.595Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2975,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:44:17.279Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2976,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:45:04.468Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2977,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:46:26.450Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2978,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:46:31.181Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2979,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:46:33.795Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2980,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:47:32.510Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2981,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:47:47.753Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2982,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:48:00.218Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2983,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:48:35.219Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2984,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:49:15.808Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2985,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:50:20.765Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2986,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:50:50.010Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2987,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:51:04.842Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2988,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:51:50.081Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2989,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:52:33.474Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2990,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:53:17.009Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 2992,
+      "node_id": 2991,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:57:35.266Z",
+      "is_new": true,
+      "node_name": "startGameButton"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2993,
+      "node_id": 2991,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T16:58:11.376Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2995,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:00:12.106Z",
+      "is_new": true,
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "unpin_node",
+      "version": 2996,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:00:16.688Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 2997,
+      "node_id": 2991,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:00:38.724Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 2998,
+      "node_id": 2956,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:01:42.665Z",
+      "node_name": "ship_template_v3"
+    },
+    {
+      "type": "modify_node",
+      "version": 3000,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:04:50.916Z",
+      "is_new": true,
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3001,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:05:57.269Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3002,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:06:02.399Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3004,
+      "node_id": 3003,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:06:25.926Z",
+      "is_new": true,
+      "node_value_start": "entities"
+    },
+    {
+      "type": "modify_node",
+      "version": 3005,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:06:42.764Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3006,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:06:53.870Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3007,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:07:25.611Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3008,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:08:03.676Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3009,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:08:24.251Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3010,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:08:32.733Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3011,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:09:03.047Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3012,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:09:07.605Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3013,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:11:10.969Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3014,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:11:33.433Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3015,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:13:46.609Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3016,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:16:28.913Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3017,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:16:48.777Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3018,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:17:27.608Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3019,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:17:57.803Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3020,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:20:42.022Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3021,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:20:52.224Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3022,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:21:00.921Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3023,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:21:51.030Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3024,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:22:46.509Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3025,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:23:01.582Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3026,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:23:07.481Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3027,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:23:17.694Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3028,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:23:22.059Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3029,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:23:25.127Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "unpin_node",
+      "version": 3030,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:24:08.952Z"
+    },
+    {
+      "type": "remove_node",
+      "version": 3031,
+      "node_id": 3003,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:24:12.798Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 3032,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:25:26.270Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3033,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:25:38.677Z",
+      "node_name": "RendererSystem_v4"
+    },
+    {
+      "type": "modify_node",
+      "version": 3034,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:29:04.384Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3035,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:29:42.434Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3036,
+      "node_id": 2999,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:31:15.454Z",
+      "node_name": "background_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3038,
+      "node_id": 3037,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:46:22.481Z",
+      "is_new": true,
+      "node_value_start": "game_state"
+    },
+    {
+      "type": "modify_node",
+      "version": 3039,
+      "node_id": 3037,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:46:30.883Z",
+      "node_value_start": "gameState"
+    },
+    {
+      "type": "modify_node",
+      "version": 3040,
+      "node_id": 3037,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:47:04.893Z",
+      "node_value_start": "gameState?"
+    },
+    {
+      "type": "modify_node",
+      "version": 3041,
+      "node_id": 3037,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:47:06.455Z",
+      "node_value_start": "gameState"
+    },
+    {
+      "type": "modify_node",
+      "version": 3043,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:50:34.332Z",
+      "is_new": true,
+      "node_name": "score_template"
+    },
+    {
+      "type": "unpin_node",
+      "version": 3044,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:50:36.031Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 3045,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:51:20.112Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3046,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:51:50.880Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3047,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:52:11.328Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3048,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:52:26.525Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3049,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:52:30.796Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3050,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:53:27.496Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3052,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:55:48.328Z",
+      "is_new": true,
+      "node_name": "lives_template"
+    },
+    {
+      "type": "unpin_node",
+      "version": 3053,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:55:49.942Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 3054,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:56:03.854Z",
+      "node_name": "lives_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3055,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:56:41.717Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3056,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:56:47.610Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3057,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:57:09.287Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3058,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:57:24.565Z",
+      "node_name": "lives_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3059,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:57:28.751Z",
+      "node_name": "lives_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3060,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:57:53.703Z",
+      "node_name": "lives_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3061,
+      "node_id": 2994,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:58:30.627Z",
+      "node_name": "startGameButton_v2"
+    },
+    {
+      "type": "modify_node",
+      "version": 3062,
+      "node_id": 3051,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:58:46.840Z",
+      "node_name": "lives_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3063,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:58:59.726Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3064,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:59:02.903Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3065,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T17:59:22.835Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3066,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T18:00:12.824Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3067,
+      "node_id": 3042,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T18:00:14.176Z",
+      "node_name": "score_template"
+    },
+    {
+      "type": "modify_node",
+      "version": 3069,
+      "node_id": 3068,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T18:01:21.274Z",
+      "is_new": true,
+      "node_name": "HUDSystem"
+    },
+    {
+      "type": "unpin_node",
+      "version": 3070,
+      "node_id": 3068,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T18:01:28.267Z"
+    },
+    {
+      "type": "unpin_node",
+      "version": 3071,
+      "node_id": 2952,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T21:27:41.817Z"
+    },
+    {
+      "type": "modify_node",
+      "version": 3072,
+      "node_id": 2927,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-19T21:31:58.709Z",
+      "node_name": "PlayerControl_v6"
+    },
+    {
+      "type": "modify_node",
+      "version": 3073,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-20T07:36:54.453Z",
+      "node_value_start": "# Make a Game Part III -- UI all the th"
+    },
+    {
+      "type": "modify_title",
+      "version": 3074,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-20T07:36:54.821Z",
+      "title": "Make a Game Part III -- UI all the things"
+    },
+    {
+      "type": "modify_node",
+      "version": 3075,
+      "node_id": 0,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-20T07:36:57.428Z",
+      "node_value_start": "# Make a Game Part III - UI all the thi"
+    },
+    {
+      "type": "modify_title",
+      "version": 3076,
+      "node_id": null,
+      "user_id": "5215f6ec4a999d40",
+      "time": "2023-11-20T07:36:57.700Z",
+      "title": "Make a Game Part III - UI all the things"
+    }
+  ],
+  "merges": [],
+  "users": [
+    {
+      "id": "5215f6ec4a999d40",
+      "github_login": "tomlarkworthy",
+      "avatar_url": "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+      "login": "tomlarkworthy",
+      "name": "Tom Larkworthy",
+      "bio": "Tech Lead at Taktile.\nFormerly Firebase, Google",
+      "home_url": "https://taktile.com",
+      "tier": "pro",
+      "following_count": 24,
+      "followers_count": 30,
+      "following": false
+    }
+  ],
+  "identifiers": [
+    [
+      0,
+      {
+        "node_value_start": "# Make a Game Part II\n\n\n"
+      }
+    ],
+    [
+      2202,
+      {
+        "node_name": "markdown_skill"
+      }
+    ],
+    [
+      2219,
+      {
+        "node_name": "entities"
+      }
+    ],
+    [
+      2267,
+      {
+        "node_name": "caller_id"
+      }
+    ],
+    [
+      2298,
+      {
+        "node_name": "deps"
+      }
+    ],
+    [
+      2306,
+      {
+        "node_value_start": "deps.register(\"BaseSystem\", class {}, 1)"
+      }
+    ],
+    [
+      2377,
+      {
+        "node_name": "PhysicsSystem"
+      }
+    ],
+    [
+      2390,
+      {
+        "node_name": "RendererSystem"
+      }
+    ],
+    [
+      2430,
+      {
+        "node_value_start": "entities"
+      }
+    ],
+    [
+      2398,
+      {
+        "node_name": "add_entity_button"
+      }
+    ],
+    [
+      2403,
+      {
+        "node_name": "view_v1"
+      }
+    ],
+    [
+      2411,
+      {
+        "node_name": "ticker_v1"
+      }
+    ],
+    [
+      2504,
+      {
+        "node_name": "assets_v1"
+      }
+    ],
+    [
+      2507,
+      {
+        "node_name": "assets"
+      }
+    ],
+    [
+      2509,
+      {
+        "node_name": "ship_template"
+      }
+    ],
+    [
+      2513,
+      {
+        "node_name": "RendererSystem_v2"
+      }
+    ],
+    [
+      2527,
+      {
+        "node_name": "player_entity"
+      }
+    ],
+    [
+      2556,
+      {
+        "node_name": "PlayerControl"
+      }
+    ],
+    [
+      2559,
+      {
+        "node_name": "PhysicsSystem_v2"
+      }
+    ],
+    [
+      2693,
+      {
+        "node_name": "keysPressed"
+      }
+    ],
+    [
+      2570,
+      {
+        "node_name": "PlayerControl_v2"
+      }
+    ],
+    [
+      2578,
+      {
+        "node_name": "RendererSystem_v3"
+      }
+    ],
+    [
+      2585,
+      {
+        "node_name": "PlayerControl_v3"
+      }
+    ],
+    [
+      2594,
+      {
+        "node_name": "ship_template_v2"
+      }
+    ],
+    [
+      2624,
+      {
+        "node_name": "projectile_asset"
+      }
+    ],
+    [
+      2627,
+      {
+        "node_name": "PlayerControl_v4"
+      }
+    ],
+    [
+      2649,
+      {
+        "node_name": "WorldWrap"
+      }
+    ],
+    [
+      2654,
+      {
+        "node_name": "PlayerControl_v5"
+      }
+    ],
+    [
+      2658,
+      {
+        "node_value_start": "entities"
+      }
+    ],
+    [
+      2731,
+      {
+        "node_name": "boulder_template"
+      }
+    ],
+    [
+      2734,
+      {
+        "node_name": "add_boulders"
+      }
+    ],
+    [
+      2743,
+      {
+        "node_name": "small_boulder_template"
+      }
+    ],
+    [
+      2747,
+      {
+        "node_name": "GameLoop"
+      }
+    ],
+    [
+      2757,
+      {
+        "node_name": "gameState"
+      }
+    ],
+    [
+      2759,
+      {
+        "node_name": "GameLoop_v2"
+      }
+    ],
+    [
+      2771,
+      {
+        "node_name": "GravitySystem"
+      }
+    ],
+    [
+      2781,
+      {
+        "node_name": "UIRenderer"
+      }
+    ],
+    [
+      81,
+      {
+        "node_value_start": "viewof prompt"
+      }
+    ],
+    [
+      1014,
+      {
+        "node_value_start": "Inputs.button(\"copy code\", {\n  reduce: ("
+      }
+    ],
+    [
+      105,
+      {
+        "node_value_start": "viewof suggestion"
+      }
+    ],
+    [
+      1463,
+      {
+        "node_value_start": "## Current Chat context"
+      }
+    ],
+    [
+      1252,
+      {
+        "node_value_start": "viewof context_viz"
+      }
+    ],
+    [
+      1470,
+      {
+        "node_value_start": "tick the cells to include in the next pr"
+      }
+    ],
+    [
+      1473,
+      {
+        "node_value_start": "viewof feedback_cells_selector"
+      }
+    ],
+    [
+      1542,
+      {
+        "node_value_start": "feedback_prompt"
+      }
+    ],
+    [
+      1692,
+      {
+        "node_value_start": "### AI Settings"
+      }
+    ],
+    [
+      29,
+      {
+        "node_value_start": "viewof OPENAI_API_KEY"
+      }
+    ],
+    [
+      2061,
+      {
+        "node_value_start": "viewof api_endpoint"
+      }
+    ],
+    [
+      2163,
+      {
+        "node_value_start": "viewof settings"
+      }
+    ],
+    [
+      2193,
+      {
+        "node_value_start": "---"
+      }
+    ],
+    [
+      2114,
+      {
+        "node_value_start": "import {\n  ask,\n  excludes,\n  cells,\n  u"
+      }
+    ],
+    [
+      2179,
+      {
+        "node_name": "workers"
+      }
+    ]
+  ]
+}
