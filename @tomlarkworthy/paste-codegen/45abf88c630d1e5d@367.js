@@ -1,4 +1,4 @@
-import define1 from "./293899bef371e135@278.js";
+import define1 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
 md`# Code generation with multi-cell clipboard pasting
