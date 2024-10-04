@@ -1,4 +1,4 @@
-import define1 from "./17c8ce433e1df58e@3066.js";
+import define1 from "./17c8ce433e1df58e@3253.js";
 import define2 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
@@ -150,39 +150,31 @@ function _14(md){return(
 md`tick the cells to include in the next prompt`
 )}
 
-function _15($0){return(
-$0
+function _15(md){return(
+md`### AI Settings`
 )}
 
 function _16($0){return(
 $0
 )}
 
-function _17(md){return(
-md`### AI Settings`
+function _17($0){return(
+$0
 )}
 
 function _18($0){return(
 $0
 )}
 
-function _19($0){return(
-$0
-)}
-
-function _20($0){return(
-$0
-)}
-
-function _21(md){return(
+function _19(md){return(
 md`---`
 )}
 
-function _23(background_tasks){return(
+function _21(background_tasks){return(
 background_tasks
 )}
 
-function _25(footer){return(
+function _23(footer){return(
 footer
 )}
 
@@ -203,13 +195,11 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _12);
   main.variable(observer()).define(["viewof context_viz"], _13);
   main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _15);
-  main.variable(observer()).define(["viewof feedback_prompt"], _16);
-  main.variable(observer()).define(["md"], _17);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _18);
-  main.variable(observer()).define(["viewof api_endpoint"], _19);
-  main.variable(observer()).define(["viewof settings"], _20);
-  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _16);
+  main.variable(observer()).define(["viewof api_endpoint"], _17);
+  main.variable(observer()).define(["viewof settings"], _18);
+  main.variable(observer()).define(["md"], _19);
   const child1 = runtime.module(define1);
   main.import("ask", child1);
   main.import("excludes", child1);
@@ -236,9 +226,9 @@ export default function define(runtime, observer) {
   main.import("feedback_cells_selector", child1);
   main.import("viewof context_viz", child1);
   main.import("context_viz", child1);
-  main.variable(observer()).define(["background_tasks"], _23);
+  main.variable(observer()).define(["background_tasks"], _21);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _25);
+  main.variable(observer()).define(["footer"], _23);
   return main;
 }

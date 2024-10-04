@@ -1,6 +1,6 @@
 # OpenAI Whisper Input
 
-https://observablehq.com/@tomlarkworthy/whisper-input@2458
+https://observablehq.com/@tomlarkworthy/whisper-input@2460
 
 View this notebook in your browser by running a web server in this folder. For
 example:
