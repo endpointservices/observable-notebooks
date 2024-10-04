@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/simple-prompt",
+  "main": "3461ba3b700c20ad@809.js",
+  "version": "809.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/simple-prompt",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
