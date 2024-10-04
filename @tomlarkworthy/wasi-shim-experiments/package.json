@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/wasi-shim-experiments",
+  "main": "b27e734809ee2cbf@171.js",
+  "version": "171.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/wasi-shim-experiments",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
