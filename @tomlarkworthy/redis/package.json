@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/redis",
+  "main": "6a703b03d185f279@1005.js",
+  "version": "1005.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/redis",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
