@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lazer-light",
+  "main": "81c87215243489f9@1050.js",
+  "version": "1050.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lazer-light",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
