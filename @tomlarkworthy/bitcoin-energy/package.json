@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/bitcoin-energy",
+  "main": "1ec35f4d18c04a5d@422.js",
+  "version": "422.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/bitcoin-energy",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
