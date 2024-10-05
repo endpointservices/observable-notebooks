@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-deploy-to-s3",
+  "main": "c96fede10094bb03@330.js",
+  "version": "330.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-deploy-to-s3",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
