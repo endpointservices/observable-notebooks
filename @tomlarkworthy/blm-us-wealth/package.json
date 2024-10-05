@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blm-us-wealth",
+  "main": "f0d1c0fe9961865b@314.js",
+  "version": "314.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blm-us-wealth",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
