@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/shareview",
+  "main": "5c1b38ac46351270@317.js",
+  "version": "317.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/shareview",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
