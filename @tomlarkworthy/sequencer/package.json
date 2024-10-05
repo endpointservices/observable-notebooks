@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/sequencer",
+  "main": "c7ee2d72efea7f94@1382.js",
+  "version": "1382.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/sequencer",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
