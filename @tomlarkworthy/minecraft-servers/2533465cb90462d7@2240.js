@@ -1,5 +1,5 @@
 import define1 from "./c686e8f9e2eb9b4c@2099.js";
-import define2 from "./dfdb38d5580b5c35@331.js";
+import define2 from "./dfdb38d5580b5c35@334.js";
 
 function _1(header){return(
 header
@@ -51,15 +51,11 @@ function _12(vmsCopier,userCopier,username_initializer,poll_state,updatedParams)
 }
 
 
-function _13(futurice_profile_bulma){return(
-futurice_profile_bulma
-)}
-
-function _15(style){return(
+function _14(style){return(
 style
 )}
 
-function _17(footer){return(
+function _16(footer){return(
 footer
 )}
 
@@ -77,7 +73,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["viewof newServerParameters"], _10);
   main.variable(observer()).define(["viewof logs"], _11);
   main.variable(observer()).define(["vmsCopier","userCopier","username_initializer","poll_state","updatedParams"], _12);
-  main.variable(observer()).define(["futurice_profile_bulma"], _13);
   const child1 = runtime.module(define1);
   main.import("header", child1);
   main.import("invites", child1);
@@ -99,9 +94,9 @@ export default function define(runtime, observer) {
   main.import("username_initializer", child1);
   main.import("poll_state", child1);
   main.import("updatedParams", child1);
-  main.variable(observer()).define(["style"], _15);
+  main.variable(observer()).define(["style"], _14);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _17);
+  main.variable(observer()).define(["footer"], _16);
   return main;
 }

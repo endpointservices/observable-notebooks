@@ -1,6 +1,6 @@
 # On Demand Minecraft Servers
 
-https://observablehq.com/@tomlarkworthy/minecraft-servers@2239
+https://observablehq.com/@tomlarkworthy/minecraft-servers@2240
 
 View this notebook in your browser by running a web server in this folder. For
 example:
