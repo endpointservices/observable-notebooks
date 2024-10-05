@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/synchronizing-external-state-into-bigquery-efficiently",
+  "main": "4f5c11416c999120@203.js",
+  "version": "203.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/synchronizing-external-state-into-bigquery-efficiently",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
