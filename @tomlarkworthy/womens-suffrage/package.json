@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/womens-suffrage",
+  "main": "dfa3bcf63922ac8a@927.js",
+  "version": "927.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/womens-suffrage",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
