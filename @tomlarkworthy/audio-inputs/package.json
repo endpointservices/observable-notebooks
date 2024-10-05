@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/audio-inputs",
+  "main": "e7c3854dfc5e08c3@1245.js",
+  "version": "1245.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/audio-inputs",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
