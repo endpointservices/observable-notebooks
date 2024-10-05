@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/rss-atom-feed",
+  "main": "63492ed71ab34d5c@800.js",
+  "version": "800.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/rss-atom-feed",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
