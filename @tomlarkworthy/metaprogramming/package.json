@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/metaprogramming",
+  "main": "65d33fe44849cfde@588.js",
+  "version": "588.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/metaprogramming",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
