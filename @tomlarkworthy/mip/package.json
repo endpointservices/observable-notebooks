@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/mip",
+  "main": "7978f0c1524e3972@720.js",
+  "version": "720.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/mip",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
