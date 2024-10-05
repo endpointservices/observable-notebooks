@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/jamstack",
+  "main": "7ea3754ef54f3ec8@654.js",
+  "version": "654.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/jamstack",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
