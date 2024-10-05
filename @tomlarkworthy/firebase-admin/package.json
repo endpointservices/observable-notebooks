@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-admin",
+  "main": "698257e86fae4586@378.js",
+  "version": "378.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-admin",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
