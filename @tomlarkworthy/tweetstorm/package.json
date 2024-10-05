@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/tweetstorm",
+  "main": "d12b5c9be0a1f99c@366.js",
+  "version": "366.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/tweetstorm",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
