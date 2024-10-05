@@ -1,12 +1,12 @@
 import define1 from "./11a5ab8b1b3a51db@1161.js";
-import define2 from "./c7e2ddcdd503d595@317.js";
-import define3 from "./dfdb38d5580b5c35@331.js";
+import define2 from "./c7e2ddcdd503d595@321.js";
+import define3 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
 md`# SVG Boinger`
 )}
 
-function* _2(timeseries)
+function* _boinger(timeseries)
 {
   while (true) {
     yield timeseries((Date.now() / 1000) % 3);
@@ -74,7 +74,7 @@ footer
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["timeseries"], _2);
+  main.variable(observer("boinger")).define("boinger", ["timeseries"], _boinger);
   main.variable(observer("sinebow")).define("sinebow", ["Sinebow"], _sinebow);
   const child1 = runtime.module(define1);
   main.import("html", child1);

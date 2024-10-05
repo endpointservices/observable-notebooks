@@ -186,6 +186,10 @@ function _45(md){return(
 md`## Categorical`
 )}
 
+function _Observable10(swatches){return(
+swatches("Observable10")
+)}
+
 function _Category10(swatches){return(
 swatches("Category10")
 )}
@@ -226,7 +230,7 @@ function _Tableau10(swatches){return(
 swatches("Tableau10")
 )}
 
-function _56(md){return(
+function _57(md){return(
 md`---
 
 ## Appendix`
@@ -346,6 +350,7 @@ export default function define(runtime, observer) {
   main.variable(observer("Rainbow")).define("Rainbow", ["ramp"], _Rainbow);
   main.variable(observer("Sinebow")).define("Sinebow", ["ramp"], _Sinebow);
   main.variable(observer()).define(["md"], _45);
+  main.variable(observer("Observable10")).define("Observable10", ["swatches"], _Observable10);
   main.variable(observer("Category10")).define("Category10", ["swatches"], _Category10);
   main.variable(observer("Accent")).define("Accent", ["swatches"], _Accent);
   main.variable(observer("Dark2")).define("Dark2", ["swatches"], _Dark2);
@@ -356,7 +361,7 @@ export default function define(runtime, observer) {
   main.variable(observer("Set2")).define("Set2", ["swatches"], _Set2);
   main.variable(observer("Set3")).define("Set3", ["swatches"], _Set3);
   main.variable(observer("Tableau10")).define("Tableau10", ["swatches"], _Tableau10);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _57);
   main.variable(observer("swatches")).define("swatches", ["d3","svg","html"], _swatches);
   main.variable(observer("ramp")).define("ramp", ["d3","n","htl","html"], _ramp);
   return main;
