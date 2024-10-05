@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/wave-function-collapse",
+  "main": "3e10b95f427ee49c@574.js",
+  "version": "574.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/wave-function-collapse",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
