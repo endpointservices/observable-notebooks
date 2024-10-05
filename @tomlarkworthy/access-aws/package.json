@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/access-aws",
+  "main": "b80d60160ef2b013@321.js",
+  "version": "321.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/access-aws",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
