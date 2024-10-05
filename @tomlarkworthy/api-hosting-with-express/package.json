@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/api-hosting-with-express",
+  "main": "165e9411d1af7e86@1401.js",
+  "version": "1401.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/api-hosting-with-express",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
