@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/coffeescript-demo",
+  "main": "70272f12cebb0bda@38.js",
+  "version": "38.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/coffeescript-demo",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
