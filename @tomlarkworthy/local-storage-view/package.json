@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/local-storage-view",
+  "main": "048a17a165be198d@264.js",
+  "version": "264.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/local-storage-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
