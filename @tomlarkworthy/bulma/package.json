@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/bulma",
+  "main": "c0de6bf6c2f598ef@62.js",
+  "version": "62.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/bulma",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
