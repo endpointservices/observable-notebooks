@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/custom-bulma",
+  "main": "48fddd9d5277891b@237.js",
+  "version": "237.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/custom-bulma",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
