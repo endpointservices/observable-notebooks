@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/phiresky-sqlite-query",
+  "main": "1d26ac16f605cf7e@153.js",
+  "version": "153.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/phiresky-sqlite-query",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
