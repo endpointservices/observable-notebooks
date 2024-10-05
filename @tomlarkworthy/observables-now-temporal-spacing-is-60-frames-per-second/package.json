@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/observables-now-temporal-spacing-is-60-frames-per-second",
+  "main": "54cb321ed9097572@119.js",
+  "version": "119.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/observables-now-temporal-spacing-is-60-frames-per-second",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
