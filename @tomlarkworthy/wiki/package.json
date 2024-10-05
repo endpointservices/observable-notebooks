@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/wiki",
+  "main": "5f38aacddde02285@80.js",
+  "version": "80.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/wiki",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
