@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/aws",
+  "main": "e2cca0a7645d62fa@764.js",
+  "version": "764.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/aws",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
