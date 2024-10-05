@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/random-place-on-youtube",
+  "main": "ea90d49340f3c088@856.js",
+  "version": "856.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/random-place-on-youtube",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
