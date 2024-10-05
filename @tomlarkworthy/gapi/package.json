@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/gapi",
+  "main": "777fe85658e39c55@470.js",
+  "version": "470.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/gapi",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
