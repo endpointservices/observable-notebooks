@@ -1,4 +1,4 @@
-import define1 from "./c7a3b20cec5d4dd9@690.js";
+import define1 from "./c7a3b20cec5d4dd9@725.js";
 
 function _1(md,tex){return(
 md`# Canonicalization with Math.js

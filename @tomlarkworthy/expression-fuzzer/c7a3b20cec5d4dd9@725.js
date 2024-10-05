@@ -1,5 +1,6 @@
 import define1 from "./84e66f78139ac354@829.js";
 import define2 from "./58f3eb7334551ae6@215.js";
+import define3 from "./9ed286bafcced0c3@2931.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -223,7 +224,7 @@ function _createSuite(pseudouuid,Inputs,reconcile,Event,html,HTMLAnchorElement,i
 }
 )}
 
-function _report(){return(
+function _report(customJsonFormatter){return(
 function report(suite, { timeout = 10000 } = {}) {
   function tap(suite) {
     // Ugly indentation here to avoid whitespace in the TAP report.
@@ -232,21 +233,23 @@ function report(suite, { timeout = 10000 } = {}) {
 ${Object.keys(suite.results)
   .sort()
   .map((name, index) => {
-    let status = 'not ok';
-    let details = '';
-    if (suite.results[name] === 'ok') status = 'ok';
+    let status = "not ok";
+    let details = "";
+    if (suite.results[name] === "ok") status = "ok";
 
-    if (status === 'not ok') {
-      details = `\n  ---\n  message: ${JSON.stringify(suite.results[name])}`;
+    if (status === "not ok") {
+      details = `\n  ---\n  message: ${customJsonFormatter(
+        suite.results[name]
+      )}`;
     }
     return `${status} ${index + 1} - ${name}${details}`;
   })
-  .join('\n')}`;
+  .join("\n")}`;
   }
   // This is a bit of a crappy poll loop
   // but its only intended for http handler use
   // https://stackoverflow.com/questions/30505960/use-promise-to-wait-until-polled-condition-is-satisfied
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     function waitForResults() {
       if (!Object.values(suite.results).includes(undefined))
         return resolve(tap(suite));
@@ -408,7 +411,7 @@ function _JEST_EXPECT_STANDALONE_VERSION(){return(
 "24.0.2"
 )}
 
-function _34(footer){return(
+function _35(footer){return(
 footer
 )}
 
@@ -422,7 +425,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","Inputs","reconcile","Event","html","HTMLAnchorElement","invalidation"], _createSuite);
-  main.variable(observer("report")).define("report", _report);
+  main.variable(observer("report")).define("report", ["customJsonFormatter"], _report);
   main.variable(observer()).define(["md"], _5);
   main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
@@ -455,6 +458,8 @@ export default function define(runtime, observer) {
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _34);
+  const child3 = runtime.module(define3);
+  main.import("customJsonFormatter", child3);
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }
