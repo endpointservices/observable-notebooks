@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/tiktok",
+  "main": "2bcb1613792c5ce3@164.js",
+  "version": "164.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/tiktok",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
