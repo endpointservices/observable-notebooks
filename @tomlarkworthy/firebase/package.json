@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase",
+  "main": "993a0c51ef1175ea@1396.js",
+  "version": "1396.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
