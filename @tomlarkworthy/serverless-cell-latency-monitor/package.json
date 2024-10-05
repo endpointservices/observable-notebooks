@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/serverless-cell-latency-monitor",
+  "main": "5b3fe52f88baef0e@895.js",
+  "version": "895.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
