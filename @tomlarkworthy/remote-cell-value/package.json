@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/remote-cell-value",
+  "main": "56c795771cbf8259@1116.js",
+  "version": "1116.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/remote-cell-value",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
