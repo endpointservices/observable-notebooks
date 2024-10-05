@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/wormhole",
+  "main": "c947a555ef8eb397@735.js",
+  "version": "735.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/wormhole",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
