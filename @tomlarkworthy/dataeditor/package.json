@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dataeditor",
+  "main": "0b16aaecf59cca0a@803.js",
+  "version": "803.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dataeditor",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
