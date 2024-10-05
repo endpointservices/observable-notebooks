@@ -1,7 +1,7 @@
-import define1 from "./c7a3b20cec5d4dd9@669.js";
+import define1 from "./c7a3b20cec5d4dd9@725.js";
 import define2 from "./e93997d5089d7165@2303.js";
 import define3 from "./11a5ab8b1b3a51db@1161.js";
-import define4 from "./dfdb38d5580b5c35@331.js";
+import define4 from "./dfdb38d5580b5c35@334.js";
 
 async function _1(md,FileAttachment){return(
 md`# Exponentially Weighted Moving Rate Estimation with Fast Initialization
