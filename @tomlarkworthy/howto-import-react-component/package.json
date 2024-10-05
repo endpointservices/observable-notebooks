@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/howto-import-react-component",
+  "main": "91b6681045f47362@194.js",
+  "version": "194.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/howto-import-react-component",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
