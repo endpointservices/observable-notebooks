@@ -56,7 +56,10 @@ highlight(Math.random())
 )}
 
 function _7(md){return(
-md`### RAG brings Observable general knowledge`
+md`### RAG for getting started
+
+The [RAG extension](https://observablehq.com/@tomlarkworthy/rag-extension) adds relevant examples to the context based on the question, which helps with getting started on a fresh notebook.
+`
 )}
 
 function _8(md){return(
