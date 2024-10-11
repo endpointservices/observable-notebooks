@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/manual-backup-all",
+  "main": "28abf195ab4b176d@2910.js",
+  "version": "2910.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/manual-backup-all",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
