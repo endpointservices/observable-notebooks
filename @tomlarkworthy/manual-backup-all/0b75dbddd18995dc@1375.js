@@ -426,7 +426,6 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("modules", child1);
-  main.import("variables", child1);
   main.variable(observer()).define(["md"], _30);
   main.variable(observer("main")).define("main", ["modules"], _main);
   main.variable(observer()).define(["md"], _32);

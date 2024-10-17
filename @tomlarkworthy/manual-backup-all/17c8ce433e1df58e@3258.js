@@ -1,7 +1,7 @@
-import define1 from "./0b75dbddd18995dc@1374.js";
+import define1 from "./0b75dbddd18995dc@1375.js";
 import define2 from "./5845e1ca935fea5a@225.js";
 import define3 from "./048a17a165be198d@264.js";
-import define4 from "./0e0b35a92c819d94@444.js";
+import define4 from "./0e0b35a92c819d94@470.js";
 import define5 from "./1f41fef8b019cf4e@94.js";
 import define6 from "./f92778131fd76559@1176.js";
 import define7 from "./e793e5cb1f2b5d04@72.js";
@@ -782,7 +782,6 @@ function _excludes(mandatory_excludes){return(
   "ask",
   "openAiResponse",
   "instruction",
-  "acorn",
   "inspect",
   "dirty_json",
   "parseJSON",

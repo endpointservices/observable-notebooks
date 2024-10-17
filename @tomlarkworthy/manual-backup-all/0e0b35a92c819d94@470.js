@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@444
 import define1 from "./58f3eb7334551ae6@215.js";
 
 async function _1(FileAttachment,width,md){return(
@@ -65,6 +64,7 @@ The *flowQueue* will unblock immediately when *resolve* is passed a *promise*.
 ### Errors
 
 Every *send* should lead to a call to *resolve*. If you call *resolve* an extra time it will throw an Error. If *resolve* is not called within *timeout_ms* (1000ms) the promise will reject. 
+
 `
 )}
 
