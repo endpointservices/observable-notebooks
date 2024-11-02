@@ -1,4 +1,4 @@
-import define1 from "./17c8ce433e1df58e@3253.js";
+import define1 from "./17c8ce433e1df58e@3318.js";
 
 function _1(md){return(
 md`# \`highlight()\` values to [roboco-op](https://observablehq.com/d/9ed286bafcced0c3?collection=@tomlarkworthy/robocoop)
@@ -8,24 +8,18 @@ Adds a runtime value to the LLM context programatically, closing a feedback loop
 TODO: in the future this might be an entrance point for image prompting`
 )}
 
+function _2(highlight,example){return(
+highlight(example)
+)}
+
 function _example(highlight){return(
-highlight(
-  {
-    number: 42,
-    obj: {
-      str: "cool"
-    },
-    fn: highlight
-  }
-)
-)}
-
-function _3(example){return(
-example
-)}
-
-function _4($0){return(
-$0.robocoop
+{
+  number: 42,
+  obj: {
+    str: "cool"
+  },
+  fn: highlight
+}
 )}
 
 function _highlight(html,md,customJsonFormatter){return(
@@ -86,7 +80,7 @@ function _customJsonFormatter(){return(
   }
 )}
 
-function _7(md,customJsonFormatter){return(
+function _6(md,customJsonFormatter){return(
 md`
 ~~~javascript
 ${customJsonFormatter({
@@ -103,11 +97,11 @@ ${customJsonFormatter({
 ~~~`
 )}
 
-function _8($0){return(
+function _7($0){return(
 $0
 )}
 
-function _9(Inputs,suggestion){return(
+function _8(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -115,77 +109,65 @@ Inputs.button("copy code", {
 })
 )}
 
-function _10($0){return(
+function _9($0){return(
 $0
 )}
 
-function _11(md){return(
+function _10(md){return(
 md`## Current Chat context`
 )}
 
-function _12($0){return(
+function _11($0){return(
 $0
 )}
 
-function _13($0){return(
-$0
-)}
-
-function _14(md){return(
+function _12(md){return(
 md`tick the cells to include in the next prompt`
+)}
+
+function _13(md){return(
+md`### AI Settings`
+)}
+
+function _14($0){return(
+$0
 )}
 
 function _15($0){return(
 $0
 )}
 
-function _16(md){return(
-md`### AI Settings`
-)}
-
-function _17($0){return(
+function _16($0){return(
 $0
 )}
 
-function _18($0){return(
-$0
-)}
-
-function _19($0){return(
-$0
-)}
-
-function _20(md){return(
+function _17(md){return(
 md`---`
 )}
 
-function _22(background_tasks){return(
+function _19(background_tasks){return(
 background_tasks
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("viewof example")).define("viewof example", ["highlight"], _example);
-  main.variable(observer("example")).define("example", ["Generators", "viewof example"], (G, _) => G.input(_));
-  main.variable(observer()).define(["example"], _3);
-  main.variable(observer()).define(["viewof example"], _4);
+  main.variable(observer()).define(["highlight","example"], _2);
+  main.variable(observer("example")).define("example", ["highlight"], _example);
   main.variable(observer("highlight")).define("highlight", ["html","md","customJsonFormatter"], _highlight);
   main.variable(observer("customJsonFormatter")).define("customJsonFormatter", _customJsonFormatter);
-  main.variable(observer()).define(["md","customJsonFormatter"], _7);
-  main.variable(observer()).define(["viewof prompt"], _8);
-  main.variable(observer()).define(["Inputs","suggestion"], _9);
-  main.variable(observer()).define(["viewof suggestion"], _10);
-  main.variable(observer()).define(["md"], _11);
-  main.variable(observer()).define(["viewof context_viz"], _12);
-  main.variable(observer()).define(["viewof feedback_prompt"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _15);
-  main.variable(observer()).define(["md"], _16);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _17);
-  main.variable(observer()).define(["viewof api_endpoint"], _18);
-  main.variable(observer()).define(["viewof settings"], _19);
-  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md","customJsonFormatter"], _6);
+  main.variable(observer()).define(["viewof prompt"], _7);
+  main.variable(observer()).define(["Inputs","suggestion"], _8);
+  main.variable(observer()).define(["viewof suggestion"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["viewof context_viz"], _11);
+  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _14);
+  main.variable(observer()).define(["viewof api_endpoint"], _15);
+  main.variable(observer()).define(["viewof settings"], _16);
+  main.variable(observer()).define(["md"], _17);
   const child1 = runtime.module(define1);
   main.import("ask", child1);
   main.import("excludes", child1);
@@ -207,12 +189,8 @@ export default function define(runtime, observer) {
   main.import("OPENAI_API_KEY", child1);
   main.import("viewof api_endpoint", child1);
   main.import("api_endpoint", child1);
-  main.import("viewof feedback_prompt", child1);
-  main.import("feedback_prompt", child1);
-  main.import("viewof feedback_cells_selector", child1);
-  main.import("feedback_cells_selector", child1);
   main.import("viewof context_viz", child1);
   main.import("context_viz", child1);
-  main.variable(observer()).define(["background_tasks"], _22);
+  main.variable(observer()).define(["background_tasks"], _19);
   return main;
 }

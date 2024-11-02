@@ -1,12 +1,13 @@
-import define1 from "./0b75dbddd18995dc@1374.js";
-import define2 from "./5845e1ca935fea5a@225.js";
-import define3 from "./048a17a165be198d@264.js";
-import define4 from "./0e0b35a92c819d94@444.js";
-import define5 from "./1f41fef8b019cf4e@94.js";
-import define6 from "./f92778131fd76559@1176.js";
-import define7 from "./e793e5cb1f2b5d04@72.js";
-import define8 from "./04318fffe4df9d1e@2460.js";
-import define9 from "./9ed286bafcced0c3@2931.js";
+import define1 from "./0b75dbddd18995dc@1382.js";
+import define2 from "./e3a019069a130d79@5468.js";
+import define3 from "./5845e1ca935fea5a@225.js";
+import define4 from "./048a17a165be198d@264.js";
+import define5 from "./0e0b35a92c819d94@470.js";
+import define6 from "./1f41fef8b019cf4e@94.js";
+import define7 from "./f92778131fd76559@1178.js";
+import define8 from "./e793e5cb1f2b5d04@72.js";
+import define9 from "./04318fffe4df9d1e@2460.js";
+import define10 from "./9ed286bafcced0c3@2939.js";
 
 function _1(md){return(
 md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
@@ -56,7 +57,10 @@ highlight(Math.random())
 )}
 
 function _7(md){return(
-md`### RAG brings Observable general knowledge`
+md`### RAG for getting started
+
+The [RAG extension](https://observablehq.com/@tomlarkworthy/rag-extension) adds relevant examples to the context based on the question, which helps with getting started on a fresh notebook.
+`
 )}
 
 function _8(md){return(
@@ -69,6 +73,7 @@ Browse the main Roboco-op notebook ecosystem [here](https://observablehq.com/@to
 function _9(md){return(
 md`
 Changes
+- 2024-10-23 Better decompiler for understanding notebook runtime.
 - 2024-10-15 Added highlight and a bunch of bug fixes
 - 2024-05-11 Context is truncated according to max_prompt_tokens, oldest is removed first
 
@@ -77,9 +82,7 @@ TODO:
   - dynamic GPT model selection per prompt
   - regenerate response 
 - BUG(minor): Renaming variable does not update feedback variables
-- BUG(medium): LLM is presented code with $1 instead of variable names
-- Investigate Summarization (https://github.com/jimmc414/1filellm)
-- Investiage RAG`
+- Investigate Summarization (https://github.com/jimmc414/1filellm)`
 )}
 
 function _10(md){return(
@@ -596,139 +599,92 @@ function _43(md){return(
 md`### Cell Analysis`
 )}
 
-function _find_prompt(acorn){return(
-{
-  prompt:
-    'write a cell called find_prompt. Using acorn JS parser, search some JS code for the existence of an Object literal containing fields: "prompt", "time", "comment" and return that object.',
-  time: 1699380798090,
-  comment:
-    "This function search for the existence of an object literal containing fields: 'prompt', 'time', 'comment' in an input JavaScript code using the acorn JS parser. It returns the found object."
-} &&
-  function findPrompt(code) {
-    let ast;
-    let fixed_code;
-    let ast_type;
-    try {
-      fixed_code = "async () => " + code;
-      ast = acorn.parse(fixed_code, { ecmaVersion: 2020 });
-      ast_type = "block";
-    } catch (e) {
-      try {
-        fixed_code = "() => (" + code + ")";
-        ast = acorn.parse(fixed_code, { ecmaVersion: 2020 });
-        ast_type = "expr";
-      } catch (e) {}
-    }
+function _findPrompt(parser){return(
+(code) => {
+  ({
+    prompt:
+      'write a cell called findPrompt. Using acorn JS parser, search some JS code for the existence of an Object literal containing fields: "prompt", "time", "comment" and return that object.',
+    time: 1699380798090,
+    comment:
+      "This function search for the existence of an object literal containing fields: 'prompt', 'time', 'comment' in an input JavaScript code using the acorn JS parser. It returns the found object."
+  });
+  const ast = parser.parseCell(code);
 
-    function search(node, parent) {
-      if (node?.type === "ObjectExpression") {
-        const keys = node.properties.map((p) => p.key?.name || p.key?.value);
-        if (keys.includes("prompt") && keys.includes("time")) {
-          const info = Object.fromEntries(
-            node.properties.map((p) => [
-              p.key.name || p.key.value,
-              p.value.value
-            ])
-          );
-
-          let trimmed;
-          if (parent?.operator == "&&" && parent.left == node) {
-            trimmed =
-              fixed_code.slice(0, parent.start) +
-              fixed_code.slice(parent.right.start, parent.right.end) +
-              fixed_code.slice(parent.end);
-          } else if (parent.type == "ExpressionStatement") {
-            trimmed =
-              fixed_code.slice(0, parent.start) + fixed_code.slice(parent.end);
-          } else {
-            trimmed =
-              fixed_code.slice(0, node.start) +
-              "{}" +
-              fixed_code.slice(node.end);
-          }
-          return [
-            info,
-            ast_type == "expr"
-              ? trimmed.substring(7, trimmed.length - 1).trim()
-              : trimmed.substring(11).trim()
-          ];
-        }
-      }
-      for (const key in node) {
-        if (node[key] && typeof node[key] === "object") {
-          const found = search(node[key], node);
-          if (found) return found;
-        }
+  function search(node, parent) {
+    if (node?.type === "ObjectExpression") {
+      const keys = node.properties.map((p) => p?.key?.name || p?.key?.value);
+      if (keys.includes("prompt") && keys.includes("time")) {
+        return Object.fromEntries(
+          node.properties
+            .map((p) => p.key && [p.key.name || p.key.value, p.value.value])
+            .filter((p) => !!p)
+        );
       }
     }
-
-    return search(ast, null) || [undefined, code];
+    for (const key in node) {
+      if (node[key] && typeof node[key] === "object") {
+        const found = search(node[key], node);
+        if (found) return found;
+      }
+    }
   }
+
+  return search(ast, null);
+}
 )}
 
-function _cells(code,find_prompt){return(
+function _cells(code,findPrompt){return(
 Object.entries(code).reduce((acc, [name, code]) => {
-  if (code === "{return e.input(t)}") return acc; // The data part of a viewof, not authored
-  let [prompt, fixed] = find_prompt(code);
+  if (name === "@variable") return acc; // can't handle unobserved variables
+  let prompt;
+  try {
+    prompt = findPrompt(code.code);
+  } catch (err) {
+    console.log(err);
+    return [];
+  }
   acc.push({
     ...prompt,
     cell_name: name,
-    code: fixed.code,
-    variable: fixed.variable
+    code: code.code,
+    variable: code.variables[0]
   });
   return acc;
 }, [])
 )}
 
-function _observableDefinitionToCode(acorn){return(
-(source) => {
-  try {
-    const defn = "(" + source + ")";
-    const ast = acorn.parse(defn);
-    const functionExpression = ast.body[0].expression;
-    if (functionExpression.type !== "FunctionExpression")
-      throw functionExpression;
-    const block = defn.slice(
-      functionExpression.body.start,
-      functionExpression.body.end
-    );
-
-    const exprMatch = /{return\(([\s\S]*)\)}$/.exec(block);
-    if (exprMatch) return exprMatch[1].trim();
-    else return block;
-  } catch (e) {
-    return undefined;
-  }
-}
-)}
-
-function _code(events,variables,observableDefinitionToCode){return(
+async function _code(events,cellMap,main,decompile){return(
 events &&
   Object.fromEntries(
-    Object.entries(variables).map(([name, v]) => [
-      name,
-      {
-        code: observableDefinitionToCode(v._definition.toString()),
-        variable: v
-      }
-    ])
-  )
-)}
-
-function _source(events,variables){return(
-events &&
-  Object.fromEntries(
-    Object.entries(variables).map(([name, v]) => [
-      name,
-      v._definition.toString()
-    ])
+    await Promise.all(
+      [...(await cellMap(main, { excludeInbuilt: true })).entries()]
+        .filter(
+          ([name, variables]) =>
+            variables[0] !== undefined &&
+            !(typeof name == "string" && name.startsWith("@variable "))
+        )
+        .map(async ([name, variables]) => {
+          try {
+            return [
+              name,
+              {
+                code: await decompile(variables),
+                variables
+              }
+            ];
+          } catch (e) {
+            debugger;
+            throw e;
+          }
+        })
+    )
   )
 )}
 
 function _variables(_mainVariables,excludes){return(
 Object.fromEntries(
   _mainVariables
-    .filter((v) => !excludes.includes(v._name))
+    .filter((v) => !excludes.includes(v._name) && v._type == 1)
     .map((v) => [v._name || v._observer.id, v])
 )
 )}
@@ -752,7 +708,7 @@ function _excludes(mandatory_excludes){return(
   "feedback_cells_selector",
   "feedback_cells",
   "feedback_prompt",
-  "find_prompt",
+  "findPrompt",
   "viewof feedback_cells",
   "null",
   "viewof reset",
@@ -779,7 +735,6 @@ function _excludes(mandatory_excludes){return(
   "ask",
   "openAiResponse",
   "instruction",
-  "acorn",
   "inspect",
   "dirty_json",
   "parseJSON",
@@ -806,6 +761,7 @@ function _mandatory_excludes(){return(
   "source",
   "highlight_context",
   "background_tasks",
+  "_background_tasks",
   "prompted_context",
   "update_context",
   "unprompted_context",
@@ -849,7 +805,7 @@ function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 180000 })
 )}
 
-function _56(ask){return(
+function _54(ask){return(
 console.log("Ask", ask)
 )}
 
@@ -987,16 +943,21 @@ async function _openAiResponse(trimmed_prompt,modelConfig,$0,OPENAI_API_KEY,api_
 function _instruction(openAiResponse,$0,processO1,ask,parseJSON)
 {
   const message = openAiResponse.choices[0].message;
-  if (
-    message.function_call === undefined
-  ) {
+  if (message.function_call === undefined) {
     if ($0.value.model.startsWith("o1")) {
-      return {
-        ...processO1(message.content),
-        prompt: ask[ask.length - 1].content,
-        action: "upsert_cell",
-        time: Date.now()
-      };
+      try {
+        return {
+          ...processO1(message.content),
+          prompt: ask[ask.length - 1].content,
+          action: "upsert_cell",
+          time: Date.now()
+        };
+      } catch (e) {
+        return {
+          action: "reply",
+          content: JSON.stringify(message)
+        };
+      }
     } else {
       return {
         action: "reply",
@@ -1121,11 +1082,9 @@ export default function define(runtime, observer) {
   main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
   main.variable(observer("highlight_context")).define("highlight_context", ["cells"], _highlight_context);
   main.variable(observer()).define(["md"], _43);
-  main.variable(observer("find_prompt")).define("find_prompt", ["acorn"], _find_prompt);
-  main.variable(observer("cells")).define("cells", ["code","find_prompt"], _cells);
-  main.variable(observer("observableDefinitionToCode")).define("observableDefinitionToCode", ["acorn"], _observableDefinitionToCode);
-  main.variable(observer("code")).define("code", ["events","variables","observableDefinitionToCode"], _code);
-  main.variable(observer("source")).define("source", ["events","variables"], _source);
+  main.variable(observer("findPrompt")).define("findPrompt", ["parser"], _findPrompt);
+  main.variable(observer("cells")).define("cells", ["code","findPrompt"], _cells);
+  main.variable(observer("code")).define("code", ["events","cellMap","main","decompile"], _code);
   main.variable(observer("variables")).define("variables", ["_mainVariables","excludes"], _variables);
   main.variable(observer("excludes")).define("excludes", ["mandatory_excludes"], _excludes);
   main.variable(observer("mandatory_excludes")).define("mandatory_excludes", _mandatory_excludes);
@@ -1135,7 +1094,7 @@ export default function define(runtime, observer) {
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ask"], _56);
+  main.variable(observer()).define(["ask"], _54);
   main.variable(observer("prompt_messages")).define("prompt_messages", ["viewof settings","system_prompt","ask"], _prompt_messages);
   main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages","encode"], _token_analytics);
   main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["d3","token_analytics","settings"], _trimmed_prompt);
@@ -1153,25 +1112,32 @@ export default function define(runtime, observer) {
   main.import("events", "_events", child1);
   main.import("mainVariables", "_mainVariables", child1);
   main.import("interceptVariables", child1);
+  main.import("runtime", child1);
+  main.import("main", child1);
   const child2 = runtime.module(define2);
-  main.import("cellsToClipboard", child2);
+  main.import("decompile", child2);
+  main.import("compile", child2);
+  main.import("cellMap", child2);
+  main.import("parser", child2);
   const child3 = runtime.module(define3);
-  main.import("localStorageView", child3);
+  main.import("cellsToClipboard", child3);
   const child4 = runtime.module(define4);
-  main.import("flowQueue", child4);
-  main.variable(observer("acorn")).define("acorn", ["require"], _acorn);
+  main.import("localStorageView", child4);
   const child5 = runtime.module(define5);
-  main.import("inspect", child5);
+  main.import("flowQueue", child5);
+  main.variable(observer("acorn")).define("acorn", ["require"], _acorn);
   const child6 = runtime.module(define6);
-  main.import("view", child6);
-  main.import("cautious", child6);
-  main.import("bindOneWay", child6);
+  main.import("inspect", child6);
   const child7 = runtime.module(define7);
-  main.import("encode", child7);
+  main.import("view", child7);
+  main.import("cautious", child7);
+  main.import("bindOneWay", child7);
   const child8 = runtime.module(define8);
-  main.import("whisperInput", child8);
+  main.import("encode", child8);
   const child9 = runtime.module(define9);
-  main.import("highlight", child9);
+  main.import("whisperInput", child9);
+  const child10 = runtime.module(define10);
+  main.import("highlight", child10);
   main.variable(observer("dirty_json")).define("dirty_json", _dirty_json);
   return main;
 }

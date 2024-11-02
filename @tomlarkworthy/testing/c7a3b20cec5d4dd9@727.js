@@ -1,6 +1,6 @@
 import define1 from "./84e66f78139ac354@829.js";
-import define2 from "./58f3eb7334551ae6@215.js";
-import define3 from "./9ed286bafcced0c3@2931.js";
+import define2 from "./9ed286bafcced0c3@2939.js";
+import define3 from "./dfdb38d5580b5c35@334.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -457,9 +457,9 @@ export default function define(runtime, observer) {
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
   const child2 = runtime.module(define2);
-  main.import("footer", child2);
+  main.import("customJsonFormatter", child2);
   const child3 = runtime.module(define3);
-  main.import("customJsonFormatter", child3);
+  main.import("footer", child3);
   main.variable(observer()).define(["footer"], _35);
   return main;
 }
