@@ -1,4 +1,4 @@
-import define1 from "./58f3eb7334551ae6@215.js";
+import define1 from "./dfdb38d5580b5c35@334.js";
 
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal
