@@ -1,6 +1,6 @@
 # Notebook Dataflow Debugger (ndd)
 
-https://observablehq.com/@tomlarkworthy/ndd@1374
+https://observablehq.com/@tomlarkworthy/ndd@1386
 
 View this notebook in your browser by running a web server in this folder. For
 example:
