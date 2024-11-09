@@ -1,4 +1,4 @@
-import define1 from "./f92778131fd76559@1176.js";
+import define1 from "./f92778131fd76559@1202.js";
 
 function _1(md){return(
 md`# Reversible attachment
@@ -116,6 +116,10 @@ function reversibleAttach(shouldBind, view, invalidation) {
 }
 )}
 
+function _22(footer){return(
+footer
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -145,5 +149,6 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("view", child1);
   main.import("bindOneWay", child1);
+  main.variable(observer()).define(["footer"], _22);
   return main;
 }

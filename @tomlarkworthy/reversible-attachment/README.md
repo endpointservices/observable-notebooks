@@ -1,6 +1,6 @@
 # Reversible attachment
 
-https://observablehq.com/@tomlarkworthy/reversible-attachment@242
+https://observablehq.com/@tomlarkworthy/reversible-attachment@262
 
 View this notebook in your browser by running a web server in this folder. For
 example:
