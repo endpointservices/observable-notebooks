@@ -1,6 +1,6 @@
-# Box Joint Plan Generator
+# Lazer Cuttering Plan Compiler
 
-https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@10116
+https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@12025
 
 View this notebook in your browser by running a web server in this folder. For
 example:

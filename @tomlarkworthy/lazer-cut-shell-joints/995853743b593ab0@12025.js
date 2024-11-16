@@ -1,35 +1,69 @@
-import define1 from "./f92778131fd76559@1174.js";
-import define2 from "./c7a3b20cec5d4dd9@690.js";
-import define3 from "./17c8ce433e1df58e@2490.js";
-import define4 from "./14cac50a79a0b841@316.js";
-import define5 from "./dfdb38d5580b5c35@334.js";
+import define1 from "./0b75dbddd18995dc@1386.js";
+import define2 from "./3320366aab57935b@564.js";
+import define3 from "./c7a3b20cec5d4dd9@730.js";
+import define4 from "./17c8ce433e1df58e@3332.js";
+import define5 from "./14cac50a79a0b841@316.js";
+import define6 from "./cdc303fcc82a630f@262.js";
+import define7 from "./84194c694539e103@2357.js";
+import define8 from "./56b204c6d7cdb801@32.js";
+import define9 from "./f92778131fd76559@1208.js";
 
-function _1(md){return(
-md`# Box Joint Plan Generator
+async function _1(FileAttachment,md){return(
+md`# Lazer Cuttering Plan Compiler
 
-Given the faces, generate the lazer cutter part plans, such that touching faces are joined with a box joint`
+Given the faces, generate the lazer cutter part plans, such that touching faces are joined with a box or mortoise joint
+
+${await FileAttachment("image.png").image({width: 400})}`
 )}
 
-function _2(md){return(
+function _app(renderer,reversibleAttach,assemble_app,$0,$1,$2,htl){return(
+htl.html`<div>
+  ${renderer.domElement}
+  <div style="position: absolute; top: 0px; right: 0px; display: inline-block;">
+    ${reversibleAttach(assemble_app, $0)}
+  </div>
+  <div style="position: absolute; top: 0px; display: inline-block;">
+    ${reversibleAttach(assemble_app, $1)}
+    ${reversibleAttach(assemble_app, $2)}
+  </div>
+</div>`
+)}
+
+function _3(htl){return(
+htl.html`<style> 
+.box {
+  border: 1px solid black;
+  padding: 3px;
+  margin: 3px;
+  background: white;
+}
+.tabs {
+  padding-bottom: 15px
+}
+</style>`
+)}
+
+function _4(md){return(
 md`
 ## TODO
 
 #### Bugs
 
-- All parts are inverted?
-
+- Mortise Joints
+    - can overlap beginning of joint
+    - corner calculations are broken? Might be join.lines change
 
 #### Improvements
 
 - Make parts a single line SVG parts so the are grouped when imported or nested
-- Group Templates under tabs
-- 
+- fixed SVG precision of coords
+- mirror parts?
+- correctly overlay parts
+- divide planes into parts
+- Big selector for templates with flavours (CMS?)
 
 
 #### Roadmap
-
-- Mortise Joints
-- Round SVG to reduce size
 
 
 #### Ideas
@@ -38,27 +72,84 @@ md`
 `
 )}
 
-function _3(md){return(
-md`## Global Config`
+function _5(md){return(
+md`## Notebook Debugger
+
+This slows the app but is useful to diagnose dataflow problems`
+)}
+
+function _assemble_app(Inputs){return(
+Inputs.toggle({
+  label: "assemble app",
+  value: true
+})
+)}
+
+function _configuration(view,tabbedPane,reversibleAttach,compositeConfig,$0,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,visualizationPane){return(
+view`<details class="box" style="max-width: 400px; background: white">
+  <summary>menu</summary>
+<div>
+${tabbedPane({
+  geometry: view`<div class="box">
+    <h3>Common config</h3>
+    ${reversibleAttach(compositeConfig, $0)}
+    ${reversibleAttach(compositeConfig, $1)}
+    ${reversibleAttach(compositeConfig, $2)}
+    ${reversibleAttach(compositeConfig, $3)}
+    ${reversibleAttach(compositeConfig, $4)}
+    </div>
+    <div class="box">
+    <h3>Generators</h3>
+    ${tabbedPane({
+      ["from file"]: view`<div>
+        ${reversibleAttach(compositeConfig, $5)}
+        ${reversibleAttach(compositeConfig, $6)}
+        ${reversibleAttach(compositeConfig, $7)}
+      </div>`,
+      box: reversibleAttach(compositeConfig, $8),
+      flange: reversibleAttach(compositeConfig, $9),
+      angle: reversibleAttach(compositeConfig, $10),
+      ["T"]: reversibleAttach(compositeConfig, $11),
+      ["corner"]: reversibleAttach(compositeConfig, $12)
+    })}
+    </div>`,
+  visualization: reversibleAttach(compositeConfig, visualizationPane)
+})}
+</div></details>`
+)}
+
+function _compositeConfig(Inputs){return(
+Inputs.toggle({
+  label: "compositeConfig",
+  value: true
+})
 )}
 
 function _fingerWidth(Inputs){return(
 Inputs.range([0.1, 10], {
   label: "finger widths",
   value: 3,
-  step: 0.1
+  step: 0.01
 })
 )}
 
 function _material_thickness(Inputs){return(
 Inputs.range([0.01, 10], {
   label: "material thickness",
-  value: 3
+  value: 3,
+  step: 0.01
 })
 )}
 
-function _jointHint(Inputs){return(
-Inputs.toggle({ label: "number joints", value: false })
+function _numberJoints(Inputs){return(
+Inputs.toggle({
+  label: "number joints (slow)",
+  value: false
+})
+)}
+
+function _14(md){return(
+md`#### Box Template`
 )}
 
 function _boxParams(view,Inputs)
@@ -94,20 +185,13 @@ function _boxParams(view,Inputs)
 }
 
 
-function _apply_box(boxParams,Vector3,$0,Event,$1,material_thickness)
+function _apply_box(boxParams,$0,Event,$1,$2)
 {
   ({
     prompt:
       "Convert the box template params into an array of rectangular surfaces and assign to surfaces view and also calculate the tight fitting bounds and assign to the bounds view",
     time: 1715503629215
   });
-  const params = [boxParams.width, boxParams.height, boxParams.depth].map(
-    (value, dim) => ({
-      constant: value / 2,
-      normal: new Vector3(dim == 0 ? 1 : 0, dim == 1 ? 1 : 0, dim == 2 ? 1 : 0),
-      bounds: [-value / 2, value / 2]
-    })
-  );
   const w = boxParams.width / 2;
   const h = boxParams.height / 2;
   const d = boxParams.depth / 2;
@@ -156,11 +240,16 @@ function _apply_box(boxParams,Vector3,$0,Event,$1,material_thickness)
     ]
   ];
   $0.dispatchEvent(new Event("input"));
-  $1.value = `box(${material_thickness}, ${w}, ${d}, ${h}))`;
+  $1.value = `box(${
+    $2.value
+  }, ${w}, ${d}, ${h}))`;
   $1.dispatchEvent(new Event("input"));
-  return params;
 }
 
+
+function _17(md){return(
+md`#### Flange Template`
+)}
 
 function _flangeParams(view,Inputs){return(
 {
@@ -180,6 +269,13 @@ function _flangeParams(view,Inputs){return(
         step: 1
       })
     ]}
+    ${[
+      "diameter",
+      Inputs.radio(["OD", "ID"], {
+        value: "ID",
+        step: 0.1
+      })
+    ]}  
     ${[
       "inner_width",
       Inputs.range([0, 200], {
@@ -203,7 +299,7 @@ function _flangeParams(view,Inputs){return(
   `
 )}
 
-function _apply_flange(flangeParams,$0,Event,$1,material_thickness)
+function _apply_flange(flangeParams,material_thickness,$0,Event,$1)
 {
   ({
     prompt:
@@ -213,8 +309,16 @@ function _apply_flange(flangeParams,$0,Event,$1,material_thickness)
       "Convert the flange parameters into an array of rectangular surfaces for the base and inner sides, forming an 'O' shape."
   });
 
-  const { flange_diameter, inner_width, inner_height, depth } = flangeParams;
+  let { flange_diameter, inner_width, inner_height, depth, diameter } =
+    flangeParams;
 
+  if (diameter == "OD") {
+    inner_width += 2 * material_thickness;
+    inner_height += 2 * material_thickness;
+  } else if (diameter == "ID") {
+  } else {
+    throw Error();
+  }
   const flange_radius = flange_diameter / 2;
   const outer_rectangles = [
     [
@@ -276,10 +380,14 @@ function _apply_flange(flangeParams,$0,Event,$1,material_thickness)
 
   $0.value = [...outer_rectangles, ...inner_rectangles];
   $0.dispatchEvent(new Event("input"));
-  $1.value = `flange(${material_thickness}, ${flange_diameter}, ${depth}))`;
+  $1.value = `flange(${material_thickness}, ${flange_diameter}, ${depth}, ${diameter}))`;
   $1.dispatchEvent(new Event("input"));
 }
 
+
+function _20(md){return(
+md`#### Angle (debug) Template`
+)}
 
 function _angleParams(view,Inputs){return(
 {
@@ -355,13 +463,165 @@ function _apply_angle(angleParams,deg2rad,$0,Event,$1,material_thickness)
 }
 
 
-function _13(md){return(
+function _23(md){return(
+md`#### T (debug) Template`
+)}
+
+function _tParams(view,Inputs)
+{
+  ({
+    prompt:
+      "Generate a UI for a T. It should let the width, height and depth be set with a green build button",
+    time: 1715503629215,
+    comment:
+      "Create a UI for setting up a box with width, height, and depth inputs and a green build button."
+  });
+  const form = view`<div>
+    <h3>T Template</h3>
+    ${[
+      "width",
+      Inputs.range([0, 1000], { label: "width (mm)", value: 10, step: 0.1 })
+    ]}  
+    ${[
+      "height",
+      Inputs.range([0, 1000], {
+        label: "height (mm)",
+        value: 22,
+        step: 0.1
+      })
+    ]}  
+    ${[
+      "depth",
+      Inputs.range([0, 1000], { label: "depth (mm)", value: 16, step: 0.1 })
+    ]}
+  `;
+
+  return form;
+}
+
+
+function _apply_t(tParams,$0,Event,$1)
+{
+  ({
+    prompt: "Convert the tParams into an 2-peice T shaped part",
+    time: 1715503629215
+  });
+  const w = tParams.width / 2;
+  const h = tParams.height / 2;
+  const d = tParams.depth / 2;
+  $0.value = [
+    // Horz face
+    [
+      // vertical face
+      [w, h, d],
+      [w, h, -d],
+      [-w, h, -d],
+      [-w, h, d]
+    ],
+    [
+      // vertical face
+      [0, h, d],
+      [0, h, -d],
+      [0, -h, -d],
+      [0, -h, d]
+    ]
+  ];
+  $0.dispatchEvent(new Event("input"));
+  $1.value = `t(${w}, ${d}, ${h}))`;
+  $1.dispatchEvent(new Event("input"));
+}
+
+
+function _26(md){return(
+md`#### Corner Template`
+)}
+
+function _cornerAngleParams(view,Inputs){return(
+view`<div>
+    <h3>Corner Angle</h3>
+    ${[
+      "overhang_width",
+      Inputs.range([0, 1000], {
+        label: "overhang_width (mm)",
+        value: 20,
+        step: 0.1
+      })
+    ]}  
+    ${[
+      "overhang_height",
+      Inputs.range([0, 1000], {
+        label: "overhang_height (mm)",
+        value: 20,
+        step: 0.1
+      })
+    ]}  
+    ${[
+      "total_width",
+      Inputs.range([0, 1000], {
+        label: "total_width (mm)",
+        value: 50,
+        step: 0.1
+      })
+    ]}  
+    ${[
+      "total_height",
+      Inputs.range([0, 1000], {
+        label: "total_height (mm)",
+        value: 30,
+        step: 0.1
+      })
+    ]} 
+    ${[
+      "depth",
+      Inputs.range([0, 1000], { label: "depth (mm)", value: 30, step: 0.1 })
+    ]}
+  `
+)}
+
+function _apply_corner_angle(cornerAngleParams,$0,Event,$1)
+{
+  const {
+    total_width: w,
+    total_height: h,
+    depth: d,
+    overhang_width: ow,
+    overhang_height: oh
+  } = cornerAngleParams;
+  $0.value = [
+    // Horz face
+    [
+      // vertical face
+      [w / 2, -h, 0],
+      [w / 2, 0, 0],
+      [ow / 2, 0, 0],
+      [ow / 2, oh, 0],
+      [-ow / 2, oh, 0],
+      [-ow / 2, 0, 0],
+      [-w / 2, 0, 0],
+      [-w / 2, -h, 0]
+    ],
+    [
+      // depth face
+      [w / 2, 0, 0],
+      [w / 2, 0, d],
+      [-w / 2, 0, d],
+      [-w / 2, 0, 0]
+    ]
+  ];
+  debugger;
+  $0.dispatchEvent(new Event("input"));
+  $1.value = `t(${w}, ${d}, ${h}))`;
+  $1.dispatchEvent(new Event("input"));
+}
+
+
+function _29(md){return(
 md`### File Importer`
 )}
 
 function _file(Inputs){return(
 Inputs.file({
-  label: "Assert file (obk, gltf, fbx)",
+  label: "Asset file (obj, gltf, fbx)",
   accept: ".obj,.fbx,.gltf",
   required: true
 })
@@ -429,10 +689,10 @@ function _parseObjFile(THREE,invert_normals){return(
   }
 )}
 
-function _minThickness(Inputs,material_thickness){return(
+function _minThickness(Inputs,$0){return(
 Inputs.range([0, 100], {
   label: "minimum thickness",
-  value: material_thickness
+  value: $0.value
 })
 )}
 
@@ -442,6 +702,12 @@ Inputs.range([0.1, 100], { label: "rescale", value: 1 })
 
 function _invert_normals(Inputs){return(
 Inputs.toggle({ label: "invert normals" })
+)}
+
+function _recurseUnite(Inputs){return(
+Inputs.toggle({
+  label: "recursive surface merge (fixes cracks sometimes)"
+})
 )}
 
 async function _apply_obj(parseObjFile,objText,THREE,$0,Event,$1,file)
@@ -629,21 +895,262 @@ async function _apply_gltf(file,THREE,invert_normals,rescale,$0,Event,$1)
 }
 
 
-function _exclude_planes(Inputs,surface_planes_unfiltered,toString){return(
-Inputs.select(surface_planes_unfiltered, {
-  multiple: true,
-  label: "Exclude Planes",
-  format: toString
+function _exclude_planes(Inputs){return(
+Inputs.input([])
+)}
+
+function _excluded_planes_view(domView){return(
+domView()
+)}
+
+function _excluded_planes_view_updater($0,Inputs,surface_planes_unfiltered,toString,$1,invalidation)
+{
+  $0.value = Inputs.bind(
+    Inputs.select(surface_planes_unfiltered, {
+      multiple: true,
+      label: "Exclude Planes",
+      format: toString
+    }),
+    $1,
+    invalidation
+  );
+}
+
+
+function _43(exclude_planes){return(
+exclude_planes
+)}
+
+function _44(md){return(
+md`## Visualisation Controls`
+)}
+
+function _compositeVisualizationConfig(Inputs){return(
+Inputs.toggle({
+  label: "composite visualization config",
+  value: true
 })
 )}
 
-function _24(renderer,focusPart,htl){return(
-htl.html`<div style="display: flex">
-  ${renderer.domElement}
-  <div>
-    ${focusPart}
-  <div>
-</div>`
+function _visualizationPane(view,reversibleAttach,compositeVisualizationConfig,$0,$1,$2,$3,$4,$5,tabbedPane,$6,$7){return(
+view`<div>
+    
+    <div class="box">
+      <h3>view</h3>
+      ${reversibleAttach(compositeVisualizationConfig, $0)}
+      ${reversibleAttach(compositeVisualizationConfig, $1)}
+      ${reversibleAttach(compositeVisualizationConfig, $2)}
+      ${reversibleAttach(compositeVisualizationConfig, $3)}
+      ${reversibleAttach(compositeVisualizationConfig, $4)}
+      ${reversibleAttach(compositeVisualizationConfig, $5)}
+    </div>
+    <div class="box" style="display: grid;">
+      <h3>view specific</h3>
+      ${tabbedPane({
+        part: view`<div>
+          ${reversibleAttach(compositeVisualizationConfig, $6)}
+        </div>`
+      })}
+    </div>
+    <div class="box">
+      <h3>bling</h3>
+      ${reversibleAttach(compositeVisualizationConfig, $7)}
+    </div>
+  </div>`
+)}
+
+function _spin(Inputs){return(
+Inputs.toggle({ label: "spin camera", value: true })
+)}
+
+function _step(Inputs){return(
+Inputs.range([0, 9], {
+  label: "algorithm step",
+  step: 1,
+  value: 8
+})
+)}
+
+function _focusPlaneIdx(Inputs){return(
+Inputs.range([-1, 10000], {
+  label: "focus plane",
+  value: -1,
+  step: 1
+})
+)}
+
+function _focusSurfaceIdx(Inputs){return(
+Inputs.range([-1, 10000], {
+  label: "focus surface",
+  value: -1,
+  step: 1
+})
+)}
+
+function _focusJointIdx(Inputs,joints){return(
+Inputs.range([-1, joints.length - 1], {
+  label: "focus joint",
+  value: -1,
+  step: 1
+})
+)}
+
+function _strokeWidth(Inputs){return(
+Inputs.range([1, 10], {
+  label: "part draw stroke width",
+  value: 4
+})
+)}
+
+function _stepEffect($0,$1,$2,$3,$4,$5,step,Event)
+{
+  const stepMap = [
+    [0],
+    [1],
+    [2],
+    [3],
+    [2, 3],
+    [1, 2, 3],
+    [4],
+    [2, 3, 5],
+    [2, 5],
+    [5]
+  ];
+  const controls = [
+    $0,
+    $1,
+    $2,
+    $3,
+    $4,
+    $5
+  ];
+  controls.forEach((c) => (c.value = false));
+  stepMap[step].forEach((i) => (controls[i].value = true));
+  controls.forEach((c) => c.dispatchEvent(new Event("input")));
+}
+
+
+function _selected_planes(Inputs,surface_planes){return(
+Inputs.input(surface_planes)
+)}
+
+function _55(md){return(
+md`### Planes Panel`
+)}
+
+function _compositePlanesPanel(Inputs){return(
+Inputs.toggle({
+  label: "assemble planes planel",
+  value: true
+})
+)}
+
+function _planesPanel(view,tabbedPane,reversibleAttach,compositePlanesPanel,$0,exclude_planes,$1){return(
+view`<details class="box" style="max-width: 400px; background: white">
+<summary>planes</summary>
+<div style=>
+${tabbedPane({
+  active: reversibleAttach(compositePlanesPanel, $0),
+  excluded: reversibleAttach(exclude_planes, $1)
+})}
+</details>
+`
+)}
+
+function _58(md){return(
+md`#### Planes component`
+)}
+
+function _planes_view(domView){return(
+domView()
+)}
+
+function _planes_view_updated(Inputs,surface_planes,toString,html,$0,Event,$1,$2,$3)
+{
+  const table = Inputs.table(surface_planes, {
+    required: false,
+    width: {
+      normal: 100,
+      constant: 70,
+      isPlane: 50
+    },
+    maxWidth: 300,
+    rows: 20,
+    columns: ["normal", "constant", "isPlane"],
+    format: {
+      normal: toString,
+      isPlane: (plane, i, array) =>
+        html`<div style="display:flex; gap: 4px; ">
+          ${Inputs.button("🗑️", {
+            reduce: () => {
+              $0.value.push(array[i]);
+              $0.dispatchEvent(new Event("input"));
+            }
+          })}
+          ${Inputs.button("🧩", {
+            reduce: () => {
+              debugger;
+              $1.value =
+                $1.value == i ? -1 : i;
+              $1.dispatchEvent(new Event("input"));
+            }
+          })}
+        </div>`
+    },
+    header: {
+      isPlane: ""
+    }
+  });
+
+  Inputs.bind(table, $2);
+  $3.value = table;
+}
+
+
+function _61(md){return(
+md`### Parts Panel`
+)}
+
+function _assemblePartsPanel(Inputs){return(
+Inputs.toggle({
+  label: "assemble parts panel",
+  value: true
+})
+)}
+
+function _partsPanel(domView){return(
+domView()
+)}
+
+function _partsPanelUpdater($0,view,html,reversibleAttach,assemblePartsPanel,$1,$2,$3,downloadButton)
+{
+  $0.value = view`<details
+    open=${$0.value?.open}
+    class="box"
+    style="max-width: 300px"
+  >
+  <summary>parts</summary>
+  ${html`<div class="box">
+      <h3>selected 🧩</h3>
+      ${reversibleAttach(assemblePartsPanel, $1)}
+      ${reversibleAttach(assemblePartsPanel, $2)}
+      click to download as svg
+    </div>`}
+  
+  <div class="box" style="max-width: 300px">
+    <h3>download all parts as zip</h3>
+    ${reversibleAttach(assemblePartsPanel, $3)}
+    ${reversibleAttach(assemblePartsPanel, downloadButton)}
+  </div>
+  </details>`;
+}
+
+
+function _scale(Inputs){return(
+Inputs.range([0.01, 10], {
+  label: "part zoom",
+  value: 1
+})
 )}
 
 function _filename(Inputs){return(
@@ -680,105 +1187,7 @@ async function _downloadButton(filename,zip,partBlobs,button)
 }
 
 
-function _27(md){return(
-md`## Visualisation Controls`
-)}
-
-function _spin(Inputs){return(
-Inputs.toggle({ label: "spin", value: true })
-)}
-
-function _29(Inputs,$0,$1,$2,$3,$4,htl){return(
-htl.html`<div style="display: grid;">
-  ${Inputs.bind(Inputs.toggle({label: "surfaces"}), $0)}
-  ${Inputs.bind(Inputs.toggle({label: "edges"}), $1)}
-  ${Inputs.bind(Inputs.toggle({label: "planes"}), $2)}
-  ${Inputs.bind(Inputs.toggle({label: "plan"}), $3)}
-  ${Inputs.bind(Inputs.toggle({label: "parts"}), $4)}
-</div>`
-)}
-
-function _step(Inputs){return(
-Inputs.range([0, 9], {
-  label: "algorithm step",
-  step: 1,
-  value: 8
-})
-)}
-
-function _focusPlaneIdx(Inputs,planePaths){return(
-Inputs.range([-1, [...planePaths.keys()].length - 1], {
-  label: "focus plane",
-  value: -1,
-  step: 1
-})
-)}
-
-function _focusSurfaceIdx(Inputs,surfaces){return(
-Inputs.range([-1, surfaces.length - 1], {
-  label: "focus surface",
-  value: -1,
-  step: 1
-})
-)}
-
-function _focusJointIdx(Inputs,joints){return(
-Inputs.range([-1, joints.length - 1], {
-  label: "focus joint",
-  value: -1,
-  step: 1
-})
-)}
-
-function _scale(Inputs){return(
-Inputs.range([0.01, 10], {
-  label: "part scale",
-  value: 1
-})
-)}
-
-function _strokeWidth(Inputs){return(
-Inputs.range([1, 10], {
-  label: "part draw stroke width",
-  value: 4
-})
-)}
-
-function _recurseUnite(Inputs){return(
-Inputs.toggle({
-  label: "recursive surface merge (fixes cracks sometimes)"
-})
-)}
-
-function _stepEffect($0,$1,$2,$3,$4,$5,step,Event)
-{
-  const stepMap = [
-    [0],
-    [1],
-    [2],
-    [3],
-    [2, 3],
-    [1, 2, 3],
-    [4],
-    [2, 3, 5],
-    [2, 5],
-    [5]
-  ];
-  const controls = [
-    $0,
-    $1,
-    $2,
-    $3,
-    $4,
-    $5
-  ];
-  controls.forEach((c) => (c.value = false));
-  stepMap[step].forEach((i) => (controls[i].value = true));
-  controls.forEach((c) => c.dispatchEvent(new Event("input")));
-}
-
-
-function _39(md){return(
+function _68(md){return(
 md`## Algorithm`
 )}
 
@@ -847,7 +1256,7 @@ surface_planes_unfiltered.filter(
 )
 )}
 
-function _43(md){return(
+function _72(md){return(
 md`### Project surfaces to 2D paths and simplify`
 )}
 
@@ -868,7 +1277,7 @@ function _focusSurface(vectorSurfaces,focusSurfaceIdx){return(
 vectorSurfaces[focusSurfaceIdx]
 )}
 
-function _47(Inputs,surface_planes,$0){return(
+function _76(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -879,8 +1288,14 @@ Inputs.bind(
 )
 )}
 
-function _focusPlane(planePaths,focusPlaneIdx){return(
-[...planePaths.keys()][focusPlaneIdx]
+function _focusPlane(bindOneWay,Inputs,$0,planePaths){return(
+bindOneWay(Inputs.input(), $0, {
+  transform: (idx) => [...planePaths.keys()][idx] || null
+})
+)}
+
+function _78(focusPlane){return(
+focusPlane
 )}
 
 function _surfacesOnPlaneAsPath(chooseBasis,Vector3,paper)
@@ -1053,7 +1468,7 @@ mapValues(planePathsTrimmed, (plane, path) => {
 })
 )}
 
-function _59(Inputs,surface_planes,$0){return(
+function _89(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -1068,7 +1483,7 @@ function _focusPlanePath(planePaths,focusPlane){return(
 planePaths.get(focusPlane)
 )}
 
-function _61(Plot,focusPlanePath){return(
+function _91(Plot,focusPlanePath){return(
 Plot.plot({
   marks: [
     (focusPlanePath.children || [focusPlanePath]).map((child, i) => {
@@ -1085,7 +1500,7 @@ Plot.plot({
 })
 )}
 
-function _62(md){return(
+function _92(md){return(
 md`### 2D Path to 3D`
 )}
 
@@ -1168,15 +1583,15 @@ mapValues(planePaths, (plane, path) => {
 })
 )}
 
-function _targetShape(shapes2D,focusPlane){return(
+function _focusShape(shapes2D,focusPlane){return(
 shapes2D.get(focusPlane)
 )}
 
-function _shapePlot(targetShape,Plot){return(
-targetShape &&
+function _shapePlot(focusShape,Plot){return(
+focusShape &&
   Plot.plot({
     marks: [
-      targetShape.map((coords, i) =>
+      focusShape.map((coords, i) =>
         Plot.arrow(coords, {
           x1: (d) => d[0],
           y1: (d) => d[1],
@@ -1189,14 +1604,14 @@ targetShape &&
   })
 )}
 
-function _72(md){return(
+function _102(md){return(
 md`### Find Joints`
 )}
 
-function _73(Inputs,surface_planes,$0){return(
+function _103(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
-    label: "focus surface",
+    label: "focus plane",
     value: -1,
     step: 1
   }),
@@ -1248,35 +1663,29 @@ function _findShapeConnections(intersectShapes,rad2deg,angleBetweenPlanes,Vector
       for (let j = i + 1; j < planes.length; j++) {
         const plane1 = planes[i];
         const plane2 = planes[j];
+        if (plane1 == plane2) {
+          debugger;
+        }
         const boundaries1 = shapeMap.get(plane1);
         const boundaries2 = shapeMap.get(plane2);
-
-        for (let k = 0; k < boundaries1.length; k++) {
-          for (let l = 0; l < boundaries2.length; l++) {
-            const lines1 = boundaries1[k];
-            const lines2 = boundaries2[l];
-
-            // Find edges between the two shapes
-            const edges = intersectShapes(plane1, lines1, plane2, lines2);
-            if (edges.length > 0) {
-              connections.push({
-                plane1,
-                plane2,
-                lines1: lines1,
-                lines2: lines2,
-                sharedEdges: edges,
-                angle: Math.abs(
-                  rad2deg(
-                    angleBetweenPlanes(
-                      plane1,
-                      plane2,
-                      edges[0].delta(new Vector3())
-                    )
-                  )
+        const edges = intersectShapes(plane1, boundaries1, plane2, boundaries2);
+        if (edges.length > 0) {
+          connections.push({
+            plane1,
+            plane2,
+            lines1: boundaries1,
+            lines2: boundaries2,
+            sharedEdges: edges,
+            angle: Math.abs(
+              rad2deg(
+                angleBetweenPlanes(
+                  plane1,
+                  plane2,
+                  edges[0].delta(new Vector3())
                 )
-              });
-            }
-          }
+              )
+            )
+          });
         }
       }
     }
@@ -1292,7 +1701,7 @@ function _joints(findShapeConnections,edges)
 }
 
 
-function _79(Inputs,joints,$0){return(
+function _109(Inputs,joints,$0){return(
 Inputs.bind(
   Inputs.range([-1, joints.length - 1], {
     label: "focus joint",
@@ -1346,12 +1755,12 @@ function _visualizeJointGraph(dot,edges,toString,focusJoint,focusPlane){return(
   }
 )}
 
-function _82(visualizeJointGraph,joints){return(
+function _112(visualizeJointGraph,joints){return(
 visualizeJointGraph(joints)
 )}
 
-function _83(md){return(
-md`### Generate Plan`
+function _113(md){return(
+md`### Find edges between planes`
 )}
 
 function _neighbourhood(){return(
@@ -1365,13 +1774,16 @@ new Map(
 )
 )}
 
-function _focusNeighbourhood(neighbourhood,focusPlane,joints){return(
-neighbourhood(focusPlane, joints)
-)}
-
-function _focusNeighbourhoodPlot(focusNeighbourhood,chooseBasis,focusPlane,Plot)
+function _focusNeighbourhood(neighbourhood,focusPlane,joints)
 {
-  if (!focusNeighbourhood) return undefined;
+  debugger;
+  neighbourhood(focusPlane, joints);
+}
+
+
+function _focusNeighbourhoodPlot(focusNeighbourhood,focusPlane,chooseBasis,Plot)
+{
+  if (!focusNeighbourhood || !focusPlane) return undefined;
   const [basisX, basisY] = chooseBasis(focusPlane);
   return Plot.plot({
     marks: [
@@ -1421,10 +1833,6 @@ function _focusBoundariesPlot(focusBoundaries,chooseBasis,focusPlane,Plot)
 }
 
 
-function _91(line3){return(
-line3
-)}
-
 function _generatePerimeterPlan(intersectLines,eq,Line3){return(
 {
   prompt:
@@ -1433,104 +1841,135 @@ function _generatePerimeterPlan(intersectLines,eq,Line3){return(
   comment:
     "Define a function to generate a plan for adjusting the perimeter of an object to insert special joints on the shared edges. This involves walking the boundary and replacing parts of it with joints where shared edges intersect."
 } &&
-  function generatePerimeterPlan(plane, joints, boundary) {
-    const plans = [];
-    for (let i = 0; i < boundary.length; i++) {
-      const edge = boundary[i];
+  function generatePerimeterPlan(plane, joints, boundaries) {
+    console.log("generatePerimeterPlan", generatePerimeterPlan);
+    const sharedEdgeLookup = new Map(
+      joints.flatMap((j) => j.sharedEdges.map((e) => [e, j]))
+    );
+    const unusedSharedEdges = joints.flatMap((j) => j.sharedEdges);
+    const boundaryPlans = [];
+    // First find box joints by walking round the perimiter
+    // and looking for shared edges in the joints
+    boundaries.forEach((boundary) => {
+      const plans = [];
+      for (let i = 0; i < boundary.length; i++) {
+        const edge = boundary[i];
 
-      let connections = joints.filter((joint) =>
-        joint.sharedEdges.some((sharedEdge) => {
-          const intersection = intersectLines(edge, sharedEdge, {
-            clamp: true,
-            includeOverlap: true
-          });
-          if (intersection != null && intersection.start) {
-            return intersection.distanceSq() > 1e-3;
-          }
-        })
-      );
+        let connections = joints.filter((joint) =>
+          joint.sharedEdges.some((sharedEdge) => {
+            const intersection = intersectLines(edge, sharedEdge, {
+              clamp: true,
+              includeOverlap: true
+            });
+            if (intersection != null && intersection.start) {
+              return intersection.distanceSq() > 1e-3;
+            }
+          })
+        );
 
-      function findNearest(position, connections) {
-        let nearest = null;
-        let nearestDistance = Number.MAX_VALUE;
-        let nearestConnection = undefined;
-        let nearestSharedEdge = undefined;
-        connections.forEach((connection) => {
-          connection.sharedEdges.forEach((sharedEdge) => {
+        function findNearest(from, to, edges) {
+          let nearest = null;
+          let nearestDistance = Number.MAX_VALUE;
+          let nearestSharedEdge = undefined;
+          const dir = to.clone().sub(from);
+          edges.forEach((sharedEdge) => {
             [sharedEdge.start, sharedEdge.end].forEach((p) => {
-              const distance = p.distanceTo(position);
-              if (distance < nearestDistance) {
+              const distance = p.distanceTo(from);
+              const opposite =
+                p == sharedEdge.start ? sharedEdge.end : sharedEdge.start;
+              const sharedDir = opposite.clone().sub(p);
+              if (distance < nearestDistance && sharedDir.dot(dir) > 0) {
                 nearest = p;
                 nearestDistance = distance;
-                nearestConnection = connection;
                 nearestSharedEdge = sharedEdge;
               }
             });
           });
-        });
-        return [nearest, nearestConnection, nearestSharedEdge];
-      }
+          return [nearest, nearestSharedEdge];
+        }
 
-      if (connections.length > 0) {
-        let current = edge.start;
-        let openConnections = [...connections];
-        while (!eq(current, edge.end)) {
-          const [nearest, connection, sharedEdge] = findNearest(
-            current,
-            openConnections
-          );
-          if (nearest == null) {
-            plans.push({ plan: "move", edge: new Line3(current, edge.end) });
-            current = edge.end;
-          } else {
-            if (nearest.distanceTo(current) > 1e-3) {
-              plans.push({ plan: "move", edge: new Line3(current, nearest) });
-              current = nearest;
-            }
-            const jointEdge =
-              sharedEdge.start === nearest
+        if (connections.length > 0) {
+          let current = edge.start;
+          let openEdges = connections.flatMap((j) => j.sharedEdges);
+          while (!eq(current, edge.end)) {
+            const [nearest, sharedEdge] = findNearest(
+              current,
+              edge.end,
+              openEdges
+            );
+            if (nearest == null) {
+              plans.push({ plan: "move", edge: new Line3(current, edge.end) });
+              current = edge.end;
+            } else {
+              unusedSharedEdges.splice(
+                unusedSharedEdges.findIndex((d) => d == sharedEdge),
+                1
+              );
+              if (nearest.distanceTo(current) > 1e-3) {
+                plans.push({ plan: "move", edge: new Line3(current, nearest) });
+                current = nearest;
+              }
+              const jointEdge = eq(sharedEdge.start, nearest)
                 ? sharedEdge
                 : new Line3(sharedEdge.end, sharedEdge.start);
-            const oppositePlane =
-              connection.plane1 == plane
-                ? connection.plane2
-                : connection.plane1;
-            const extension = plans.push({
-              plan: "box",
-              edge: jointEdge,
-              joint: connection,
-              polarity: connection.plane1 == plane,
-              direction: oppositePlane.normal,
-              plane,
-              oppositePlane
-            });
-            openConnections.splice(
-              openConnections.findIndex((e) => e == connection),
-              1
-            );
-            current = jointEdge.end;
+              const connection = sharedEdgeLookup.get(sharedEdge);
+              const oppositePlane =
+                connection.plane1 == plane
+                  ? connection.plane2
+                  : connection.plane1;
+              const extension = plans.push({
+                plan: "box",
+                edge: jointEdge,
+                joint: connection,
+                polarity: connection.plane1 == plane,
+                direction: oppositePlane.normal,
+                plane,
+                oppositePlane
+              });
+              openEdges.splice(
+                openEdges.findIndex((e) => e == sharedEdge),
+                1
+              );
+              current = jointEdge.end;
+            }
           }
+        } else {
+          plans.push({ plan: "move", edge: edge });
         }
-      } else {
-        plans.push({ plan: "move", edge: edge });
       }
-    }
+      boundaryPlans.push(plans);
+    });
+    // Next look for internal shared edges within the perimiter as mortoise joints
+    const interior_plan = [];
+    unusedSharedEdges.forEach((e) => {
+      const j = sharedEdgeLookup.get(e);
+      const oppositePlane = j.plane1 == plane ? j.plane2 : j.plane1;
+      interior_plan.push({
+        plan: "mortise",
+        edge: e,
+        joint: j,
+        polarity: j.plane1 == plane,
+        direction: oppositePlane.normal,
+        plane,
+        oppositePlane
+      });
+    });
 
-    return plans;
+    return [...boundaryPlans, interior_plan];
   }
 )}
 
-function _perimeterPlans(planePaths,boundaries,generatePerimeterPlan,neighbourhoods){return(
+function _perimeterPlans(planePaths,generatePerimeterPlan,neighbourhoods,boundaries){return(
 new Map(
   planePaths
     .keys()
     .map((plane) => [
       plane,
-      boundaries
-        .get(plane)
-        .map((boundary) =>
-          generatePerimeterPlan(plane, neighbourhoods.get(plane), boundary)
-        )
+      generatePerimeterPlan(
+        plane,
+        neighbourhoods.get(plane),
+        boundaries.get(plane)
+      )
     ])
 )
 )}
@@ -1539,11 +1978,28 @@ function _focusPermiterPlan(perimeterPlans,focusPlane){return(
 perimeterPlans.get(focusPlane)
 )}
 
+function _124(focusPlane,generatePerimeterPlan,neighbourhoods,focusBoundaries)
+{
+  debugger;
+  return (
+    focusPlane &&
+    generatePerimeterPlan(
+      focusPlane,
+      neighbourhoods.get(focusPlane),
+      focusBoundaries
+    )
+  );
+}
+
+
 function _focusPerimeterPlanPlot(focusPermiterPlan,chooseBasis,focusPlane,Plot)
 {
   if (!focusPermiterPlan) return undefined;
   const [basisX, basisY] = chooseBasis(focusPlane);
   return Plot.plot({
+    color: {
+      legend: true
+    },
     marks: [
       ...focusPermiterPlan.map((neighbourhood, i) =>
         Plot.arrow(neighbourhood, {
@@ -1551,7 +2007,7 @@ function _focusPerimeterPlanPlot(focusPermiterPlan,chooseBasis,focusPlane,Plot)
           y1: (step) => step.edge.start.dot(basisY),
           x2: (step) => step.edge.end.dot(basisX),
           y2: (step) => step.edge.end.dot(basisY),
-          stroke: i
+          stroke: (step) => step.plan
         })
       )
     ]
@@ -1785,7 +2241,16 @@ function _computeCorner(intersect2d){return(
       [stepB.start[0] + retractionB[0], stepB.start[1] + retractionB[1]],
       [stepB.end[0] + retractionB[0], stepB.end[1] + retractionB[1]]
     ];
-    return intersect2d(lineA[0], lineA[1], lineB[0], lineB[1], false);
+    const intersection = intersect2d(
+      lineA[0],
+      lineA[1],
+      lineB[0],
+      lineB[1],
+      false
+    );
+    if (intersection != null) {
+      return intersection;
+    }
   }
 
   return endToStart ? stepA.end : stepA.start;
@@ -1831,7 +2296,7 @@ mapValues(projectedPlans, (plane, plans) =>
 )
 )}
 
-function _105(Inputs,surface_planes,$0){return(
+function _135(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -1842,19 +2307,28 @@ Inputs.bind(
 )
 )}
 
-function _106(angleToFingerRetraction,material_thickness){return(
+function _136(angleToFingerRetraction,material_thickness){return(
 angleToFingerRetraction(155, { thickness: material_thickness })
 )}
 
-function _focusPlan(plans,focusPlane){return(
-plans.get(focusPlane)
+function _focusPlan(Inputs){return(
+Inputs.input(null)
+)}
+
+function _updateFocusPlan(bindOneWay,$0,$1,plans,invalidation){return(
+bindOneWay($0, $1, {
+  transform: (plane) => {
+    return plans.get(plane) || null;
+  },
+  invalidation
+})
 )}
 
 function _planViz(Plot,width,d3,material_thickness){return(
 (plan) =>
   Plot.plot({
+    aspectRatio: 1,
     width,
-    height: width,
     grid: true,
     inset: 10,
     x: {
@@ -1976,7 +2450,7 @@ function _showPlan(Inputs){return(
 Inputs.toggle({ label: "show plan", value: true })
 )}
 
-function _111(md){return(
+function _142(md){return(
 md`### Draw Part`
 )}
 
@@ -1986,7 +2460,7 @@ mapValues(plans, (plane, plan) =>
 )
 )}
 
-function _planToSVG(material_thickness,d3,htl,download_svg,strokeWidth,distance2DSquared,finger_clockwise_v1,fingerWidth){return(
+function _planToSVG(material_thickness,d3,htl,download_svg,numberJoints,label_clockwise,joints,strokeWidth,distance2DSquared,box_clockwise,mortise_clockwise_v1,fingerWidth){return(
 (plan, { scale = 5, thickness = material_thickness } = {}) => {
   const maxX =
     d3.max(plan, (step) => Math.max(step.start[0], step.end[0])) +
@@ -2016,7 +2490,16 @@ function _planToSVG(material_thickness,d3,htl,download_svg,strokeWidth,distance2
           width="${total_width}mm"
           height="${total_height}mm"
           viewBox="${minX} ${minY} ${total_width} ${total_height}">
-    
+      ${
+        numberJoints &&
+        plan
+          .filter((step) => step.plan === "box" || step.plan === "mortise")
+          .map((step, i) =>
+            label_clockwise(step.end, step.start, {
+              label: joints.findIndex((j) => j == step.joint)
+            })
+          )
+      }
       <path stroke="red" stroke-width="${strokeWidth / scale}" fill="none" d="
         ${plan.map((step, i) => {
           if (step.plan === "move") {
@@ -2024,7 +2507,7 @@ function _planToSVG(material_thickness,d3,htl,download_svg,strokeWidth,distance2
               M ${step.start[0]} ${step.start[1]}
               L ${step.end[0]} ${step.end[1]}
             `;
-          } else if (step.plan === "box") {
+          } else if (step.plan === "box" || step.plan == "mortise") {
             const start = step.start;
             const end = step.end;
             const extension = [
@@ -2054,10 +2537,12 @@ function _planToSVG(material_thickness,d3,htl,download_svg,strokeWidth,distance2
             const length = Math.sqrt(
               distance2DSquared(extendedStart, extendedEnd)
             );
+            const drawFn =
+              step.plan === "box" ? box_clockwise : mortise_clockwise_v1;
             try {
               return `
                 M ${step.cornerStart[0]} ${step.cornerStart[1]}
-                ${finger_clockwise_v1(extendedStart, extendedEnd, {
+                ${drawFn(extendedStart, extendedEnd, {
                   finger_depth: step.extension + step.retraction,
                   finger_width: fingerWidth,
                   reverse: step.polarity,
@@ -2094,14 +2579,7 @@ mapValues(plans, (plane, plan) =>
 )
 )}
 
-function _116(focusPlan,planToSVG,scale)
-{
-  debugger;
-  return focusPlan && planToSVG(focusPlan, { scale });
-}
-
-
-function _117(md){return(
+function _147(md){return(
 md`### Parts to Blobs`
 )}
 
@@ -2115,11 +2593,25 @@ function _focusBlobURL(focusPlane,partBlobs){return(
 focusPlane && partBlobs.get(focusPlane)
 )}
 
-function _focusPart(focusPlan,planToSVG,scale){return(
-focusPlan && planToSVG(focusPlan, { scale })
+function _focusPart(domView){return(
+domView()
 )}
 
-function _121(md){return(
+function _updateFocusPart(bindOneWay,$0,$1,planToSVG,focusPlan,scale,invalidation)
+{
+  bindOneWay($0, $1, {
+    transform: (plane) =>
+      (plane && planToSVG(focusPlan, { scale: scale })) || null,
+    invalidation
+  });
+}
+
+
+function _152(focusPlan,planToSVG,scale){return(
+focusPlan && planToSVG(focusPlan, { scale: scale })
+)}
+
+function _153(md){return(
 md`## Box Joint Cuts`
 )}
 
@@ -2264,7 +2756,7 @@ function _jointScene(THREE,createLineSegment,Line3,Vector3)
 }
 
 
-function _126(jointScene,sideA,sideB,invalidation)
+function _158(jointScene,sideA,sideB,invalidation)
 {
   jointScene.add(sideA);
   jointScene.add(sideB);
@@ -2293,7 +2785,7 @@ function _jointWorld(width,height,THREE,Vector3,jointScene,invalidation)
   camera.lookAt(new Vector3(0, 0, 0));
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(width / 2, height);
+  renderer.setSize(width / 2, height / 2);
   renderer.setPixelRatio(devicePixelRatio);
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", () =>
@@ -2305,7 +2797,7 @@ function _jointWorld(width,height,THREE,Vector3,jointScene,invalidation)
 }
 
 
-function _128(jointWorld,$0,htl){return(
+function _160(jointWorld,$0,htl){return(
 htl.html`<div style="display: flex">
   ${jointWorld.renderer.domElement}
   ${$0}
@@ -2382,7 +2874,7 @@ function _angleToFingerExtension(deg2rad){return(
 }
 )}
 
-function _131(angleToFingerRetraction){return(
+function _163(angleToFingerRetraction){return(
 angleToFingerRetraction(0, { thickness: 1 })
 )}
 
@@ -2439,7 +2931,7 @@ function _fingerData(angleToFingerRetraction,jointToyParams,angleToFingerExtensi
 
 function _fingerMeasures(Plot,height,jointToyParams,fingerData){return(
 Plot.plot({
-  height,
+  height: height / 2,
   y: {
     domain: [-5, 5],
     label: "offset"
@@ -2488,7 +2980,7 @@ function _autoFitFinger(jointToyParams,$0,angleToFingerRetraction,angleToFingerE
 }
 
 
-function* _137(jointWorld,jointScene)
+function* _169(jointWorld,jointScene)
 {
   while (true) {
     jointWorld.renderer.render(jointScene, jointWorld.camera);
@@ -2497,15 +2989,40 @@ function* _137(jointWorld,jointScene)
 }
 
 
-function _138(md){return(
-md`## Box Joint Segment`
+function _170(md){return(
+md`## Joint Segment`
 )}
 
 function _units(){return(
 "mm"
 )}
 
-function _finger_clockwise_v1(distance2DSquared,material_thickness,mod){return(
+function _172(md){return(
+md`#### label_clockwise`
+)}
+
+function _label_clockwise(distance2DSquared,midpoint,degBetween,$0,svg,scaleAxisTransform,fontPath){return(
+(start, end, { label, finger_depth } = {}) => {
+  const distance = (a, b) => Math.sqrt(distance2DSquared(a, b));
+  const mid = midpoint(start, end);
+  const angle = degBetween(start, end);
+  finger_depth = finger_depth || $0.value;
+  return svg`<g transform="translate(${mid[0]}, ${
+    mid[1]
+  }) scale(0.05) rotate(${angle})"><path stroke-width=10 stroke="green" d="${scaleAxisTransform(
+    fontPath(label),
+    {
+      scale: 3
+    }
+  )}" /></g>`;
+}
+)}
+
+function _175(md){return(
+md`#### box_clockwise`
+)}
+
+function _box_clockwise(distance2DSquared,$0,mod){return(
 (
   start,
   end,
@@ -2524,7 +3041,7 @@ function _finger_clockwise_v1(distance2DSquared,material_thickness,mod){return(
 ) => {
   const distance = (a, b) => Math.sqrt(distance2DSquared(a, b));
   finger_width = finger_width || 2;
-  finger_depth = finger_depth || material_thickness;
+  finger_depth = finger_depth || $0.value;
   cut_correction = cut_correction || 0.1;
   offset = offset || 0;
   const dir = [end[0] - start[0], end[1] - start[1]];
@@ -2669,12 +3186,12 @@ function _finger_clockwise_v1(distance2DSquared,material_thickness,mod){return(
 }
 )}
 
-function _fingers_clockwise_v1_preview(finger_clockwise_v1_config,htl,units,finger_clockwise_v1)
+function _fingers_clockwise_v1_preview(box_clockwise_config,htl,units,label_clockwise,box_clockwise)
 {
   const total_width = 100;
   const total_height = 100;
 
-  const { x0, x1, y0, y1 } = finger_clockwise_v1_config;
+  const { x0, x1, y0, y1 } = box_clockwise_config;
   return htl.svg`<div 
     style="
             width: ${total_width}${units};
@@ -2686,15 +3203,116 @@ function _fingers_clockwise_v1_preview(finger_clockwise_v1_config,htl,units,fing
           width="${total_width}${units}"
           height="${total_height}${units}"
           viewBox="0 0 ${total_width} ${total_height}">
+      ${label_clockwise([x0, y0], [x1, y1], box_clockwise_config)}
       <path stroke="red" fill="white" d="
         M ${x0} ${y0} 
-        ${finger_clockwise_v1([x0, y0], [x1, y1], finger_clockwise_v1_config)} 
+        ${box_clockwise([x0, y0], [x1, y1], box_clockwise_config)} 
       "/>
   </div>`;
 }
 
 
-function _finger_clockwise_v1_config(Inputs){return(
+function _box_clockwise_config(Inputs){return(
+Inputs.form({
+  x0: Inputs.range([0, 100], {
+    label: "x0",
+    value: 10
+  }),
+  y0: Inputs.range([0, 100], {
+    label: "y0",
+    value: 10
+  }),
+  x1: Inputs.range([0, 100], {
+    label: "x0",
+    value: 80
+  }),
+  y1: Inputs.range([0, 100], {
+    label: "y1",
+    value: 10
+  }),
+  offset: Inputs.range([-10, 10], {
+    label: "offset",
+    value: 0
+  }),
+  finger_depth: Inputs.range([0, 10], {
+    label: "finger_depth",
+    value: 2.1
+  }),
+  finger_width: Inputs.range([0, 10], {
+    label: "finger_width",
+    value: 2
+  }),
+  cut_correction: Inputs.range([0, 10], {
+    label: "cut_correction",
+    value: 0.1
+  }),
+  end_anchor: Inputs.toggle({
+    label: "end_anchor",
+    value: false
+  }),
+  reverse: Inputs.toggle({
+    label: "reverse",
+    value: false
+  }),
+  delayStart: Inputs.range([0, 100], {
+    label: "delay start",
+    value: 0
+  }),
+  delayEnd: Inputs.range([0, 100], {
+    label: "delay end",
+    value: 90
+  }),
+  reverseDelay: Inputs.toggle({
+    label: "reverse delay",
+    value: false
+  }),
+  label: Inputs.text({
+    label: "label",
+    value: "7"
+  }),
+  debug: Inputs.toggle({
+    label: "debug",
+    value: false
+  })
+})
+)}
+
+function _179(md){return(
+md`#### Mortise Joint`
+)}
+
+function _mortise_clockwise_v1_preview(mortise_clockwise_v1_config,htl,units,mortise_clockwise_v1)
+{
+  const total_width = 100;
+  const total_height = 100;
+
+  const { x0, x1, y0, y1 } = mortise_clockwise_v1_config;
+  return htl.svg`<div 
+    style="
+            width: ${total_width}${units};
+            height: ${total_height}${units};
+            padding: 5px;
+    ">
+    <svg  class="lzr"
+          filename="nozzle_end"
+          width="${total_width}${units}"
+          height="${total_height}${units}"
+          viewBox="0 0 ${total_width} ${total_height}">
+      <circle fill="blue" cx=${x0} cy=${y0} r=1 />
+      <circle fill="blue" cx=${x1} cy=${y1} r=1 />
+      <path stroke="red" fill="white" d="
+        M ${x0} ${y0} 
+        ${mortise_clockwise_v1(
+          [x0, y0],
+          [x1, y1],
+          mortise_clockwise_v1_config
+        )} 
+      "/>
+  </div>`;
+}
+
+
+function _mortise_clockwise_v1_config(Inputs){return(
 Inputs.form({
   x0: Inputs.range([0, 100], {
     label: "x0",
@@ -2755,6 +3373,185 @@ Inputs.form({
 })
 )}
 
+function _mortise_clockwise_v1(distance2DSquared,material_thickness,mod){return(
+(
+  start,
+  end,
+  {
+    offset,
+    finger_depth = 3,
+    finger_width = 3,
+    cut_correction,
+    end_anchor = false,
+    reverse = false,
+    delayStart = NaN,
+    delayEnd = NaN,
+    reverseDelay = false,
+    debug = false
+  } = {}
+) => {
+  const distance = (a, b) => Math.sqrt(distance2DSquared(a, b));
+  finger_width = finger_width || 2;
+  finger_depth = finger_depth || material_thickness;
+  cut_correction = cut_correction || 0.1;
+  offset = offset || 0;
+  const dir = [end[0] - start[0], end[1] - start[1]];
+  const length = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1]);
+  dir[0] /= length;
+  dir[1] /= length;
+  const commands = [];
+
+  const in_cut = [-finger_depth * dir[1], finger_depth * dir[0]];
+
+  const cos45 = 1 / Math.sqrt(2);
+  const sin45 = 1 / Math.sqrt(2);
+  const cos135 = -1 / Math.sqrt(2);
+  const sin135 = 1 / Math.sqrt(2);
+
+  const corner_cut_a = [
+    (cos135 * dir[0] - sin135 * dir[1]) * cut_correction,
+    (sin135 * dir[0] + cos135 * dir[1]) * cut_correction
+  ];
+
+  const corner_cut_b = [
+    (cos45 * dir[0] - sin45 * dir[1]) * cut_correction,
+    (sin45 * dir[0] + cos45 * dir[1]) * cut_correction
+  ];
+
+  if (debug) debugger;
+
+  let on_outer;
+
+  reverseDelay ^= reverse;
+
+  const dist = distance(start, end);
+  delayEnd = Math.min(delayEnd, dist - (end_anchor ? 0 : finger_width));
+  if (end_anchor) {
+    offset = (dist % finger_width) + offset;
+    on_outer = dist % (finger_width * 2) < finger_width;
+    reverseDelay ^= on_outer;
+  } else {
+    on_outer = mod(offset, finger_width * 2) <= finger_width;
+  }
+
+  if (reverse) on_outer = !on_outer;
+
+  // adjust delays to stop the delays from inverting
+  // Some weird ruonding errors so we step a funny amount
+  if (!Number.isNaN(delayStart))
+    while (((delayStart - offset) / finger_width + reverseDelay) % 2 <= 1) {
+      delayStart += finger_width / 3;
+    }
+  if (!Number.isNaN(delayEnd))
+    while (
+      delayEnd > 0 &&
+      ((delayEnd - offset) / finger_width + reverseDelay) % 2 <= 1
+    ) {
+      delayEnd -= finger_width / 3;
+    }
+
+  // First cut on boundary
+  /*
+  if (
+    on_outer ^
+    end_anchor ^
+    (((delayStart - offset) / finger_width) % 2 > 1)
+  ) {
+    commands.push(`
+      L ${start[0]} ${start[1]}
+    `);
+  } else {
+    commands.push(`
+      L ${start[0] + in_cut[0]} ${start[1] + in_cut[1]}
+    `);
+  }*/
+
+  for (
+    let i = end_anchor ? 0 : 1;
+    (i + offset / finger_width) * finger_width < length - 0.0001;
+    i++
+  ) {
+    const i1 = i + offset / finger_width;
+    if (i1 > delayEnd / finger_width) continue;
+    if (!on_outer) {
+    } else {
+      // inwards cut
+      commands.push(`
+          M ${start[0] + i1 * finger_width * dir[0]}
+            ${start[1] + i1 * finger_width * dir[1]}
+                  
+          L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+            ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+  
+          L ${
+            start[0] + i1 * finger_width * dir[0] + in_cut[0] + corner_cut_a[0]
+          }
+            ${
+              start[1] +
+              i1 * finger_width * dir[1] +
+              in_cut[1] +
+              corner_cut_a[1]
+            }
+  
+          L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+            ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+
+          L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+            ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+  
+          L ${
+            start[0] + i1 * finger_width * dir[0] + in_cut[0] + corner_cut_b[0]
+          }
+            ${
+              start[1] +
+              i1 * finger_width * dir[1] +
+              in_cut[1] +
+              corner_cut_b[1]
+            }
+  
+  
+          L ${start[0] + (i1 + 1) * finger_width * dir[0] + in_cut[0]}
+            ${start[1] + (i1 + 1) * finger_width * dir[1] + in_cut[1]}
+
+          L ${start[0] + (i1 + 1) * finger_width * dir[0]}
+            ${start[1] + (i1 + 1) * finger_width * dir[1]}
+
+          L ${start[0] + (i1 + 1) * finger_width * dir[0] - corner_cut_a[0]}
+            ${start[1] + (i1 + 1) * finger_width * dir[1] - corner_cut_a[1]}
+          
+          L ${start[0] + (i1 + 1) * finger_width * dir[0]}
+            ${start[1] + (i1 + 1) * finger_width * dir[1]}
+
+          L ${start[0] + i1 * finger_width * dir[0]}
+            ${start[1] + i1 * finger_width * dir[1]}
+
+
+          L ${start[0] + i1 * finger_width * dir[0] - corner_cut_b[0]}
+            ${start[1] + i1 * finger_width * dir[1] - corner_cut_b[1]}
+
+          
+          L ${start[0] + i1 * finger_width * dir[0]}
+            ${start[1] + i1 * finger_width * dir[1]}
+      `);
+    }
+    on_outer = !on_outer;
+    if (i1 <= delayStart / finger_width) commands.pop();
+  }
+
+  // last cut on boundary
+  if (on_outer) {
+    commands.push(`
+      M ${end[0]} ${end[1]}
+    `);
+  } else {
+    commands.push(`
+      M ${end[0] + in_cut[0]} ${end[1] + in_cut[1]}
+    `);
+  }
+  return commands.join();
+}
+)}
+
 function _download_svg(XMLSerializer){return(
 {
   prompt: "write a function that downloads a passed in SVG element argument",
@@ -2776,7 +3573,7 @@ function _download_svg(XMLSerializer){return(
   }
 )}
 
-function _144(md){return(
+function _184(md){return(
 md`## Math`
 )}
 
@@ -2863,6 +3660,22 @@ function _rad2deg(){return(
 function _distance2DSquared(){return(
 (a, b) =>
   (a[0] - b[0]) * (a[0] - b[0]) + (a[1] - b[1]) * (a[1] - b[1])
+)}
+
+function _degBetween(){return(
+{
+  prompt:
+    "write a function to calculate the angle between two coordinates [x1,y1], [x2, y2] ",
+  time: 1721327715349,
+  comment:
+    "Define a function to calculate the angle between two coordinates [x1, y1] and [x2, y2] and return the angle in degrees."
+} &&
+  function calculateAngleBetweenCoordinates([x1, y1], [x2, y2]) {
+    const deltaX = x2 - x1;
+    const deltaY = y2 - y1;
+    const angle = Math.atan2(deltaY, deltaX);
+    return angle * (180 / Math.PI); // Convert the angle from radians to degrees
+  }
 )}
 
 function _midpoint(){return(
@@ -3400,14 +4213,14 @@ function _getBoundingBoxCorners(){return(
 function _shape3DTo2D(chooseBasis,Vector3){return(
 {
   prompt:
-    "Write a function that converts a Shape3D (plane, lines) to a Shape2D ([x, y][])",
+    "Write a function that converts a Shape3D (plane, boundaries) to a Shape2D ([x, y][])",
   time: 1715156172321
 } &&
-  ((plane, lines) => {
+  ((plane, boundaries) => {
     const [basisX, basisY] = chooseBasis(plane);
-    return lines.flatMap((line) =>
-      [line.start, line.end].map((vector) => {
-        const pointOnPlane = plane.projectPoint(vector, new Vector3());
+    return boundaries.map((lines) =>
+      lines.map((line) => {
+        const pointOnPlane = plane.projectPoint(line.start, new Vector3());
 
         // Project the point onto the plane using the basis vectors
         const x = pointOnPlane.dot(basisX);
@@ -3427,18 +4240,21 @@ function _shape2DToPath(paper){return(
   comment:
     "Define a function to convert an array of 2D points into a paper.js Path representation."
 } &&
-  function shape2DToPath(shape2D, { close = true } = {}) {
-    const path = new paper.Path();
-    path.strokeColor = "black";
-    shape2D.forEach((point, index) => {
-      if (index === 0) {
-        path.moveTo(new paper.Point(point[0], point[1]));
-      } else {
-        path.lineTo(new paper.Point(point[0], point[1]));
-      }
+  function shape2DToPath(shape2DBoundaries, { close = true } = {}) {
+    const paths = shape2DBoundaries.map((shape2D) => {
+      const path = new paper.Path();
+      shape2D.forEach((point, index) => {
+        if (index === 0) {
+          path.moveTo(new paper.Point(point[0], point[1]));
+        } else {
+          path.lineTo(new paper.Point(point[0], point[1]));
+        }
+      });
+      if (close) path.closePath();
+      return path;
     });
-    if (close) path.closePath();
-    return path;
+    //if (paths.length == 1) return paths[0];
+    return new paper.CompoundPath(paths);
   }
 )}
 
@@ -3497,62 +4313,50 @@ function _findIntersectionTransitions(intersectPlanes,extendLine,intersectLines,
   }
 )}
 
-function _findIntersectionTransitionsExample(findIntersectionTransitions,exampleShapes)
-{
-  return findIntersectionTransitions(
-    exampleShapes.plane1,
-    exampleShapes.lines1,
-    exampleShapes.plane2,
-    exampleShapes.lines2
+function _classifyPointOnShape(chooseBasis,shape3DTo2D,shape2DToPath,paper,Vector3){return(
+function classifyPointOnShape(point, plane, boundaries) {
+  if (Math.abs(plane.distanceToPoint(point)) > 1e-4) return "OUTSIDE"; // Point is not on the plane
+  debugger;
+
+  const [basisX, basisY] = chooseBasis(plane);
+
+  const shape2Dboundaries = shape3DTo2D(plane, boundaries);
+  const path = shape2DToPath(shape2Dboundaries);
+  const projectedPoint = new paper.Point(
+    plane.projectPoint(point, new Vector3()).dot(basisX),
+    plane.projectPoint(point, new Vector3()).dot(basisY)
   );
-}
-
-
-function _isInsideShape3D(chooseBasis,shape3DTo2D,shape2DToPath,paper,Vector3){return(
-{
-  prompt:
-    "Write a function isInsideShape3D to test whether a Vector3 is within a shape (plane, lines). It is inside the shape if it is on the plane, and it is either: 1. on a boundary edge or 2. shooting a random ray from the point on the plane cross an odd number of times. \n\nBecause 2 is subject to numerical errors, do two random rays and then do a third if they do not agree to tie break.",
-  time: 1715163345144,
-  comment:
-    "Define a function to test whether a Vector3 is within a 3D shape by checking if it's on the plane and either on a boundary edge or enclosed by the edges using ray-casting."
-} &&
-  function isInsideShape3D(point, plane, lines) {
-    if (Math.abs(plane.distanceToPoint(point)) > 1e-4) return false; // Point is not on the plane
-
-    const [basisX, basisY] = chooseBasis(plane);
-
-    const shape2D = shape3DTo2D(plane, lines);
-    const path = shape2DToPath(shape2D);
-    const projectedPoint = new paper.Point(
-      plane.projectPoint(point, new Vector3()).dot(basisX),
-      plane.projectPoint(point, new Vector3()).dot(basisY)
-    );
-
-    // Check if point is on any of the edges
-    if (path.contains(projectedPoint)) return true;
-    return (
-      path.intersect(
-        new paper.Path.Circle({
-          center: projectedPoint,
-          radius: 1e-3
-        })
-      ).segments.length > 0
-    );
+  path.strokeWidth = 1e-3;
+  path.strokeColor = "black";
+  path.fillColor = "black";
+  path.fillStyle = "evenodd";
+  if (
+    path.hitTest(projectedPoint, {
+      tolerance: 1e-3,
+      stroke: true,
+      fill: false
+    })
+  ) {
+    return "EDGE";
   }
+  // Check if point is on any of the edges
+  if (
+    path.hitTest(projectedPoint, {
+      tolerance: 1e-3,
+      stroke: false,
+      fill: true
+    })
+  )
+    return "INSIDE";
+  return "OUTSIDE";
+}
 )}
 
-function _isInsideShape3DExample(isInsideShape3D,Vector3,exampleShapes)
-{
-  debugger;
-  return isInsideShape3D(
-    new Vector3(-7.5, 4.499999999996362, 8.999999999994543),
-    exampleShapes.plane1,
-    exampleShapes.lines1
-  );
-}
+function _216(focusBoundaries){return(
+focusBoundaries
+)}
 
-
-function _intersectShapes(findIntersectionTransitions,Vector3,isInsideShape3D,Line3){return(
+function _intersectShapes(findIntersectionTransitions,Vector3,classifyPointOnShape,Line3){return(
 {
   prompt:
     "findIntersectionTransitions gives and ordered list of points that (may) lie on the boundary of a shared line between two Shape3D. Use isInsideShape3D to check the midpoint between consecutive pair, so we can return a minimal list of Line3 that lie on the shared edge of the two shapes. Call this intersectShapes",
@@ -3560,15 +4364,16 @@ function _intersectShapes(findIntersectionTransitions,Vector3,isInsideShape3D,Li
   comment:
     "Define a function to find minimal list of Line3 that lie on the shared edge between two Shape3D by using intersection transitions and checking midpoints for containment within both shapes."
 } &&
-  function intersectShapes(plane1, lines1, plane2, lines2) {
+  function intersectShapes(plane1, boundaries1, plane2, boundaries2) {
     const transitions = findIntersectionTransitions(
       plane1,
-      lines1,
+      boundaries1.flat(),
       plane2,
-      lines2
+      boundaries2.flat()
     );
+    if (transitions.length === 0) return [];
     const sharedLines = [];
-    let insideShape = false,
+    let classification = "--",
       edgeStart = undefined;
     for (let i = 0; i < transitions.length - 1; i++) {
       const midpoint = new Vector3()
@@ -3576,44 +4381,28 @@ function _intersectShapes(findIntersectionTransitions,Vector3,isInsideShape3D,Li
         .multiplyScalar(0.5);
 
       // Check if the midpoint is inside both shapes
-      if (
-        isInsideShape3D(midpoint, plane1, lines1) &&
-        isInsideShape3D(midpoint, plane2, lines2)
-      ) {
-        if (!insideShape) {
-          // transition from outside to inside
-          edgeStart = transitions[i];
-        }
-        insideShape = true;
+      const nextClassification =
+        classifyPointOnShape(midpoint, plane1, boundaries1) +
+        "-" +
+        classifyPointOnShape(midpoint, plane2, boundaries2);
+      if (nextClassification == classification) {
       } else {
-        if (insideShape) {
-          // transition from inside to outside
-          sharedLines.push(new Line3(edgeStart, transitions[i]));
-        }
-        insideShape = false;
+        if (edgeStart) sharedLines.push(new Line3(edgeStart, transitions[i]));
+        if (!nextClassification.includes("OUTSIDE")) edgeStart = transitions[i];
       }
+      classification = nextClassification;
     }
-    if (insideShape) {
-      sharedLines.push(new Line3(edgeStart, transitions.at(-1)));
-    }
+
+    if (!classification.includes("OUTSIDE"))
+      sharedLines.push(
+        new Line3(edgeStart, transitions[transitions.length - 1])
+      );
 
     return sharedLines;
   }
 )}
 
-function _intersectShapesExample(intersectShapes,exampleShapes)
-{
-  debugger;
-  return intersectShapes(
-    exampleShapes.plane1,
-    exampleShapes.lines1,
-    exampleShapes.plane2,
-    exampleShapes.lines2
-  );
-}
-
-
-function _179(md){return(
+function _218(md){return(
 md`## String`
 )}
 
@@ -3665,7 +4454,7 @@ function _geometrySuite(createSuite){return(
 } && createSuite({ name: "Geometry Tests" })
 )}
 
-function _184(geometrySuite,Line3,Vector3,expect,intersectLines){return(
+function _223(geometrySuite,Line3,Vector3,expect,intersectLines){return(
 geometrySuite.test("intersectLines example", () => {
   const l1 = new Line3(new Vector3(0, 0, -1), new Vector3(1, 0, -1));
   const l2 = new Line3(new Vector3(0, 0, 0), new Vector3(0, 0, -1));
@@ -3755,6 +4544,43 @@ function _testIntersectPlanesRandom(geometrySuite,Plane,Vector3,XZ,intersectPlan
   })
 )}
 
+function _226(geometrySuite,Plane,Vector3,Line3,expect,classifyPointOnShape){return(
+geometrySuite.test("classify point on inside of donut boundary", () => {
+  const plane = new Plane(new Vector3(0, 0, 1), 0);
+
+  const boundary = [
+    [
+      new Vector3(2, -2, 0),
+      new Vector3(2, 2, 0),
+      new Vector3(-2, 2, 0),
+      new Vector3(-2, -2, 0)
+    ],
+    [
+      new Vector3(1, -1, 0),
+      new Vector3(1, 1, 0),
+      new Vector3(-1, 1, 0),
+      new Vector3(-1, -1, 0)
+    ]
+  ].map((points) => points.map((p, i) => new Line3(p, points[(i + 1) % 4])));
+
+  expect(classifyPointOnShape(new Vector3(2.1, 0, 0), plane, boundary)).toBe(
+    "OUTSIDE"
+  );
+  expect(classifyPointOnShape(new Vector3(1.5, 0, 0), plane, boundary)).toBe(
+    "INSIDE"
+  );
+  expect(classifyPointOnShape(new Vector3(2, 0, 0), plane, boundary)).toBe(
+    "EDGE"
+  );
+  expect(classifyPointOnShape(new Vector3(1, 0, 0), plane, boundary)).toBe(
+    "EDGE"
+  );
+  expect(classifyPointOnShape(new Vector3(0, 0, 0), plane, boundary)).toBe(
+    "OUTSIDE"
+  );
+})
+)}
+
 function _test3Dto2D(geometrySuite,Plane,Vector3,unionPaths,surfacesOnPlaneAsPath,projectPathTo3D,expect){return(
 geometrySuite.test(
   "surfacesOnPlaneAsPath and projectPathTo3D round trip",
@@ -3774,7 +4600,7 @@ geometrySuite.test(
 
     const path = unionPaths(surfacesOnPlaneAsPath(plane, [[a, b]]));
 
-    const edges = projectPathTo3D(path, plane);
+    const edges = projectPathTo3D([path], plane);
 
     expect(a.distanceTo(edges[0].start) < 1e-3 || a.distanceTo(edges[0].end));
     expect(b.distanceTo(edges[0].start) < 1e-3 || b.distanceTo(edges[0].end));
@@ -3782,7 +4608,7 @@ geometrySuite.test(
 )
 )}
 
-function _188(md){return(
+function _228(md){return(
 md`# Planes`
 )}
 
@@ -3844,11 +4670,7 @@ function _chooseBasis(THREE){return(
   }
 )}
 
-function _193(focusPlane){return(
-focusPlane
-)}
-
-function _194(Inputs,surface_planes,$0){return(
+function _233(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -3859,11 +4681,7 @@ Inputs.bind(
 )
 )}
 
-function _195(focusPlane){return(
-focusPlane
-)}
-
-function _196(md){return(
+function _234(md){return(
 md`## Meshes`
 )}
 
@@ -4098,7 +4916,7 @@ function _createSimpleLight(Vector3,THREE){return(
   }
 )}
 
-function _204(md){return(
+function _242(md){return(
 md`## Plots`
 )}
 
@@ -4109,15 +4927,11 @@ function _plotShape2D(Plot){return(
   })
 )}
 
-function _206(md){return(
+function _244(md){return(
 md`## Scene`
 )}
 
-function _207(shapes2D){return(
-shapes2D
-)}
-
-function _208(Inputs,surface_planes,$0){return(
+function _245(Inputs,surface_planes,$0){return(
 Inputs.bind(
   Inputs.range([-1, surface_planes.length - 1], {
     label: "focus plane",
@@ -4132,7 +4946,7 @@ function _loader(THREE){return(
 new THREE.TextureLoader()
 )}
 
-function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,showSurfaces,focusSurfaceIdx,surfaces,createMesh,showShapes,targetShape,shapes2D,createShape,focusPlane,focusJoint,showPlan,showParts,planBlobs,getBoundingBoxCorners,partBlobs)
+function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,showSurfaces,focusSurfaceIdx,surfaces,createMesh,showShapes,focusShape,shapes2D,createShape,focusPlane,focusJoint,showPlan,showParts,planBlobs,getBoundingBoxCorners,partBlobs)
 {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0x000000);
@@ -4164,7 +4978,7 @@ function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,s
     );
   }
   if (showShapes) {
-    if (targetShape === undefined) {
+    if (focusShape === undefined) {
       shapes2D.forEach((points, plane) => {
         const mesh = createShape(plane, points, {
           color: 0xffffff,
@@ -4235,14 +5049,6 @@ function _scene(THREE,showEdges,edges,focusEdges,createLineSegment,createPoint,s
 }
 
 
-function _211(planBlobs){return(
-planBlobs
-)}
-
-function _height(){return(
-600
-)}
-
 function _rotateCameraAroundOrigin(THREE){return(
 {
   prompt:
@@ -4261,14 +5067,14 @@ function _rotateCameraAroundOrigin(THREE){return(
   }
 )}
 
-function _214(focusEdges){return(
+function _249(focusEdges){return(
 focusEdges
 )}
 
 function _camera(width,height,THREE,Vector3)
 {
   const fov = 45;
-  const aspect = width / 2 / height;
+  const aspect = width / height;
   const near = 1;
   const far = 9999999;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
@@ -4278,15 +5084,22 @@ function _camera(width,height,THREE,Vector3)
 }
 
 
-function _renderer(THREE,width,height,camera,scene,invalidation)
+function _renderer(THREE,width,height,invalidation)
 {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
-  renderer.setSize(width / 2, height);
+  renderer.setSize(width, height);
   renderer.setPixelRatio(devicePixelRatio);
+  invalidation.then(() => (renderer.dispose()));
+  return renderer;
+}
+
+
+function _controls(THREE,camera,renderer,scene,invalidation)
+{
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.addEventListener("change", () => renderer.render(scene, camera));
-  invalidation.then(() => (controls.dispose(), renderer.dispose()));
-  return renderer;
+  invalidation.then(() => controls.dispose());
+  return controls;
 }
 
 
@@ -4302,7 +5115,15 @@ function* _render_loop(spin,rotateCameraAroundOrigin,camera,Vector3,renderer,sce
 }
 
 
-function _218(md){return(
+function _254(md){return(
+md`## Browser`
+)}
+
+function _height(screen){return(
+screen.height
+)}
+
+function _256(md){return(
 md`## THREE Basics`
 )}
 
@@ -4344,17 +5165,21 @@ async function _THREE(require)
   THREE.OBJLoader = (
     await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/OBJLoader.js?module")
   ).OBJLoader;
-  THREE.FBXLoader = (
-    await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/FBXLoader.js?module")
-  ).FBXLoader;
-  THREE.GLTFLoader = (
-    await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js?module")
-  ).GLTFLoader;
+  try {
+    THREE.FBXLoader = (
+      await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/FBXLoader.js?module")
+    ).FBXLoader;
+    THREE.GLTFLoader = (
+      await import("https://unpkg.com/three@0.159.0/examples/jsm/loaders/GLTFLoader.js?module")
+    ).GLTFLoader;
+  } catch (err) {
+    console.log("err");
+  }
   return THREE;
 }
 
 
-function _228(md){return(
+function _266(md){return(
 md`## Paper.js Basics`
 )}
 
@@ -4370,38 +5195,15 @@ async function _paper(require)
 }
 
 
-function _polygon(paper){return(
-new paper.Path([
-  new paper.Point(50, 50),
-  new paper.Point(150, 50),
-  new paper.Point(150, 150),
-  new paper.Point(50, 150)
-])
-)}
-
-function _line(paper){return(
-new paper.Path({
-  segments: [
-    [0, 100],
-    [200, 100]
-  ],
-  strokeColor: "red"
-})
-)}
-
-function _intersections(line,polygon){return(
-line.getIntersections(polygon)
-)}
-
-function _234(md){return(
+function _269(md){return(
 md`# [Robocoop](https://observablehq.com/@tomlarkworthy/robocoop) Assistant`
 )}
 
-function _235($0){return(
+function _270($0){return(
 $0
 )}
 
-function _236(Inputs,suggestion){return(
+function _271(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -4409,15 +5211,15 @@ Inputs.button("copy code", {
 })
 )}
 
-function _237($0){return(
+function _272($0){return(
 $0
 )}
 
-function _238(md){return(
+function _273(md){return(
 md`## Current Chat context`
 )}
 
-function _239($0){return(
+function _274($0){return(
 $0
 )}
 
@@ -4491,120 +5293,167 @@ ${tex`
 `
 )}
 
-function _241(md){return(
+function _276(md){return(
 md`tick the cells to include in the next prompt`
 )}
 
-function _242($0){return(
+function _277($0){return(
 $0
 )}
 
-function _243($0){return(
+function _278($0){return(
 $0
 )}
 
-function _244(md){return(
+function _279(md){return(
 md`### AI Settings`
 )}
 
-function _245($0){return(
+function _280($0){return(
 $0
 )}
 
-function _246($0){return(
+function _281($0){return(
 $0
 )}
 
-function _247($0){return(
+function _282($0){return(
 $0
 )}
 
-function _248(background_tasks){return(
+function _283(background_tasks){return(
 background_tasks
 )}
 
-function _250(md){return(
+function _284(md){return(
 md`---`
 )}
 
-function _254(footer){return(
+function _292(footer){return(
 footer
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  main.variable(observer()).define(["md"], _1);
-  main.variable(observer()).define(["md"], _2);
-  main.variable(observer()).define(["md"], _3);
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/0e45096ce808d74e9c747b21b1b7fe6e0770e01cf0df7e8fb8d1a0d9df829a6f68fc791f777645ab1bf66813b5386592cb23aab8317a4c4a1a9bc5bd46b1af75.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
+  main.variable(observer()).define(["FileAttachment","md"], _1);
+  main.variable(observer("app")).define("app", ["renderer","reversibleAttach","assemble_app","viewof partsPanel","viewof configuration","viewof planesPanel","htl"], _app);
+  main.variable(observer()).define(["htl"], _3);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  const child1 = runtime.module(define1);
+  main.import("_ndd", child1);
+  main.variable(observer("viewof assemble_app")).define("viewof assemble_app", ["Inputs"], _assemble_app);
+  main.variable(observer("assemble_app")).define("assemble_app", ["Generators", "viewof assemble_app"], (G, _) => G.input(_));
+  main.variable(observer("viewof configuration")).define("viewof configuration", ["view","tabbedPane","reversibleAttach","compositeConfig","viewof fingerWidth","viewof material_thickness","viewof numberJoints","viewof minThickness","viewof recurseUnite","viewof file","viewof rescale","viewof invert_normals","viewof boxParams","viewof flangeParams","viewof angleParams","viewof tParams","viewof cornerAngleParams","visualizationPane"], _configuration);
+  main.variable(observer("configuration")).define("configuration", ["Generators", "viewof configuration"], (G, _) => G.input(_));
+  main.variable(observer("viewof compositeConfig")).define("viewof compositeConfig", ["Inputs"], _compositeConfig);
+  main.variable(observer("compositeConfig")).define("compositeConfig", ["Generators", "viewof compositeConfig"], (G, _) => G.input(_));
   main.variable(observer("viewof fingerWidth")).define("viewof fingerWidth", ["Inputs"], _fingerWidth);
   main.variable(observer("fingerWidth")).define("fingerWidth", ["Generators", "viewof fingerWidth"], (G, _) => G.input(_));
   main.variable(observer("viewof material_thickness")).define("viewof material_thickness", ["Inputs"], _material_thickness);
   main.variable(observer("material_thickness")).define("material_thickness", ["Generators", "viewof material_thickness"], (G, _) => G.input(_));
-  main.variable(observer("viewof jointHint")).define("viewof jointHint", ["Inputs"], _jointHint);
-  main.variable(observer("jointHint")).define("jointHint", ["Generators", "viewof jointHint"], (G, _) => G.input(_));
+  main.variable(observer("viewof numberJoints")).define("viewof numberJoints", ["Inputs"], _numberJoints);
+  main.variable(observer("numberJoints")).define("numberJoints", ["Generators", "viewof numberJoints"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _14);
   main.variable(observer("viewof boxParams")).define("viewof boxParams", ["view","Inputs"], _boxParams);
   main.variable(observer("boxParams")).define("boxParams", ["Generators", "viewof boxParams"], (G, _) => G.input(_));
-  main.variable(observer("apply_box")).define("apply_box", ["boxParams","Vector3","viewof surfaces","Event","viewof filename","material_thickness"], _apply_box);
+  main.variable(observer("apply_box")).define("apply_box", ["boxParams","viewof surfaces","Event","viewof filename","viewof material_thickness"], _apply_box);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("viewof flangeParams")).define("viewof flangeParams", ["view","Inputs"], _flangeParams);
   main.variable(observer("flangeParams")).define("flangeParams", ["Generators", "viewof flangeParams"], (G, _) => G.input(_));
-  main.variable(observer("apply_flange")).define("apply_flange", ["flangeParams","viewof surfaces","Event","viewof filename","material_thickness"], _apply_flange);
+  main.variable(observer("apply_flange")).define("apply_flange", ["flangeParams","material_thickness","viewof surfaces","Event","viewof filename"], _apply_flange);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("viewof angleParams")).define("viewof angleParams", ["view","Inputs"], _angleParams);
   main.variable(observer("angleParams")).define("angleParams", ["Generators", "viewof angleParams"], (G, _) => G.input(_));
   main.variable(observer("apply_angle")).define("apply_angle", ["angleParams","deg2rad","viewof surfaces","Event","viewof filename","material_thickness"], _apply_angle);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _23);
+  main.variable(observer("viewof tParams")).define("viewof tParams", ["view","Inputs"], _tParams);
+  main.variable(observer("tParams")).define("tParams", ["Generators", "viewof tParams"], (G, _) => G.input(_));
+  main.variable(observer("apply_t")).define("apply_t", ["tParams","viewof surfaces","Event","viewof filename"], _apply_t);
+  main.variable(observer()).define(["md"], _26);
+  main.variable(observer("viewof cornerAngleParams")).define("viewof cornerAngleParams", ["view","Inputs"], _cornerAngleParams);
+  main.variable(observer("cornerAngleParams")).define("cornerAngleParams", ["Generators", "viewof cornerAngleParams"], (G, _) => G.input(_));
+  main.variable(observer("apply_corner_angle")).define("apply_corner_angle", ["cornerAngleParams","viewof surfaces","Event","viewof filename"], _apply_corner_angle);
+  main.variable(observer()).define(["md"], _29);
   main.variable(observer("viewof file")).define("viewof file", ["Inputs"], _file);
   main.variable(observer("file")).define("file", ["Generators", "viewof file"], (G, _) => G.input(_));
   main.variable(observer("objText")).define("objText", ["file"], _objText);
   main.variable(observer("parseObjFile")).define("parseObjFile", ["THREE","invert_normals"], _parseObjFile);
-  main.variable(observer("viewof minThickness")).define("viewof minThickness", ["Inputs","material_thickness"], _minThickness);
+  main.variable(observer("viewof minThickness")).define("viewof minThickness", ["Inputs","viewof material_thickness"], _minThickness);
   main.variable(observer("minThickness")).define("minThickness", ["Generators", "viewof minThickness"], (G, _) => G.input(_));
   main.variable(observer("viewof rescale")).define("viewof rescale", ["Inputs"], _rescale);
   main.variable(observer("rescale")).define("rescale", ["Generators", "viewof rescale"], (G, _) => G.input(_));
   main.variable(observer("viewof invert_normals")).define("viewof invert_normals", ["Inputs"], _invert_normals);
   main.variable(observer("invert_normals")).define("invert_normals", ["Generators", "viewof invert_normals"], (G, _) => G.input(_));
+  main.variable(observer("viewof recurseUnite")).define("viewof recurseUnite", ["Inputs"], _recurseUnite);
+  main.variable(observer("recurseUnite")).define("recurseUnite", ["Generators", "viewof recurseUnite"], (G, _) => G.input(_));
   main.variable(observer("apply_obj")).define("apply_obj", ["parseObjFile","objText","THREE","viewof surfaces","Event","viewof filename","file"], _apply_obj);
   main.variable(observer("apply_fbx")).define("apply_fbx", ["file","THREE","invert_normals","rescale","viewof surfaces","Event","viewof filename"], _apply_fbx);
   main.variable(observer("apply_gltf")).define("apply_gltf", ["file","THREE","invert_normals","rescale","viewof surfaces","Event","viewof filename"], _apply_gltf);
-  main.variable(observer("viewof exclude_planes")).define("viewof exclude_planes", ["Inputs","surface_planes_unfiltered","toString"], _exclude_planes);
+  main.variable(observer("viewof exclude_planes")).define("viewof exclude_planes", ["Inputs"], _exclude_planes);
   main.variable(observer("exclude_planes")).define("exclude_planes", ["Generators", "viewof exclude_planes"], (G, _) => G.input(_));
-  main.variable(observer()).define(["renderer","focusPart","htl"], _24);
-  main.variable(observer("viewof filename")).define("viewof filename", ["Inputs"], _filename);
-  main.variable(observer("filename")).define("filename", ["Generators", "viewof filename"], (G, _) => G.input(_));
-  main.variable(observer("downloadButton")).define("downloadButton", ["filename","zip","partBlobs","button"], _downloadButton);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer("viewof excluded_planes_view")).define("viewof excluded_planes_view", ["domView"], _excluded_planes_view);
+  main.variable(observer("excluded_planes_view")).define("excluded_planes_view", ["Generators", "viewof excluded_planes_view"], (G, _) => G.input(_));
+  main.variable(observer("excluded_planes_view_updater")).define("excluded_planes_view_updater", ["viewof excluded_planes_view","Inputs","surface_planes_unfiltered","toString","viewof exclude_planes","invalidation"], _excluded_planes_view_updater);
+  main.variable(observer()).define(["exclude_planes"], _43);
+  main.variable(observer()).define(["md"], _44);
+  main.variable(observer("viewof compositeVisualizationConfig")).define("viewof compositeVisualizationConfig", ["Inputs"], _compositeVisualizationConfig);
+  main.variable(observer("compositeVisualizationConfig")).define("compositeVisualizationConfig", ["Generators", "viewof compositeVisualizationConfig"], (G, _) => G.input(_));
+  main.variable(observer("visualizationPane")).define("visualizationPane", ["view","reversibleAttach","compositeVisualizationConfig","viewof showSurfaces","viewof showShapes","viewof showEdges","viewof showPlanes","viewof showPlan","viewof showParts","tabbedPane","viewof strokeWidth","viewof spin"], _visualizationPane);
   main.variable(observer("viewof spin")).define("viewof spin", ["Inputs"], _spin);
   main.variable(observer("spin")).define("spin", ["Generators", "viewof spin"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","viewof showSurfaces","viewof showEdges","viewof showPlanes","viewof showPlan","viewof showParts","htl"], _29);
   main.variable(observer("viewof step")).define("viewof step", ["Inputs"], _step);
   main.variable(observer("step")).define("step", ["Generators", "viewof step"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusPlaneIdx")).define("viewof focusPlaneIdx", ["Inputs","planePaths"], _focusPlaneIdx);
+  main.variable(observer("viewof focusPlaneIdx")).define("viewof focusPlaneIdx", ["Inputs"], _focusPlaneIdx);
   main.variable(observer("focusPlaneIdx")).define("focusPlaneIdx", ["Generators", "viewof focusPlaneIdx"], (G, _) => G.input(_));
-  main.variable(observer("viewof focusSurfaceIdx")).define("viewof focusSurfaceIdx", ["Inputs","surfaces"], _focusSurfaceIdx);
+  main.variable(observer("viewof focusSurfaceIdx")).define("viewof focusSurfaceIdx", ["Inputs"], _focusSurfaceIdx);
   main.variable(observer("focusSurfaceIdx")).define("focusSurfaceIdx", ["Generators", "viewof focusSurfaceIdx"], (G, _) => G.input(_));
   main.variable(observer("viewof focusJointIdx")).define("viewof focusJointIdx", ["Inputs","joints"], _focusJointIdx);
   main.variable(observer("focusJointIdx")).define("focusJointIdx", ["Generators", "viewof focusJointIdx"], (G, _) => G.input(_));
-  main.variable(observer("viewof scale")).define("viewof scale", ["Inputs"], _scale);
-  main.variable(observer("scale")).define("scale", ["Generators", "viewof scale"], (G, _) => G.input(_));
   main.variable(observer("viewof strokeWidth")).define("viewof strokeWidth", ["Inputs"], _strokeWidth);
   main.variable(observer("strokeWidth")).define("strokeWidth", ["Generators", "viewof strokeWidth"], (G, _) => G.input(_));
-  main.variable(observer("viewof recurseUnite")).define("viewof recurseUnite", ["Inputs"], _recurseUnite);
-  main.variable(observer("recurseUnite")).define("recurseUnite", ["Generators", "viewof recurseUnite"], (G, _) => G.input(_));
   main.variable(observer("stepEffect")).define("stepEffect", ["viewof showSurfaces","viewof showPlanes","viewof showEdges","viewof showShapes","viewof showPlan","viewof showParts","step","Event"], _stepEffect);
-  const child1 = runtime.module(define1);
-  main.import("view", child1);
-  main.import("cautious", child1);
-  main.variable(observer()).define(["md"], _39);
+  main.variable(observer("viewof selected_planes")).define("viewof selected_planes", ["Inputs","surface_planes"], _selected_planes);
+  main.variable(observer("selected_planes")).define("selected_planes", ["Generators", "viewof selected_planes"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _55);
+  main.variable(observer("viewof compositePlanesPanel")).define("viewof compositePlanesPanel", ["Inputs"], _compositePlanesPanel);
+  main.variable(observer("compositePlanesPanel")).define("compositePlanesPanel", ["Generators", "viewof compositePlanesPanel"], (G, _) => G.input(_));
+  main.variable(observer("viewof planesPanel")).define("viewof planesPanel", ["view","tabbedPane","reversibleAttach","compositePlanesPanel","viewof planes_view","exclude_planes","viewof excluded_planes_view"], _planesPanel);
+  main.variable(observer("planesPanel")).define("planesPanel", ["Generators", "viewof planesPanel"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _58);
+  main.variable(observer("viewof planes_view")).define("viewof planes_view", ["domView"], _planes_view);
+  main.variable(observer("planes_view")).define("planes_view", ["Generators", "viewof planes_view"], (G, _) => G.input(_));
+  main.variable(observer("planes_view_updated")).define("planes_view_updated", ["Inputs","surface_planes","toString","html","viewof exclude_planes","Event","viewof focusPlaneIdx","viewof selected_planes","viewof planes_view"], _planes_view_updated);
+  main.variable(observer()).define(["md"], _61);
+  main.variable(observer("viewof assemblePartsPanel")).define("viewof assemblePartsPanel", ["Inputs"], _assemblePartsPanel);
+  main.variable(observer("assemblePartsPanel")).define("assemblePartsPanel", ["Generators", "viewof assemblePartsPanel"], (G, _) => G.input(_));
+  main.variable(observer("viewof partsPanel")).define("viewof partsPanel", ["domView"], _partsPanel);
+  main.variable(observer("partsPanel")).define("partsPanel", ["Generators", "viewof partsPanel"], (G, _) => G.input(_));
+  main.variable(observer("partsPanelUpdater")).define("partsPanelUpdater", ["viewof partsPanel","view","html","reversibleAttach","assemblePartsPanel","viewof scale","viewof focusPart","viewof filename","downloadButton"], _partsPanelUpdater);
+  main.variable(observer("viewof scale")).define("viewof scale", ["Inputs"], _scale);
+  main.variable(observer("scale")).define("scale", ["Generators", "viewof scale"], (G, _) => G.input(_));
+  main.variable(observer("viewof filename")).define("viewof filename", ["Inputs"], _filename);
+  main.variable(observer("filename")).define("filename", ["Generators", "viewof filename"], (G, _) => G.input(_));
+  main.variable(observer("downloadButton")).define("downloadButton", ["filename","zip","partBlobs","button"], _downloadButton);
+  main.variable(observer()).define(["md"], _68);
   main.variable(observer("viewof surfaces")).define("viewof surfaces", ["Inputs"], _surfaces);
   main.variable(observer("surfaces")).define("surfaces", ["Generators", "viewof surfaces"], (G, _) => G.input(_));
   main.variable(observer("surface_planes_unfiltered")).define("surface_planes_unfiltered", ["dedupe","eq","surfaces","surfaceToPlane"], _surface_planes_unfiltered);
   main.variable(observer("surface_planes")).define("surface_planes", ["surface_planes_unfiltered","exclude_planes"], _surface_planes);
-  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["md"], _72);
   main.variable(observer("viewof showSurfaces")).define("viewof showSurfaces", ["Inputs"], _showSurfaces);
   main.variable(observer("showSurfaces")).define("showSurfaces", ["Generators", "viewof showSurfaces"], (G, _) => G.input(_));
   main.variable(observer("vectorSurfaces")).define("vectorSurfaces", ["surfaces","Vector3"], _vectorSurfaces);
   main.variable(observer("focusSurface")).define("focusSurface", ["vectorSurfaces","focusSurfaceIdx"], _focusSurface);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _47);
-  main.variable(observer("focusPlane")).define("focusPlane", ["planePaths","focusPlaneIdx"], _focusPlane);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _76);
+  main.variable(observer("viewof focusPlane")).define("viewof focusPlane", ["bindOneWay","Inputs","viewof focusPlaneIdx","planePaths"], _focusPlane);
+  main.variable(observer("focusPlane")).define("focusPlane", ["Generators", "viewof focusPlane"], (G, _) => G.input(_));
+  main.variable(observer()).define(["focusPlane"], _78);
   main.variable(observer("surfacesOnPlaneAsPath")).define("surfacesOnPlaneAsPath", ["chooseBasis","Vector3","paper"], _surfacesOnPlaneAsPath);
   main.variable(observer("focusPlaneIdxPaths")).define("focusPlaneIdxPaths", ["focusPlane","surfacesOnPlaneAsPath","vectorSurfaces"], _focusPlaneIdxPaths);
   main.variable(observer("unionPaths")).define("unionPaths", ["recurseUnite"], _unionPaths);
@@ -4616,10 +5465,10 @@ export default function define(runtime, observer) {
   main.variable(observer("simplifyPath")).define("simplifyPath", ["eq"], _simplifyPath);
   main.variable(observer("planePathsTrimmed")).define("planePathsTrimmed", ["filterPathsByMinDimension","unionPlanePaths","minThickness"], _planePathsTrimmed);
   main.variable(observer("planePaths")).define("planePaths", ["mapValues","planePathsTrimmed","simplifyPath"], _planePaths);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _59);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _89);
   main.variable(observer("focusPlanePath")).define("focusPlanePath", ["planePaths","focusPlane"], _focusPlanePath);
-  main.variable(observer()).define(["Plot","focusPlanePath"], _61);
-  main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["Plot","focusPlanePath"], _91);
+  main.variable(observer()).define(["md"], _92);
   main.variable(observer("projectPathTo3D")).define("projectPathTo3D", ["chooseBasis","Vector3","Line3"], _projectPathTo3D);
   main.variable(observer("viewof showEdges")).define("viewof showEdges", ["Inputs"], _showEdges);
   main.variable(observer("showEdges")).define("showEdges", ["Generators", "viewof showEdges"], (G, _) => G.input(_));
@@ -4629,31 +5478,31 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof showShapes")).define("viewof showShapes", ["Inputs"], _showShapes);
   main.variable(observer("showShapes")).define("showShapes", ["Generators", "viewof showShapes"], (G, _) => G.input(_));
   main.variable(observer("shapes2D")).define("shapes2D", ["mapValues","planePaths"], _shapes2D);
-  main.variable(observer("targetShape")).define("targetShape", ["shapes2D","focusPlane"], _targetShape);
-  main.variable(observer("shapePlot")).define("shapePlot", ["targetShape","Plot"], _shapePlot);
-  main.variable(observer()).define(["md"], _72);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _73);
+  main.variable(observer("focusShape")).define("focusShape", ["shapes2D","focusPlane"], _focusShape);
+  main.variable(observer("shapePlot")).define("shapePlot", ["focusShape","Plot"], _shapePlot);
+  main.variable(observer()).define(["md"], _102);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _103);
   main.variable(observer("optimizedShape2D")).define("optimizedShape2D", ["shapes2D"], _optimizedShape2D);
   main.variable(observer("optimizedFocusShape")).define("optimizedFocusShape", ["optimizedShape2D","planePaths","focusPlaneIdx"], _optimizedFocusShape);
   main.variable(observer("optimizedShapePlot")).define("optimizedShapePlot", ["optimizedFocusShape","Plot"], _optimizedShapePlot);
   main.variable(observer("findShapeConnections")).define("findShapeConnections", ["intersectShapes","rad2deg","angleBetweenPlanes","Vector3"], _findShapeConnections);
   main.variable(observer("joints")).define("joints", ["findShapeConnections","edges"], _joints);
-  main.variable(observer()).define(["Inputs","joints","viewof focusJointIdx"], _79);
+  main.variable(observer()).define(["Inputs","joints","viewof focusJointIdx"], _109);
   main.variable(observer("focusJoint")).define("focusJoint", ["joints","focusJointIdx"], _focusJoint);
   main.variable(observer("visualizeJointGraph")).define("visualizeJointGraph", ["dot","edges","toString","focusJoint","focusPlane"], _visualizeJointGraph);
-  main.variable(observer()).define(["visualizeJointGraph","joints"], _82);
-  main.variable(observer()).define(["md"], _83);
+  main.variable(observer()).define(["visualizeJointGraph","joints"], _112);
+  main.variable(observer()).define(["md"], _113);
   main.variable(observer("neighbourhood")).define("neighbourhood", _neighbourhood);
   main.variable(observer("neighbourhoods")).define("neighbourhoods", ["surface_planes","neighbourhood","joints"], _neighbourhoods);
   main.variable(observer("focusNeighbourhood")).define("focusNeighbourhood", ["neighbourhood","focusPlane","joints"], _focusNeighbourhood);
-  main.variable(observer("focusNeighbourhoodPlot")).define("focusNeighbourhoodPlot", ["focusNeighbourhood","chooseBasis","focusPlane","Plot"], _focusNeighbourhoodPlot);
+  main.variable(observer("focusNeighbourhoodPlot")).define("focusNeighbourhoodPlot", ["focusNeighbourhood","focusPlane","chooseBasis","Plot"], _focusNeighbourhoodPlot);
   main.variable(observer("boundaries")).define("boundaries", ["planePaths","projectPathTo3D"], _boundaries);
   main.variable(observer("focusBoundaries")).define("focusBoundaries", ["focusPlane","boundaries"], _focusBoundaries);
   main.variable(observer("focusBoundariesPlot")).define("focusBoundariesPlot", ["focusBoundaries","chooseBasis","focusPlane","Plot"], _focusBoundariesPlot);
-  main.variable(observer()).define(["line3"], _91);
   main.variable(observer("generatePerimeterPlan")).define("generatePerimeterPlan", ["intersectLines","eq","Line3"], _generatePerimeterPlan);
-  main.variable(observer("perimeterPlans")).define("perimeterPlans", ["planePaths","boundaries","generatePerimeterPlan","neighbourhoods"], _perimeterPlans);
+  main.variable(observer("perimeterPlans")).define("perimeterPlans", ["planePaths","generatePerimeterPlan","neighbourhoods","boundaries"], _perimeterPlans);
   main.variable(observer("focusPermiterPlan")).define("focusPermiterPlan", ["perimeterPlans","focusPlane"], _focusPermiterPlan);
+  main.variable(observer()).define(["focusPlane","generatePerimeterPlan","neighbourhoods","focusBoundaries"], _124);
   main.variable(observer("focusPerimeterPlanPlot")).define("focusPerimeterPlanPlot", ["focusPermiterPlan","chooseBasis","focusPlane","Plot"], _focusPerimeterPlanPlot);
   main.variable(observer("projectPlan")).define("projectPlan", ["chooseBasis","Vector3","material_thickness","angleToFingerExtension","angleToFingerRetraction"], _projectPlan);
   main.variable(observer("projectedPlans")).define("projectedPlans", ["mapValues","perimeterPlans","projectPlan"], _projectedPlans);
@@ -4664,56 +5513,72 @@ export default function define(runtime, observer) {
   main.variable(observer("computeCorner")).define("computeCorner", ["intersect2d"], _computeCorner);
   main.variable(observer("computeStepInteractions")).define("computeStepInteractions", ["computeStepInteraction","distance2DSquared","computeCorner","d3"], _computeStepInteractions);
   main.variable(observer("plans")).define("plans", ["mapValues","projectedPlans","computeStepInteractions"], _plans);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _105);
-  main.variable(observer()).define(["angleToFingerRetraction","material_thickness"], _106);
-  main.variable(observer("focusPlan")).define("focusPlan", ["plans","focusPlane"], _focusPlan);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _135);
+  main.variable(observer()).define(["angleToFingerRetraction","material_thickness"], _136);
+  main.variable(observer("viewof focusPlan")).define("viewof focusPlan", ["Inputs"], _focusPlan);
+  main.variable(observer("focusPlan")).define("focusPlan", ["Generators", "viewof focusPlan"], (G, _) => G.input(_));
+  main.variable(observer("updateFocusPlan")).define("updateFocusPlan", ["bindOneWay","viewof focusPlan","viewof focusPlane","plans","invalidation"], _updateFocusPlan);
   main.variable(observer("planViz")).define("planViz", ["Plot","width","d3","material_thickness"], _planViz);
   main.variable(observer("focusPlanViz")).define("focusPlanViz", ["focusPlan","planViz"], _focusPlanViz);
   main.variable(observer("viewof showPlan")).define("viewof showPlan", ["Inputs"], _showPlan);
   main.variable(observer("showPlan")).define("showPlan", ["Generators", "viewof showPlan"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _111);
+  main.variable(observer()).define(["md"], _142);
   main.variable(observer("planBlobs")).define("planBlobs", ["mapValues","plans","toBlobUrl","planViz"], _planBlobs);
-  main.variable(observer("planToSVG")).define("planToSVG", ["material_thickness","d3","htl","download_svg","strokeWidth","distance2DSquared","finger_clockwise_v1","fingerWidth"], _planToSVG);
+  main.variable(observer("planToSVG")).define("planToSVG", ["material_thickness","d3","htl","download_svg","numberJoints","label_clockwise","joints","strokeWidth","distance2DSquared","box_clockwise","mortise_clockwise_v1","fingerWidth"], _planToSVG);
   main.variable(observer("viewof showParts")).define("viewof showParts", ["Inputs"], _showParts);
   main.variable(observer("showParts")).define("showParts", ["Generators", "viewof showParts"], (G, _) => G.input(_));
   main.variable(observer("partsSVG")).define("partsSVG", ["mapValues","plans","planToSVG","material_thickness"], _partsSVG);
-  main.variable(observer()).define(["focusPlan","planToSVG","scale"], _116);
-  main.variable(observer()).define(["md"], _117);
+  main.variable(observer()).define(["md"], _147);
   main.variable(observer("partBlobs")).define("partBlobs", ["mapValues","partsSVG","toBlobUrl"], _partBlobs);
   main.variable(observer("focusBlobURL")).define("focusBlobURL", ["focusPlane","partBlobs"], _focusBlobURL);
-  main.variable(observer("focusPart")).define("focusPart", ["focusPlan","planToSVG","scale"], _focusPart);
-  main.variable(observer()).define(["md"], _121);
+  main.variable(observer("viewof focusPart")).define("viewof focusPart", ["domView"], _focusPart);
+  main.variable(observer("focusPart")).define("focusPart", ["Generators", "viewof focusPart"], (G, _) => G.input(_));
+  main.variable(observer("updateFocusPart")).define("updateFocusPart", ["bindOneWay","viewof focusPart","viewof focusPlan","planToSVG","focusPlan","scale","invalidation"], _updateFocusPart);
+  main.variable(observer()).define(["focusPlan","planToSVG","scale"], _152);
+  main.variable(observer()).define(["md"], _153);
   main.variable(observer("sideA")).define("sideA", ["THREE","jointToyParams","createBoxJointSide","createLineSegment","Line3","Vector3"], _sideA);
   main.variable(observer("sideB")).define("sideB", ["THREE","jointToyParams","createBoxJointSide","createLineSegment","Line3","Vector3"], _sideB);
   main.variable(observer("createBoxJointSide")).define("createBoxJointSide", ["THREE"], _createBoxJointSide);
   main.variable(observer("jointScene")).define("jointScene", ["THREE","createLineSegment","Line3","Vector3"], _jointScene);
-  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _126);
+  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _158);
   main.variable(observer("jointWorld")).define("jointWorld", ["width","height","THREE","Vector3","jointScene","invalidation"], _jointWorld);
-  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _128);
+  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _160);
   main.variable(observer("viewof jointToyParams")).define("viewof jointToyParams", ["view","Inputs"], _jointToyParams);
   main.variable(observer("jointToyParams")).define("jointToyParams", ["Generators", "viewof jointToyParams"], (G, _) => G.input(_));
   main.variable(observer("angleToFingerExtension")).define("angleToFingerExtension", ["deg2rad"], _angleToFingerExtension);
-  main.variable(observer()).define(["angleToFingerRetraction"], _131);
+  main.variable(observer()).define(["angleToFingerRetraction"], _163);
   main.variable(observer("angle_applier")).define("angle_applier", ["sideA","Vector3","deg2rad","jointToyParams","sideB"], _angle_applier);
   main.variable(observer("angleToFingerRetraction")).define("angleToFingerRetraction", ["deg2rad","angleToFingerExtension"], _angleToFingerRetraction);
   main.variable(observer("fingerData")).define("fingerData", ["angleToFingerRetraction","jointToyParams","angleToFingerExtension"], _fingerData);
   main.variable(observer("viewof fingerMeasures")).define("viewof fingerMeasures", ["Plot","height","jointToyParams","fingerData"], _fingerMeasures);
   main.variable(observer("fingerMeasures")).define("fingerMeasures", ["Generators", "viewof fingerMeasures"], (G, _) => G.input(_));
   main.variable(observer("autoFitFinger")).define("autoFitFinger", ["jointToyParams","viewof jointToyParams","angleToFingerRetraction","angleToFingerExtension","Event"], _autoFitFinger);
-  main.variable(observer()).define(["jointWorld","jointScene"], _137);
-  main.variable(observer()).define(["md"], _138);
+  main.variable(observer()).define(["jointWorld","jointScene"], _169);
+  main.variable(observer()).define(["md"], _170);
   main.variable(observer("units")).define("units", _units);
-  main.variable(observer("finger_clockwise_v1")).define("finger_clockwise_v1", ["distance2DSquared","material_thickness","mod"], _finger_clockwise_v1);
-  main.variable(observer("fingers_clockwise_v1_preview")).define("fingers_clockwise_v1_preview", ["finger_clockwise_v1_config","htl","units","finger_clockwise_v1"], _fingers_clockwise_v1_preview);
-  main.variable(observer("viewof finger_clockwise_v1_config")).define("viewof finger_clockwise_v1_config", ["Inputs"], _finger_clockwise_v1_config);
-  main.variable(observer("finger_clockwise_v1_config")).define("finger_clockwise_v1_config", ["Generators", "viewof finger_clockwise_v1_config"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _172);
+  const child2 = runtime.module(define2);
+  main.import("scaleAxisTransform", child2);
+  main.import("fontPath", child2);
+  main.variable(observer("label_clockwise")).define("label_clockwise", ["distance2DSquared","midpoint","degBetween","viewof material_thickness","svg","scaleAxisTransform","fontPath"], _label_clockwise);
+  main.variable(observer()).define(["md"], _175);
+  main.variable(observer("box_clockwise")).define("box_clockwise", ["distance2DSquared","viewof material_thickness","mod"], _box_clockwise);
+  main.variable(observer("fingers_clockwise_v1_preview")).define("fingers_clockwise_v1_preview", ["box_clockwise_config","htl","units","label_clockwise","box_clockwise"], _fingers_clockwise_v1_preview);
+  main.variable(observer("viewof box_clockwise_config")).define("viewof box_clockwise_config", ["Inputs"], _box_clockwise_config);
+  main.variable(observer("box_clockwise_config")).define("box_clockwise_config", ["Generators", "viewof box_clockwise_config"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _179);
+  main.variable(observer("mortise_clockwise_v1_preview")).define("mortise_clockwise_v1_preview", ["mortise_clockwise_v1_config","htl","units","mortise_clockwise_v1"], _mortise_clockwise_v1_preview);
+  main.variable(observer("viewof mortise_clockwise_v1_config")).define("viewof mortise_clockwise_v1_config", ["Inputs"], _mortise_clockwise_v1_config);
+  main.variable(observer("mortise_clockwise_v1_config")).define("mortise_clockwise_v1_config", ["Generators", "viewof mortise_clockwise_v1_config"], (G, _) => G.input(_));
+  main.variable(observer("mortise_clockwise_v1")).define("mortise_clockwise_v1", ["distance2DSquared","material_thickness","mod"], _mortise_clockwise_v1);
   main.variable(observer("download_svg")).define("download_svg", ["XMLSerializer"], _download_svg);
-  main.variable(observer()).define(["md"], _144);
+  main.variable(observer()).define(["md"], _184);
   main.variable(observer("mod")).define("mod", _mod);
   main.variable(observer("exampleShapes")).define("exampleShapes", ["Plane","Vector3","THREE"], _exampleShapes);
   main.variable(observer("deg2rad")).define("deg2rad", _deg2rad);
   main.variable(observer("rad2deg")).define("rad2deg", _rad2deg);
   main.variable(observer("distance2DSquared")).define("distance2DSquared", _distance2DSquared);
+  main.variable(observer("degBetween")).define("degBetween", _degBetween);
   main.variable(observer("midpoint")).define("midpoint", _midpoint);
   main.variable(observer("getBoundingDimensionOfPath")).define("getBoundingDimensionOfPath", _getBoundingDimensionOfPath);
   main.variable(observer("intersect2d")).define("intersect2d", ["paper"], _intersect2d);
@@ -4738,30 +5603,27 @@ export default function define(runtime, observer) {
   main.variable(observer("shape3DTo2D")).define("shape3DTo2D", ["chooseBasis","Vector3"], _shape3DTo2D);
   main.variable(observer("shape2DToPath")).define("shape2DToPath", ["paper"], _shape2DToPath);
   main.variable(observer("findIntersectionTransitions")).define("findIntersectionTransitions", ["intersectPlanes","extendLine","intersectLines","dedupe","eq","Vector3"], _findIntersectionTransitions);
-  main.variable(observer("findIntersectionTransitionsExample")).define("findIntersectionTransitionsExample", ["findIntersectionTransitions","exampleShapes"], _findIntersectionTransitionsExample);
-  main.variable(observer("isInsideShape3D")).define("isInsideShape3D", ["chooseBasis","shape3DTo2D","shape2DToPath","paper","Vector3"], _isInsideShape3D);
-  main.variable(observer("isInsideShape3DExample")).define("isInsideShape3DExample", ["isInsideShape3D","Vector3","exampleShapes"], _isInsideShape3DExample);
-  main.variable(observer("intersectShapes")).define("intersectShapes", ["findIntersectionTransitions","Vector3","isInsideShape3D","Line3"], _intersectShapes);
-  main.variable(observer("intersectShapesExample")).define("intersectShapesExample", ["intersectShapes","exampleShapes"], _intersectShapesExample);
-  main.variable(observer()).define(["md"], _179);
+  main.variable(observer("classifyPointOnShape")).define("classifyPointOnShape", ["chooseBasis","shape3DTo2D","shape2DToPath","paper","Vector3"], _classifyPointOnShape);
+  main.variable(observer()).define(["focusBoundaries"], _216);
+  main.variable(observer("intersectShapes")).define("intersectShapes", ["findIntersectionTransitions","Vector3","classifyPointOnShape","Line3"], _intersectShapes);
+  main.variable(observer()).define(["md"], _218);
   main.variable(observer("parseVector3")).define("parseVector3", ["Vector3"], _parseVector3);
   main.variable(observer("toString")).define("toString", _toString);
   main.variable(observer("toBlobUrl")).define("toBlobUrl", ["XMLSerializer"], _toBlobUrl);
   main.variable(observer("viewof geometrySuite")).define("viewof geometrySuite", ["createSuite"], _geometrySuite);
   main.variable(observer("geometrySuite")).define("geometrySuite", ["Generators", "viewof geometrySuite"], (G, _) => G.input(_));
-  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _184);
+  main.variable(observer()).define(["geometrySuite","Line3","Vector3","expect","intersectLines"], _223);
   main.variable(observer("testIntersectLinesRandom")).define("testIntersectLinesRandom", ["geometrySuite","Vector3","Line3","intersectLines","expect"], _testIntersectLinesRandom);
   main.variable(observer("testIntersectPlanesRandom")).define("testIntersectPlanesRandom", ["geometrySuite","Plane","Vector3","XZ","intersectPlanes","expect"], _testIntersectPlanesRandom);
+  main.variable(observer()).define(["geometrySuite","Plane","Vector3","Line3","expect","classifyPointOnShape"], _226);
   main.variable(observer("test3Dto2D")).define("test3Dto2D", ["geometrySuite","Plane","Vector3","unionPaths","surfacesOnPlaneAsPath","projectPathTo3D","expect"], _test3Dto2D);
-  main.variable(observer()).define(["md"], _188);
+  main.variable(observer()).define(["md"], _228);
   main.variable(observer("XY")).define("XY", ["Plane","Vector3"], _XY);
   main.variable(observer("XZ")).define("XZ", ["Plane","Vector3"], _XZ);
   main.variable(observer("YZ")).define("YZ", ["Plane","Vector3"], _YZ);
   main.variable(observer("chooseBasis")).define("chooseBasis", ["THREE"], _chooseBasis);
-  main.variable(observer()).define(["focusPlane"], _193);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _194);
-  main.variable(observer()).define(["focusPlane"], _195);
-  main.variable(observer()).define(["md"], _196);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _233);
+  main.variable(observer()).define(["md"], _234);
   main.variable(observer("createPlaneMesh")).define("createPlaneMesh", ["THREE","Vector3"], _createPlaneMesh);
   main.variable(observer("createShape")).define("createShape", ["THREE","loader","chooseBasis","Vector3"], _createShape);
   main.variable(observer("createInfiniteLine")).define("createInfiniteLine", ["THREE","Vector3"], _createInfiniteLine);
@@ -4769,21 +5631,21 @@ export default function define(runtime, observer) {
   main.variable(observer("createPoint")).define("createPoint", ["THREE"], _createPoint);
   main.variable(observer("createMesh")).define("createMesh", ["THREE"], _createMesh);
   main.variable(observer("createSimpleLight")).define("createSimpleLight", ["Vector3","THREE"], _createSimpleLight);
-  main.variable(observer()).define(["md"], _204);
+  main.variable(observer()).define(["md"], _242);
   main.variable(observer("plotShape2D")).define("plotShape2D", ["Plot"], _plotShape2D);
-  main.variable(observer()).define(["md"], _206);
-  main.variable(observer()).define(["shapes2D"], _207);
-  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _208);
+  main.variable(observer()).define(["md"], _244);
+  main.variable(observer()).define(["Inputs","surface_planes","viewof focusPlaneIdx"], _245);
   main.variable(observer("loader")).define("loader", ["THREE"], _loader);
-  main.variable(observer("scene")).define("scene", ["THREE","showEdges","edges","focusEdges","createLineSegment","createPoint","showSurfaces","focusSurfaceIdx","surfaces","createMesh","showShapes","targetShape","shapes2D","createShape","focusPlane","focusJoint","showPlan","showParts","planBlobs","getBoundingBoxCorners","partBlobs"], _scene);
-  main.variable(observer()).define(["planBlobs"], _211);
-  main.variable(observer("height")).define("height", _height);
+  main.variable(observer("scene")).define("scene", ["THREE","showEdges","edges","focusEdges","createLineSegment","createPoint","showSurfaces","focusSurfaceIdx","surfaces","createMesh","showShapes","focusShape","shapes2D","createShape","focusPlane","focusJoint","showPlan","showParts","planBlobs","getBoundingBoxCorners","partBlobs"], _scene);
   main.variable(observer("rotateCameraAroundOrigin")).define("rotateCameraAroundOrigin", ["THREE"], _rotateCameraAroundOrigin);
-  main.variable(observer()).define(["focusEdges"], _214);
+  main.variable(observer()).define(["focusEdges"], _249);
   main.variable(observer("camera")).define("camera", ["width","height","THREE","Vector3"], _camera);
-  main.variable(observer("renderer")).define("renderer", ["THREE","width","height","camera","scene","invalidation"], _renderer);
+  main.variable(observer("renderer")).define("renderer", ["THREE","width","height","invalidation"], _renderer);
+  main.variable(observer("controls")).define("controls", ["THREE","camera","renderer","scene","invalidation"], _controls);
   main.variable(observer("render_loop")).define("render_loop", ["spin","rotateCameraAroundOrigin","camera","Vector3","renderer","scene"], _render_loop);
-  main.variable(observer()).define(["md"], _218);
+  main.variable(observer()).define(["md"], _254);
+  main.variable(observer("height")).define("height", ["screen"], _height);
+  main.variable(observer()).define(["md"], _256);
   main.variable(observer("Vector3")).define("Vector3", ["THREE"], _Vector3);
   main.variable(observer("vector3")).define("vector3", ["Vector3"], _vector3);
   main.variable(observer("Line3")).define("Line3", ["THREE"], _Line3);
@@ -4792,63 +5654,68 @@ export default function define(runtime, observer) {
   main.variable(observer("Plane")).define("Plane", ["THREE"], _Plane);
   main.variable(observer("plane")).define("plane", ["Plane"], _plane);
   main.variable(observer("THREE")).define("THREE", ["require"], _THREE);
-  const child2 = runtime.module(define2);
-  main.import("createSuite", child2);
-  main.import("expect", child2);
-  main.variable(observer()).define(["md"], _228);
+  const child3 = runtime.module(define3);
+  main.import("createSuite", child3);
+  main.import("expect", child3);
+  main.variable(observer()).define(["md"], _266);
   main.variable(observer("paper_canvas")).define("paper_canvas", ["htl"], _paper_canvas);
   main.variable(observer("paper")).define("paper", ["require"], _paper);
-  main.variable(observer("polygon")).define("polygon", ["paper"], _polygon);
-  main.variable(observer("line")).define("line", ["paper"], _line);
-  main.variable(observer("intersections")).define("intersections", ["line","polygon"], _intersections);
-  main.variable(observer()).define(["md"], _234);
-  main.variable(observer()).define(["viewof prompt"], _235);
-  main.variable(observer()).define(["Inputs","suggestion"], _236);
-  main.variable(observer()).define(["viewof suggestion"], _237);
-  main.variable(observer()).define(["md"], _238);
-  main.variable(observer()).define(["viewof context_viz"], _239);
+  main.variable(observer()).define(["md"], _269);
+  main.variable(observer()).define(["viewof prompt"], _270);
+  main.variable(observer()).define(["Inputs","suggestion"], _271);
+  main.variable(observer()).define(["viewof suggestion"], _272);
+  main.variable(observer()).define(["md"], _273);
+  main.variable(observer()).define(["viewof context_viz"], _274);
   main.variable(observer("markdown_skill")).define("markdown_skill", ["md","mermaid","htl","tex"], _markdown_skill);
-  main.variable(observer()).define(["md"], _241);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _242);
-  main.variable(observer()).define(["viewof feedback_prompt"], _243);
-  main.variable(observer()).define(["md"], _244);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _245);
-  main.variable(observer()).define(["viewof api_endpoint"], _246);
-  main.variable(observer()).define(["viewof settings"], _247);
-  main.variable(observer()).define(["background_tasks"], _248);
-  main.variable(observer()).define(["md"], _250);
-  const child3 = runtime.module(define3);
-  main.import("ask", child3);
-  main.import("excludes", child3);
-  main.import("cells", child3);
-  main.import("update_context", child3);
-  main.import("on_prompt", child3);
-  main.import("api_call_response", child3);
-  main.import("background_tasks", child3);
-  main.import("mutable context", child3);
-  main.import("context", child3);
-  main.import("viewof prompt", child3);
-  main.import("prompt", child3);
-  main.import("viewof suggestion", child3);
-  main.import("suggestion", child3);
-  main.import("viewof settings", child3);
-  main.import("settings", child3);
-  main.import("viewof OPENAI_API_KEY", child3);
-  main.import("OPENAI_API_KEY", child3);
-  main.import("viewof api_endpoint", child3);
-  main.import("api_endpoint", child3);
-  main.import("viewof feedback_prompt", child3);
-  main.import("feedback_prompt", child3);
-  main.import("viewof feedback_cells_selector", child3);
-  main.import("feedback_cells_selector", child3);
-  main.import("viewof context_viz", child3);
-  main.import("context_viz", child3);
+  main.variable(observer()).define(["md"], _276);
+  main.variable(observer()).define(["viewof feedback_cells_selector"], _277);
+  main.variable(observer()).define(["viewof feedback_prompt"], _278);
+  main.variable(observer()).define(["md"], _279);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _280);
+  main.variable(observer()).define(["viewof api_endpoint"], _281);
+  main.variable(observer()).define(["viewof settings"], _282);
+  main.variable(observer()).define(["background_tasks"], _283);
+  main.variable(observer()).define(["md"], _284);
   const child4 = runtime.module(define4);
-  main.import("zip", child4);
-  main.import("zipreader", child4);
-  main.import("button", child4);
+  main.import("ask", child4);
+  main.import("excludes", child4);
+  main.import("cells", child4);
+  main.import("update_context", child4);
+  main.import("on_prompt", child4);
+  main.import("api_call_response", child4);
+  main.import("background_tasks", child4);
+  main.import("mutable context", child4);
+  main.import("context", child4);
+  main.import("viewof prompt", child4);
+  main.import("prompt", child4);
+  main.import("viewof suggestion", child4);
+  main.import("suggestion", child4);
+  main.import("viewof settings", child4);
+  main.import("settings", child4);
+  main.import("viewof OPENAI_API_KEY", child4);
+  main.import("OPENAI_API_KEY", child4);
+  main.import("viewof api_endpoint", child4);
+  main.import("api_endpoint", child4);
+  main.import("viewof feedback_prompt", child4);
+  main.import("feedback_prompt", child4);
+  main.import("viewof feedback_cells_selector", child4);
+  main.import("feedback_cells_selector", child4);
+  main.import("viewof context_viz", child4);
+  main.import("context_viz", child4);
   const child5 = runtime.module(define5);
-  main.import("footer", child5);
-  main.variable(observer()).define(["footer"], _254);
+  main.import("zip", child5);
+  main.import("zipreader", child5);
+  main.import("button", child5);
+  const child6 = runtime.module(define6);
+  main.import("reversibleAttach", child6);
+  const child7 = runtime.module(define7);
+  main.import("tabbedPane", child7);
+  const child8 = runtime.module(define8);
+  main.import("domView", child8);
+  const child9 = runtime.module(define9);
+  main.import("view", child9);
+  main.import("cautious", child9);
+  main.import("bindOneWay", child9);
+  main.variable(observer()).define(["footer"], _292);
   return main;
 }

@@ -1,5 +1,4 @@
-import define1 from "./84e66f78139ac354@829.js";
-import define2 from "./58f3eb7334551ae6@215.js";
+import define1 from "./84e66f78139ac354@830.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -232,21 +231,23 @@ function report(suite, { timeout = 10000 } = {}) {
 ${Object.keys(suite.results)
   .sort()
   .map((name, index) => {
-    let status = 'not ok';
-    let details = '';
-    if (suite.results[name] === 'ok') status = 'ok';
+    let status = "not ok";
+    let details = "";
+    if (suite.results[name] === "ok") status = "ok";
 
-    if (status === 'not ok') {
-      details = `\n  ---\n  message: ${JSON.stringify(suite.results[name])}`;
+    if (status === "not ok") {
+      details = `\n  ---\n  message: ${JSON.stringify(
+        suite.results[name]
+      ).slice(0, 1000)}`;
     }
     return `${status} ${index + 1} - ${name}${details}`;
   })
-  .join('\n')}`;
+  .join("\n")}`;
   }
   // This is a bit of a crappy poll loop
   // but its only intended for http handler use
   // https://stackoverflow.com/questions/30505960/use-promise-to-wait-until-polled-condition-is-satisfied
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     function waitForResults() {
       if (!Object.values(suite.results).includes(undefined))
         return resolve(tap(suite));
@@ -408,7 +409,7 @@ function _JEST_EXPECT_STANDALONE_VERSION(){return(
 "24.0.2"
 )}
 
-function _34(footer){return(
+function _35(footer){return(
 footer
 )}
 
@@ -453,8 +454,6 @@ export default function define(runtime, observer) {
   main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _34);
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }

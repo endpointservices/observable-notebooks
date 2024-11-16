@@ -1,5 +1,4 @@
 import define1 from "./e1c39d41e8e944b0@939.js";
-import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
@@ -297,15 +296,16 @@ function _interceptVariables(mainVariables,interceptVariable,invalidation)
 
 
 function _notify($0,$1,$2){return(
-function notify(name, type, value) {
+function notify(name, type, value, variable) {
   if ($0.value) return;
-  const datum = {
+  const event = {
     t: Date.now(),
     name: name || "unknown",
     value,
-    type
+    type,
+    variable
   };
-  $1.value = $1.value.concat(datum);
+  $1.value = $1.value.concat(event);
   if ($2.value) {
     debugger;
   }
@@ -324,9 +324,6 @@ function _interceptVariable(excludes,_,notify,WATCHER_PREFIX,uid){return(
 function interceptVariable(v, invalidation, firstSeen = false) {
   if (excludes.includes(v._name)) return;
   const name = v._name || "anon_" + v._observer.id;
-  if (firstSeen) {
-    debugger;
-  }
   if (_.isEqual(v._observer, {})) {
     // for views and mutables, no observer is setup
     // we create a synthetic anon variable to watch it
@@ -339,7 +336,7 @@ function interceptVariable(v, invalidation, firstSeen = false) {
     const handler =
       (type) =>
       (...args) => {
-        if (skip-- <= 0) notify(args[1], type, args[0]);
+        if (skip-- <= 0) notify(args[1], type, args[0], v);
       };
     const watcher = v._module.variable({
       pending: handler("pending"),
@@ -357,7 +354,7 @@ function interceptVariable(v, invalidation, firstSeen = false) {
       if (v._observer[type]) {
         const old = v._observer[type];
         v._observer[type] = (...args) => {
-          notify(args[1], type, args[0]);
+          notify(args[1], type, args[0], v);
           // The old is often a prototype, so we use Reflect to call it
           Reflect.apply(old, v._observer, args);
         };
@@ -371,13 +368,12 @@ function interceptVariable(v, invalidation, firstSeen = false) {
   }
 
   if (firstSeen) {
-    debugger;
-    if (v._value !== undefined) notify(v._name, "fulfilled", v._value);
+    if (v._value !== undefined) notify(v._name, "fulfilled", v._value, v);
     else if (v._promise) {
       notify(v._name, "pending", undefined);
       v._promise
-        .then((value) => notify(v._name, "fulfilled", value))
-        .catch((err) => notify(v._name, "rejected", err));
+        .then((value) => notify(v._name, "fulfilled", value, v))
+        .catch((err) => notify(v._name, "rejected", err, v));
     }
   }
 }
@@ -401,7 +397,9 @@ export default function define(runtime, observer) {
   main.variable(observer("periodicFulfilled")).define("periodicFulfilled", ["runPeriodics","Promises"], _periodicFulfilled);
   main.variable(observer("periodicThrow")).define("periodicThrow", ["periodicFulfilled"], _periodicThrow);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer("excludes")).define("excludes", _excludes);
+  main.define("initial excludes", _excludes);
+  main.variable(observer("mutable excludes")).define("mutable excludes", ["Mutable", "initial excludes"], (M, _) => new M(_));
+  main.variable(observer("excludes")).define("excludes", ["mutable excludes"], _ => _.generator);
   main.define("initial events", ["reset","WATCHER_PREFIX"], _events);
   main.variable(observer("mutable events")).define("mutable events", ["Mutable", "initial events"], (M, _) => new M(_));
   main.variable(observer("events")).define("events", ["mutable events"], _ => _.generator);
@@ -430,7 +428,6 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("modules", child1);
-  main.import("variables", child1);
   main.variable(observer()).define(["md"], _30);
   main.variable(observer("main")).define("main", ["modules"], _main);
   main.variable(observer()).define(["md"], _32);
@@ -441,8 +438,6 @@ export default function define(runtime, observer) {
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _41);
   return main;
 }
