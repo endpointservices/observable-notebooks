@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/oauth-examples@829
 import define1 from "./7a77afd2ce564067@459.js";
 import define2 from "./dff1e917c89f5e76@1964.js";
 import define3 from "./993a0c51ef1175ea@1396.js";
@@ -318,7 +317,10 @@ args => {
 )}
 
 function _GOOGLE_SCOPES(){return(
-['email']
+[
+  "https://www.googleapis.com/auth/userinfo.profile",
+  "https://www.googleapis.com/auth/userinfo.email"
+]
 )}
 
 function _strava(md){return(

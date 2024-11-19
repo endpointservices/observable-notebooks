@@ -1,6 +1,6 @@
 # Oauth 2.0 Client Examples
 
-https://observablehq.com/@tomlarkworthy/oauth-examples@829
+https://observablehq.com/@tomlarkworthy/oauth-examples@830
 
 View this notebook in your browser by running a web server in this folder. For
 example:
