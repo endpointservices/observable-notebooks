@@ -1,6 +1,6 @@
 # Hypertext literal reconciliation with nanomorph
 
-https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@829
+https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@830
 
 View this notebook in your browser by running a web server in this folder. For
 example:
