@@ -1,6 +1,6 @@
 # Convert cell computation to a Promise with cell flowQueue
 
-https://observablehq.com/@tomlarkworthy/flow-queue@444
+https://observablehq.com/@tomlarkworthy/flow-queue@471
 
 View this notebook in your browser by running a web server in this folder. For
 example:
