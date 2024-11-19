@@ -1,6 +1,6 @@
 # Squeezing more Juice out of UI libraries
 
-https://observablehq.com/@tomlarkworthy/juice@669
+https://observablehq.com/@tomlarkworthy/juice@674
 
 View this notebook in your browser by running a web server in this folder. For
 example:
