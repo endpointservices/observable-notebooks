@@ -1,4 +1,4 @@
-import define1 from "./0b75dbddd18995dc@1386.js";
+import define1 from "./0b75dbddd18995dc@1389.js";
 import define2 from "./3320366aab57935b@564.js";
 import define3 from "./c7a3b20cec5d4dd9@730.js";
 import define4 from "./17c8ce433e1df58e@3332.js";
@@ -7,6 +7,7 @@ import define6 from "./cdc303fcc82a630f@262.js";
 import define7 from "./84194c694539e103@2357.js";
 import define8 from "./56b204c6d7cdb801@32.js";
 import define9 from "./f92778131fd76559@1208.js";
+import define10 from "./dfdb38d5580b5c35@347.js";
 
 async function _1(FileAttachment,md){return(
 md`# Lazer Cuttering Plan Compiler
@@ -5297,39 +5298,31 @@ function _276(md){return(
 md`tick the cells to include in the next prompt`
 )}
 
-function _277($0){return(
-$0
+function _277(md){return(
+md`### AI Settings`
 )}
 
 function _278($0){return(
 $0
 )}
 
-function _279(md){return(
-md`### AI Settings`
+function _279($0){return(
+$0
 )}
 
 function _280($0){return(
 $0
 )}
 
-function _281($0){return(
-$0
-)}
-
-function _282($0){return(
-$0
-)}
-
-function _283(background_tasks){return(
+function _281(background_tasks){return(
 background_tasks
 )}
 
-function _284(md){return(
+function _282(md){return(
 md`---`
 )}
 
-function _292(footer){return(
+function _290(footer){return(
 footer
 )}
 
@@ -5668,14 +5661,12 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["viewof context_viz"], _274);
   main.variable(observer("markdown_skill")).define("markdown_skill", ["md","mermaid","htl","tex"], _markdown_skill);
   main.variable(observer()).define(["md"], _276);
-  main.variable(observer()).define(["viewof feedback_cells_selector"], _277);
-  main.variable(observer()).define(["viewof feedback_prompt"], _278);
-  main.variable(observer()).define(["md"], _279);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _280);
-  main.variable(observer()).define(["viewof api_endpoint"], _281);
-  main.variable(observer()).define(["viewof settings"], _282);
-  main.variable(observer()).define(["background_tasks"], _283);
-  main.variable(observer()).define(["md"], _284);
+  main.variable(observer()).define(["md"], _277);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _278);
+  main.variable(observer()).define(["viewof api_endpoint"], _279);
+  main.variable(observer()).define(["viewof settings"], _280);
+  main.variable(observer()).define(["background_tasks"], _281);
+  main.variable(observer()).define(["md"], _282);
   const child4 = runtime.module(define4);
   main.import("ask", child4);
   main.import("excludes", child4);
@@ -5716,6 +5707,8 @@ export default function define(runtime, observer) {
   main.import("view", child9);
   main.import("cautious", child9);
   main.import("bindOneWay", child9);
-  main.variable(observer()).define(["footer"], _292);
+  const child10 = runtime.module(define10);
+  main.import("footer", child10);
+  main.variable(observer()).define(["footer"], _290);
   return main;
 }

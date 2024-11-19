@@ -7,11 +7,9 @@ import define6 from "./048a17a165be198d@271.js";
 import define7 from "./54df2436d8585ee6@24.js";
 import define8 from "./56b204c6d7cdb801@32.js";
 
-function _1(html,md){return(
+function _1(md){return(
 md`# Exporter: A Single File Notebook Serializer
-<details><summary>video intro</summary>summary>
-  ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/wx93r1pY_6Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
-</details>
+## [video explainer](https://www.youtube.com/watch?v=wx93r1pY_6Y)
 
 
 Serialize literate computational notebooks with their dependancies into single files. Double click to open locally. No server required, works in a \`file://\` context for simplicity.
@@ -125,16 +123,15 @@ Furthermore, when debugging difficult cases I add additional \`debugger\` statem
 
 function _6(md){return(
 md`### TODO
-- Bug, importing workflow does not run
 - Bug: Forking doesn't work offline (it loads assets from the original URL)
 - Bug: Every recursive cycle more imports cells are created
 - Improve: Set S3 URL in arg
 - Improve: UI could be better sized on mobile
-- Improve: Refactor the bootloader so its not an inline string. (avoids some escaping issues)
+- Improve: Refactor the bootloader so its not an inline string. (would avoids some escaping issues)
 - Improve: render final template in iframe first? Could shorten the debug cycle
 
 ### Known Issues
-  - Doesn't work for \`with\` clauses in imports. Fix this is not a priority.`
+  - Doesn't work for \`with\` clauses in imports. Fixing is not a priority, they are complex.`
 )}
 
 function _7(exporter){return(
@@ -884,7 +881,6 @@ function _runtime_variables(main_module,variableToObject){return(
 
 function _forcePeek(){return(
 (variable) => {
-  debugger;
   if (variable._value) return variable._value;
   let peeker;
   const promise = new Promise((resolve) => {
@@ -1685,7 +1681,7 @@ export default function define(runtime, observer) {
     ["disk-floppy-memory-svgrepo-com@2.svg", {url: new URL("./files/10aa6cd8431a9f6f37b802d743e52b63fee1435d20eefd8eb46bdb88844572231522c632f2a21e33d242d95292d54097dd4f0207828087a101e45f1e3bb5d049.svg", import.meta.url), mimeType: "image/svg+xml", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["html","md"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof parameters")).define("viewof parameters", ["Inputs","exporter","localStorageView"], _parameters);
   main.variable(observer("parameters")).define("parameters", ["Generators", "viewof parameters"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _3);
