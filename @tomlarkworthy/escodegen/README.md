@@ -1,6 +1,6 @@
 # escodegen@2.1.0
 
-https://observablehq.com/@tomlarkworthy/escodegen@120
+https://observablehq.com/@tomlarkworthy/escodegen@130
 
 View this notebook in your browser by running a web server in this folder. For
 example:

@@ -5,22 +5,16 @@ JS AST to code (the inverse of Acorn)
 
 \`\`\`js
 import {escodegen} from '@tomlarkworthy/escodegen'
-\`\`\`
-
-Building the \`FileAttachment\`
-\`\`\`
-npm run-script build-min
-gzip -9 ./escodegen.browser.min.js
 \`\`\``
 )}
 
-async function _escodegen(DecompressionStream,FileAttachment,Response)
+async function _escodegen(Response,FileAttachment,DecompressionStream)
 {
-  const ds = new DecompressionStream("gzip");
-  const decompressedStream = (
-    await FileAttachment("escodegen.browser.min.js.gz").stream()
-  ).pipeThrough(ds);
-  const source = await new Response(decompressedStream).text();
+  const source = await new Response(
+    (
+      await FileAttachment("escodegen.browser.min.js.gz").stream()
+    ).pipeThrough(new DecompressionStream("gzip"))
+  ).text();
   const fn = eval(source.replace(".call(this,this)", ""));
   fn(window);
   return window.escodegen;
@@ -35,6 +29,6 @@ export default function define(runtime, observer) {
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("escodegen")).define("escodegen", ["DecompressionStream","FileAttachment","Response"], _escodegen);
+  main.variable(observer("escodegen")).define("escodegen", ["Response","FileAttachment","DecompressionStream"], _escodegen);
   return main;
 }
