@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/youtube-upload@337
 import define1 from "./11a5ab8b1b3a51db@1161.js";
 import define2 from "./293899bef371e135@278.js";
 

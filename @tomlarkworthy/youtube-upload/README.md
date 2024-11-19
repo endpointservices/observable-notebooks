@@ -1,6 +1,6 @@
 # YouTube API Video Upload
 
-https://observablehq.com/@tomlarkworthy/youtube-upload@337
+https://observablehq.com/@tomlarkworthy/youtube-upload@338
 
 View this notebook in your browser by running a web server in this folder. For
 example:
