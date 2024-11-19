@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/aws4fetch",
+  "main": "54df2436d8585ee6@24.js",
+  "version": "24.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/aws4fetch",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
