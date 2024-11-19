@@ -1,6 +1,6 @@
 # localStorageView: Non-invasive local persistance
 
-https://observablehq.com/@tomlarkworthy/local-storage-view@264
+https://observablehq.com/@tomlarkworthy/local-storage-view@271
 
 View this notebook in your browser by running a web server in this folder. For
 example:
