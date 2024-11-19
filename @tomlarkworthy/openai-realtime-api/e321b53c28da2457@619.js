@@ -1,6 +1,6 @@
-import define1 from "./17c8ce433e1df58e@3257.js";
-import define2 from "./e93eab08140b49b2@2842.js";
-import define3 from "./04318fffe4df9d1e@2460.js";
+import define1 from "./17c8ce433e1df58e@3332.js";
+import define2 from "./e93eab08140b49b2@2875.js";
+import define3 from "./04318fffe4df9d1e@2463.js";
 
 function _1(md){return(
 md`# OpenAI Realtime API
