@@ -1,6 +1,6 @@
 # AWS Cloudwatch X-Ray Exploratory Analytics
 
-https://observablehq.com/@tomlarkworthy/x-ray-slurper@2501
+https://observablehq.com/@tomlarkworthy/x-ray-slurper@2589
 
 View this notebook in your browser by running a web server in this folder. For
 example:
