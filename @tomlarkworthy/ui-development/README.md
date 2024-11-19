@@ -1,6 +1,6 @@
 # Scaling User Interface Development
 
-https://observablehq.com/@tomlarkworthy/ui-development@2203
+https://observablehq.com/@tomlarkworthy/ui-development@2205
 
 View this notebook in your browser by running a web server in this folder. For
 example:
