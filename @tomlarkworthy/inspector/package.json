@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/inspector",
+  "main": "a2a7845a5e2a5aec@105.js",
+  "version": "105.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/inspector",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
