@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/sticky-view",
+  "main": "8821faece12f36c4@2723.js",
+  "version": "2723.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/sticky-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
