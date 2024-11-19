@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/codemirror-6-22-2-view",
+  "main": "838e115b5e775566@821.js",
+  "version": "821.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/codemirror-6-22-2-view",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
