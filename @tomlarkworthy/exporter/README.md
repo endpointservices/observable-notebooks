@@ -1,6 +1,6 @@
-# Userspace Notebook Serializer
+# Exporter: A Single File Notebook Serializer
 
-https://observablehq.com/@tomlarkworthy/exporter@5346
+https://observablehq.com/@tomlarkworthy/exporter@7744
 
 View this notebook in your browser by running a web server in this folder. For
 example:
