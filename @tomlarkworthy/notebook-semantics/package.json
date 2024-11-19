@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-semantics",
+  "main": "483a346021943f64@140.js",
+  "version": "140.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-semantics",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
