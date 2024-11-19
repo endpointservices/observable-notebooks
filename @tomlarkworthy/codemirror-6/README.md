@@ -1,6 +1,6 @@
 # CodeMirror 6 Backwritable View
 
-https://observablehq.com/@tomlarkworthy/codemirror-6@779
+https://observablehq.com/@tomlarkworthy/codemirror-6@810
 
 View this notebook in your browser by running a web server in this folder. For
 example:

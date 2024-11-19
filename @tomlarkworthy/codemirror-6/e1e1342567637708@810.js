@@ -11,8 +11,7 @@ Sample usage:
 import { CodeMirror } from '@tomlarkworthy/codemirror-6'
 
 viewof editor = CodeMirror('initial text', {
-  extensions: [],
-  keymaps: [],
+  extensions: []
 })
 \`\`\`
 
@@ -64,7 +63,6 @@ md`---`
 function _CodeMirror(codemirror,Event,htl,calcChange){return(
 (doc = "", config = {}) => {
   const extensions = config.extensions ?? [];
-  const keymaps = config.keymaps ?? [];
 
   const updateViewOf = codemirror.EditorView.updateListener.of((update) => {
     if (doc !== view.state.doc.toString()) {
@@ -173,8 +171,8 @@ function _esmCodeMirror(esmImport,CODEMIRROR_VERSION){return(
   )
 )}
 
-function _codemirror(esmImport,CODEMIRROR_VERSION){return(
-esmImport(`codemirror@${CODEMIRROR_VERSION}`)
+function _codemirror(esmImport){return(
+esmImport(`codemirror`)
 )}
 
 function _19(md){return(
@@ -202,7 +200,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _15);
   main.variable(observer("esmImport")).define("esmImport", _esmImport);
   main.variable(observer("esmCodeMirror")).define("esmCodeMirror", ["esmImport","CODEMIRROR_VERSION"], _esmCodeMirror);
-  main.variable(observer("codemirror")).define("codemirror", ["esmImport","CODEMIRROR_VERSION"], _codemirror);
+  main.variable(observer("codemirror")).define("codemirror", ["esmImport"], _codemirror);
   main.variable(observer()).define(["md"], _19);
   return main;
 }
