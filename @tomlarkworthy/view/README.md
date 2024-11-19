@@ -1,6 +1,6 @@
 # Composing viewofs with the view literal
 
-https://observablehq.com/@tomlarkworthy/view@1200
+https://observablehq.com/@tomlarkworthy/view@1208
 
 View this notebook in your browser by running a web server in this folder. For
 example:
