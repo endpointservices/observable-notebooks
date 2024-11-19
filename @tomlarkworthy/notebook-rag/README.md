@@ -1,6 +1,6 @@
 # Observable Notebook Compressed RAG Index + Vector Search
 
-https://observablehq.com/@tomlarkworthy/notebook-rag@4433
+https://observablehq.com/@tomlarkworthy/notebook-rag@4434
 
 View this notebook in your browser by running a web server in this folder. For
 example:
