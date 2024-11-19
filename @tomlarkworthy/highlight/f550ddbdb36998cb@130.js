@@ -5,12 +5,6 @@ JS AST to code (the inverse of Acorn)
 
 \`\`\`js
 import {escodegen} from '@tomlarkworthy/escodegen'
-\`\`\`
-
-Building the \`FileAttachment\`
-\`\`\`
-npm run-script build-min
-gzip -9 ./escodegen.browser.min.js
 \`\`\``
 )}
 

@@ -1,4 +1,5 @@
 import define1 from "./e1c39d41e8e944b0@939.js";
+import define2 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# Notebook Dataflow Debugger (ndd)
@@ -438,6 +439,8 @@ export default function define(runtime, observer) {
   main.variable(observer("WATCHER_PREFIX")).define("WATCHER_PREFIX", _WATCHER_PREFIX);
   main.variable(observer("uid")).define("uid", _uid);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["excludes","_","notify","WATCHER_PREFIX","uid"], _interceptVariable);
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _41);
   return main;
 }

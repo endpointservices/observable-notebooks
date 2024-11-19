@@ -1,11 +1,11 @@
-import define1 from "./0b75dbddd18995dc@1386.js";
-import define2 from "./e3a019069a130d79@5568.js";
+import define1 from "./0b75dbddd18995dc@1389.js";
+import define2 from "./e3a019069a130d79@5581.js";
 import define3 from "./5845e1ca935fea5a@225.js";
-import define4 from "./048a17a165be198d@264.js";
-import define5 from "./0e0b35a92c819d94@470.js";
+import define4 from "./048a17a165be198d@271.js";
+import define5 from "./0e0b35a92c819d94@471.js";
 import define6 from "./1f41fef8b019cf4e@94.js";
-import define7 from "./f92778131fd76559@1202.js";
-import define8 from "./04318fffe4df9d1e@2461.js";
+import define7 from "./f92778131fd76559@1208.js";
+import define8 from "./04318fffe4df9d1e@2463.js";
 import define9 from "./9ed286bafcced0c3@2944.js";
 
 function _1(md){return(
@@ -33,7 +33,7 @@ In Roboco-op, a notebook cell is: code, execution, a prompt and an AI context **
 
 function _4(html,md){return(
 md`### Copy and Paste Domain expertise with Skills
-${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/8cNRZUZSSS8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
+${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/wx93r1pY_6Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
 
 With Roboco-op notebook cells can become copy and pasteable [skills](https://observablehq.com/@tomlarkworthy/robocoop-skills) that can be assembled and adjusted into a situational expert. You can move the cells across notebook, correct them manually, and the LLM will jam from whatever is there for its next completion.
 

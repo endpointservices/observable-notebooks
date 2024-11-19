@@ -1,5 +1,5 @@
-import define1 from "./f550ddbdb36998cb@127.js";
-import define2 from "./c7a3b20cec5d4dd9@728.js";
+import define1 from "./f550ddbdb36998cb@130.js";
+import define2 from "./c7a3b20cec5d4dd9@730.js";
 
 function _1(md){return(
 md`# Observable JS <=> Runtime Toolchain
@@ -872,7 +872,7 @@ function extractModuleInfo(str) {
     const version = matchNamed[3];
     return { namespace, notebook, version };
   }
-  const id = /\/d\/([^@]+)@?(\d+)\.js\?v=\d+&resolutions=[^@]/;
+  const id = /\/?d\/([^@]+)@?(\d+)/;
   const matchId = str.match(id);
 
   if (matchId) {
@@ -903,6 +903,12 @@ extractModuleInfo(
 function _extractModuleInfo_test_2(extractModuleInfo){return(
 extractModuleInfo(
   'async () => runtime.module((await import("/d/c2dae147641e012a@46.js?v=4&resolutions=03dda470c56b93ff@4883")).default)'
+)
+)}
+
+function _extractModuleInfo_test_4(extractModuleInfo){return(
+extractModuleInfo(
+  'async () => runtime.module((await import("d/58f3eb7334551ae6@215")).default)'
 )
 )}
 
@@ -1084,7 +1090,7 @@ function _decompile(findModuleName,findImportedName,acorn,escodegen){return(
   }
 )}
 
-function _53(md){return(
+function _54(md){return(
 md`## Javascript Source Normalization`
 )}
 
@@ -1102,7 +1108,7 @@ function _normalizeJavascriptSource(escodegen,acorn){return(
 (source) => escodegen.generate(acorn.parse(source))
 )}
 
-function _56(normalizeJavascriptSource,normalizeJavascriptSourceSelector)
+function _57(normalizeJavascriptSource,normalizeJavascriptSourceSelector)
 {
   debugger;
   return normalizeJavascriptSource(normalizeJavascriptSourceSelector);
@@ -1125,7 +1131,7 @@ function _variableToObject(){return(
 })
 )}
 
-function _59(md){return(
+function _60(md){return(
 md`## Observable Source Normalization`
 )}
 
@@ -1136,7 +1142,7 @@ Inputs.select(
 )
 )}
 
-function _61(normalizeObservableSource,normalizeObservableSourceSelector)
+function _62(normalizeObservableSource,normalizeObservableSourceSelector)
 {
   debugger;
   return normalizeObservableSource(normalizeObservableSourceSelector);
@@ -1223,7 +1229,7 @@ function _normalizeObservableSource(parser,generate){return(
   }
 )}
 
-function _65(md){return(
+function _66(md){return(
 md`## The Compiler
 
 `
@@ -1243,11 +1249,11 @@ function _compilation_test_results(compilationResults,report,compilationSuite){r
 compilationResults && report(compilationSuite)
 )}
 
-function _69(highlight,compilation_test_results){return(
+function _70(highlight,compilation_test_results){return(
 highlight(compilation_test_results)
 )}
 
-function _70(test_cases,compilationSuite,expect,normalizeVariables,compile){return(
+function _71(test_cases,compilationSuite,expect,normalizeVariables,compile){return(
 { prompt: "Write tests for the compile", time: 1726339624075 } &&
   Promise.all(
     test_cases.map(({ name, source, variables, normalizeSource }, i) => {
@@ -1280,7 +1286,7 @@ async function _compiled(compile,test_case){return(
 await compile(test_case.source.value)
 )}
 
-function _74(parser,test_case){return(
+function _75(parser,test_case){return(
 parser.parseCell(test_case.source.value)
 )}
 
@@ -1291,7 +1297,7 @@ Inputs.radio(compiled, {
 })
 )}
 
-function _76(compiled_selector,normalizeJavascriptSource){return(
+function _77(compiled_selector,normalizeJavascriptSource){return(
 JSON.stringify(
   {
     ...compiled_selector,
@@ -1302,11 +1308,11 @@ JSON.stringify(
 )
 )}
 
-function _77(compile,test_case){return(
+function _78(compile,test_case){return(
 compile(test_case.source.value)
 )}
 
-function _78(normalizeVariables,test_case){return(
+function _79(normalizeVariables,test_case){return(
 normalizeVariables(test_case.variables)[0]._definition
 )}
 
@@ -1322,7 +1328,7 @@ async function _singleCompileTest(expect,normalizeVariables,compile,test_case)
 }
 
 
-function _80(highlight,singleCompileTest){return(
+function _81(highlight,singleCompileTest){return(
 highlight(singleCompileTest || "OK")
 )}
 
@@ -1472,7 +1478,7 @@ function _observableToJs(acorn_walk,parser,escodegen){return(
 }
 )}
 
-function _83(md){return(
+function _84(md){return(
 md`### Bundled deps`
 )}
 
@@ -1536,15 +1542,15 @@ function _acorn_url(decompress_url,FileAttachment){return(
 decompress_url(FileAttachment("acorn-8.11.3.js.gz"))
 )}
 
-function _91(md){return(
+function _92(md){return(
 md`### AI Assitant`
 )}
 
-function _93($0){return(
+function _94($0){return(
 $0
 )}
 
-function _94(Inputs,suggestion){return(
+function _95(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -1552,25 +1558,21 @@ Inputs.button("copy code", {
 })
 )}
 
-function _95($0){return(
+function _96($0){return(
 $0
 )}
 
-function _96(md){return(
+function _97(md){return(
 md`## Current Chat context
 code is automatically added to the context. Use \`highlight(<expr>)\` to selectively bring runtime values into the context as well`
 )}
 
-function _97($0){return(
+function _98($0){return(
 $0
 )}
 
-function _98(md){return(
+function _99(md){return(
 md`### AI Settings`
-)}
-
-function _99($0){return(
-$0
 )}
 
 function _100($0){return(
@@ -1578,6 +1580,10 @@ $0
 )}
 
 function _101($0){return(
+$0
+)}
+
+function _102($0){return(
 $0
 )}
 
@@ -1807,15 +1813,15 @@ This completes the overview of Observable's programming model, including specifi
 `
 )}
 
-function _103(md){return(
+function _104(md){return(
 md`---`
 )}
 
-function _104(ask){return(
+function _105(ask){return(
 ask
 )}
 
-function _105(api_call_response){return(
+function _106(api_call_response){return(
 api_call_response
 )}
 
@@ -1879,48 +1885,49 @@ export default function define(runtime, observer) {
   main.variable(observer("extractModuleInfo")).define("extractModuleInfo", _extractModuleInfo);
   main.variable(observer("extractModuleInfo_test_1")).define("extractModuleInfo_test_1", ["extractModuleInfo"], _extractModuleInfo_test_1);
   main.variable(observer("extractModuleInfo_test_2")).define("extractModuleInfo_test_2", ["extractModuleInfo"], _extractModuleInfo_test_2);
+  main.variable(observer("extractModuleInfo_test_4")).define("extractModuleInfo_test_4", ["extractModuleInfo"], _extractModuleInfo_test_4);
   main.variable(observer("extractModuleInfo_test_3")).define("extractModuleInfo_test_3", ["extractModuleInfo"], _extractModuleInfo_test_3);
   main.variable(observer("import_ast_example")).define("import_ast_example", ["parser"], _import_ast_example);
   main.variable(observer("findModuleName")).define("findModuleName", ["extractModuleInfo"], _findModuleName);
   main.variable(observer("findImportedName")).define("findImportedName", _findImportedName);
   main.variable(observer("decompile")).define("decompile", ["findModuleName","findImportedName","acorn","escodegen"], _decompile);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _54);
   main.variable(observer("viewof normalizeJavascriptSourceSelector")).define("viewof normalizeJavascriptSourceSelector", ["Inputs","notebook_semantics_variables"], _normalizeJavascriptSourceSelector);
   main.variable(observer("normalizeJavascriptSourceSelector")).define("normalizeJavascriptSourceSelector", ["Generators", "viewof normalizeJavascriptSourceSelector"], (G, _) => G.input(_));
   main.variable(observer("normalizeJavascriptSource")).define("normalizeJavascriptSource", ["escodegen","acorn"], _normalizeJavascriptSource);
-  main.variable(observer()).define(["normalizeJavascriptSource","normalizeJavascriptSourceSelector"], _56);
+  main.variable(observer()).define(["normalizeJavascriptSource","normalizeJavascriptSourceSelector"], _57);
   main.variable(observer("normalizeVariables")).define("normalizeVariables", ["variableToObject","normalizeJavascriptSource"], _normalizeVariables);
   main.variable(observer("variableToObject")).define("variableToObject", _variableToObject);
-  main.variable(observer()).define(["md"], _59);
+  main.variable(observer()).define(["md"], _60);
   main.variable(observer("viewof normalizeObservableSourceSelector")).define("viewof normalizeObservableSourceSelector", ["Inputs","notebook_semantics_source"], _normalizeObservableSourceSelector);
   main.variable(observer("normalizeObservableSourceSelector")).define("normalizeObservableSourceSelector", ["Generators", "viewof normalizeObservableSourceSelector"], (G, _) => G.input(_));
-  main.variable(observer()).define(["normalizeObservableSource","normalizeObservableSourceSelector"], _61);
+  main.variable(observer()).define(["normalizeObservableSource","normalizeObservableSourceSelector"], _62);
   main.variable(observer("parsed")).define("parsed", ["parser","normalizeObservableSourceSelector"], _parsed);
   main.variable(observer("generate")).define("generate", ["escodegen"], _generate);
   main.variable(observer("normalizeObservableSource")).define("normalizeObservableSource", ["parser","generate"], _normalizeObservableSource);
-  main.variable(observer()).define(["md"], _65);
+  main.variable(observer()).define(["md"], _66);
   main.variable(observer("viewof compilationSuite")).define("viewof compilationSuite", ["createSuite"], _compilationSuite);
   main.variable(observer("compilationSuite")).define("compilationSuite", ["Generators", "viewof compilationSuite"], (G, _) => G.input(_));
   main.variable(observer("viewof compilationResults")).define("viewof compilationResults", ["compilationSuite"], _compilationResults);
   main.variable(observer("compilationResults")).define("compilationResults", ["Generators", "viewof compilationResults"], (G, _) => G.input(_));
   main.variable(observer("compilation_test_results")).define("compilation_test_results", ["compilationResults","report","compilationSuite"], _compilation_test_results);
-  main.variable(observer()).define(["highlight","compilation_test_results"], _69);
-  main.variable(observer()).define(["test_cases","compilationSuite","expect","normalizeVariables","compile"], _70);
+  main.variable(observer()).define(["highlight","compilation_test_results"], _70);
+  main.variable(observer()).define(["test_cases","compilationSuite","expect","normalizeVariables","compile"], _71);
   main.variable(observer("viewof compilerSourceSelector")).define("viewof compilerSourceSelector", ["Inputs","notebook_semantics_source"], _compilerSourceSelector);
   main.variable(observer("compilerSourceSelector")).define("compilerSourceSelector", ["Generators", "viewof compilerSourceSelector"], (G, _) => G.input(_));
   main.variable(observer("test_case")).define("test_case", ["test_cases","compilerSourceSelector"], _test_case);
   main.variable(observer("compiled")).define("compiled", ["compile","test_case"], _compiled);
-  main.variable(observer()).define(["parser","test_case"], _74);
+  main.variable(observer()).define(["parser","test_case"], _75);
   main.variable(observer("viewof compiled_selector")).define("viewof compiled_selector", ["Inputs","compiled"], _compiled_selector);
   main.variable(observer("compiled_selector")).define("compiled_selector", ["Generators", "viewof compiled_selector"], (G, _) => G.input(_));
-  main.variable(observer()).define(["compiled_selector","normalizeJavascriptSource"], _76);
-  main.variable(observer()).define(["compile","test_case"], _77);
-  main.variable(observer()).define(["normalizeVariables","test_case"], _78);
+  main.variable(observer()).define(["compiled_selector","normalizeJavascriptSource"], _77);
+  main.variable(observer()).define(["compile","test_case"], _78);
+  main.variable(observer()).define(["normalizeVariables","test_case"], _79);
   main.variable(observer("singleCompileTest")).define("singleCompileTest", ["expect","normalizeVariables","compile","test_case"], _singleCompileTest);
-  main.variable(observer()).define(["highlight","singleCompileTest"], _80);
+  main.variable(observer()).define(["highlight","singleCompileTest"], _81);
   main.variable(observer("compile")).define("compile", ["parser","observableToJs"], _compile);
   main.variable(observer("observableToJs")).define("observableToJs", ["acorn_walk","parser","escodegen"], _observableToJs);
-  main.variable(observer()).define(["md"], _83);
+  main.variable(observer()).define(["md"], _84);
   main.variable(observer("decompress_url")).define("decompress_url", ["DecompressionStream","TextDecoderStream","TransformStream","TextEncoderStream","Response"], _decompress_url);
   main.variable(observer("parser")).define("parser", ["decompress_url","FileAttachment","acorn_url","acorn_walk_url"], _parser);
   main.variable(observer("acorn_walk")).define("acorn_walk", ["acorn_walk_url"], _acorn_walk);
@@ -1931,19 +1938,19 @@ export default function define(runtime, observer) {
   main.import("createSuite", child2);
   main.import("report", child2);
   main.import("expect", child2);
-  main.variable(observer()).define(["md"], _91);
-  main.variable(observer()).define(["viewof prompt"], _93);
-  main.variable(observer()).define(["Inputs","suggestion"], _94);
-  main.variable(observer()).define(["viewof suggestion"], _95);
-  main.variable(observer()).define(["md"], _96);
-  main.variable(observer()).define(["viewof context_viz"], _97);
-  main.variable(observer()).define(["md"], _98);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _99);
-  main.variable(observer()).define(["viewof api_endpoint"], _100);
-  main.variable(observer()).define(["viewof settings"], _101);
+  main.variable(observer()).define(["md"], _92);
+  main.variable(observer()).define(["viewof prompt"], _94);
+  main.variable(observer()).define(["Inputs","suggestion"], _95);
+  main.variable(observer()).define(["viewof suggestion"], _96);
+  main.variable(observer()).define(["md"], _97);
+  main.variable(observer()).define(["viewof context_viz"], _98);
+  main.variable(observer()).define(["md"], _99);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _100);
+  main.variable(observer()).define(["viewof api_endpoint"], _101);
+  main.variable(observer()).define(["viewof settings"], _102);
   main.variable(observer("observable_js_skill")).define("observable_js_skill", ["html","md"], _observable_js_skill);
-  main.variable(observer()).define(["md"], _103);
-  main.variable(observer()).define(["ask"], _104);
-  main.variable(observer()).define(["api_call_response"], _105);
+  main.variable(observer()).define(["md"], _104);
+  main.variable(observer()).define(["ask"], _105);
+  main.variable(observer()).define(["api_call_response"], _106);
   return main;
 }

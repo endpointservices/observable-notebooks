@@ -1,4 +1,5 @@
-import define1 from "./17c8ce433e1df58e@3331.js";
+import define1 from "./17c8ce433e1df58e@3332.js";
+import define2 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# OpenAI Whisper Input
@@ -219,13 +220,11 @@ export default function define(runtime, observer) {
   main.import("OPENAI_API_KEY", child1);
   main.import("viewof api_endpoint", child1);
   main.import("api_endpoint", child1);
-  main.import("viewof feedback_prompt", child1);
-  main.import("feedback_prompt", child1);
-  main.import("viewof feedback_cells_selector", child1);
-  main.import("feedback_cells_selector", child1);
   main.import("viewof context_viz", child1);
   main.import("context_viz", child1);
   main.variable(observer()).define(["background_tasks"], _21);
+  const child2 = runtime.module(define2);
+  main.import("footer", child2);
   main.variable(observer()).define(["footer"], _23);
   return main;
 }
