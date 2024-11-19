@@ -1,6 +1,6 @@
 # DOM view
 
-https://observablehq.com/@tomlarkworthy/dom-view@31
+https://observablehq.com/@tomlarkworthy/dom-view@32
 
 View this notebook in your browser by running a web server in this folder. For
 example:
