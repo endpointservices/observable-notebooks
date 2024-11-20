@@ -1,6 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/flow-queue@444
-import define1 from "./58f3eb7334551ae6@211.js";
-
 async function _1(FileAttachment,width,md){return(
 md`# Convert cell computation to a Promise with cell *flowQueue*
 
@@ -65,6 +62,7 @@ The *flowQueue* will unblock immediately when *resolve* is passed a *promise*.
 ### Errors
 
 Every *send* should lead to a call to *resolve*. If you call *resolve* an extra time it will throw an Error. If *resolve* is not called within *timeout_ms* (1000ms) the promise will reject. 
+
 `
 )}
 
@@ -285,8 +283,6 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","flowQueue","testing"], _14);
   main.variable(observer()).define(["suite","flowQueue","testing"], _15);
   main.variable(observer()).define(["suite","viewof sqrt","testing"], _16);
-  const child1 = runtime.module(define1);
-  main.import("footer", child1);
   main.variable(observer()).define(["footer"], _18);
   return main;
 }
