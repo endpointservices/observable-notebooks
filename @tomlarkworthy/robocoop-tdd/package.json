@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-tdd",
+  "main": "72312c34ea9b6856@2263.js",
+  "version": "2263.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-tdd",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
