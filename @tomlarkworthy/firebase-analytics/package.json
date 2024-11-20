@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-analytics",
+  "main": "1246228353a16d5d@20.js",
+  "version": "20.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-analytics",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
