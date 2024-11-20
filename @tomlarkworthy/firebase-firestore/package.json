@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-firestore",
+  "main": "c484e91315ae67ac@89.js",
+  "version": "89.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-firestore",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
