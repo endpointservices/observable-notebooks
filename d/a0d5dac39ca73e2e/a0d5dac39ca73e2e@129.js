@@ -1,6 +1,6 @@
 import define1 from "./8d271c22db968ab0@160.js";
 import define2 from "./e93997d5089d7165@2303.js";
-import define3 from "./dfdb38d5580b5c35@331.js";
+import define3 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# Verticle sliders`
