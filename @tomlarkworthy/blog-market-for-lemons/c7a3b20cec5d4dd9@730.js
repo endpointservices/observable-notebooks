@@ -1,6 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/testing@669
-import define1 from "./84e66f78139ac354@829.js";
-import define2 from "./58f3eb7334551ae6@215.js";
+import define1 from "./84e66f78139ac354@830.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -44,6 +42,7 @@ See the [example here](https://observablehq.com/@tomlarkworthy/testing-example).
 
 
 ### Change log
+- 2024-04-18 Added listenability with suite.viewofResults
 - 2021-11-10 Remove TAP link, [healthcheck](https://observablehq.com/@endpointservices/healthcheck) is better. 
 - 2020-03-23 TAP reports are now hosted by "orchestrator" cells so can be used to test serverless cell services
 - 2020-02-14 Collaberation between [@chonghorizons](https://observablehq.com/@chonghorizons) and [@tomlarkworthy](https://observablehq.com/@tomlarkworthy) to add *timeout_ms* and explicit _done_() callback
@@ -74,7 +73,7 @@ testing = {
 `
 )}
 
-function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){return(
+function _createSuite(pseudouuid,Inputs,reconcile,Event,html,HTMLAnchorElement,invalidation){return(
 ({
   name = "tests", // Set to null to turn of tap report link
   timeout_ms = 30000
@@ -82,6 +81,7 @@ function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){
   const id = pseudouuid();
   const tests = {};
   const results = {};
+  const viewofResults = Inputs.input(results);
   var filter = "";
   const regex = () => new RegExp(filter);
 
@@ -111,10 +111,12 @@ function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){
       try {
         await promiseWithTimeout(timeout_ms, tests[name](), "Timeout");
         results[name] = "ok";
+        viewofResults.dispatchEvent(new Event("input", { bubbles: true }));
         updateUI();
         return results[name];
       } catch (err) {
         results[name] = err;
+        viewofResults.dispatchEvent(new Event("input", { bubbles: true }));
         updateUI();
         throw err;
       }
@@ -164,6 +166,7 @@ function _createSuite(pseudouuid,reconcile,html,HTMLAnchorElement,invalidation){
       </div>`;
   }
   const api = {
+    viewofResults: viewofResults,
     results: results,
     test: async (label, fn) => {
       // console.log(`Test scheduled: ${label}`);
@@ -228,21 +231,23 @@ function report(suite, { timeout = 10000 } = {}) {
 ${Object.keys(suite.results)
   .sort()
   .map((name, index) => {
-    let status = 'not ok';
-    let details = '';
-    if (suite.results[name] === 'ok') status = 'ok';
+    let status = "not ok";
+    let details = "";
+    if (suite.results[name] === "ok") status = "ok";
 
-    if (status === 'not ok') {
-      details = `\n  ---\n  message: ${JSON.stringify(suite.results[name])}`;
+    if (status === "not ok") {
+      details = `\n  ---\n  message: ${JSON.stringify(
+        suite.results[name]
+      ).slice(0, 1000)}`;
     }
     return `${status} ${index + 1} - ${name}${details}`;
   })
-  .join('\n')}`;
+  .join("\n")}`;
   }
   // This is a bit of a crappy poll loop
   // but its only intended for http handler use
   // https://stackoverflow.com/questions/30505960/use-promise-to-wait-until-polled-condition-is-satisfied
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     function waitForResults() {
       if (!Object.values(suite.results).includes(undefined))
         return resolve(tap(suite));
@@ -362,12 +367,20 @@ suite.test("Failure with done raises error", async done => {
 )}
 
 function _25(suite,expect){return(
-suite.test('async4: the data is peanut butter', () => {
-  const fetchData = () => new Promise(resolve => resolve('peanut butter'));
-  return fetchData().then(data => {
-    expect(data).toBe('peanut butter');
+suite.test("async4: the data is peanut butter", () => {
+  const fetchData = () => new Promise((resolve) => resolve("peanut butter"));
+  return fetchData().then((data) => {
+    expect(data).toBe("peanut butter");
   });
 })
+)}
+
+function _26(md){return(
+md`## Results are listenable`
+)}
+
+function _27(suite){return(
+suite.viewofResults.value
 )}
 
 function _html(htl){return(
@@ -396,7 +409,7 @@ function _JEST_EXPECT_STANDALONE_VERSION(){return(
 "24.0.2"
 )}
 
-function _32(footer){return(
+function _35(footer){return(
 footer
 )}
 
@@ -409,7 +422,7 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
-  main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","reconcile","html","HTMLAnchorElement","invalidation"], _createSuite);
+  main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","Inputs","reconcile","Event","html","HTMLAnchorElement","invalidation"], _createSuite);
   main.variable(observer("report")).define("report", _report);
   main.variable(observer()).define(["md"], _5);
   main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
@@ -433,14 +446,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _23);
   main.variable(observer()).define(["suite","expect"], _24);
   main.variable(observer()).define(["suite","expect"], _25);
+  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["suite"], _27);
   main.variable(observer("html")).define("html", ["htl"], _html);
   const child1 = runtime.module(define1);
   main.import("reconcile", child1);
   main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _32);
+  main.variable(observer()).define(["footer"], _35);
   return main;
 }
