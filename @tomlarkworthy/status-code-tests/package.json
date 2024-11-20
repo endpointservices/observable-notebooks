@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/status-code-tests",
+  "main": "76e9f5b5bdc45eec@37.js",
+  "version": "37.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/status-code-tests",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
