@@ -1,9 +1,7 @@
-// https://observablehq.com/@tomlarkworthy/reconcile-nanomorph@829
-async function _1(md,FileAttachment){return(
+function _1(md){return(
 md`
 # Hypertext literal reconciliation with nanomorph
 
-<img src=${await FileAttachment("image@2.png").url()}> </img>
 
 I love the [hypertext literal](https://observablehq.com/@observablehq/htl). It is intuitive. However, naive application of it tends to invalidate state between renders leading to poor UX.
 
@@ -266,12 +264,7 @@ function _NestedDOMUpdateInPlace(NestedDOMUpdateInPlaceDOM,html,reconcile)
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  function toString() { return this.url; }
-  const fileAttachments = new Map([
-    ["image@2.png", {url: new URL("./files/1e6766eb5b51f7ed85aa21b737387bc2e18aca58a04a76e6f07a5a587c038d2708285d4edc129b3d7156ae936b95076455802c406e0831d038c869d1149bd970.png", import.meta.url), mimeType: "image/png", toString}]
-  ]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["md","FileAttachment"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.define("initial msgs", _msgs);
   main.variable(observer("mutable msgs")).define("mutable msgs", ["Mutable", "initial msgs"], (M, _) => new M(_));
