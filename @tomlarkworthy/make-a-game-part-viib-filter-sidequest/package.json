@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/make-a-game-part-viib-filter-sidequest",
+  "main": "7b8e4503e0cabb68@4429.js",
+  "version": "4429.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/make-a-game-part-viib-filter-sidequest",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
