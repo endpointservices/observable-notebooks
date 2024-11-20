@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ai-tdd-template",
+  "main": "d87ad79bc1423bfe@2885.js",
+  "version": "2885.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ai-tdd-template",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
