@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lazer-cut-plant-pot",
+  "main": "9db5cebfe7dcda5f@602.js",
+  "version": "602.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lazer-cut-plant-pot",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
