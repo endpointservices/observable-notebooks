@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/mps3-vendor-examples",
+  "main": "bed01475c2fe1bc0@853.js",
+  "version": "853.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/mps3-vendor-examples",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
