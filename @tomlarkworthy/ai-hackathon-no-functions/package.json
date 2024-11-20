@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ai-hackathon-no-functions",
+  "main": "ea1fac03ca8f4530@796.js",
+  "version": "796.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ai-hackathon-no-functions",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
