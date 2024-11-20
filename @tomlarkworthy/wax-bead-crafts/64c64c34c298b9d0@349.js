@@ -1,7 +1,7 @@
 import define1 from "./11a5ab8b1b3a51db@1161.js";
-import define2 from "./84e66f78139ac354@829.js";
+import define2 from "./84e66f78139ac354@830.js";
 import define3 from "./ab3e70b29c480e6d@83.js";
-import define4 from "./dfdb38d5580b5c35@334.js";
+import define4 from "./dfdb38d5580b5c35@347.js";
 
 async function _1(md,FileAttachment){return(
 md`# Fuse Bead Craft Planner
