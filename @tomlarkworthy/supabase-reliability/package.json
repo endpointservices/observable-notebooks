@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/supabase-reliability",
+  "main": "abfac6d0f19b9cfd@248.js",
+  "version": "248.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/supabase-reliability",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
