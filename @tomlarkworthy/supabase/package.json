@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/supabase",
+  "main": "cf99806d548486b9@40.js",
+  "version": "40.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/supabase",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
