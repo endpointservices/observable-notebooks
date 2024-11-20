@@ -1,6 +1,6 @@
 import define1 from "./dff1e917c89f5e76@1964.js";
 import define2 from "./316f0885d15ab671@69.js";
-import define3 from "./dfdb38d5580b5c35@334.js";
+import define3 from "./dfdb38d5580b5c35@347.js";
 
 async function _1(md,FileAttachment,bluetoothLink){return(
 md`# Bluetooth Proxy PoC
