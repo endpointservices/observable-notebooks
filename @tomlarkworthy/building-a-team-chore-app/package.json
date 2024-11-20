@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/building-a-team-chore-app",
+  "main": "b9fa3342eb6a57f9@30.js",
+  "version": "30.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/building-a-team-chore-app",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
