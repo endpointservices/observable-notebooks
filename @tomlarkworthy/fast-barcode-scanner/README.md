@@ -1,6 +1,6 @@
 # Fast Circular Barcode Scanner
 
-https://observablehq.com/@tomlarkworthy/fast-barcode-scanner@1678
+https://observablehq.com/@tomlarkworthy/fast-barcode-scanner@1679
 
 View this notebook in your browser by running a web server in this folder. For
 example:
