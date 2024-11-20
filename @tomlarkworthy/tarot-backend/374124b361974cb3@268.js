@@ -1,6 +1,5 @@
-// https://observablehq.com/@tomlarkworthy/notebook-snapshot@265
 import define1 from "./e1c39d41e8e944b0@420.js";
-import define2 from "./58f3eb7334551ae6@211.js";
+import define2 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# *notebookSnapshot()*
