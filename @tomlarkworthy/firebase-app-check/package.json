@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-app-check",
+  "main": "e5cd2470311a2a76@16.js",
+  "version": "16.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-app-check",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
