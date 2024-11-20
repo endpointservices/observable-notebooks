@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/xstate-examples",
+  "main": "5e9e049ff830ddaf@551.js",
+  "version": "551.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/xstate-examples",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
