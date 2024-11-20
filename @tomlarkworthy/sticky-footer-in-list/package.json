@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/sticky-footer-in-list",
+  "main": "e2307520ca7b6a21@47.js",
+  "version": "47.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/sticky-footer-in-list",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
