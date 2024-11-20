@@ -1,4 +1,4 @@
-import define1 from "./dfdb38d5580b5c35@334.js";
+import define1 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# How to [Dataflow](https://observablehq.com/@observablehq/reactive-dataflow) merge on [Observable](https://observablehq.com)  
