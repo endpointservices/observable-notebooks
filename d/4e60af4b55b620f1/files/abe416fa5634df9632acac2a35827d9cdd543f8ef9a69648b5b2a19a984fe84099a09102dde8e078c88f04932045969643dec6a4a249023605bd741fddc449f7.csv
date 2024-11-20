@@ -1,0 +1,117 @@
+spec_path,title,first_flaky_seen_at,first_flaky_runs_ago,last_flaky_seen_at,last_flaky_runs_ago,total_flaky_runs,total_runs,severity
+cypress/e2e/predict.cy.js,Create and deploy /// Create and deploy,2023-09-07T14:48:47Z,12195,2024-01-18T17:01:37Z,1080,286,907,MEDIUM
+cypress/e2e/decide/thirdPartyLogin.cy.js,Test Decide Access /// Should not be possible for unauthorized users to access Decide,2023-09-01T12:04:04Z,12419,2024-01-17T15:22:16Z,2005,259,903,MEDIUM
+cypress/e2e/decide/authoring.cy.js,"Multi selection tests /// Keyboard shortcuts copy, cut, paste and delete",2023-08-31T08:45:36Z,1253,2023-09-12T16:00:06Z,802,51,223,MEDIUM
+cypress/e2e/decide/integrate/connect.cy.js,Connections creation /// verify user can create an env-aware cc connection,2024-08-28T14:53:00Z,3354,2024-08-30T16:50:58Z,38,4,19,MEDIUM
+cypress/e2e/decide/authoring/detailedView.cy.js,Detailed View /// display data,2024-07-25T08:29:48Z,33161,2024-08-29T10:17:42Z,3016,39,262,MEDIUM
+cypress/e2e/decide/datasets.cy.js,Datasets /// Subflow mocking,2024-07-10T11:26:23Z,44368,2024-08-27T15:29:46Z,5292,50,373,MEDIUM
+cypress/e2e/decide/connect.cy.js,Connections creation /// verify user can create an env-aware cc connection,2023-11-10T17:07:30Z,138458,2024-08-28T11:21:16Z,22,183,1679,MEDIUM
+cypress/e2e/decide/integrate/connect.cy.js,Integration Nodes Editor /// verify CC node editor displays all expected inputs,2024-08-29T10:18:04Z,3000,2024-08-29T10:33:40Z,2959,2,19,MEDIUM
+cypress/e2e/decide/datasets.cy.js,Datasets /// Create dataset from historical data,2024-07-30T14:11:28Z,28925,2024-08-28T08:37:49Z,4758,27,263,MEDIUM
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Parameters /// Highlight global params,2024-06-18T15:36:10Z,54095,2024-08-26T09:13:58Z,8150,38,471,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Checking history records /// Check webhook logs and delete,2024-01-17T10:01:38Z,1328,2024-01-18T13:44:26Z,488,2,25,LOW
+cypress/e2e/decide/authoring/versionCrudAndBaseNodes.cy.js,Version crud and nodes /// Scorecard Node,2024-02-23T11:09:29Z,115967,2024-08-30T16:51:03Z,36,87,1287,LOW
+cypress/e2e/decide/copyFlow.cy.js,"Copy flow from template /// Copies version, children, conections, datasets, ml-models",2024-06-05T15:45:43Z,62045,2024-08-27T15:14:58Z,5321,36,552,LOW
+cypress/e2e/decide/manualReview.cy.js,Manual Review /// Outbound webhook part 1: Configure webhook and create a case,2024-02-05T11:26:02Z,48823,2024-05-02T06:06:28Z,302,42,653,LOW
+cypress/e2e/decide/autocomplete.cy.js,Test autocompletion /// Autocompletion should work on decision table node,2024-03-13T08:23:16Z,16743,2024-04-11T12:55:10Z,1606,29,528,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Set schema with nullables,2023-09-01T14:26:39Z,10040,2023-12-19T09:18:47Z,4610,45,867,LOW
+cypress/e2e/decide/jobs.cy.js,Jobs /// File to file jobs,2024-04-09T09:11:32Z,93556,2024-08-27T15:29:46Z,5295,45,875,LOW
+cypress/e2e/decide/flow_versions/traffic_policies.cy.js,Traffic policies /// should manage traffic policies,2024-02-05T11:56:31Z,126347,2024-08-30T17:22:10Z,0,106,2073,LOW
+cypress/e2e/decide/authoring/codeNode.cy.js,CodeNode /// code.py - 200 - serialization test,2024-02-06T13:46:41Z,124701,2024-08-26T12:03:43Z,7745,63,1308,LOW
+cypress/e2e/decide/authoring/ml_DecTabel_Flow_Node.cy.js,Version crud and nodes /// MLNode,2024-02-08T13:45:56Z,123257,2024-08-16T07:40:53Z,15166,61,1295,LOW
+cypress/e2e/decide/authoring/detailedView.cy.js,Detailed View /// pinning,2024-07-29T14:24:06Z,30754,2024-08-19T11:39:53Z,13846,12,262,LOW
+cypress/e2e/decide/manualReview.cy.js,"Manual Review /// MR node editor, queue page and case page",2024-01-10T14:13:40Z,136984,2024-08-30T17:22:09Z,0,61,1363,LOW
+cypress/e2e/decide/authoring/nodeLevelAnalytics.cy.js,Node Level Analytics /// Insights pane visible on nodes,2024-08-29T13:01:19Z,2730,2024-08-29T15:19:17Z,2331,2,49,LOW
+cypress/e2e/decide/authoring/loopNode.cy.js,Loop node tests /// Should be possible to create a simple loop node with const values and run the flow,2024-04-08T10:01:54Z,94493,2024-08-27T15:29:40Z,5307,37,913,LOW
+cypress/e2e/decide/flow_versions/management.cy.js,Flow Management /// Manage flow versions /// Create - Edit - Delete a flow version,2023-09-18T14:09:36Z,144670,2024-08-30T15:23:10Z,167,84,2076,LOW
+cypress/e2e/decide/manualReview.cy.js,Manual Review /// Outbound webhook part 1: Configure webhook,2024-05-03T15:40:27Z,76278,2024-08-27T13:24:41Z,6132,27,710,LOW
+cypress/e2e/decide/selectionTests.cy.js,Multi selection and copy/cut paste tests /// Cut and paste a decision flow node,2024-02-02T10:11:39Z,127466,2024-08-30T15:23:14Z,172,55,1452,LOW
+cypress/e2e/decide/flow_versions/archiving.cy.js,Flow Management /// Flow archivation,2023-09-14T14:21:17Z,144784,2024-08-13T14:07:31Z,18015,70,2070,LOW
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Parameters /// Set schema with nullables,2024-02-05T08:33:49Z,72360,2024-06-12T14:59:15Z,3725,26,839,LOW
+cypress/e2e/decide/flowManagement.cy.js,Flow Management /// Manage flow versions /// Create - Edit - Delete a flow version,2023-09-04T09:14:14Z,465,2023-09-11T15:16:36Z,192,3,98,LOW
+cypress/e2e/decide/connect.cy.js,Connections creation /// verify user can create a cc connection,2023-09-07T07:51:12Z,140958,2024-08-06T08:57:53Z,19323,65,2154,LOW
+cypress/e2e/decide/flow_versions/traffic_policies.cy.js,Traffic policies /// Rollback to a policy with archived version,2023-09-19T08:15:17Z,144662,2024-05-17T12:01:53Z,70782,62,2073,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Revision diff view,2023-09-01T12:05:44Z,10054,2023-09-12T13:04:07Z,9665,25,867,LOW
+cypress/e2e/decide/authoring/testRunResults.cy.js,test run results /// Inspect aux data in intermediate results,2024-01-18T13:44:26Z,134346,2024-08-29T15:19:18Z,2322,33,1315,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Setup and Invocation /// Prepare decision history test,2024-02-02T23:08:32Z,49008,2024-04-26T14:50:19Z,2710,14,608,LOW
+cypress/e2e/decide/flow_versions/management.cy.js,Flow Management /// Manage flow versions /// Duplicate a flow version,2023-09-14T14:27:10Z,144767,2024-08-30T17:22:05Z,0,47,2076,LOW
+cypress/e2e/decide/manifestConnect.cy.js,Manifest provider connection creation /// verify user can create a manifest connection,2024-08-12T12:11:49Z,14582,2024-08-21T14:37:49Z,6525,3,133,LOW
+cypress/e2e/decide/thirdPartyLogin.cy.js,Test Decide Access /// Should be possible for taktile-test user to login with github and access decide,2023-09-05T13:33:05Z,12297,2024-01-18T14:12:52Z,1344,20,903,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// Column menu doesn't flicker,2024-05-31T11:20:37Z,65002,2024-07-10T19:40:41Z,43694,23,1092,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks checking log records /// Check remaining webhook logs,2024-05-02T11:11:38Z,77452,2024-07-12T12:22:57Z,42339,15,717,LOW
+cypress/e2e/decide/flow_versions/management.cy.js,Flow Management /// Create - Edit - Delete a flow,2023-09-27T10:14:13Z,144328,2024-08-28T08:26:51Z,4791,43,2076,LOW
+cypress/e2e/decide/userManagement.cy.js,User management /// verifies admin access,2024-02-02T10:11:30Z,127477,2024-08-21T11:12:42Z,11364,36,1945,LOW
+cypress/e2e/decide/jobs.cy.js,Jobs /// SQL to file jobs,2024-05-03T11:13:42Z,76535,2024-08-27T16:06:17Z,5231,13,717,LOW
+cypress/e2e/decide/autocomplete.cy.js,Test autocompletion /// If there is no completion data information should be shown to the user,2024-02-02T17:17:52Z,36936,2024-04-12T07:40:50Z,1017,8,455,LOW
+cypress/e2e/decide/flow_versions/analytics.cy.js,Analytics /// Comparative analytics,2024-02-06T13:47:02Z,124690,2024-08-30T08:10:09Z,2080,22,1259,LOW
+cypress/e2e/decide/selectionTests.cy.js,Multi selection and copy/cut paste tests /// Should be possible to create a group and run a flow,2024-02-06T13:47:20Z,124700,2024-07-22T07:46:02Z,36320,33,1956,LOW
+cypress/e2e/predict.cy.js,Inspect shared repository /// Inspect shared repository,2023-09-11T15:32:53Z,12103,2024-01-09T16:20:09Z,4313,15,907,LOW
+cypress/e2e/predict.cy.js,Delete Repository /// Delete Repository,2023-09-12T11:32:38Z,12044,2024-01-09T16:20:09Z,4313,15,907,LOW
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Schema /// Set schema with nullables,2024-06-20T12:36:44Z,53170,2024-08-30T09:07:03Z,1937,7,471,LOW
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Schema /// Set a schema,2024-07-09T09:18:30Z,44974,2024-08-08T09:34:08Z,21154,7,471,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,"Outgoing webhooks and decision history. Setup and Invocation /// Setup, test invoke and invoke webhooks",2024-02-02T13:23:47Z,49487,2024-04-29T11:00:43Z,2044,9,608,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Setup webhooks and test decision history /// Setup webhooks,2024-05-14T13:54:11Z,72342,2024-08-27T15:11:29Z,5365,9,717,LOW
+cypress/e2e/decide/authoring/ml_DecTabel_Flow_Node.cy.js,Version crud and nodes /// Decision Flow Node,2024-02-06T15:29:50Z,124456,2024-08-02T14:55:34Z,25513,16,1295,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Checking history records /// Check remaining webhook logs,2024-04-12T08:13:37Z,13133,2024-04-24T10:21:42Z,5343,7,583,LOW
+cypress/e2e/decide/folders.cy.js,"Folder Management /// Add, rename and delete folders",2024-07-15T21:26:40Z,40824,2024-08-27T08:46:56Z,6898,4,343,LOW
+cypress/e2e/decide/manualReview.cy.js,Manual Review /// Create and configure node,2023-12-14T10:25:03Z,3757,2023-12-19T12:46:28Z,2820,3,262,LOW
+cypress/e2e/decide/manualReview.cy.js,Manual Review /// Outbound webhook part 2: Create a case and check it in the webhook logs,2024-05-06T16:12:36Z,75703,2024-08-19T11:39:50Z,13850,8,710,LOW
+cypress/e2e/decide/flowManagement.cy.js,Flow Management /// Manage flow versions /// Duplicate a flow version,2023-09-05T12:28:06Z,390,2023-09-05T12:28:06Z,390,1,98,LOW
+cypress/e2e/decide/flowManagement.cy.js,Flow Management /// Manage flow versions /// Publish a flow version,2023-08-31T13:45:51Z,520,2023-08-31T13:45:51Z,520,1,98,LOW
+cypress/e2e/decide/authoring/codeNode.cy.js,CodeNode /// code_that_throws_custom_response.py - 418 - Teapot here,2024-02-09T15:00:02Z,122535,2024-03-28T10:02:24Z,99022,13,1308,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Compile errors,2023-10-10T11:19:05Z,8696,2024-01-10T08:37:48Z,1845,6,644,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Decision Table Node,2023-09-05T17:12:34Z,9919,2023-11-08T16:34:21Z,7528,8,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// MLNode,2023-08-31T09:33:27Z,10089,2024-01-10T08:37:48Z,1845,8,867,LOW
+cypress/e2e/decide/authoring.cy.js,Multi selection tests /// Should be possible to create a group and run a flow,2023-09-29T09:10:48Z,129,2023-09-29T12:18:07Z,118,2,223,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Cut and paste a split node v2,2023-09-28T10:53:24Z,153,2023-10-02T09:57:06Z,85,2,223,LOW
+cypress/e2e/decide/codeInput.cy.js,Test autocompletion /// Autocompletion should work on decision table node,2024-04-16T11:36:22Z,89347,2024-05-27T16:08:57Z,67112,7,819,LOW
+cypress/e2e/decide/manualReview.cy.js,Manual Review /// Outbound webhook part 2: Find the calls that we made,2024-02-12T14:57:24Z,43829,2024-03-15T11:28:35Z,27799,5,653,LOW
+cypress/e2e/decide/authoring/codeNode.cy.js,CodeNode /// code_that_throws.py - 424,2024-02-07T20:16:11Z,123804,2024-04-24T15:35:51Z,82483,10,1308,LOW
+cypress/e2e/decide/authoring/testRunResults.cy.js,test run results /// Scroll through long intermediate result table,2024-02-21T14:57:23Z,117384,2024-08-26T10:19:32Z,7960,10,1315,LOW
+cypress/e2e/decide/manifestConnect.cy.js,Manifest provider connection creation /// verify manifest providers are available,2024-08-27T15:11:29Z,1202,2024-08-27T15:11:29Z,1202,1,133,LOW
+cypress/e2e/decide/flow_versions/analytics.cy.js,Analytics /// Canvas analytics,2024-02-16T02:09:58Z,119220,2024-08-28T14:53:03Z,3344,10,1355,LOW
+cypress/e2e/decide/selectionTests.cy.js,Multi selection and copy/cut paste tests /// Cut and paste a split node v2,2024-02-07T16:45:57Z,123895,2024-05-29T08:55:15Z,66362,14,1956,LOW
+cypress/e2e/decide/authoring/versionCrudAndBaseNodes.cy.js,Version crud and nodes /// should be possible to CRUD flow comments,2024-02-02T15:06:49Z,127109,2024-08-05T14:56:46Z,24239,9,1287,LOW
+cypress/e2e/decide/authoring/changeHistoryRevisions.cy.js,Change history and revisions /// Preview revision graph tests,2024-02-26T14:20:58Z,114851,2024-08-29T15:35:20Z,2239,9,1306,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Checking history records /// Check live successful webhook logs and delete webhook,2024-01-19T09:15:02Z,55607,2024-04-19T10:53:48Z,8562,4,583,LOW
+cypress/e2e/decide/authoring.cy.js,"Outgoing webhooks and decision history. Setup and Invocation /// Setup, test invoke and invoke webhooks",2024-01-05T11:40:54Z,2932,2024-01-15T14:24:18Z,494,3,493,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Inspect aux data in intermediate results,2023-09-12T13:03:17Z,9666,2023-11-10T12:53:56Z,7384,5,867,LOW
+cypress/e2e/decide/autocomplete.cy.js,Test autocompletion /// Autocompletion should work on no-code (rule) node,2024-02-14T13:21:13Z,30206,2024-04-04T08:38:07Z,6306,3,528,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Setup webhooks and test decision history /// Invoke webhooks,2024-07-31T08:37:33Z,28271,2024-08-27T13:24:36Z,6137,4,717,LOW
+cypress/e2e/decide/authoring/versionCrudAndBaseNodes.cy.js,Version crud and nodes /// Add a rule node v2,2024-02-23T11:09:29Z,115967,2024-06-06T16:58:39Z,61218,7,1287,LOW
+cypress/e2e/decide/authoring/ml_DecTabel_Flow_Node.cy.js,Version crud and nodes /// Decision Table Node,2024-02-29T14:45:43Z,111878,2024-08-20T11:27:53Z,12662,7,1295,LOW
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Parameters /// Should be possible to add global params,2024-02-08T10:18:13Z,123575,2024-06-18T09:16:54Z,54822,7,1310,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Checking history records /// Should be possible to access the decision history,2024-01-16T22:26:28Z,57538,2024-02-23T11:09:06Z,38232,3,608,LOW
+cypress/e2e/decide/authoring/paramsAndSchema.cy.js,Parameters /// Set a schema,2024-03-04T11:12:37Z,55874,2024-03-28T11:22:05Z,44422,4,839,LOW
+cypress/e2e/decide/selectionTests.cy.js,Selected node should be synced to the URL /// Selected node should be synced to the URL,2024-04-30T09:59:24Z,78873,2024-08-21T10:16:09Z,11493,8,1956,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// refreshes token before testing a flow,2023-11-10T08:57:21Z,142683,2024-08-22T13:06:59Z,9677,7,1730,LOW
+cypress/e2e/decide/authoring/testRunResults.cy.js,test run results /// Throws compile errors,2024-02-23T11:09:03Z,115979,2024-06-07T13:21:35Z,60867,5,1315,LOW
+cypress/e2e/decide/codeInput.cy.js,Test autocompletion /// If there is no completion data information should be shown to the user,2024-04-16T08:43:05Z,89476,2024-06-12T16:32:19Z,57773,3,819,LOW
+cypress/e2e/decide/authoring/testRunResults.cy.js,test run results /// Intermediate results table screenshot,2024-07-17T08:33:10Z,39817,2024-08-02T13:03:12Z,25755,2,551,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Assignment node,2023-08-31T09:24:45Z,10093,2023-10-25T08:26:11Z,8208,3,867,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// Upload/delete dataset flow,2023-12-15T10:41:23Z,140335,2024-08-26T13:17:00Z,7532,6,2074,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks checking log records /// Check live successful webhook logs and delete webhook,2024-05-13T10:36:45Z,73155,2024-06-13T16:54:57Z,56777,2,717,LOW
+cypress/e2e/decide/codeInput.cy.js,"Expandable Inputs /// Base, prefixed and with children",2024-07-10T15:11:09Z,43816,2024-08-26T06:51:16Z,8437,2,819,LOW
+cypress/e2e/decide/codeInput.cy.js,Test autocompletion /// Autocompletion should work on no-code (rule) node,2024-04-22T18:48:59Z,84469,2024-04-24T15:04:33Z,82582,2,819,LOW
+cypress/e2e/decide/flow_versions/analytics.cy.js,Analytics /// Test run analytics,2024-01-10T16:09:25Z,136777,2024-03-18T14:49:03Z,104528,3,1355,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// Copy and paste cell data,2024-07-08T14:15:49Z,45391,2024-07-08T14:15:49Z,45391,1,478,LOW
+cypress/e2e/decide/selectionTests.cy.js,Multi selection and copy/cut paste tests /// Multi-Selection should work as expected and multi node copy and paste should work,2024-01-09T16:46:59Z,137177,2024-06-04T13:24:22Z,63104,4,1956,LOW
+cypress/e2e/decide/flow_versions/archiving.cy.js,Flow Management /// Archived version and republishing archived version,2024-04-03T11:49:15Z,96604,2024-08-26T08:04:18Z,8220,4,2070,LOW
+cypress/e2e/decide/flow_versions/management.cy.js,Flow Management /// Manage flow versions /// Flow versions page display,2024-02-09T20:05:39Z,122383,2024-08-15T18:01:07Z,15198,4,2076,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Outgoing webhooks and decision history. Setup and Invocation /// Setup child decision history,2024-02-15T09:38:10Z,42104,2024-02-15T09:38:10Z,42104,1,608,LOW
+cypress/e2e/decide/connect.cy.js,Integration Nodes Editor /// verify CC node editor doesn't display body on GET request,2024-01-16T09:28:06Z,131314,2024-08-26T08:50:44Z,4026,3,1869,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// Run a flow,2024-03-18T14:49:11Z,104516,2024-05-22T15:36:28Z,69318,3,2074,LOW
+cypress/e2e/decide/authoring/webhooksAndDecisionHistory.cy.js,Setup webhooks and test decision history /// Parent flow decisions should result in child flow decision history entries,2024-08-08T10:45:28Z,21066,2024-08-08T10:45:28Z,21066,1,717,LOW
+cypress/e2e/decide/connect.cy.js,Integration Nodes Editor /// verify CC node editor displays all expected inputs,2024-01-08T16:01:46Z,133546,2024-04-22T07:34:08Z,81179,3,2154,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Add a rule node v2,2024-01-10T08:37:48Z,1845,2024-01-10T08:37:48Z,1845,1,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Scroll through long intermediate result table,2023-11-09T13:53:27Z,7433,2023-11-09T13:53:27Z,7433,1,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// code_not_serializable.py - 424,2023-10-04T13:56:44Z,8856,2023-10-04T13:56:44Z,8856,1,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// code_that_throws_custom_response.py - 418 - Teapot here,2023-10-26T11:58:01Z,8134,2023-10-26T11:58:01Z,8134,1,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Should be possible to add global params,2023-10-13T10:12:36Z,8590,2023-10-13T10:12:36Z,8590,1,867,LOW
+cypress/e2e/decide/authoring.cy.js,Decide Authoring /// Scorecard Node,2023-10-03T11:30:22Z,8899,2023-10-03T11:30:22Z,8899,1,867,LOW
+cypress/e2e/decide/authoring/versionCrudAndBaseNodes.cy.js,Version crud and nodes /// Assignment node,2024-08-19T13:49:20Z,13692,2024-08-19T13:49:20Z,13692,1,1287,LOW
+cypress/e2e/decide/authoring/versionCrudAndBaseNodes.cy.js,Version crud and nodes /// Unknown version 404 ,2024-08-13T07:40:21Z,18275,2024-08-13T07:40:21Z,18275,1,1287,LOW
+cypress/e2e/decide/authoring/changeHistoryRevisions.cy.js,Change history and revisions /// Revision diff view,2024-02-21T14:56:39Z,117399,2024-02-21T14:56:39Z,117399,1,1306,LOW
+cypress/e2e/decide/authoring/codeNode.cy.js,CodeNode /// code_not_serializable.py - 424,2024-02-29T11:52:22Z,112098,2024-02-29T11:52:22Z,112098,1,1308,LOW
+cypress/e2e/decide/datasets.cy.js,Datasets /// Create dataset from scratch and basic actions,2024-06-04T10:52:37Z,63223,2024-06-04T10:52:37Z,63223,1,1853,LOW
+cypress/e2e/decide/analytics.cy.js,Test analytics.js user identification /// analytics.js & Posthog should not track users who reject analytics cookies,2024-03-13T08:46:38Z,106601,2024-03-13T08:46:38Z,106601,1,2170,LOW
