@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/aws@764
-import define1 from "./c7a3b20cec5d4dd9@725.js";
+import define1 from "./c7a3b20cec5d4dd9@730.js";
 import define2 from "./316f0885d15ab671@69.js";
 import define3 from "./9c498948145037d2@140.js";
 import define4 from "./c2dae147641e012a@46.js";
