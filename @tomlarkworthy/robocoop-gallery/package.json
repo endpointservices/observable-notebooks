@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-gallery",
+  "main": "79a3f05b86664e94@28.js",
+  "version": "28.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-gallery",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
