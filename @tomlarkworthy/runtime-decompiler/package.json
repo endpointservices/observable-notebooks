@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/runtime-decompiler",
+  "main": "27fa2d071aec962f@261.js",
+  "version": "261.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/runtime-decompiler",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
