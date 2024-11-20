@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-server-test-clients",
+  "main": "c5544d2895d5e4ad@39.js",
+  "version": "39.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-server-test-clients",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
