@@ -1,6 +1,6 @@
 import define1 from "./5c1b38ac46351270@317.js";
 import define2 from "./0b16aaecf59cca0a@803.js";
-import define3 from "./dfdb38d5580b5c35@331.js";
+import define3 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# Share + Dataeditor
