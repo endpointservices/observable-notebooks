@@ -1,6 +1,6 @@
 # Userspace notebook editor
 
-https://observablehq.com/@tomlarkworthy/userspace-editor@751
+https://observablehq.com/@tomlarkworthy/userspace-editor@767
 
 View this notebook in your browser by running a web server in this folder. For
 example:
