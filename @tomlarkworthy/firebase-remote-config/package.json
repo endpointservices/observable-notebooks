@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-remote-config",
+  "main": "8627fc020849abe1@21.js",
+  "version": "21.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-remote-config",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
