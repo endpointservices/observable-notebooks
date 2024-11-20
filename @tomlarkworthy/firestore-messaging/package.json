@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firestore-messaging",
+  "main": "5deffc7c5793c866@14.js",
+  "version": "14.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firestore-messaging",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
