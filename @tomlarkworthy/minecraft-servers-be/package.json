@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/minecraft-servers-be",
+  "main": "c686e8f9e2eb9b4c@2099.js",
+  "version": "2099.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/minecraft-servers-be",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
