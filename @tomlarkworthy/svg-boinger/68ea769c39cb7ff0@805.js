@@ -1,6 +1,6 @@
 import define1 from "./11a5ab8b1b3a51db@1161.js";
 import define2 from "./c7e2ddcdd503d595@321.js";
-import define3 from "./dfdb38d5580b5c35@334.js";
+import define3 from "./dfdb38d5580b5c35@347.js";
 
 function _1(md){return(
 md`# SVG Boinger`
