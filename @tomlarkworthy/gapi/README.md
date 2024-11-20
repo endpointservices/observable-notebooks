@@ -1,6 +1,6 @@
 # Google API Client
 
-https://observablehq.com/@tomlarkworthy/gapi@470
+https://observablehq.com/@tomlarkworthy/gapi@472
 
 View this notebook in your browser by running a web server in this folder. For
 example:
