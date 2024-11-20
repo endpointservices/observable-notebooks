@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/firebase-auth",
+  "main": "7b89ae9baccc7735@92.js",
+  "version": "92.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/firebase-auth",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
