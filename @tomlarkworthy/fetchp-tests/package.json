@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/fetchp-tests",
+  "main": "456be8c119533cf7@671.js",
+  "version": "671.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/fetchp-tests",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
