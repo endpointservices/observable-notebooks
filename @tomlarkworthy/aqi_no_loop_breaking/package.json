@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/aqi_no_loop_breaking",
+  "main": "b8f9d1569d1ee52f@362.js",
+  "version": "362.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/aqi_no_loop_breaking",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
