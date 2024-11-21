@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/syncingcontrols",
+  "main": "9517a69ebf9b4aaf@1187.js",
+  "version": "1187.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/syncingcontrols",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
