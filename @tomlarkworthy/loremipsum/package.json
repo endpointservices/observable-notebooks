@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/loremipsum",
+  "main": "8df85b70bff236cd@67.js",
+  "version": "67.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/loremipsum",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
