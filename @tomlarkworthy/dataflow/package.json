@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dataflow",
+  "main": "c8fa3c4cb937f32f@177.js",
+  "version": "177.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dataflow",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
