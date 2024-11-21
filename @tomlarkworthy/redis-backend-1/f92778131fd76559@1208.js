@@ -1,4 +1,4 @@
-import define1 from "./58f3eb7334551ae6@209.js";
+import define1 from "./03dda470c56b93ff@7744.js";
 
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal
@@ -1545,8 +1545,8 @@ async function _toc()
 }
 
 
-function _105(footer){return(
-footer
+function _107(exporter){return(
+exporter()
 )}
 
 export default function define(runtime, observer) {
@@ -1669,7 +1669,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","view","Inputs","expect"], _102);
   main.variable(observer("toc")).define("toc", _toc);
   const child1 = runtime.module(define1);
-  main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _105);
+  main.import("exporter", child1);
+  main.variable(observer()).define(["exporter"], _107);
   return main;
 }
