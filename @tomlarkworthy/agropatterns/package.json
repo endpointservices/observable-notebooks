@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/agropatterns",
+  "main": "66f97d3074cf7471@232.js",
+  "version": "232.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/agropatterns",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
