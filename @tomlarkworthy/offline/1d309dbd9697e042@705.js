@@ -119,6 +119,14 @@ function _backupNowButton(Inputs,html){return(
 )}
 
 function _8(md){return(
+md`### Backup all your public Notebooks
+
+Once setup, the backup endpoint can backup *any* notebook. This is used by [manual-backup-all](https://observablehq.com/@tomlarkworthy/manual-backup-all) to scrape the Observable website and backup all discovered notebooks.
+
+`
+)}
+
+function _9(md){return(
 md`### What *enableGithubBackups* does
 
 *enableGithubBackups* setups up an endpoint that receives \`onVersion\` hook that triggers backup repository workflow stored in Github. The endpoint sends the Github repository workflow an event_type of type \`new_notebook_version\` along with a client payload JSON containing the notebook \`id\` and \`version\` and authenticated with the \`github_token\` credentials.
@@ -128,7 +136,7 @@ Note the actual backup is performed by a Github Action.
 `
 )}
 
-function _9(md){return(
+function _10(md){return(
 md`## Setup \`.github/workflows/backup.yml\`
 
 In a Github repository for backups, create a workflow for performing the backups. The following example comes from [endpointservices/observable-notebooks/.github/workflows/backup.yml](https://github.com/endpointservices/observable-notebooks/blob/main/.github/workflows/backup.yml). Note you can send all notebooks to the same repository as they are prefixed by Observable login and slug.
@@ -181,23 +189,23 @@ jobs:
 `
 )}
 
-function _10(md){return(
+function _11(md){return(
 md`You can see if your workflow is triggering in the action sections of your repository in Github.`
 )}
 
-function _11(md){return(
+function _12(md){return(
 md`## Daily backup job
 
 Because the \`onVersion\` hook is best effort, a [daily job](https://observablehq.com/@endpointservices/backups-failsafe) will also call the backup workflow to ensure backups converge to the latest.`
 )}
 
-function _12(md){return(
+function _13(md){return(
 md`## Example
 
 The following cell backs up *this* notebook for real! [Here](https://github.com/endpointservices/observable-notebooks/blob/main/%40tomlarkworthy/github-backups/index.html) it is in Github (and the Action Workflow file is in that repository too). Of course, if you are not *tomlarkworthy* you cannot login the the endpoint below, and there is no way to access my personal *github_token* but it is there, enabling the integration.`
 )}
 
-function _13(enableGithubBackups){return(
+function _14(enableGithubBackups){return(
 enableGithubBackups({
   owner: "endpointservices",
   repo: "observable-notebooks",
@@ -206,11 +214,11 @@ enableGithubBackups({
 })
 )}
 
-function _14(backupNowButton){return(
+function _15(backupNowButton){return(
 backupNowButton()
 )}
 
-function _15(md){return(
+function _16(md){return(
 md`### Info
 
 endpoint expects a request with the body of the form 
@@ -224,7 +232,7 @@ endpoint expects a request with the body of the form
 ~~~`
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`### Utils`
 )}
 
@@ -240,11 +248,11 @@ async (id) => {
 }
 )}
 
-function _18(urlFromId){return(
+function _19(urlFromId){return(
 urlFromId("d023d6fa23f3afd0")
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`## Dependencies`
 )}
 
@@ -252,7 +260,7 @@ function _trusted_domain(){return(
 ["api.observablehq.com"]
 )}
 
-function _25(footer){return(
+function _26(footer){return(
 footer
 )}
 
@@ -275,13 +283,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["enableGithubBackups"], _13);
-  main.variable(observer()).define(["backupNowButton"], _14);
-  main.variable(observer()).define(["md"], _15);
+  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["enableGithubBackups"], _14);
+  main.variable(observer()).define(["backupNowButton"], _15);
   main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("urlFromId")).define("urlFromId", ["fetchp"], _urlFromId);
-  main.variable(observer()).define(["urlFromId"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["urlFromId"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("trusted_domain")).define("trusted_domain", _trusted_domain);
   const child1 = runtime.module(define1);
   main.import("onVersion", child1);
@@ -292,6 +301,6 @@ export default function define(runtime, observer) {
   main.import("footer", child3);
   const child4 = runtime.module(define4).derive([{name: "trusted_domain", alias: "ALLOW_DOMAINS"}], main);
   main.import("fetchp", child4);
-  main.variable(observer()).define(["footer"], _25);
+  main.variable(observer()).define(["footer"], _26);
   return main;
 }

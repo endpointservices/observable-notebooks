@@ -1,6 +1,5 @@
 import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./1f41fef8b019cf4e@94.js";
-import define3 from "./58f3eb7334551ae6@210.js";
+import define2 from "./a2a7845a5e2a5aec@105.js";
 
 function _1(md){return(
 md`# localStorageView: Non-invasive local persistance`
@@ -204,8 +203,6 @@ export default function define(runtime, observer) {
   main.variable(observer("example3")).define("example3", ["Generators", "viewof example3"], (G, _) => G.input(_));
   const child2 = runtime.module(define2);
   main.import("inspect", child2);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
   main.variable(observer()).define(["footer"], _27);
   return main;
 }

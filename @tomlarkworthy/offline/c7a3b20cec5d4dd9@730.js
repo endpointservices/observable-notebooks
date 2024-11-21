@@ -1,6 +1,4 @@
-import define1 from "./84e66f78139ac354@829.js";
-import define2 from "./58f3eb7334551ae6@210.js";
-import define3 from "./9ed286bafcced0c3@2931.js";
+import define1 from "./84e66f78139ac354@830.js";
 
 async function _1(md,FileAttachment){return(
 md`# Reactive Unit Testing and Reporting Framework
@@ -224,7 +222,7 @@ function _createSuite(pseudouuid,Inputs,reconcile,Event,html,HTMLAnchorElement,i
 }
 )}
 
-function _report(customJsonFormatter){return(
+function _report(){return(
 function report(suite, { timeout = 10000 } = {}) {
   function tap(suite) {
     // Ugly indentation here to avoid whitespace in the TAP report.
@@ -238,9 +236,9 @@ ${Object.keys(suite.results)
     if (suite.results[name] === "ok") status = "ok";
 
     if (status === "not ok") {
-      details = `\n  ---\n  message: ${customJsonFormatter(
+      details = `\n  ---\n  message: ${JSON.stringify(
         suite.results[name]
-      )}`;
+      ).slice(0, 1000)}`;
     }
     return `${status} ${index + 1} - ${name}${details}`;
   })
@@ -425,7 +423,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md","FileAttachment"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("createSuite")).define("createSuite", ["pseudouuid","Inputs","reconcile","Event","html","HTMLAnchorElement","invalidation"], _createSuite);
-  main.variable(observer("report")).define("report", ["customJsonFormatter"], _report);
+  main.variable(observer("report")).define("report", _report);
   main.variable(observer()).define(["md"], _5);
   main.variable(observer("viewof suite")).define("viewof suite", ["createSuite"], _suite);
   main.variable(observer("suite")).define("suite", ["Generators", "viewof suite"], (G, _) => G.input(_));
@@ -456,10 +454,6 @@ export default function define(runtime, observer) {
   main.variable(observer("pseudouuid")).define("pseudouuid", _pseudouuid);
   main.variable(observer("expect")).define("expect", ["require","JEST_EXPECT_STANDALONE_VERSION"], _expect);
   main.variable(observer("JEST_EXPECT_STANDALONE_VERSION")).define("JEST_EXPECT_STANDALONE_VERSION", _JEST_EXPECT_STANDALONE_VERSION);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  const child3 = runtime.module(define3);
-  main.import("customJsonFormatter", child3);
   main.variable(observer()).define(["footer"], _35);
   return main;
 }
