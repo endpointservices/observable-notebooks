@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/reddit-research-assistant",
+  "main": "e96e3b7ff8fc0d10@381.js",
+  "version": "381.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/reddit-research-assistant",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
