@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/hackable-realtime-database-title-graphic",
+  "main": "5a63548f9c799b76@576.js",
+  "version": "576.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/hackable-realtime-database-title-graphic",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
