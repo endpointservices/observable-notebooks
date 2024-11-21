@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/notebook-visualizer@440
 import define1 from "./a2e58f97fd5e8d7c@756.js";
-import define2 from "./048a17a165be198d@264.js";
+import define2 from "./048a17a165be198d@271.js";
 
 function _1(md,id){return(
 md`# Notebook Visualizer for Teams
