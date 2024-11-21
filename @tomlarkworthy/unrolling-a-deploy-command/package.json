@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/unrolling-a-deploy-command",
+  "main": "fe7af6815c045f2c@23.js",
+  "version": "23.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/unrolling-a-deploy-command",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
