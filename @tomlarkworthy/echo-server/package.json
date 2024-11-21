@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/echo-server",
+  "main": "e8ed40d6e602d55a@19.js",
+  "version": "19.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/echo-server",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
