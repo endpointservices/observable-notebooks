@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/repo1",
+  "main": "b0b80d7a567305c3@10.js",
+  "version": "10.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/repo1",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
