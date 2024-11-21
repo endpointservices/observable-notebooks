@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/glpk-canonicalization",
+  "main": "50309473a164e648@2525.js",
+  "version": "2525.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/glpk-canonicalization",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
