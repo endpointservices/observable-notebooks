@@ -1,4 +1,3 @@
-// https://observablehq.com/@endpointservices/sentry@245
 import define1 from "./fa1f6059e44da1d5@425.js";
 import define2 from "./58f3eb7334551ae6@215.js";
 
@@ -42,11 +41,11 @@ Sentry will notify you if an exception is thrown, and tries to group them. It wi
 
 Here is a real one my notebooks are throwing occasionally at the moment!
 
-![image@1.png](${await FileAttachment("image@1.png").url()})
+![image@1.png](${await FileAttachment("image-3@1.png").url()})
 
 It will also include the last few requests that occured, and the stack trace. In this report there is a problem loading the Firebase SDK, which I have realised is a rare, but regular occurrence! With that information I can see my users would benefit with an upgrade to the new SDK which is packed in a [modular ESM compatible way](https://firebase.google.com/docs/web/modular-upgrade)
 
-![image@2.png](${await FileAttachment("image@2.png").url()})
+![image@2.png](${await FileAttachment("image-2 (1).png").url()})
 `
 )}
 
@@ -55,7 +54,7 @@ md`### Configuring Sentry
 
 By default Sentry collects IP addresses which is sensitive personal data by GDPR definitions. So I recommend turning this off and turning on various other data scrubbing tools in the settings.
 
-![image@3.png](${await FileAttachment("image@3.png").url()})`
+![image@3.png](${await FileAttachment("image-3.png").url()})`
 )}
 
 function _5(md){return(
@@ -130,9 +129,9 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image@1.png", {url: new URL("./files/c8ad4ae31da35d2adf2a7256ef6791d044f4d0c2982b9ea6597838d5f012063838e769af1750f2acd52b25ff7299c584cd58fd5adcc9d595eedc6a3cabd46cc3.png", import.meta.url), mimeType: "image/png", toString}],
-    ["image@2.png", {url: new URL("./files/d514902a6a0977910569cbaead516077a7e2f21427c26cc4f15d73109a26771fcec180662b1724eb7a0038f555c0aadf7ddc3daf9b3a51b6722ec9064d8ad72d.png", import.meta.url), mimeType: "image/png", toString}],
-    ["image@3.png", {url: new URL("./files/6ff8fd10b917ca3215af6f21bc97a25ef7c20dc1921e40f9615c2929dd0c0e502a4049d9e8565efbff1b7258e5494d87490079ed0956dc25e364ff1f8a72f3f9.png", import.meta.url), mimeType: "image/png", toString}]
+    ["image-3.png", {url: new URL("./files/676d969cb2dcfc56a43bbd83d74ce8577af0507e8fa6c47627f7915b097d7eef253af1a8ac3541392c3afef47b4513f2084a05e537054fb5b8b3f8799f447f92.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image-3@1.png", {url: new URL("./files/676d969cb2dcfc56a43bbd83d74ce8577af0507e8fa6c47627f7915b097d7eef253af1a8ac3541392c3afef47b4513f2084a05e537054fb5b8b3f8799f447f92.png", import.meta.url), mimeType: "image/png", toString}],
+    ["image-2 (1).png", {url: new URL("./files/2189223dd125c1ec93d00e7a19f8d4a7ee475be66639d8a684a3faad297880e0b143a9f3984d950587747aba3d84fecc1542e47e28b19d905ca68aa58f371502.png", import.meta.url), mimeType: "image/png", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

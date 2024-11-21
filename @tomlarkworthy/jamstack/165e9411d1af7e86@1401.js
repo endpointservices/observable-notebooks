@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/api-hosting-with-express@1401
 import define1 from "./dff1e917c89f5e76@1964.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
-import define3 from "./c7a3b20cec5d4dd9@725.js";
+import define3 from "./c7a3b20cec5d4dd9@730.js";
 
 function _1(md){return(
 md`# Using Express Router for [Serverside Cells](https://observablehq.com/@tomlarkworthy/serverside-cells)
