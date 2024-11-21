@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/webxr-dom-overlay",
+  "main": "085b9f72c5a10894@369.js",
+  "version": "369.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/webxr-dom-overlay",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
