@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/dynamic-controls-example@181
-import define1 from "./f92778131fd76559@1176.js";
+import define1 from "./f92778131fd76559@1208.js";
 
 function _1(md){return(
 md`# Dynamic Controls Example`
