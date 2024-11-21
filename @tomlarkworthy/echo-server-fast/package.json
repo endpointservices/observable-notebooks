@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/echo-server-fast",
+  "main": "5e2d2e2ade064be9@35.js",
+  "version": "35.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/echo-server-fast",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
