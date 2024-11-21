@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/ego-graph",
+  "main": "b5172ba044a84c1e@665.js",
+  "version": "665.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/ego-graph",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
