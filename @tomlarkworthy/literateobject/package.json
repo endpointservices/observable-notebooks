@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/literateobject",
+  "main": "d4cee30580af37e5@42.js",
+  "version": "42.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/literateobject",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
