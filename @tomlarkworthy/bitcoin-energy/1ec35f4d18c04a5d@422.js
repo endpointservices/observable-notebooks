@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/bitcoin-energy@422
 import define1 from "./17567518d319e006@159.js";
-import define2 from "./c7a3b20cec5d4dd9@725.js";
+import define2 from "./c7a3b20cec5d4dd9@730.js";
 import define3 from "./62ef64b34c6a3b20@50.js";
 import define4 from "./bb2055d580bbbab2@106.js";
 
