@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-to-netlify",
+  "main": "32b9c63147d5c0e1@681.js",
+  "version": "681.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-to-netlify",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
