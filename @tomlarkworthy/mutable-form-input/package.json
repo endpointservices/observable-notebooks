@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/mutable-form-input",
+  "main": "21f9b5d8b377a751@205.js",
+  "version": "205.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/mutable-form-input",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
