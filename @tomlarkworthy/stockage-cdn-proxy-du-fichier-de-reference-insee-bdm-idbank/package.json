@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/stockage-cdn-proxy-du-fichier-de-reference-insee-bdm-idbank",
+  "main": "6f338a86fdb51f2e@227.js",
+  "version": "227.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/stockage-cdn-proxy-du-fichier-de-reference-insee-bdm-idbank",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
