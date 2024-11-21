@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dijkstra",
+  "main": "18498b485712f206@114.js",
+  "version": "114.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dijkstra",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
