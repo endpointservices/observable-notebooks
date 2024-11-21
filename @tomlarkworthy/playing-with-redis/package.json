@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/playing-with-redis",
+  "main": "144272481521e4e1@378.js",
+  "version": "378.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/playing-with-redis",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
