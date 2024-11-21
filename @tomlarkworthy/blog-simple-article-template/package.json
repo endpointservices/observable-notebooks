@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blog-simple-article-template",
+  "main": "fca66c26f2357d42@1002.js",
+  "version": "1002.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blog-simple-article-template",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
