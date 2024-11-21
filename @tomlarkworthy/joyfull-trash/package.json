@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/joyfull-trash",
+  "main": "c00d77e4e5bfff20@1012.js",
+  "version": "1012.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/joyfull-trash",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
