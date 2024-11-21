@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/wms-leaflet-gca-dev",
+  "main": "4445197a6a176482@2378.js",
+  "version": "2378.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/wms-leaflet-gca-dev",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
