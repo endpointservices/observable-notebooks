@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/fairy-dog-calendar",
+  "main": "6e9fa394cf650090@180.js",
+  "version": "180.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/fairy-dog-calendar",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
