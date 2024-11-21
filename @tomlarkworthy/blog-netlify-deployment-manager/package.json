@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/blog-netlify-deployment-manager",
+  "main": "336f52eea6aa63a8@937.js",
+  "version": "937.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/blog-netlify-deployment-manager",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
