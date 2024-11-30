@@ -1,6 +1,6 @@
-# How to make a Twitter Bot
+# How to make a Twitter BlueSky Bot
 
-https://observablehq.com/@endpointservices/twitter-bot@349
+https://observablehq.com/@endpointservices/twitter-bot@453
 
 View this notebook in your browser by running a web server in this folder. For
 example:

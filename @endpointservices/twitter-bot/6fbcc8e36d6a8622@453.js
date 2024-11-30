@@ -1,14 +1,19 @@
 import define1 from "./629be1812462d083@415.js";
-import define2 from "./dff1e917c89f5e76@1964.js";
+import define2 from "./6eda90668ae03044@836.js";
 import define3 from "./993a0c51ef1175ea@1396.js";
 import define4 from "./4e91ba6c5edba46c@761.js";
-import define5 from "./ef672b935bd480fc@623.js";
-import define6 from "./293899bef371e135@293.js";
+import define5 from "./664e6dbf65b52c3e@51.js";
+import define6 from "./ef672b935bd480fc@623.js";
+import define7 from "./293899bef371e135@293.js";
 
 function _1(md){return(
-md`# How to make a Twitter Bot
+md`# How to make a <strike>Twitter</strike> BlueSky Bot
 
-This notebook describes how to use [@endpointservices](https://observablehq.com/@endpointservices) [cron](https://observablehq.com/@endpointservices/cron)/[zapier](https://observablehq.com/@endpointservices/zapier)/[serverless-cells](https://observablehq.com/@endpointservices/serverless-cells) to build a Twitter bot that tweets the [top trending notebook](https://observablehq.com/trending) on Observable once a day (Twitter account [@trendingnotebo2](https://twitter.com/trendingnotebo2)). This shows how to execute custom notebook logic on a schedule, which can be useful for lots of different things. 
+<strike>This notebook describes how to use [@endpointservices](https://observablehq.com/@endpointservices) [cron](https://observablehq.com/@endpointservices/cron)/[zapier](https://observablehq.com/@endpointservices/zapier)/[serverless-cells](https://observablehq.com/@endpointservices/serverless-cells) to build a Twitter bot that tweets the [top trending notebook](https://observablehq.com/trending) on Observable once a day (Twitter account [@trendingnotebo2](https://twitter.com/trendingnotebo2)). This shows how to execute custom notebook logic on a schedule, which can be useful for lots of different things. </strike>
+
+### Update 2024-11-30
+I have switched the bot over to BlueSky ([trendingnotebooks.bsky.social](https://bsky.app/profile/trendingnotebooks.bsky.social)). Instead of using Zapier, I post directly using the API (see [@tomlarkworthy/post-to-bluesky](https://observablehq.com/@tomlarkworthy/post-to-bluesky)).
+
 
 Everything is done within the browser, there are no tools to install! The video is less than 10 minutes, information dense and does not waste time.
  
@@ -53,23 +58,30 @@ In our case we wish to send a Tweet about the top trending Notebook on [Observab
 `
 )}
 
-function _topTrending(deploy,db,contentHash,sendTweet,text,imgURL){return(
+function _topTrending(deploy,db,contentHash,postWithImage,imgBlob,text){return(
 deploy(
   "tweetTopTrending",
-  async (req, res) => {
+  async (req, res, context) => {
     const hasSent = (await db.child(contentHash).once("value")).val() !== null;
     if (hasSent) return res.send("Already sent");
     else {
-      await sendTweet({
-        text: text,
-        img: imgURL
-      });
-      await db.child(contentHash).set(true);
-      return res.send("OK");
+      try {
+        const response = await postWithImage(
+          "trendingnotebooks.bsky.social",
+          context.secrets["BLUESKY_TRENDING_APP_PASSWORD"],
+          imgBlob,
+          text
+        );
+        await db.child(contentHash).set(true);
+        return res.send(JSON.stringify(response));
+      } catch (err) {
+        return res.status(400).send(err.message);
+      }
     }
   },
   {
-    modifiers: ["orchestrator"]
+    modifiers: ["orchestrator"],
+    secrets: ["endpointservices_BLUESKY_TRENDING_APP_PASSWORD"]
   }
 )
 )}
@@ -89,7 +101,7 @@ function _FIREBASE_CONFIG(){return(
 )}
 
 function _13(md){return(
-md`## Send Tweet
+md`## <strike>Send Tweet</strike>
 
 Calling the Twitter API and authenticating is quite a lot of work. Instead of figuring out how to do that we use Zapier. Zapier has integrations for thousands of things including Twitter. Endpoint Services has an integration with [Zapier](https://observablehq.com/@endpointservices/zapier), so we can reach *a lot* of functionality just by using [@endpointservices/zapier](https://observablehq.com/@endpointservices/zapier).
 
@@ -111,19 +123,37 @@ createTrigger({
 )}
 
 function _16(md){return(
+md`## Post to BlueSky`
+)}
+
+function _password(Inputs){return(
+Inputs.password({
+  label: "app password"
+})
+)}
+
+async function _imgBlob(fetchp,imgURL){return(
+(await fetchp(imgURL)).blob()
+)}
+
+function _20(postWithImage,password,imgBlob,text){return(
+postWithImage("trendingnotebooks.bsky.social", password, imgBlob, text)
+)}
+
+function _21(md){return(
 md`## Fetching Top Trending Notebook
 
 To figure out the top trending Tweet we call the Observable API.
 `
 )}
 
-function _17(md){return(
+function _22(md){return(
 md`
 Observable's trending URL (/documents/public/trending) does not support cross origin requests so we use [fetchp](https://observablehq.com/@tomlarkworthy/fetchp) to get the data instead.
 `
 )}
 
-function _19(md){return(
+function _24(md){return(
 md`Now we can call the Observable API`
 )}
 
@@ -139,7 +169,7 @@ trendingResponse.status == 200
   : new Error(await trendingResponse.text())
 )}
 
-function _22(md){return(
+function _27(md){return(
 md`The top notebook is the first result`
 )}
 
@@ -147,7 +177,7 @@ function _topNotebook(trending){return(
 trending.results[0]
 )}
 
-function _24(md){return(
+function _29(md){return(
 md`#### Top notebook Tweet Text`
 )}
 
@@ -161,7 +191,7 @@ function _text(topNotebook,suffix){return(
 `"${topNotebook.title}" by ${topNotebook.owner.name} https://observablehq.com/${suffix}`
 )}
 
-function _27(md){return(
+function _32(md){return(
 md`#### Top Notebook image`
 )}
 
@@ -169,11 +199,11 @@ function _imgURL(topNotebook){return(
 `https://static.observableusercontent.com/thumbnail/${topNotebook.thumbnail}.jpg`
 )}
 
-function _29(html,imgURL){return(
+function _img(html,imgURL){return(
 html`<img src=${imgURL}></img>`
 )}
 
-function _30(md){return(
+function _35(md){return(
 md`### Content hash`
 )}
 
@@ -191,11 +221,11 @@ function _contentHash(hash,text){return(
 hash(text)
 )}
 
-function _33(contentHash){return(
+function _38(contentHash){return(
 contentHash.length
 )}
 
-function _35(footer){return(
+function _40(footer){return(
 footer
 )}
 
@@ -212,7 +242,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _7);
   const child2 = runtime.module(define2);
   main.import("deploy", child2);
-  main.variable(observer("topTrending")).define("topTrending", ["deploy","db","contentHash","sendTweet","text","imgURL"], _topTrending);
+  main.variable(observer("topTrending")).define("topTrending", ["deploy","db","contentHash","postWithImage","imgBlob","text"], _topTrending);
   main.variable(observer("db")).define("db", ["firebase"], _db);
   const child3 = runtime.module(define3).derive([{name: "FIREBASE_CONFIG", alias: "firebaseConfig"}], main);
   main.import("firebase", child3);
@@ -223,26 +253,33 @@ export default function define(runtime, observer) {
   main.import("createTrigger", child4);
   main.variable(observer("sendTweet")).define("sendTweet", ["createTrigger","text","imgURL"], _sendTweet);
   main.variable(observer()).define(["md"], _16);
-  main.variable(observer()).define(["md"], _17);
   const child5 = runtime.module(define5);
-  main.import("fetchp", child5);
-  main.variable(observer()).define(["md"], _19);
+  main.import("postWithImage", child5);
+  main.variable(observer("viewof password")).define("viewof password", ["Inputs"], _password);
+  main.variable(observer("password")).define("password", ["Generators", "viewof password"], (G, _) => G.input(_));
+  main.variable(observer("imgBlob")).define("imgBlob", ["fetchp","imgURL"], _imgBlob);
+  main.variable(observer()).define(["postWithImage","password","imgBlob","text"], _20);
+  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _22);
+  const child6 = runtime.module(define6);
+  main.import("fetchp", child6);
+  main.variable(observer()).define(["md"], _24);
   main.variable(observer("trendingResponse")).define("trendingResponse", ["fetchp"], _trendingResponse);
   main.variable(observer("trending")).define("trending", ["trendingResponse"], _trending);
-  main.variable(observer()).define(["md"], _22);
+  main.variable(observer()).define(["md"], _27);
   main.variable(observer("topNotebook")).define("topNotebook", ["trending"], _topNotebook);
-  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _29);
   main.variable(observer("suffix")).define("suffix", ["topNotebook"], _suffix);
   main.variable(observer("text")).define("text", ["topNotebook","suffix"], _text);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _32);
   main.variable(observer("imgURL")).define("imgURL", ["topNotebook"], _imgURL);
-  main.variable(observer()).define(["html","imgURL"], _29);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer("img")).define("img", ["html","imgURL"], _img);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("hash")).define("hash", _hash);
   main.variable(observer("contentHash")).define("contentHash", ["hash","text"], _contentHash);
-  main.variable(observer()).define(["contentHash"], _33);
-  const child6 = runtime.module(define6);
-  main.import("footer", child6);
-  main.variable(observer()).define(["footer"], _35);
+  main.variable(observer()).define(["contentHash"], _38);
+  const child7 = runtime.module(define7);
+  main.import("footer", child7);
+  main.variable(observer()).define(["footer"], _40);
   return main;
 }
