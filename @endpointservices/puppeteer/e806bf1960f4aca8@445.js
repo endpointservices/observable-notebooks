@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/puppeteer@445
-import define1 from "./f92778131fd76559@1174.js";
+import define1 from "./f92778131fd76559@1208.js";
 import define2 from "./c16efae137e70585@1444.js";
 import define3 from "./293899bef371e135@293.js";
 
