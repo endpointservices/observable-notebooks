@@ -2,7 +2,7 @@ function _1(md){return(
 md`# [@observablehq/inspector@5.0.1](https://github.com/observablehq/inspector)
 ## also see [@observablehq/inspector](https://observablehq.com/@observablehq/inspector)
 \`\`\`js
-    import {inspect} from '@tomlarkworthy/inspector'
+    import {inspect, Inspector} from '@tomlarkworthy/inspector'
 \`\`\``
 )}
 
@@ -42,6 +42,15 @@ async function _Inspector(unzip,FileAttachment,require)
 }
 
 
+function _isnode(Element,Text){return(
+(value) => {
+  return (
+    (value instanceof Element || value instanceof Text) &&
+    value instanceof value.constructor
+  );
+}
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -53,5 +62,6 @@ export default function define(runtime, observer) {
   main.variable(observer("inspect")).define("inspect", ["Inspector"], _inspect);
   main.variable(observer("unzip")).define("unzip", ["Response","DecompressionStream"], _unzip);
   main.variable(observer("Inspector")).define("Inspector", ["unzip","FileAttachment","require"], _Inspector);
+  main.variable(observer("isnode")).define("isnode", ["Element","Text"], _isnode);
   return main;
 }

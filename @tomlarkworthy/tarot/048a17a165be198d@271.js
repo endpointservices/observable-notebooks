@@ -1,5 +1,5 @@
 import define1 from "./c2dae147641e012a@46.js";
-import define2 from "./a2a7845a5e2a5aec@105.js";
+import define2 from "./a2a7845a5e2a5aec@120.js";
 
 function _1(md){return(
 md`# localStorageView: Non-invasive local persistance`
