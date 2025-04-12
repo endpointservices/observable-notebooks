@@ -1,5 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/view@1174
-import define1 from "./58f3eb7334551ae6@215.js";
+import define1 from "./03dda470c56b93ff@8026.js";
 
 function _1(md){return(
 md`# Composing viewofs with the _view_ literal
@@ -145,7 +144,6 @@ md`Array bindings are mutable, you can write DOM components to the viewof layer`
 function _18(Inputs,$0,Event){return(
 Inputs.button("Add a slider", {
   reduce: () => {
-    debugger;
     $0.elements = [
       ...$0.elements,
       Inputs.range() // Add another viewof
@@ -460,7 +458,7 @@ function _bindOneWay(MutationObserver,Event)
     const targetEvent = eventof(target);
     const onsource = () => {
       set(target, source);
-      target.dispatchEvent(new Event(targetEvent, { bubles: true }));
+      target.dispatchEvent(new Event(targetEvent, { bubbles: true }));
     };
     onsource();
     source.addEventListener(sourceEvent, onsource);
@@ -1547,8 +1545,8 @@ async function _toc()
 }
 
 
-function _105(footer){return(
-footer
+function _107(exporter){return(
+exporter()
 )}
 
 export default function define(runtime, observer) {
@@ -1671,7 +1669,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["suite","view","Inputs","expect"], _102);
   main.variable(observer("toc")).define("toc", _toc);
   const child1 = runtime.module(define1);
-  main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _105);
+  main.import("exporter", child1);
+  main.variable(observer()).define(["exporter"], _107);
   return main;
 }
