@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-2",
+  "main": "f109935193c0deba@3870.js",
+  "version": "3870.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-2",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
