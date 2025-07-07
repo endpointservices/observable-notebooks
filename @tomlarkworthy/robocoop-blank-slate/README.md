@@ -1,6 +1,6 @@
 # Roboco-op: Blank Slate 
 
-https://observablehq.com/@tomlarkworthy/robocoop-blank-slate@2822
+https://observablehq.com/@tomlarkworthy/robocoop-blank-slate@2838
 
 View this notebook in your browser by running a web server in this folder. For
 example:
