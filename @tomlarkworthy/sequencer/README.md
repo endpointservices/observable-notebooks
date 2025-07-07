@@ -1,6 +1,6 @@
 # Sequencer
 
-https://observablehq.com/@tomlarkworthy/sequencer@1382
+https://observablehq.com/@tomlarkworthy/sequencer@1809
 
 View this notebook in your browser by running a web server in this folder. For
 example:
