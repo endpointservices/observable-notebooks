@@ -1,6 +1,6 @@
 # Direct Manipulation Plot
 
-https://observablehq.com/d/e627aaaaa9857257@182
+https://observablehq.com/@tomlarkworthy/manipulate@1727
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -21,7 +21,7 @@ Then, import your notebook and the runtime as:
 
 ~~~js
 import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "e627aaaaa9857257";
+import define from "@tomlarkworthy/manipulate";
 ~~~
 
 To log the value of the cell named “foo”:
