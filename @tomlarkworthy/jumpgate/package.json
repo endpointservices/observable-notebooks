@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/jumpgate",
+  "main": "ab5a63c64de95b0d@1015.js",
+  "version": "1015.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/jumpgate",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
