@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/browser-fs-access",
+  "main": "05159d03f26df738@100.js",
+  "version": "100.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/browser-fs-access",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
