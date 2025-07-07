@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/url-query-field-view@486
 import define1 from "./1f41fef8b019cf4e@94.js";
 import define2 from "./58f3eb7334551ae6@215.js";
 

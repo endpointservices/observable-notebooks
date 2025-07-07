@@ -1,6 +1,6 @@
 # urlQueryFieldView: Non-invasive URL field persistence
 
-https://observablehq.com/@tomlarkworthy/url-query-field-view@486
+https://observablehq.com/@tomlarkworthy/url-query-field-view@488
 
 View this notebook in your browser by running a web server in this folder. For
 example:
