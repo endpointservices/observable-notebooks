@@ -1,5 +1,5 @@
 import define1 from "./f92778131fd76559@1208.js";
-import define2 from "./17c8ce433e1df58e@3332.js";
+import define2 from "./17c8ce433e1df58e@3584.js";
 
 async function _1(FileAttachment,md){return(
 md`${await FileAttachment("DALL·E 2023-11-18 17.33.23 - A human and a robot, arm in arm, standing in front of a magnificent neon-lit tech tree. The scene conveys a sense of partnership and contemplation, as.png").image({style: "float: right; padding: 10px; width: 300px"})}
