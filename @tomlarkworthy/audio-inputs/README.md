@@ -1,6 +1,6 @@
 # Audio Inputs
 
-https://observablehq.com/@tomlarkworthy/audio-inputs@1245
+https://observablehq.com/@tomlarkworthy/audio-inputs@1352
 
 View this notebook in your browser by running a web server in this folder. For
 example:
