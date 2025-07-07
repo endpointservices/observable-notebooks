@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/cell-map",
+  "main": "a89ea9f0ad8c6226@1299.js",
+  "version": "1299.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/cell-map",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
