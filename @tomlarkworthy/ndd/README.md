@@ -1,6 +1,6 @@
-# Notebook Dataflow Debugger (ndd)
+# Debugger: Notebook Dataflow Debugger (ndd)
 
-https://observablehq.com/@tomlarkworthy/ndd@1389
+https://observablehq.com/@tomlarkworthy/debugger@1761
 
 View this notebook in your browser by running a web server in this folder. For
 example:
@@ -21,7 +21,7 @@ Then, import your notebook and the runtime as:
 
 ~~~js
 import {Runtime, Inspector} from "@observablehq/runtime";
-import define from "@tomlarkworthy/ndd";
+import define from "@tomlarkworthy/debugger";
 ~~~
 
 To log the value of the cell named “foo”:
