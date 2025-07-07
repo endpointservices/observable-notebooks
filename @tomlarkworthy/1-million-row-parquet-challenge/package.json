@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/1-million-row-parquet-challenge",
+  "main": "233b21a6dd5a93b1@298.js",
+  "version": "298.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/1-million-row-parquet-challenge",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
