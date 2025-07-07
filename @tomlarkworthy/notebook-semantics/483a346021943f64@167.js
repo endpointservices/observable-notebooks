@@ -1,7 +1,7 @@
-import define1 from "./1fb3132464653a8f@21.js";
+import define1 from "./1fb3132464653a8f@24.js";
 
 function _1(md){return(
-md`# Notebook Semantics`
+md`# Test Notebook of Semantics`
 )}
 
 function _2(){return(
@@ -16,6 +16,10 @@ function _3()
 
 function _html(htl){return(
 htl.html`<div>`
+)}
+
+function _myclass(){return(
+class myclass {}
 )}
 
 function _obj_literal(){return(
@@ -37,6 +41,13 @@ function _z(x,y)
 }
 
 
+function _comments()
+{
+  // a comment
+  return "";
+}
+
+
 function* _generator(x,y)
 {
   yield x + y;
@@ -55,6 +66,10 @@ function _named_function(){return(
 function foo() {}
 )}
 
+function _thisReference(){return(
+(this || 0) + 1
+)}
+
 function _lambda(){return(
 () => {}
 )}
@@ -64,6 +79,16 @@ function _error()
   throw new Error();
 }
 
+
+function _error_obj()
+{
+  throw { foo: "bar" };
+}
+
+
+function _19(error_dep){return(
+error_dep
+)}
 
 function _view(Inputs){return(
 Inputs.input()
@@ -105,7 +130,7 @@ function _viewofdatadep(view){return(
 view
 )}
 
-function _23(dep){return(
+function _28(dep){return(
 dep
 )}
 
@@ -120,16 +145,21 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(_2);
   main.variable(observer()).define(_3);
   main.variable(observer("html")).define("html", ["htl"], _html);
+  main.variable(observer("myclass")).define("myclass", _myclass);
   main.variable(observer("obj_literal")).define("obj_literal", _obj_literal);
   main.variable(observer("x")).define("x", _x);
   main.variable(observer("y")).define("y", ["x"], _y);
   main.variable(observer("z")).define("z", ["x","y"], _z);
+  main.variable(observer("comments")).define("comments", _comments);
   main.variable(observer("generator")).define("generator", ["x","y"], _generator);
   main.variable(observer("_function")).define("_function", __function);
   main.variable(observer("asyncfunction")).define("asyncfunction", _asyncfunction);
   main.variable(observer("named_function")).define("named_function", _named_function);
+  main.variable(observer("thisReference")).define("thisReference", _thisReference);
   main.variable(observer("lambda")).define("lambda", _lambda);
   main.variable(observer("error")).define("error", _error);
+  main.variable(observer("error_obj")).define("error_obj", _error_obj);
+  main.variable(observer()).define(["error_dep"], _19);
   main.variable(observer("viewof view")).define("viewof view", ["Inputs"], _view);
   main.variable(observer("view")).define("view", ["Generators", "viewof view"], (G, _) => G.input(_));
   main.define("initial q", _q);
@@ -141,7 +171,7 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable_dep_2")).define("mutable_dep_2", ["file","q"], _mutable_dep_2);
   main.variable(observer("viewofdep_inline")).define("viewofdep_inline", ["viewof view"], _viewofdep_inline);
   main.variable(observer("viewofdatadep")).define("viewofdatadep", ["view"], _viewofdatadep);
-  main.variable(observer()).define(["dep"], _23);
+  main.variable(observer()).define(["dep"], _28);
   const child1 = runtime.module(define1);
   main.import("dep", child1);
   main.import("mutable mutabledep", child1);
@@ -149,6 +179,7 @@ export default function define(runtime, observer) {
   main.import("viewof viewdep", child1);
   main.import("viewdep", child1);
   main.import("dep", "dep_alias", child1);
+  main.import("error_dep", child1);
   main.import("mutable mutabledep", "mutable aslias_mutabledep", child1);
   main.import("mutabledep", "aslias_mutabledep", child1);
   main.import("viewof viewdep", "viewof aslias_viewdep", child1);

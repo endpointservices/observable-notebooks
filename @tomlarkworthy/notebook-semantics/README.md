@@ -1,6 +1,6 @@
-# Notebook Semantics
+# Test Notebook of Semantics
 
-https://observablehq.com/@tomlarkworthy/notebook-semantics@140
+https://observablehq.com/@tomlarkworthy/notebook-semantics@167
 
 View this notebook in your browser by running a web server in this folder. For
 example:
