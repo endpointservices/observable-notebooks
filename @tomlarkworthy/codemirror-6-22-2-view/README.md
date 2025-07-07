@@ -1,6 +1,6 @@
-# CodeMirror 6 Backwritable View v6.22.2
+# CodeMirror 6 + Javascript
 
-https://observablehq.com/@tomlarkworthy/codemirror-6-22-2-view@821
+https://observablehq.com/@tomlarkworthy/codemirror-6-22-2-view@956
 
 View this notebook in your browser by running a web server in this folder. For
 example:
