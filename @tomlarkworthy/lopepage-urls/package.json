@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lopepage-urls",
+  "main": "a6a56ee61aba9799@406.js",
+  "version": "406.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lopepage-urls",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
