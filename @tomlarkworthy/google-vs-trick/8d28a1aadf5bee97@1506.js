@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/google-vs-trick@1506
 import define1 from "./b5172ba044a84c1e@665.js";
 import define2 from "./18498b485712f206@114.js";
-import define3 from "./0e0b35a92c819d94@471.js";
+import define3 from "./0e0b35a92c819d94@474.js";
 import define4 from "./048a17a165be198d@271.js";
 import define5 from "./3d321b3f7d398726@482.js";
 import define6 from "./027541187c96745d@147.js";
