@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/jest-expect-standalone",
+  "main": "db80e603859226c1@23.js",
+  "version": "23.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/jest-expect-standalone",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
