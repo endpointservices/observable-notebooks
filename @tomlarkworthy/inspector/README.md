@@ -1,6 +1,6 @@
 # @observablehq/inspector@5.0.1
 
-https://observablehq.com/@tomlarkworthy/inspector@105
+https://observablehq.com/@tomlarkworthy/inspector@139
 
 View this notebook in your browser by running a web server in this folder. For
 example:
