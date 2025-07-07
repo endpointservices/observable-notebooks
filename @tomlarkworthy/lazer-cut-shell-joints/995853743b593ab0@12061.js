@@ -1,7 +1,7 @@
-import define1 from "./0b75dbddd18995dc@1389.js";
+import define1 from "./0b75dbddd18995dc@1761.js";
 import define2 from "./3320366aab57935b@564.js";
 import define3 from "./c7a3b20cec5d4dd9@730.js";
-import define4 from "./17c8ce433e1df58e@3332.js";
+import define4 from "./17c8ce433e1df58e@3584.js";
 import define5 from "./14cac50a79a0b841@316.js";
 import define6 from "./cdc303fcc82a630f@262.js";
 import define7 from "./84194c694539e103@2357.js";
@@ -2757,7 +2757,7 @@ function _jointScene(THREE,createLineSegment,Line3,Vector3)
 }
 
 
-function _158(jointScene,sideA,sideB,invalidation)
+function _jointWorldSetup(jointScene,sideA,sideB,invalidation)
 {
   jointScene.add(sideA);
   jointScene.add(sideB);
@@ -2798,7 +2798,7 @@ function _jointWorld(width,height,THREE,Vector3,jointScene,invalidation)
 }
 
 
-function _160(jointWorld,$0,htl){return(
+function _jointToy(jointWorld,$0,htl){return(
 htl.html`<div style="display: flex">
   ${jointWorld.renderer.domElement}
   ${$0}
@@ -2981,8 +2981,11 @@ function _autoFitFinger(jointToyParams,$0,angleToFingerRetraction,angleToFingerE
 }
 
 
-function* _169(jointWorld,jointScene)
+function* _jointWorldJob(jointWorldSetup,autoFitFinger,angle_applier,jointWorld,jointScene)
 {
+  jointWorldSetup;
+  autoFitFinger;
+  angle_applier;
   while (true) {
     jointWorld.renderer.render(jointScene, jointWorld.camera);
     yield null;
@@ -5533,9 +5536,9 @@ export default function define(runtime, observer) {
   main.variable(observer("sideB")).define("sideB", ["THREE","jointToyParams","createBoxJointSide","createLineSegment","Line3","Vector3"], _sideB);
   main.variable(observer("createBoxJointSide")).define("createBoxJointSide", ["THREE"], _createBoxJointSide);
   main.variable(observer("jointScene")).define("jointScene", ["THREE","createLineSegment","Line3","Vector3"], _jointScene);
-  main.variable(observer()).define(["jointScene","sideA","sideB","invalidation"], _158);
+  main.variable(observer("jointWorldSetup")).define("jointWorldSetup", ["jointScene","sideA","sideB","invalidation"], _jointWorldSetup);
   main.variable(observer("jointWorld")).define("jointWorld", ["width","height","THREE","Vector3","jointScene","invalidation"], _jointWorld);
-  main.variable(observer()).define(["jointWorld","viewof fingerMeasures","htl"], _160);
+  main.variable(observer("jointToy")).define("jointToy", ["jointWorld","viewof fingerMeasures","htl"], _jointToy);
   main.variable(observer("viewof jointToyParams")).define("viewof jointToyParams", ["view","Inputs"], _jointToyParams);
   main.variable(observer("jointToyParams")).define("jointToyParams", ["Generators", "viewof jointToyParams"], (G, _) => G.input(_));
   main.variable(observer("angleToFingerExtension")).define("angleToFingerExtension", ["deg2rad"], _angleToFingerExtension);
@@ -5546,7 +5549,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof fingerMeasures")).define("viewof fingerMeasures", ["Plot","height","jointToyParams","fingerData"], _fingerMeasures);
   main.variable(observer("fingerMeasures")).define("fingerMeasures", ["Generators", "viewof fingerMeasures"], (G, _) => G.input(_));
   main.variable(observer("autoFitFinger")).define("autoFitFinger", ["jointToyParams","viewof jointToyParams","angleToFingerRetraction","angleToFingerExtension","Event"], _autoFitFinger);
-  main.variable(observer()).define(["jointWorld","jointScene"], _169);
+  main.variable(observer("jointWorldJob")).define("jointWorldJob", ["jointWorldSetup","autoFitFinger","angle_applier","jointWorld","jointScene"], _jointWorldJob);
   main.variable(observer()).define(["md"], _170);
   main.variable(observer("units")).define("units", _units);
   main.variable(observer()).define(["md"], _172);
@@ -5669,9 +5672,8 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _282);
   const child4 = runtime.module(define4);
   main.import("ask", child4);
-  main.import("excludes", child4);
+  main.import("extra_excludes", child4);
   main.import("cells", child4);
-  main.import("update_context", child4);
   main.import("on_prompt", child4);
   main.import("api_call_response", child4);
   main.import("background_tasks", child4);
@@ -5687,10 +5689,6 @@ export default function define(runtime, observer) {
   main.import("OPENAI_API_KEY", child4);
   main.import("viewof api_endpoint", child4);
   main.import("api_endpoint", child4);
-  main.import("viewof feedback_prompt", child4);
-  main.import("feedback_prompt", child4);
-  main.import("viewof feedback_cells_selector", child4);
-  main.import("feedback_cells_selector", child4);
   main.import("viewof context_viz", child4);
   main.import("context_viz", child4);
   const child5 = runtime.module(define5);

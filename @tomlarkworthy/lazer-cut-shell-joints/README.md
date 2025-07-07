@@ -1,6 +1,6 @@
 # Lazer Cuttering Plan Compiler
 
-https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@12035
+https://observablehq.com/@tomlarkworthy/lazer-cut-shell-joints@12061
 
 View this notebook in your browser by running a web server in this folder. For
 example:
