@@ -1,10 +1,9 @@
-import define1 from "./f92778131fd76559@1208.js";
-import define2 from "./4a1fa3c167b752e5@324.js";
+import define1 from "./03dda470c56b93ff@8246.js";
+import define2 from "./f92778131fd76559@1208.js";
+import define3 from "./4a1fa3c167b752e5@324.js";
 
-async function _1(FileAttachment,md){return(
+function _1(md){return(
 md`# Squeezing more _Juice_ out of UI libraries
-
-<image style="max-width: 640px" src="${await FileAttachment("juice.jpg").url()}"></image>
 
 Sometimes you want the configuration of a view component to be reactive. You want the arguments in the constructor to become part of the value in a view. For example, making the *options* in a *select* part of the value enables you to back-write into the view to update the drop down. You don't want to do this using *dataflow* because its part of a single cell UI.
 
@@ -28,6 +27,10 @@ Convert static renderers into reactive components:
 \`\`\``
 )}
 
+function _4(exporter){return(
+exporter()
+)}
+
 function _profile(juice,html){return(
 juice((name, age) => html`Your name is ${name} your age is ${age}`, {
   name: "[0]", // we index into the ...arguments array
@@ -39,11 +42,11 @@ function _example(profile){return(
 profile("tom", 21)
 )}
 
-function _5(Inputs,$0){return(
+function _7(Inputs,$0){return(
 Inputs.bind(Inputs.range([0, 99]), $0.age)
 )}
 
-function _6(md){return(
+function _8(md){return(
 md`## *juice* API
 
 ~~~
@@ -81,13 +84,13 @@ The new builder has a very different value type though. The value becomes a dict
 `
 )}
 
-function _7(md){return(
+function _9(md){return(
 md`### Works with any functional UI
 
 You can animate your own custom constructors or [D3 charts](https://observablehq.com/@tomlarkworthy/juice-and-charts)`
 )}
 
-function _8(md){return(
+function _10(md){return(
 md`#### Example
 
 If we *juice* the *range* builder:
@@ -125,7 +128,7 @@ Because the value is a nested view, each subview supports *Inputs.bind* individu
 `
 )}
 
-function _9(md){return(
+function _11(md){return(
 md`### Open Issues
 
 ##### DOM state lost when parameters
@@ -150,7 +153,7 @@ function* _stateLostExampleUpdater(Promises,stateLostExample)
 }
 
 
-function _12(md){return(
+function _14(md){return(
 md`## Implementation`
 )}
 
@@ -198,7 +201,7 @@ function _juice(proxyVariable,variable,_,view){return(
 }
 )}
 
-function _14(md){return(
+function _16(md){return(
 md`### helpers`
 )}
 
@@ -218,7 +221,7 @@ function proxyVariable({ name = "variable", get, set } = {}) {
 }
 )}
 
-function _16(md){return(
+function _18(md){return(
 md`## Range with dynamic max and min
 
 Here we extract the ranges first arg, *max* and *min* to be their own backwritable subviews
@@ -238,11 +241,11 @@ function _dynamicRangeExample(dynamicRange){return(
 dynamicRange([-1, 1], { label: "dynamic range" })
 )}
 
-function _19(dynamicRangeExample){return(
+function _21(dynamicRangeExample){return(
 dynamicRangeExample
 )}
 
-function _20(dynamicRangeExample){return(
+function _22(dynamicRangeExample){return(
 dynamicRangeExample
 )}
 
@@ -253,7 +256,7 @@ dynamicRange([-1, 1], {
 })
 )}
 
-function _22(dynamicRangeMin){return(
+function _24(dynamicRangeMin){return(
 dynamicRangeMin
 )}
 
@@ -264,7 +267,7 @@ dynamicRange([-1, 1], {
 })
 )}
 
-function _24(dynamicRangeMax){return(
+function _26(dynamicRangeMax){return(
 dynamicRangeMax
 )}
 
@@ -279,7 +282,7 @@ function _minMaxConstraints(Inputs,$0,$1,$2)
 }
 
 
-function _26(md){return(
+function _28(md){return(
 md`### Select with Dynamic Options`
 )}
 
@@ -291,7 +294,7 @@ juice(Inputs.select, {
 })
 )}
 
-function _28(Inputs,$0,Event){return(
+function _30(Inputs,$0,Event){return(
 Inputs.button("deal", {
   reduce: () => {
     const rndCard = () => {
@@ -314,51 +317,49 @@ dynamicSelect([], { label: "play a card" })
 
 export default function define(runtime, observer) {
   const main = runtime.module();
-  function toString() { return this.url; }
-  const fileAttachments = new Map([
-    ["juice.jpg", {url: new URL("./files/2e28fc376dcca4357f4065df43b42fd46a99e3964ad0cb6ac317637cffedc51fa67a7b1b6fb1819005c5348d7c1bc9d65cb5a91c37a35cd0e05b53e09f3ca16c.jpeg", import.meta.url), mimeType: "image/jpeg", toString}]
-  ]);
-  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
-  main.variable(observer()).define(["FileAttachment","md"], _1);
+  main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
+  const child1 = runtime.module(define1);
+  main.import("exporter", child1);
+  main.variable(observer()).define(["exporter"], _4);
   main.variable(observer("profile")).define("profile", ["juice","html"], _profile);
   main.variable(observer("viewof example")).define("viewof example", ["profile"], _example);
   main.variable(observer("example")).define("example", ["Generators", "viewof example"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","viewof example"], _5);
-  main.variable(observer()).define(["md"], _6);
-  main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["Inputs","viewof example"], _7);
   main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer("viewof stateLostExample")).define("viewof stateLostExample", ["dynamicRange"], _stateLostExample);
   main.variable(observer("stateLostExample")).define("stateLostExample", ["Generators", "viewof stateLostExample"], (G, _) => G.input(_));
   main.variable(observer("stateLostExampleUpdater")).define("stateLostExampleUpdater", ["Promises","stateLostExample"], _stateLostExampleUpdater);
-  main.variable(observer()).define(["md"], _12);
-  main.variable(observer("juice")).define("juice", ["proxyVariable","variable","_","view"], _juice);
   main.variable(observer()).define(["md"], _14);
-  main.variable(observer("proxyVariable")).define("proxyVariable", _proxyVariable);
+  main.variable(observer("juice")).define("juice", ["proxyVariable","variable","_","view"], _juice);
   main.variable(observer()).define(["md"], _16);
+  main.variable(observer("proxyVariable")).define("proxyVariable", _proxyVariable);
+  main.variable(observer()).define(["md"], _18);
   main.variable(observer("dynamicRange")).define("dynamicRange", ["juice","Inputs"], _dynamicRange);
   main.variable(observer("viewof dynamicRangeExample")).define("viewof dynamicRangeExample", ["dynamicRange"], _dynamicRangeExample);
   main.variable(observer("dynamicRangeExample")).define("dynamicRangeExample", ["Generators", "viewof dynamicRangeExample"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeExample"], _19);
-  main.variable(observer()).define(["dynamicRangeExample"], _20);
+  main.variable(observer()).define(["dynamicRangeExample"], _21);
+  main.variable(observer()).define(["dynamicRangeExample"], _22);
   main.variable(observer("viewof dynamicRangeMin")).define("viewof dynamicRangeMin", ["dynamicRange"], _dynamicRangeMin);
   main.variable(observer("dynamicRangeMin")).define("dynamicRangeMin", ["Generators", "viewof dynamicRangeMin"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeMin"], _22);
+  main.variable(observer()).define(["dynamicRangeMin"], _24);
   main.variable(observer("viewof dynamicRangeMax")).define("viewof dynamicRangeMax", ["dynamicRange"], _dynamicRangeMax);
   main.variable(observer("dynamicRangeMax")).define("dynamicRangeMax", ["Generators", "viewof dynamicRangeMax"], (G, _) => G.input(_));
-  main.variable(observer()).define(["dynamicRangeMax"], _24);
+  main.variable(observer()).define(["dynamicRangeMax"], _26);
   main.variable(observer("minMaxConstraints")).define("minMaxConstraints", ["Inputs","viewof dynamicRangeExample","viewof dynamicRangeMax","viewof dynamicRangeMin"], _minMaxConstraints);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("dynamicSelect")).define("dynamicSelect", ["juice","Inputs"], _dynamicSelect);
-  main.variable(observer()).define(["Inputs","viewof exampleSelect","Event"], _28);
+  main.variable(observer()).define(["Inputs","viewof exampleSelect","Event"], _30);
   main.variable(observer("viewof exampleSelect")).define("viewof exampleSelect", ["dynamicSelect"], _exampleSelect);
   main.variable(observer("exampleSelect")).define("exampleSelect", ["Generators", "viewof exampleSelect"], (G, _) => G.input(_));
-  const child1 = runtime.module(define1);
-  main.import("view", child1);
-  main.import("variable", child1);
   const child2 = runtime.module(define2);
-  main.import("viewroutine", child2);
-  main.import("ask", child2);
+  main.import("view", child2);
+  main.import("variable", child2);
+  const child3 = runtime.module(define3);
+  main.import("viewroutine", child3);
+  main.import("ask", child3);
   return main;
 }
