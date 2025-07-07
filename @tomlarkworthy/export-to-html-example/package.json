@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/export-to-html-example",
+  "main": "2b8aff5a22751ec9@32.js",
+  "version": "32.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/export-to-html-example",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
