@@ -106,8 +106,8 @@ function _backupAllNotebooks(backup){return(
 } &&
   async function backupAllNotebooks(notebooks) {
     for (let notebook of notebooks) {
-      await backup({ url: notebook.url });
-      await new Promise((resolve) => setTimeout(resolve, 60000)); // 60 seconds
+      backup({ url: notebook.url });
+      await new Promise((resolve) => setTimeout(resolve, 30000)); // 60 seconds
     }
   }
 )}
