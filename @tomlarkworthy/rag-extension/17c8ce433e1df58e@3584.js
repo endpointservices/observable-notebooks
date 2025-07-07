@@ -1,12 +1,13 @@
-import define1 from "./0b75dbddd18995dc@1389.js";
-import define2 from "./e3a019069a130d79@5581.js";
+import define1 from "./98f34e974bb2e4bc@650.js";
+import define2 from "./e3a019069a130d79@6074.js";
 import define3 from "./5845e1ca935fea5a@225.js";
 import define4 from "./048a17a165be198d@271.js";
-import define5 from "./0e0b35a92c819d94@471.js";
+import define5 from "./0e0b35a92c819d94@474.js";
 import define6 from "./1f41fef8b019cf4e@94.js";
 import define7 from "./f92778131fd76559@1208.js";
 import define8 from "./04318fffe4df9d1e@2463.js";
-import define9 from "./9ed286bafcced0c3@2944.js";
+import define9 from "./9ed286bafcced0c3@3013.js";
+import define10 from "./db42ae70222a8b08@995.js";
 
 function _1(md){return(
 md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
@@ -15,7 +16,9 @@ Robocoop is a different approach to building an AI coding assistant. In Robocoop
 
 
 Roboco-op blends [Observablehq.com](https://observablehq.com/)'s reactive notebooks with an **open source** userspace AI coding assistant. Observable notebooks are a unique coding environment because the code development and runtime state are mixed together. This means Robocoop can write code, a human can edit, and the LLM read the output of program fragments all within a single fluid environment.
-`
+
+TODO
+- agents https://simonwillison.net/2025/Jan/11/agents/`
 )}
 
 function _2(md){return(
@@ -56,22 +59,28 @@ highlight(Math.random())
 )}
 
 function _7(md){return(
+md`If highlight is passed a Blob with an image mime type it will convert to a vision prompt. However, not all models support image prompting so the following cell is commented out (but works)`
+)}
+
+function _9(md){return(
 md`### RAG for getting started
 
 The [RAG extension](https://observablehq.com/@tomlarkworthy/rag-extension) adds relevant examples to the context based on the question, which helps with getting started on a fresh notebook.
 `
 )}
 
-function _8(md){return(
+function _10(md){return(
 md`### More
 
 
 Browse the main Roboco-op notebook ecosystem [here](https://observablehq.com/@tomlarkworthy/robocoop?collection=@tomlarkworthy/robocoop), or ask questions in <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>`
 )}
 
-function _9(md){return(
+function _11(md){return(
 md`
 Changes
+- 2025-02-06 Switch to XML
+- 2024-12-28 Image prompting
 - 2024-10-23 Better decompiler for understanding notebook runtime.
 - 2024-10-15 Added highlight and a bunch of bug fixes
 - 2024-05-11 Context is truncated according to max_prompt_tokens, oldest is removed first
@@ -84,7 +93,7 @@ TODO:
 - Investigate Summarization (https://github.com/jimmc414/1filellm)`
 )}
 
-function _10(md){return(
+function _12(md){return(
 md`## Random Cell Made by Roboco-op`
 )}
 
@@ -158,7 +167,7 @@ function _pong_game(width)
 }
 
 
-function _12(md){return(
+function _14(md){return(
 md`## Prompt Interface
 `
 )}
@@ -191,7 +200,11 @@ function _prompt(whisperInput,OPENAI_API_KEY,view,cautious,Inputs,invalidation)
 }
 
 
-function _14(Inputs,cellsToClipboard,suggestion){return(
+function _16(formatted_instruction){return(
+formatted_instruction
+)}
+
+function _17(Inputs,cellsToClipboard,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => cellsToClipboard([suggestion])
 })
@@ -206,13 +219,13 @@ Inputs.textarea({
 })
 )}
 
-function _16(md){return(
-md`## Current Chat context`
+function _19(md){return(
+md`## Last Chat context`
 )}
 
-function _context_viz(Inputs,extension_context_previous,context,html,inspect){return(
+function _context_viz(Inputs,extension_context_previous,$0,html,inspect){return(
 Inputs.table(
-  [...extension_context_previous, ...context].map((r) => ({
+  [...extension_context_previous, ...$0.value].map((r) => ({
     role: r.role,
     content_or_function_call: r.content || r.function_call
   })),
@@ -230,7 +243,7 @@ Inputs.table(
 )
 )}
 
-function _18(md){return(
+function _21(md){return(
 md`### AI Settings`
 )}
 
@@ -255,8 +268,13 @@ function _models(){return(
   "gpt-4-vision-preview",
   "gpt-4o",
   "gpt-4o-mini",
+  "o1",
   "o1-mini",
-  "o1-preview"
+  "o1-preview",
+  "o3",
+  "o3-mini",
+  "o4-mini",
+  "o4-mini-high"
 ]
 )}
 
@@ -350,9 +368,9 @@ function _settings(Inputs,view,models,localStorageView){return(
 
 function _system_prompt(){return(
 `
-You are a notebook programming assisten for Observablehq notebook. You may respond only by inserting cells.
+You are a notebook programming assistent for Observablehq notebook. You respond in XML formatted observable notebook cells only.
 
-If the question requires clarification, you can generate a markdown cell to express your questions in prose.
+If a question requires clarification, you can generate a markdown cell writing your question.
 
 
 EXAMPLES
@@ -362,51 +380,70 @@ user:
 import <LIBRARY>
 
 assistant:
-upsert_cell({
-  cell_name: "<LIBRARY>",
-  code: "import("https://esm.sh/<LIBRARY>@2.5.0")"
-})
+<cell>
+<deps></deps>
+import("https://esm.sh/<LIBRARY>@2.5.0")
+</cell>
 
 user:
 create an SVG element
 
 assistant:
-upsert_cell({
-  cell_name: "svg",
-  code: "htl.html\`<svg>\`"
-})
+<cell>
+<deps>htl</deps>
+htl.html\`<svg>\`
+</cell>
 
 user:
 create an UI for temperate variable from -10 to 10
 
 assistant:
-upsert_cell({
-  cell_name: "viewof temperature",
-  code: "Inputs.range([-10, 10], {label: "set the temperature"})"
-})
+<cell>
+<deps>Inputs</deps>
+viewof temperature = Inputs.range([-10, 10], {label: "set the temperature"})
+</cell>
 
 user:
 create a 1 second counter
 
 assistant:
-upsert_cell({
-  cell_name: "counter",
-  code: "{\n  \n\n  let count = 0;\n  const interval = setInter…lidated\n  return () => clearInterval(interval);\n}"
-})
+<cell>
+<deps></deps>
+mutable counterIndirect = 0
+</cell>
+<cell>
+<deps>mutable counterIndirect</deps>
+mutable counter = {
+  let i = 0;
+  while (i < 100) {
+    mutable counterIndirect = i;
+    yield Promises.delay(500, ++i);
+  }
+  yield i;
+}
+</cell>
+
+user:
+Tell me a joke
+assistant:
+<cell>
+<deps>md</deps>
+md\`Why did the chicken cross the road?... to get to the other side\`
+</cell>
 `
 )}
 
-function _25(md){return(
+function _28(md){return(
 md`## Roboco-op Implementation below`
 )}
 
-function _background_tasks(find_context_extensions,on_prompt,update_context,api_call_response,interceptVariables)
+function _background_tasks(submit_summary,find_context_extensions,on_prompt,context_updater,api_call_response)
 {
+  submit_summary;
   find_context_extensions;
   on_prompt;
-  update_context;
+  context_updater;
   api_call_response;
-  interceptVariables;
 }
 
 
@@ -423,25 +460,10 @@ Inputs.bind(
 )
 )}
 
-function _ndd(_ndd){return(
-_ndd
-)}
-
 function _formatted_instruction(response)
 {
-  if (response.action == "upsert_cell") {
-    let code = undefined;
-    const prompt = {
-      prompt: response.prompt,
-      time: response.time,
-      comment: response.comment
-    };
-    if (response.code.trim().startsWith("{")) {
-      code = `{ (${JSON.stringify(prompt)})\n${response.code.trim().slice(1)}`;
-    } else {
-      code = `(${JSON.stringify(prompt)}) && ${response.code}`;
-    }
-    return `${response.cell_name} = ${code}`;
+  if (response.action == "upsert_cells") {
+    return response.cells.map((r) => r.code).join("\n\n");
   }
   return response.content;
 }
@@ -471,7 +493,7 @@ async function _on_prompt(extension_context,prompt,$0,Event,$1,$2)
 }
 
 
-function _32(md){return(
+function _34(md){return(
 md`## Extensions`
 )}
 
@@ -479,83 +501,16 @@ function _context_extensions(Inputs){return(
 Inputs.input(new Set())
 )}
 
-function _find_context_extensions($0,cells)
+function _find_context_extensions($0,code)
 {
   $0.value = new Set(
-    cells
-      .filter((cell) => cell.variable?._value?.robocoop?.onContext)
-      .map((cell) => cell.variable?._value?.robocoop?.onContext)
+    Object.entries(code)
+      .map(([name, c]) => c)
+      .filter((cell) => cell.variables[0]._value?.robocoop?.onContext)
+      .map((cell) => cell.variables[0]._value?.robocoop?.onContext)
   );
 }
 
-
-function _35(md){return(
-md`### Reactive Context Construction`
-)}
-
-function _update_context(unprompted_context,prompted_context,highlight_context,_,$0)
-{
-  const context = [
-    ...unprompted_context,
-    ...prompted_context,
-    ...highlight_context
-  ];
-  if (!_.isEqual($0.value, context)) {
-    $0.value = context;
-  }
-}
-
-
-function _context(){return(
-undefined
-)}
-
-function _extension_context_previous(Inputs){return(
-Inputs.input([])
-)}
-
-function _unprompted_context(cells){return(
-cells
-  .filter((c) => !c.prompt)
-  .filter((c) => c.code && c.code !== "$0")
-  .sort((a, b) => a.time - b.time)
-  .flatMap((c) => [
-    {
-      role: "assistant",
-      function_call: {
-        name: "upsert_cell",
-        arguments: JSON.stringify({
-          cell_name: c.cell_name,
-          code: c.code
-        })
-      }
-    }
-  ])
-)}
-
-function _prompted_context(cells){return(
-cells
-  .filter((c) => c.prompt)
-  .sort((a, b) => a.time - b.time)
-  .flatMap((c) => [
-    {
-      role: "user",
-      content: c.prompt
-    },
-    {
-      role: "assistant",
-      content: null,
-      function_call: {
-        name: "upsert_cell",
-        arguments: JSON.stringify({
-          cell_name: c.cell_name,
-          code: c.code,
-          comment: c.comment
-        })
-      }
-    }
-  ])
-)}
 
 function _extension_context($0){return(
 async ({ question }) => {
@@ -567,21 +522,92 @@ async ({ question }) => {
 }
 )}
 
-function _highlight_context(cells){return(
-Object.entries(cells)
+function _38(md){return(
+md`### Context Construction`
+)}
+
+function _testContext(Inputs,$0){return(
+Inputs.button("test context", {
+  reduce: () => $0.send()
+})
+)}
+
+function _40(testContext){return(
+testContext
+)}
+
+function _contextRequest(flowQueue){return(
+flowQueue()
+)}
+
+function _modules(contextRequest,moduleMap,runtime)
+{
+  contextRequest;
+  return moduleMap(runtime);
+}
+
+
+function _cells(modules,cellMap){return(
+Promise.all(
+  [...modules.entries()].map(async ([m, mInfo]) => ({
+    ...mInfo,
+    cells: await cellMap(m)
+  }))
+)
+)}
+
+function _context(){return(
+[]
+)}
+
+function _context_updater(unprompted_context,highlight_context,_,$0)
+{
+  const context = [...unprompted_context, ...highlight_context];
+  if (!_.isEqual($0.value, context)) {
+    $0.value = context;
+  }
+}
+
+
+function _extension_context_previous(Inputs){return(
+Inputs.input([])
+)}
+
+function _unprompted_context(code){return(
+Object.entries(code)
+  .map(([name, c]) => c)
+  .filter((c) => !c.prompt)
+  .filter((c) => c.code && c.code !== "$0")
+  .sort((a, b) => a.time - b.time)
+  .flatMap((c) => [
+    {
+      role: "assistant",
+      content: `<cell>
+<deps>${c.variables[0]._inputs.map((i) => i._name).join(", ")}</deps>
+${c.code}
+</cell>
+`
+    }
+  ])
+)}
+
+function _highlight_context(code){return(
+Object.entries(code)
   .flatMap(([k, cell]) =>
-    cell.variable._value && cell.variable._value.robocoop
+    cell.variables[0]._value && cell.variables[0]._value.robocoop
       ? [
           {
             cell: cell,
-            robocoop: cell.variable._value.robocoop
+            robocoop: cell.variables[0]._value.robocoop
           }
         ]
       : []
   )
-  .map(({ cell, robocoop }) => ({
-    role: "user",
-    content: `
+  .map(({ cell, robocoop }) =>
+    robocoop.type === "json"
+      ? {
+          role: "user",
+          content: `
 The cell \`${cell.cell_name}\` defined as
 ~~~json
 ${cell.code}
@@ -591,69 +617,36 @@ evaluated to
 ${robocoop.value}
 ~~~
 `
-  }))
+        }
+      : {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `The cell \`${cell.cell_name}\` defined as
+~~~json
+${cell.code}
+~~~
+is an image
+`
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: robocoop.value
+              }
+            }
+          ]
+        }
+  )
 )}
 
-function _43(md){return(
+function _49(md){return(
 md`### Cell Analysis`
 )}
 
-function _findPrompt(parser){return(
-(code) => {
-  ({
-    prompt:
-      'write a cell called findPrompt. Using acorn JS parser, search some JS code for the existence of an Object literal containing fields: "prompt", "time", "comment" and return that object.',
-    time: 1699380798090,
-    comment:
-      "This function search for the existence of an object literal containing fields: 'prompt', 'time', 'comment' in an input JavaScript code using the acorn JS parser. It returns the found object."
-  });
-  const ast = parser.parseCell(code);
-
-  function search(node, parent) {
-    if (node?.type === "ObjectExpression") {
-      const keys = node.properties.map((p) => p?.key?.name || p?.key?.value);
-      if (keys.includes("prompt") && keys.includes("time")) {
-        return Object.fromEntries(
-          node.properties
-            .map((p) => p.key && [p.key.name || p.key.value, p.value.value])
-            .filter((p) => !!p)
-        );
-      }
-    }
-    for (const key in node) {
-      if (node[key] && typeof node[key] === "object") {
-        const found = search(node[key], node);
-        if (found) return found;
-      }
-    }
-  }
-
-  return search(ast, null);
-}
-)}
-
-function _cells(code,findPrompt){return(
-Object.entries(code).reduce((acc, [name, code]) => {
-  if (name === "@variable") return acc; // can't handle unobserved variables
-  let prompt;
-  try {
-    prompt = findPrompt(code.code);
-  } catch (err) {
-    console.log(err);
-    return [];
-  }
-  acc.push({
-    ...prompt,
-    cell_name: name,
-    code: code.code,
-    variable: code.variables[0]
-  });
-  return acc;
-}, [])
-)}
-
-async function _code(events,cellMap,main,decompile){return(
-events &&
+async function _code(mainVariables,cellMap,main,decompile){return(
+mainVariables &&
   Object.fromEntries(
     await Promise.all(
       [...(await cellMap(main, { excludeInbuilt: true })).entries()]
@@ -667,6 +660,7 @@ events &&
             return [
               name,
               {
+                module: "main",
                 code: await decompile(variables),
                 variables
               }
@@ -680,133 +674,54 @@ events &&
   )
 )}
 
-function _variables(_mainVariables,excludes){return(
+function _selected_variables(mainVariables,excludes){return(
 Object.fromEntries(
-  _mainVariables
-    .filter((v) => !excludes.includes(v._name) && v._type == 1)
+  mainVariables
+    .filter((v) => !excludes.has(v) && v._type == 1)
     .map((v) => [v._name || v._observer.id, v])
 )
 )}
 
-function _set_excludes($0,mandatory_excludes)
-{
-  $0.value = [
-    "mutable find_context_extensions",
-    "find_context_extensions",
-    "cautious",
-    "flowQueue",
-    "localStorageView",
-    "viewof user_variable_filters",
-    "user_variable_filters",
-    "view",
-    "api_call_response",
-    "viewof settings",
-    "api_endpoint",
-    "viewof api_endpoint",
-    "workers",
-    "viewof feedback_cells_selector",
-    "feedback_cells_selector",
-    "feedback_cells",
-    "feedback_prompt",
-    "findPrompt",
-    "viewof feedback_cells",
-    "null",
-    "viewof reset",
-    "reset",
-    "viewof prompt",
-    "prompt",
-    "suggestion",
-    "initial last_salient_summary",
-    "mutable last_salient_summary",
-    "initial context",
-    "mutable context",
-    "observableDefinitionToCode",
-    "viewof model",
-    "model",
-    "viewof OPENAI_API_KEY",
-    "viewof ANTHROPIC_API_KEY",
-    "OPENAI_API_KEY",
-    "settings",
-    "system_prompt",
-    "functions",
-    "viewof history",
-    "history",
-    "viewof ask",
-    "ask",
-    "openAiResponse",
-    "instruction",
-    "inspect",
-    "dirty_json",
-    "parseJSON",
-    "viewof suggestion",
-    "formatted_instruction",
-    "response",
-    "on_prompt",
-    "viewof context_viz",
-    "context_viz",
-    "excludes",
-    ...mandatory_excludes
-  ];
-}
-
-
-function _mandatory_excludes(){return(
-[
-  "events",
-  "variables",
-  "_mainVariables",
-  "context",
-  "_events",
-  "ndd",
-  "_ndd",
-  "source",
-  "highlight_context",
-  "background_tasks",
-  "_background_tasks",
-  "prompted_context",
-  "update_context",
-  "unprompted_context",
-  "code",
-  "cells"
-]
+function _excludes(descendants,lookupVariable,thisModule){return(
+new Set([
+  ...descendants(lookupVariable("mutable context", thisModule)),
+  ...descendants(lookupVariable("viewof prompt", thisModule))
+])
 )}
 
-function _events(_events){return(
-_events
+function _mainVariables(allVariables,main){return(
+[...allVariables].filter((v) => v._module === main)
 )}
 
-function _functions(){return(
-[
-  {
-    name: "upsert_cell",
-    description: "Upsert a cell in notebook",
-    parameters: {
-      type: "object",
-      properties: {
-        cell_name: {
-          type: "string",
-          description: "Name of cell to add"
-        },
-        code: {
-          type: "string",
-          description: "Single expression or code block"
-        }
-      },
-      required: ["cell_name", "code", "comment"]
-    }
-  }
-]
+function _allVariables(variables,runtime){return(
+variables(runtime)
+)}
+
+function _thisModule(allVariables,tag){return(
+[...allVariables].find((v) => v._value === tag)._module
+)}
+
+function _tag(){return(
+Math.random()
 )}
 
 function _history(Inputs){return(
 Inputs.input([])
 )}
 
+function _58(md){return(
+md`---`
+)}
+
+function _59(md){return(
+md`## LLM API Call`
+)}
+
 function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 180000 })
 )}
 
-function _54(ask){return(
+function _61(ask){return(
 console.log("Ask", ask)
 )}
 
@@ -824,13 +739,14 @@ function _token_analytics(prompt_messages){return(
 {
   prompt: prompt_messages,
   prompt_tokens: prompt_messages.map(
-    (p) => (p.content || JSON.stringify(p.function_call)).length * 5
+    (p) => (p.content || JSON.stringify(p.function_call)).length / 5
   )
 }
 )}
 
-function _trimmed_prompt(d3,token_analytics,settings)
+function _trimmed_prompt(token_analytics,d3,settings)
 {
+  console.log("token_analytics", token_analytics);
   while (d3.sum(token_analytics.prompt_tokens) > settings.max_prompt_tokens) {
     token_analytics.prompt.splice(1, 1);
     token_analytics.prompt_tokens.splice(1, 1);
@@ -840,7 +756,7 @@ function _trimmed_prompt(d3,token_analytics,settings)
 }
 
 
-function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY,functions){return(
+function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
 (model) => {
   if (model.startsWith("claude"))
     return {
@@ -873,10 +789,15 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY,functions){return(
         Authorization: `Bearer ${OPENAI_API_KEY}`
       })
     };
-  } else if (model.startsWith("o1")) {
+  } else if (
+    model == "o1-mini" ||
+    model == "o1-preview" ||
+    model == "o3-mini" ||
+    model.startsWith("o4")
+  ) {
     return {
-      type: "image",
-      api: "https://api.openai.com/v1/images/generations",
+      type: "chat",
+      api: "https://api.openai.com/v1/chat/completions",
       roles: ["user", "assistant"],
       settings: {
         model: model,
@@ -891,14 +812,33 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY,functions){return(
         Authorization: `Bearer ${OPENAI_API_KEY}`
       })
     };
+  } else if (model == "o1") {
+    return {
+      api: "https://api.openai.com/v1/chat/completions",
+      type: "chat",
+      roles: ["user", "system", "assistant"],
+      settings: {
+        //functions: functions,
+        //function_call: { name: "upsert_cell" },
+        model: model,
+        temperature: 1,
+        max_completion_tokens: $0.value.max_prompt_tokens,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      },
+      headers: () => ({
+        Authorization: `Bearer ${OPENAI_API_KEY}`
+      })
+    };
   } else {
     return {
       api: "https://api.openai.com/v1/chat/completions",
       type: "chat",
       roles: ["user", "system", "assistant"],
       settings: {
-        functions: functions,
-        function_call: { name: "upsert_cell" },
+        //functions: functions,
+        //function_call: { name: "upsert_cell" },
         model: model,
         temperature: $0.value.temperature,
         max_tokens: $0.value.max_prompt_tokens,
@@ -941,81 +881,50 @@ async function _openAiResponse(trimmed_prompt,modelConfig,$0,OPENAI_API_KEY,api_
 }
 
 
-function _instruction(openAiResponse,$0,processO1,ask,parseJSON)
+function _instruction(openAiResponse,process,ask)
 {
   const message = openAiResponse.choices[0].message;
-  if (message.function_call === undefined) {
-    if ($0.value.model.startsWith("o1")) {
-      try {
-        return {
-          ...processO1(message.content),
-          prompt: ask[ask.length - 1].content,
-          action: "upsert_cell",
-          time: Date.now()
-        };
-      } catch (e) {
-        return {
-          action: "reply",
-          content: JSON.stringify(message)
-        };
-      }
-    } else {
-      return {
-        action: "reply",
-        content: message
-      };
-    }
-  }
-
   return {
-    ...parseJSON(message.function_call.arguments),
+    cells: process(message.content),
     prompt: ask[ask.length - 1].content,
-    action: message.function_call.name,
+    action: "upsert_cells",
     time: Date.now()
   };
 }
 
 
-function _content(processO1,openAiResponse){return(
-processO1(openAiResponse.choices[0].message.content)
+function _domParser(DOMParser){return(
+new DOMParser()
 )}
 
-function _processO1(parseJSON){return(
-function processO1(content) {
-  if (content.startsWith("```json"))
-    return parseJSON(content.substring(7, content.length - 4));
-  if (content.startsWith("```javascript")) {
-    const substring = content.substring(13, content.length - 4);
-    try {
-      return parseJSON(substring);
-    } catch (e) {
-      console.log(substring, e);
-      throw e;
-    }
-  }
-  return content;
-}
+function _content(process,openAiResponse){return(
+process(openAiResponse.choices[0].message.content)
 )}
 
-function _parseJSON(dirty_json){return(
-(str) => {
-  try {
-    return JSON.parse(str);
-  } catch (e) {
-    try {
-      let upsert_result = undefined;
-      const upsert_cell = (args) => (upsert_result = args);
-      const eval_result = eval("(" + str + ")");
-      return upsert_result || eval_result;
-    } catch (e) {
-      return dirty_json.parse(str);
-    }
-  }
+function _process(domParser){return(
+function process(content) {
+  const doc = domParser.parseFromString(
+    "<response>" + content + "</response>",
+    "text/xml"
+  );
+  const cells = [...doc.querySelectorAll("cell")];
+  debugger;
+  return cells.map((cell) => ({
+    inputs: cell
+      .querySelector("deps")
+      .textContent.split(",")
+      .map((s) => s.trim()),
+    code: content
+  }));
 }
 )}
 
 function _api_call_response($0,instruction){return(
 $0.resolve(instruction) && instruction
+)}
+
+function _72(md){return(
+md`---`
 )}
 
 function _dirty_json(){return(
@@ -1031,20 +940,22 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["html","md"], _5);
   main.variable(observer()).define(["highlight"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["md"], _8);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
-  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["md"], _12);
+  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
+  main.variable(observer()).define(["md"], _14);
   main.variable(observer("viewof prompt")).define("viewof prompt", ["whisperInput","OPENAI_API_KEY","view","cautious","Inputs","invalidation"], _prompt);
   main.variable(observer("prompt")).define("prompt", ["Generators", "viewof prompt"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _14);
+  main.variable(observer()).define(["formatted_instruction"], _16);
+  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _17);
   main.variable(observer("viewof suggestion")).define("viewof suggestion", ["Inputs","formatted_instruction"], _suggestion);
   main.variable(observer("suggestion")).define("suggestion", ["Generators", "viewof suggestion"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _16);
-  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","extension_context_previous","context","html","inspect"], _context_viz);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","extension_context_previous","mutable context","html","inspect"], _context_viz);
   main.variable(observer("context_viz")).define("context_viz", ["Generators", "viewof context_viz"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("models")).define("models", _models);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
@@ -1055,64 +966,67 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof settings")).define("viewof settings", ["Inputs","view","models","localStorageView"], _settings);
   main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
   main.variable(observer("system_prompt")).define("system_prompt", _system_prompt);
-  main.variable(observer()).define(["md"], _25);
-  main.variable(observer("background_tasks")).define("background_tasks", ["find_context_extensions","on_prompt","update_context","api_call_response","interceptVariables"], _background_tasks);
+  main.variable(observer()).define(["md"], _28);
+  main.variable(observer("background_tasks")).define("background_tasks", ["submit_summary","find_context_extensions","on_prompt","context_updater","api_call_response"], _background_tasks);
   main.variable(observer("viewof user_variable_filters")).define("viewof user_variable_filters", ["Inputs","localStorageView"], _user_variable_filters);
   main.variable(observer("user_variable_filters")).define("user_variable_filters", ["Generators", "viewof user_variable_filters"], (G, _) => G.input(_));
-  main.variable(observer("ndd")).define("ndd", ["_ndd"], _ndd);
   main.variable(observer("formatted_instruction")).define("formatted_instruction", ["response"], _formatted_instruction);
   main.variable(observer("response")).define("response", ["on_prompt"], _response);
   main.variable(observer("on_prompt")).define("on_prompt", ["extension_context","prompt","viewof extension_context_previous","Event","mutable context","viewof ask"], _on_prompt);
-  main.variable(observer()).define(["md"], _32);
+  main.variable(observer()).define(["md"], _34);
   main.variable(observer("viewof context_extensions")).define("viewof context_extensions", ["Inputs"], _context_extensions);
   main.variable(observer("context_extensions")).define("context_extensions", ["Generators", "viewof context_extensions"], (G, _) => G.input(_));
-  main.variable(observer("find_context_extensions")).define("find_context_extensions", ["viewof context_extensions","cells"], _find_context_extensions);
-  main.variable(observer()).define(["md"], _35);
-  main.variable(observer("update_context")).define("update_context", ["unprompted_context","prompted_context","highlight_context","_","mutable context"], _update_context);
+  main.variable(observer("find_context_extensions")).define("find_context_extensions", ["viewof context_extensions","code"], _find_context_extensions);
+  main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
+  main.variable(observer()).define(["md"], _38);
+  main.variable(observer("viewof testContext")).define("viewof testContext", ["Inputs","viewof contextRequest"], _testContext);
+  main.variable(observer("testContext")).define("testContext", ["Generators", "viewof testContext"], (G, _) => G.input(_));
+  main.variable(observer()).define(["testContext"], _40);
+  main.variable(observer("viewof contextRequest")).define("viewof contextRequest", ["flowQueue"], _contextRequest);
+  main.variable(observer("contextRequest")).define("contextRequest", ["Generators", "viewof contextRequest"], (G, _) => G.input(_));
+  main.variable(observer("modules")).define("modules", ["contextRequest","moduleMap","runtime"], _modules);
+  main.variable(observer("cells")).define("cells", ["modules","cellMap"], _cells);
   main.define("initial context", _context);
   main.variable(observer("mutable context")).define("mutable context", ["Mutable", "initial context"], (M, _) => new M(_));
   main.variable(observer("context")).define("context", ["mutable context"], _ => _.generator);
+  main.variable(observer("context_updater")).define("context_updater", ["unprompted_context","highlight_context","_","mutable context"], _context_updater);
   main.variable(observer("viewof extension_context_previous")).define("viewof extension_context_previous", ["Inputs"], _extension_context_previous);
   main.variable(observer("extension_context_previous")).define("extension_context_previous", ["Generators", "viewof extension_context_previous"], (G, _) => G.input(_));
-  main.variable(observer("unprompted_context")).define("unprompted_context", ["cells"], _unprompted_context);
-  main.variable(observer("prompted_context")).define("prompted_context", ["cells"], _prompted_context);
-  main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
-  main.variable(observer("highlight_context")).define("highlight_context", ["cells"], _highlight_context);
-  main.variable(observer()).define(["md"], _43);
-  main.variable(observer("findPrompt")).define("findPrompt", ["parser"], _findPrompt);
-  main.variable(observer("cells")).define("cells", ["code","findPrompt"], _cells);
-  main.variable(observer("code")).define("code", ["events","cellMap","main","decompile"], _code);
-  main.variable(observer("variables")).define("variables", ["_mainVariables","excludes"], _variables);
-  main.variable(observer("set_excludes")).define("set_excludes", ["mutable excludes","mandatory_excludes"], _set_excludes);
-  main.variable(observer("mandatory_excludes")).define("mandatory_excludes", _mandatory_excludes);
-  main.variable(observer("events")).define("events", ["_events"], _events);
-  main.variable(observer("functions")).define("functions", _functions);
+  main.variable(observer("unprompted_context")).define("unprompted_context", ["code"], _unprompted_context);
+  main.variable(observer("highlight_context")).define("highlight_context", ["code"], _highlight_context);
+  main.variable(observer()).define(["md"], _49);
+  main.variable(observer("code")).define("code", ["mainVariables","cellMap","main","decompile"], _code);
+  main.variable(observer("selected_variables")).define("selected_variables", ["mainVariables","excludes"], _selected_variables);
+  main.variable(observer("excludes")).define("excludes", ["descendants","lookupVariable","thisModule"], _excludes);
+  main.variable(observer("mainVariables")).define("mainVariables", ["allVariables","main"], _mainVariables);
+  main.variable(observer("viewof allVariables")).define("viewof allVariables", ["variables","runtime"], _allVariables);
+  main.variable(observer("allVariables")).define("allVariables", ["Generators", "viewof allVariables"], (G, _) => G.input(_));
+  main.variable(observer("thisModule")).define("thisModule", ["allVariables","tag"], _thisModule);
+  main.variable(observer("tag")).define("tag", _tag);
   main.variable(observer("viewof history")).define("viewof history", ["Inputs"], _history);
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["md"], _59);
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ask"], _54);
+  main.variable(observer()).define(["ask"], _61);
   main.variable(observer("prompt_messages")).define("prompt_messages", ["viewof settings","system_prompt","ask"], _prompt_messages);
   main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages"], _token_analytics);
-  main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["d3","token_analytics","settings"], _trimmed_prompt);
-  main.variable(observer("modelConfig")).define("modelConfig", ["viewof settings","ANTHROPIC_API_KEY","OPENAI_API_KEY","functions"], _modelConfig);
+  main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["token_analytics","d3","settings"], _trimmed_prompt);
+  main.variable(observer("modelConfig")).define("modelConfig", ["viewof settings","ANTHROPIC_API_KEY","OPENAI_API_KEY"], _modelConfig);
   main.variable(observer("openAiResponse")).define("openAiResponse", ["trimmed_prompt","modelConfig","viewof settings","OPENAI_API_KEY","api_endpoint"], _openAiResponse);
-  main.variable(observer("instruction")).define("instruction", ["openAiResponse","viewof settings","processO1","ask","parseJSON"], _instruction);
-  main.variable(observer("content")).define("content", ["processO1","openAiResponse"], _content);
-  main.variable(observer("processO1")).define("processO1", ["parseJSON"], _processO1);
-  main.variable(observer("parseJSON")).define("parseJSON", ["dirty_json"], _parseJSON);
+  main.variable(observer("instruction")).define("instruction", ["openAiResponse","process","ask"], _instruction);
+  main.variable(observer("domParser")).define("domParser", ["DOMParser"], _domParser);
+  main.variable(observer("content")).define("content", ["process","openAiResponse"], _content);
+  main.variable(observer("process")).define("process", ["domParser"], _process);
   main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
+  main.variable(observer()).define(["md"], _72);
   const child1 = runtime.module(define1);
-  main.import("_ndd", child1);
-  main.import("viewof reset", child1);
-  main.import("reset", child1);
-  main.import("events", "_events", child1);
-  main.import("mainVariables", "_mainVariables", child1);
-  main.import("interceptVariables", child1);
   main.import("runtime", child1);
+  main.import("variables", child1);
+  main.import("descendants", child1);
+  main.import("lookupVariable", child1);
   main.import("main", child1);
-  main.import("mutable excludes", child1);
-  main.import("excludes", child1);
   const child2 = runtime.module(define2);
   main.import("decompile", child2);
   main.import("compile", child2);
@@ -1134,6 +1048,10 @@ export default function define(runtime, observer) {
   main.import("whisperInput", child8);
   const child9 = runtime.module(define9);
   main.import("highlight", child9);
+  main.import("example_image", child9);
   main.variable(observer("dirty_json")).define("dirty_json", _dirty_json);
+  const child10 = runtime.module(define10);
+  main.import("moduleMap", child10);
+  main.import("submit_summary", child10);
   return main;
 }
