@@ -1,6 +1,6 @@
 # Dependancy
 
-https://observablehq.com/@tomlarkworthy/dependancy@21
+https://observablehq.com/@tomlarkworthy/dependancy@24
 
 View this notebook in your browser by running a web server in this folder. For
 example:
