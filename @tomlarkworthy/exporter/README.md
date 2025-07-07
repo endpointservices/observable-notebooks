@@ -1,6 +1,6 @@
-# Exporter: A Single File Notebook Serializer
+# Exporter: Single File Serializer
 
-https://observablehq.com/@tomlarkworthy/exporter@7744
+https://observablehq.com/@tomlarkworthy/exporter@8246
 
 View this notebook in your browser by running a web server in this folder. For
 example:
