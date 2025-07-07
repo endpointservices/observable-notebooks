@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/open-ai-embeddings",
+  "main": "00f0d7ffa5147eb5@110.js",
+  "version": "110.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/open-ai-embeddings",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
