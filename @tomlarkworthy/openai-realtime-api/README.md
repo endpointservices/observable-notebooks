@@ -1,6 +1,6 @@
 # OpenAI Realtime API
 
-https://observablehq.com/@tomlarkworthy/openai-realtime-api@619
+https://observablehq.com/@tomlarkworthy/openai-realtime-api@637
 
 View this notebook in your browser by running a web server in this folder. For
 example:

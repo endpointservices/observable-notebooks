@@ -1,4 +1,4 @@
-import define1 from "./17c8ce433e1df58e@3332.js";
+import define1 from "./17c8ce433e1df58e@3584.js";
 import define2 from "./e93eab08140b49b2@2875.js";
 import define3 from "./04318fffe4df9d1e@2463.js";
 
@@ -11,20 +11,37 @@ When enable mic is ticked the mic is streamed to OpenAI and the model recognises
 
 It was surprisingly technical to get working, uses \`AudioWorkletNode\` to get playback working well. You need to put in an OPEN_AI_API key near the bottom.
 
+Change log
+- 2024-12-27 switch to "gpt-4o-mini-realtime-preview-2024-12-17"
+
 TODO
 - Auto interruption
 - Maybe input suppression when its talking?`
 )}
 
-function _whisperPrompt(whisperInput,OPENAI_API_KEY){return(
-whisperInput({
-  API_KEY: OPENAI_API_KEY,
-  content: "🎙️ hold to prompt"
-})
+function _realtimeModel(Inputs){return(
+Inputs.select(
+  [
+    "gpt-4o-realtime-preview-2024-10-01",
+    "gpt-4o-mini-realtime-preview-2024-12-17",
+    "gpt-4o-realtime-preview-2024-12-17"
+  ],
+  {
+    label: "realtime model",
+    value: "gpt-4o-mini-realtime-preview-2024-12-17"
+  }
+)
 )}
 
 function _enable(Inputs){return(
 Inputs.toggle({ label: "realtime conversation" })
+)}
+
+function _whisperPrompt(whisperInput,OPENAI_API_KEY){return(
+whisperInput({
+  API_KEY: OPENAI_API_KEY,
+  content: "🎙️ push to prompt"
+})
 )}
 
 function _volume(Inputs){return(
@@ -51,7 +68,7 @@ async function _whisper_forward($0,Event,client,whisperPrompt)
 }
 
 
-function _7(Inputs,$0,Event,client){return(
+function _8(Inputs,$0,Event,client){return(
 Inputs.button("say a Haiku (testing)", {
   reduce: () => {
     if ($0.value == 0) {
@@ -153,7 +170,7 @@ async function _client(RealtimeClient,OPENAI_API_KEY,instructions)
 }
 
 
-function _12(unprocessed,Inputs,client)
+function _13(unprocessed,Inputs,client)
 {
   unprocessed;
   return Inputs.textarea({
@@ -199,7 +216,7 @@ async function _audioContext($0,invalidation,messageProcessorScriptUrl)
 }
 
 
-function _15(gain,volume)
+function _16(gain,volume)
 {
   gain.gain.value = volume / 20.0;
 }
@@ -312,7 +329,7 @@ function _messageProcessor(AudioWorkletNode,audioContext){return(
 new AudioWorkletNode(audioContext, "message-processor")
 )}
 
-function _23(md){return(
+function _24(md){return(
 md`## Realtime API Client
 
 transcribed from https://github.com/openai/openai-realtime-api-beta/commit/d7bf27b842638f01c0d07d517d0d8a1b9ce4b63b`
@@ -615,7 +632,7 @@ class RealtimeConversation {
 }
 )}
 
-function _RealtimeAPI(RealtimeEventHandler,globalThis,RealtimeUtils){return(
+function _RealtimeAPI(RealtimeEventHandler,globalThis,realtimeModel,RealtimeUtils){return(
 class RealtimeAPI extends RealtimeEventHandler {
   /**
    * Create a new RealtimeAPI instance
@@ -671,7 +688,7 @@ class RealtimeAPI extends RealtimeEventHandler {
    * @param {{model?: string}} [settings]
    * @returns {Promise<true>}
    */
-  async connect({ model } = { model: "gpt-4o-realtime-preview-2024-10-01" }) {
+  async connect({ model } = { model: realtimeModel }) {
     if (!this.apiKey && this.url === this.defaultUrl) {
       console.warn(`No apiKey provided for connection to "${this.url}"`);
     }
@@ -1537,15 +1554,15 @@ function _sleep(){return(
 (t) => new Promise((r) => setTimeout(() => r(), t))
 )}
 
-function _30(md){return(
+function _31(md){return(
 md`---`
 )}
 
-function _31($0){return(
+function _32($0){return(
 $0
 )}
 
-function _32(Inputs,suggestion){return(
+function _33(Inputs,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => {
     navigator.clipboard.writeText(suggestion);
@@ -1553,25 +1570,21 @@ Inputs.button("copy code", {
 })
 )}
 
-function _33($0){return(
+function _34($0){return(
 $0
 )}
 
-function _34(md){return(
+function _35(md){return(
 md`## Current Chat context
 code is automatically added to the context. Use \`highlight(<expr>)\` to selectively bring runtime values into the context as well`
 )}
 
-function _35($0){return(
+function _36($0){return(
 $0
 )}
 
-function _36(md){return(
+function _37(md){return(
 md`### AI Settings`
-)}
-
-function _37($0){return(
-$0
 )}
 
 function _38($0){return(
@@ -1582,39 +1595,45 @@ function _39($0){return(
 $0
 )}
 
-function _40(rag){return(
+function _40($0){return(
+$0
+)}
+
+function _41(rag){return(
 rag
 )}
 
-function _41(md){return(
+function _42(md){return(
 md`---`
 )}
 
-function _45(background_tasks){return(
+function _46(background_tasks){return(
 background_tasks
 )}
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("viewof whisperPrompt")).define("viewof whisperPrompt", ["whisperInput","OPENAI_API_KEY"], _whisperPrompt);
-  main.variable(observer("whisperPrompt")).define("whisperPrompt", ["Generators", "viewof whisperPrompt"], (G, _) => G.input(_));
+  main.variable(observer("viewof realtimeModel")).define("viewof realtimeModel", ["Inputs"], _realtimeModel);
+  main.variable(observer("realtimeModel")).define("realtimeModel", ["Generators", "viewof realtimeModel"], (G, _) => G.input(_));
   main.variable(observer("viewof enable")).define("viewof enable", ["Inputs"], _enable);
   main.variable(observer("enable")).define("enable", ["Generators", "viewof enable"], (G, _) => G.input(_));
+  main.variable(observer("viewof whisperPrompt")).define("viewof whisperPrompt", ["whisperInput","OPENAI_API_KEY"], _whisperPrompt);
+  main.variable(observer("whisperPrompt")).define("whisperPrompt", ["Generators", "viewof whisperPrompt"], (G, _) => G.input(_));
   main.variable(observer("viewof volume")).define("viewof volume", ["Inputs"], _volume);
   main.variable(observer("volume")).define("volume", ["Generators", "viewof volume"], (G, _) => G.input(_));
   main.variable(observer("auto_volume")).define("auto_volume", ["enable","viewof volume","Event"], _auto_volume);
   main.variable(observer("whisper_forward")).define("whisper_forward", ["viewof volume","Event","client","whisperPrompt"], _whisper_forward);
-  main.variable(observer()).define(["Inputs","viewof volume","Event","client"], _7);
+  main.variable(observer()).define(["Inputs","viewof volume","Event","client"], _8);
   main.variable(observer("viewof instructions")).define("viewof instructions", ["Inputs"], _instructions);
   main.variable(observer("instructions")).define("instructions", ["Generators", "viewof instructions"], (G, _) => G.input(_));
   main.variable(observer("unprocessed_input")).define("unprocessed_input", ["enable","Generators","invalidation"], _unprocessed_input);
   main.variable(observer("input_forwarding")).define("input_forwarding", ["unprocessed_input","client"], _input_forwarding);
   main.variable(observer("client")).define("client", ["RealtimeClient","OPENAI_API_KEY","instructions"], _client);
-  main.variable(observer()).define(["unprocessed","Inputs","client"], _12);
+  main.variable(observer()).define(["unprocessed","Inputs","client"], _13);
   main.variable(observer("gain")).define("gain", ["audioContext"], _gain);
   main.variable(observer("audioContext")).define("audioContext", ["viewof volume","invalidation","messageProcessorScriptUrl"], _audioContext);
-  main.variable(observer()).define(["gain","volume"], _15);
+  main.variable(observer()).define(["gain","volume"], _16);
   main.variable(observer("audio_graph")).define("audio_graph", ["messageProcessor","gain","audioContext","invalidation"], _audio_graph);
   main.variable(observer("unprocessed")).define("unprocessed", ["Generators","client"], _unprocessed);
   main.variable(observer("autoPlayAudio")).define("autoPlayAudio", ["unprocessed","messageProcessor"], _autoPlayAudio);
@@ -1622,25 +1641,25 @@ export default function define(runtime, observer) {
   main.variable(observer("messageProcessorScript")).define("messageProcessorScript", _messageProcessorScript);
   main.variable(observer("messageProcessorScriptUrl")).define("messageProcessorScriptUrl", ["messageProcessorScript"], _messageProcessorScriptUrl);
   main.variable(observer("messageProcessor")).define("messageProcessor", ["AudioWorkletNode","audioContext"], _messageProcessor);
-  main.variable(observer()).define(["md"], _23);
+  main.variable(observer()).define(["md"], _24);
   main.variable(observer("RealtimeConversation")).define("RealtimeConversation", ["RealtimeUtils"], _RealtimeConversation);
-  main.variable(observer("RealtimeAPI")).define("RealtimeAPI", ["RealtimeEventHandler","globalThis","RealtimeUtils"], _RealtimeAPI);
+  main.variable(observer("RealtimeAPI")).define("RealtimeAPI", ["RealtimeEventHandler","globalThis","realtimeModel","RealtimeUtils"], _RealtimeAPI);
   main.variable(observer("RealtimeClient")).define("RealtimeClient", ["RealtimeEventHandler","RealtimeAPI","RealtimeConversation","RealtimeUtils"], _RealtimeClient);
   main.variable(observer("RealtimeEventHandler")).define("RealtimeEventHandler", ["sleep"], _RealtimeEventHandler);
   main.variable(observer("RealtimeUtils")).define("RealtimeUtils", _RealtimeUtils);
   main.variable(observer("sleep")).define("sleep", _sleep);
-  main.variable(observer()).define(["md"], _30);
-  main.variable(observer()).define(["viewof prompt"], _31);
-  main.variable(observer()).define(["Inputs","suggestion"], _32);
-  main.variable(observer()).define(["viewof suggestion"], _33);
-  main.variable(observer()).define(["md"], _34);
-  main.variable(observer()).define(["viewof context_viz"], _35);
-  main.variable(observer()).define(["md"], _36);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _37);
-  main.variable(observer()).define(["viewof api_endpoint"], _38);
-  main.variable(observer()).define(["viewof settings"], _39);
-  main.variable(observer()).define(["rag"], _40);
-  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["viewof prompt"], _32);
+  main.variable(observer()).define(["Inputs","suggestion"], _33);
+  main.variable(observer()).define(["viewof suggestion"], _34);
+  main.variable(observer()).define(["md"], _35);
+  main.variable(observer()).define(["viewof context_viz"], _36);
+  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _38);
+  main.variable(observer()).define(["viewof api_endpoint"], _39);
+  main.variable(observer()).define(["viewof settings"], _40);
+  main.variable(observer()).define(["rag"], _41);
+  main.variable(observer()).define(["md"], _42);
   const child1 = runtime.module(define1);
   main.import("ask", child1);
   main.import("excludes", child1);
@@ -1673,6 +1692,6 @@ export default function define(runtime, observer) {
   main.import("extension", "rag", child2);
   const child3 = runtime.module(define3);
   main.import("whisperInput", child3);
-  main.variable(observer()).define(["background_tasks"], _45);
+  main.variable(observer()).define(["background_tasks"], _46);
   return main;
 }
