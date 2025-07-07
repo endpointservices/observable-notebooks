@@ -24,7 +24,11 @@ function _clipboard(Inputs,MIME_TYPE,Event)
 }
 
 
-function _3(Inputs,name)
+function _3($foo){return(
+$foo
+)}
+
+function _4(Inputs,name)
 {
   const ui = Inputs.textarea({
     label: "Copy multicell data from here",
@@ -34,7 +38,6 @@ function _3(Inputs,name)
   ui.addEventListener("copy", function (event) {
     event.preventDefault();
     event.stopPropagation();
-    debugger;
     const source = JSON.parse(ui.value);
     event.clipboardData.setData("text/plain", source.join("\n\n"));
     event.clipboardData.setData(
@@ -46,7 +49,7 @@ function _3(Inputs,name)
 }
 
 
-function _4(md){return(
+function _5(md){return(
 md`### Module destructurer
 
 Observable doesn't support destructuring syntax with external ES modules, for example:-
@@ -56,7 +59,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 \`\`\``
 )}
 
-function _5(md){return(
+function _6(md){return(
 md`However, we can simply write a cell for each destructurable method that forwards to a common dynamically imported module for the same effect. This enclosing notebook *can* be destructured on import:
 
 \`\`\`js
@@ -123,7 +126,7 @@ generated with [paste-codegen](https://observablehq.com/@tomlarkworthy/paste-cod
 )
 )}
 
-function _10(Inputs,code)
+function _11(Inputs,code)
 {
   const ui = Inputs.textarea({
     label: "Copy destructured code here",
@@ -144,7 +147,7 @@ function _10(Inputs,code)
 }
 
 
-function _11(md){return(
+function _12(md){return(
 md`## Technical Background
 
 so I don't forget how to debug this!`
@@ -154,7 +157,7 @@ function _MIME_TYPE(){return(
 "application/vnd.observablehq+json"
 )}
 
-function _13(md){return(
+function _14(md){return(
 md`
 Observable uses a special mime-type to enable pasting of cells. You can discover this by setting a breakpoint on ClipboardEvents and pasting as normal, which will reveal the ClipBoardEvent and its types in the debugger`
 )}
@@ -169,7 +172,7 @@ function _allowedCharacters(){return(
 ]
 )}
 
-function _17(footer){return(
+function _18(footer){return(
 footer
 )}
 
@@ -183,22 +186,23 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("viewof clipboard")).define("viewof clipboard", ["Inputs","MIME_TYPE","Event"], _clipboard);
   main.variable(observer("clipboard")).define("clipboard", ["Generators", "viewof clipboard"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","name"], _3);
-  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["$foo"], _3);
+  main.variable(observer()).define(["Inputs","name"], _4);
   main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
   main.variable(observer("viewof modulePath")).define("viewof modulePath", ["Inputs"], _modulePath);
   main.variable(observer("modulePath")).define("modulePath", ["Generators", "viewof modulePath"], (G, _) => G.input(_));
   main.variable(observer("identifier")).define("identifier", ["modulePath","allowedCharacters"], _identifier);
   main.variable(observer("module")).define("module", ["modulePath"], _module);
   main.variable(observer("code")).define("code", ["viewof modulePath","identifier","modulePath","module"], _code);
-  main.variable(observer()).define(["Inputs","code"], _10);
-  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["Inputs","code"], _11);
+  main.variable(observer()).define(["md"], _12);
   main.variable(observer("MIME_TYPE")).define("MIME_TYPE", _MIME_TYPE);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["md"], _14);
   main.variable(observer("image")).define("image", ["FileAttachment"], _image);
   main.variable(observer("allowedCharacters")).define("allowedCharacters", _allowedCharacters);
   const child1 = runtime.module(define1);
   main.import("footer", child1);
-  main.variable(observer()).define(["footer"], _17);
+  main.variable(observer()).define(["footer"], _18);
   return main;
 }

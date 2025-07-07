@@ -1,6 +1,6 @@
 # Code generation with multi-cell clipboard pasting
 
-https://observablehq.com/@tomlarkworthy/paste-codegen@367
+https://observablehq.com/@tomlarkworthy/paste-codegen@371
 
 View this notebook in your browser by running a web server in this folder. For
 example:
