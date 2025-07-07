@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/module-map",
+  "main": "db42ae70222a8b08@995.js",
+  "version": "995.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/module-map",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
