@@ -1,6 +1,6 @@
-# Observable JS <=> Runtime Toolchain
+# Bidirectional Observable JS <=> Runtime Toolchain
 
-https://observablehq.com/@tomlarkworthy/observablejs-toolchain@5581
+https://observablehq.com/@tomlarkworthy/observablejs-toolchain@6074
 
 View this notebook in your browser by running a web server in this folder. For
 example:
