@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/openai-responses-api",
+  "main": "26b0ee4d8f136fca@364.js",
+  "version": "364.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/openai-responses-api",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
