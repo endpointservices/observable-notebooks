@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lopecode-vision",
+  "main": "13b21d7027573d80@612.js",
+  "version": "612.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lopecode-vision",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
