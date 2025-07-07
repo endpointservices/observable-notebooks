@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/module-selection",
+  "main": "de3abeb05c4b090e@526.js",
+  "version": "526.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/module-selection",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
