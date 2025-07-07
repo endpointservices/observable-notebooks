@@ -1,6 +1,6 @@
 # highlight() values to roboco-op
 
-https://observablehq.com/@tomlarkworthy/highlight@2944
+https://observablehq.com/@tomlarkworthy/highlight@3013
 
 View this notebook in your browser by running a web server in this folder. For
 example:
