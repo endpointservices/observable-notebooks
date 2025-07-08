@@ -21,22 +21,33 @@ TODO: BUG: changing loop selection resets loop which is not strictly necissary
 `
 )}
 
+async function _dynamicBuffer(Inputs,FileAttachment){return(
+Inputs.select(
+  new Map([
+    [
+      "crash.mp3",
+      await FileAttachment("crash.mp3").arrayBuffer()
+    ],
+    ["CHH05.mp3", await FileAttachment("CHH05.mp3").arrayBuffer()]
+  ])
+)
+)}
+
+function _syncBuffer(manual,dynamicBuffer)
+{
+  manual.arrayBuffer = dynamicBuffer.slice();
+}
+
+
 async function _manual(sample,audioContext,FileAttachment){return(
 sample({
   loop: false,
   gain: 0.4,
   speed: 3,
   audioContext: audioContext,
-  arrayBuffer: await FileAttachment("Crash-Cymbal-1.wav").arrayBuffer()
+  arrayBuffer: await FileAttachment("crash.mp3").arrayBuffer()
 })
 )}
-
-function _4(manual,audioContext)
-{
-  manual.playing = audioContext.currentTime + 0.5;
-  manual.playing = audioContext.currentTime + 1;
-}
-
 
 async function _cymbal(sample,audioContext,FileAttachment){return(
 sample({
@@ -46,12 +57,8 @@ sample({
   end: 0.5,
   speed: 3,
   audioContext: audioContext,
-  arrayBuffer: await FileAttachment("Crash-Cymbal-1.wav").arrayBuffer()
+  arrayBuffer: await FileAttachment("crash.mp3").arrayBuffer()
 })
-)}
-
-function _6(cymbal){return(
-cymbal
 )}
 
 function _7(md){return(
@@ -64,13 +71,13 @@ import {sample, webaudioPolyfill} from '@tomlarkworthy/audio-inputs'
 ~~~js
 viewof cymbal = sample({
   audioContext: new AudioContext() /* usually shared across many componetns in an audio app */,
-  arrayBuffer: await FileAttachment("Crash-Cymbal-1.wav").arrayBuffer(),
+  arrayBuffer: await FileAttachment("crash.mp3").arrayBuffer(),
 })
 ~~~
 `
 )}
 
-function _sample(webaudioPolyfill,Range,invalidation,knob,waveformSelect,html){return(
+function _sample(webaudioPolyfill,waveformSelect,invalidation,Range,knob,html){return(
 async function sample({
   loop = false,
   gain = 1,
@@ -82,11 +89,44 @@ async function sample({
   speedAdjust = true
 } = {}) {
   webaudioPolyfill; // Safari
-  const sampleData = await audioContext.decodeAudioData(arrayBuffer);
-  // Some useful seconds to data indeces factors.
-  const d2s = sampleData.duration / sampleData.getChannelData(0).length;
-  const s2d = sampleData.getChannelData(0).length / sampleData.duration;
-  if (!end) end = sampleData.duration;
+  let sampleData, d2s, s2d, waveform;
+
+  async function setBuffer(arrayBuffer) {
+    const currentlyPlaying = waveform && playing;
+    if (currentlyPlaying) stop();
+    sampleData = await audioContext.decodeAudioData(arrayBuffer);
+
+    // Some useful seconds to data indeces factors.
+    d2s = sampleData.duration / sampleData.getChannelData(0).length;
+    s2d = sampleData.getChannelData(0).length / sampleData.duration;
+    if (!end) end = sampleData.duration;
+
+    const current = waveform ? ui.querySelector(".waveform") : undefined;
+
+    debugger;
+    waveform = waveformSelect({
+      selectionStart: current?.value?.selectionStart || start * s2d,
+      selectionEnd: current?.value?.selectionEnd || end * s2d,
+      audioBuffer: sampleData,
+      height: 34
+    });
+
+    waveform.style["padding"] = "4px";
+    waveform.style["margin-top"] = `3px`;
+    const syncWaveform = () => setLoop(loop);
+    waveform.addEventListener("input", syncWaveform);
+    invalidation.then(() =>
+      waveform.removeEventListener("input", syncWaveform)
+    );
+
+    if (current) {
+      current.replaceWith(waveform);
+      current.remove();
+    }
+
+    if (currentlyPlaying) play();
+  }
+  await setBuffer(arrayBuffer);
 
   const speedCtl = Range([0.2, 5], {
     value: speed,
@@ -107,18 +147,6 @@ async function sample({
   };
   volume.addEventListener("input", syncVolume);
   invalidation.then(() => volume.removeEventListener("input", syncVolume));
-
-  const waveform = waveformSelect({
-    selectionStart: start * s2d,
-    selectionEnd: end * s2d,
-    audioBuffer: sampleData,
-    height: 34
-  });
-  waveform.style["padding"] = "4px";
-  waveform.style["margin-top"] = `3px`;
-  const syncWaveform = () => setLoop(loop);
-  waveform.addEventListener("input", syncWaveform);
-  invalidation.then(() => waveform.removeEventListener("input", syncWaveform));
 
   let source = null;
   let playing = false;
@@ -221,7 +249,10 @@ async function sample({
   // Add accessors to value to make it mutable
   Object.defineProperty(ui.value, "gain", {
     get: () => volume.value,
-    set: (value) => volume.setVolume(value),
+    set: (value) => {
+      gain = value;
+      volume.setVolume(value);
+    },
     enumerable: true
   });
 
@@ -233,13 +264,19 @@ async function sample({
 
   Object.defineProperty(ui.value, "start", {
     get: () => waveform.value.selectionStart * d2s,
-    set: (value) => waveform.value.setSelectionStart(value * s2d),
+    set: (value) => {
+      start = value;
+      waveform.value.setSelectionStart(value * s2d);
+    },
     enumerable: true
   });
 
   Object.defineProperty(ui.value, "end", {
     get: () => waveform.value.selectionEnd * d2s,
-    set: (value) => waveform.value.setSelectionEnd(value * s2d),
+    set: (value) => {
+      end = value;
+      waveform.value.setSelectionEnd(value * s2d);
+    },
     enumerable: true
   });
 
@@ -251,6 +288,15 @@ async function sample({
       } else {
         newVal ? play() : stop();
       }
+    },
+    enumerable: true
+  });
+
+  Object.defineProperty(ui.value, "arrayBuffer", {
+    get: () => arrayBuffer,
+    set: (newVal) => {
+      arrayBuffer = newVal;
+      setBuffer(arrayBuffer);
     },
     enumerable: true
   });
@@ -293,7 +339,7 @@ async function _writable_demo(sample,audioContext,FileAttachment){return(
 sample({
   loop: true,
   audioContext: audioContext,
-  arrayBuffer: await FileAttachment("Crash-Cymbal-1.wav").arrayBuffer()
+  arrayBuffer: await FileAttachment("crash.mp3").arrayBuffer()
 })
 )}
 
@@ -390,7 +436,7 @@ Uses Yuri Vishnevsky's [density plot](https://observablehq.com/collection/@twitt
 
 async function _waveform(waveformSelect,FileAttachment){return(
 waveformSelect({
-  audioBuffer: await new AudioContext().decodeAudioData(await FileAttachment("Crash-Cymbal-1.wav").arrayBuffer()),
+  audioBuffer: await new AudioContext().decodeAudioData(await FileAttachment("crash.mp3").arrayBuffer()),
   selectionStart: 10000,
   selectionEnd: 50000, 
 })
@@ -410,55 +456,56 @@ function waveformSelect({
     .arcLengthNormalize(false)
     .xDomain([0, data.length]);
   let plot = densityPlot(density)
-              .drawAxes(false)
-              .background("white")
-              .color(() => () => ({r:0, g:0, b:0, opacity:1}));
+    .drawAxes(false)
+    .background("white")
+    .color(() => () => ({ r: 0, g: 0, b: 0, opacity: 1 }));
   const waveform = plot([data]);
   let start = null;
-  
+
   function mousedown(evt) {
-    const rect = ui.getBoundingClientRect()
-    const x = evt.clientX - rect.left
+    const rect = ui.getBoundingClientRect();
+    const x = evt.clientX - rect.left;
     start = x;
-    setSelectionStart(x * px2x)
+    setSelectionStart(x * px2x);
     return false;
   }
   function mousemove(evt) {
     if (!evt.buttons) start = null;
     if (start) {
-      const rect = ui.getBoundingClientRect()
-      const x = evt.clientX - rect.left
-      setSelectionEnd(x * px2x)
+      const rect = ui.getBoundingClientRect();
+      const x = evt.clientX - rect.left;
+      setSelectionEnd(x * px2x);
     }
   }
-  
-  
+
   let selectionStartRect, selectionEndRect;
-  const px2x = data.length * 1.0 / width;
-  const x2px = width * 1.0 / data.length;
-  
+  const px2x = (data.length * 1.0) / width;
+  const x2px = (width * 1.0) / data.length;
+
   function setSelectionStart(start) {
     selectionStart = start;
-    selectionStartRect.setAttribute("width", start*x2px)
-    notifyInput()
+    selectionStartRect.setAttribute("width", start * x2px);
+    notifyInput();
   }
-  
+
   function setSelectionEnd(end) {
     selectionEnd = end;
-    selectionEndRect.setAttribute("x", end*x2px)
-    notifyInput()
+    selectionEndRect.setAttribute("x", end * x2px);
+    notifyInput();
   }
   const value = {
-    selectionStart, selectionEnd,
-    setSelectionStart, setSelectionEnd
+    selectionStart,
+    selectionEnd,
+    setSelectionStart,
+    setSelectionEnd
   };
-  
+
   function notifyInput() {
     value.selectionStart = selectionStart;
     value.selectionEnd = selectionEnd;
     ui.dispatchEvent(new CustomEvent("input"));
   }
-  
+
   const overlay = svg`<svg
       viewBox="0 0 ${width} ${height}"
       width="${width}px"
@@ -470,29 +517,29 @@ function waveformSelect({
     >
     <rect class="wselect-start"
           x="0"
-          width=${selectionStart*x2px}
+          width=${selectionStart * x2px}
           height=${height} />
     
     <rect class="wselect-end"
           x=${selectionEnd * x2px}
           width=${width}
           height=${height} />
-  </svg>`
-  
-  const ui = html`<span>
+  </svg>`;
+
+  const ui = html`<span class="waveform">
     ${overlay}
     ${waveform}
-  </span>`
+  </span>`;
   selectionStartRect = ui.querySelector(".wselect-start");
   selectionEndRect = ui.querySelector(".wselect-end");
-  
-  ui.addEventListener('mousedown', mousedown);
-  document.addEventListener('mousemove', mousemove);
-  
+
+  ui.addEventListener("mousedown", mousedown);
+  document.addEventListener("mousemove", mousemove);
+
   invalidation.then(() => {
-    ui.removeEventListener('mousedown', mousedown);
-    document.removeEventListener('mousemove', mousemove);
-  })
+    ui.removeEventListener("mousedown", mousedown);
+    document.removeEventListener("mousemove", mousemove);
+  });
   ui.value = value;
   return ui;
 }
@@ -591,19 +638,21 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["Crash-Cymbal-1.wav", {url: new URL("./files/b42a1bfced820d4a041d82ee58f2e5bb0a104e223b9127ada9504ea5cfecb10a358ece0037b5fe0c491e744a0a196527fc116c328ee6618c07d5fe0ad390ffc7", import.meta.url), mimeType: "audio/vnd.wave", toString}]
+    ["crash.mp3", {url: new URL("./files/5754382dc03e790b963b7af3e0b9e16d5f8440e1421524819936f2c8287f237022ad54785c98d797ffb2c99a3374a1ab5fb07e2c701ee60c8333a054c54e08a6.mpga", import.meta.url), mimeType: "audio/mpeg", toString}],
+    ["CHH05.mp3", {url: new URL("./files/19316c0dd5c0e91d5935059fead380ec7cf33b9b541618c5eecba76bbf0cab729d030461b07afa1d81c3aea2f8e759b33f3e56d8e427a4e1581689cfa1ccaaf0.mpga", import.meta.url), mimeType: "audio/mpeg", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
+  main.variable(observer("viewof dynamicBuffer")).define("viewof dynamicBuffer", ["Inputs","FileAttachment"], _dynamicBuffer);
+  main.variable(observer("dynamicBuffer")).define("dynamicBuffer", ["Generators", "viewof dynamicBuffer"], (G, _) => G.input(_));
+  main.variable(observer("syncBuffer")).define("syncBuffer", ["manual","dynamicBuffer"], _syncBuffer);
   main.variable(observer("viewof manual")).define("viewof manual", ["sample","audioContext","FileAttachment"], _manual);
   main.variable(observer("manual")).define("manual", ["Generators", "viewof manual"], (G, _) => G.input(_));
-  main.variable(observer()).define(["manual","audioContext"], _4);
   main.variable(observer("viewof cymbal")).define("viewof cymbal", ["sample","audioContext","FileAttachment"], _cymbal);
   main.variable(observer("cymbal")).define("cymbal", ["Generators", "viewof cymbal"], (G, _) => G.input(_));
-  main.variable(observer()).define(["cymbal"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer("sample")).define("sample", ["webaudioPolyfill","Range","invalidation","knob","waveformSelect","html"], _sample);
+  main.variable(observer("sample")).define("sample", ["webaudioPolyfill","waveformSelect","invalidation","Range","knob","html"], _sample);
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["writable_demo","now"], _10);
   main.variable(observer("audioContext")).define("audioContext", _audioContext);
