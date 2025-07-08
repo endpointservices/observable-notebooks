@@ -6,9 +6,16 @@ md`# Most favorited Hacker News posts of all time
 
 The most favorited articles by the top _10k_ most active Hacker News members. The list skews toward innovative learning resources and tech career tips, but there is a little of everything.
 
-Data was scraped 2020-09-1 from the public [favourites](https://news.ycombinator.com/favorites?id=${favourites[Math.floor(Math.random() * favourites.length)].username.replace(".html", "")}) lists. This is an observable notebook with the data attached as a file, so you can fork your own analysis if you don't like how I did it (_e.g._ you could find the favorited Ask HN posts). 
+Data was scraped 2020-09-1 from the public [favourites](https://news.ycombinator.com/favorites?id=${favourites[
+  Math.floor(Math.random() * favourites.length)
+].username.replace(
+  ".html",
+  ""
+)}) lists. This is an observable notebook with the data attached as a file, so you can fork your own analysis if you don't like how I did it (_e.g._ you could find the favorited Ask HN posts). 
 
 To calculate the top favourites, I give each member 30 votes to divided over their (max) 30 most recent favourited articles. I sum the votes over all articles. The results are a goldmine of tech resources.
+
+There is an updated index [here](https://observablehq.com/@tomlarkworthy/hn-faves-2024-12-21)
 `
 )}
 
@@ -171,11 +178,7 @@ d3
   .filter(value => !value.link.startsWith("item?") || !excludeInternals)
 )}
 
-function _d3(require){return(
-require("d3@6")
-)}
-
-function _10(footer){return(
+function _9(footer){return(
 footer
 )}
 
@@ -193,11 +196,10 @@ export default function define(runtime, observer) {
   main.variable(observer("score_per_link")).define("score_per_link", ["favourites","links_by_username","d3"], _score_per_link);
   main.variable(observer("links_by_username")).define("links_by_username", ["d3","favourites"], _links_by_username);
   main.variable(observer("favourites")).define("favourites", ["d3","FileAttachment","excludeInternals"], _favourites);
-  main.variable(observer("d3")).define("d3", ["require"], _d3);
   const child1 = runtime.module(define1);
   main.import("checkbox", child1);
   const child2 = runtime.module(define2);
   main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _10);
+  main.variable(observer()).define(["footer"], _9);
   return main;
 }

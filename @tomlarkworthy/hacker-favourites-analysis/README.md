@@ -1,6 +1,6 @@
 # Most favorited Hacker News posts of all time
 
-https://observablehq.com/@tomlarkworthy/hacker-favourites-analysis@318
+https://observablehq.com/@tomlarkworthy/hacker-favourites-analysis@322
 
 View this notebook in your browser by running a web server in this folder. For
 example:
