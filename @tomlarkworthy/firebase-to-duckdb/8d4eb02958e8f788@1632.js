@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/firebase-to-duckdb@1632
 import define1 from "./993a0c51ef1175ea@1396.js";
-import define2 from "./0e0b35a92c819d94@471.js";
+import define2 from "./0e0b35a92c819d94@474.js";
 import define3 from "./357f1a71f976f173@1034.js";
 import define4 from "./ac2d8dc9041d3373@100.js";
 import define5 from "./58f3eb7334551ae6@215.js";
