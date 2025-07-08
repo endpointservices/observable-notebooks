@@ -11,8 +11,7 @@ This notebook implements a themable range input for lower and upper bounds.
 <details>
 <summary style="outline:none !important"><i>View a demonstration</i></summary>
 <img src=https://i.imgur.com/KkHoemh.gif style="max-width:500px;border:1px solid #ddd">
-</details>
-`
+</details>`
 )}
 
 function _section_examples(md){return(
@@ -41,32 +40,6 @@ interval([-10, 10], {
 })
 )}
 
-function _example_jashkenas(SLUG,md){return(
-md`---
-### Style: Jeremy Ashkenas' Inputs
-
-***This widget has been [deprecated](https://en.wikipedia.org/wiki/Deprecation).*** *Please use [\`interval()\`](#example_observable) instead.*
-
-
-Mimics the appearance and interface of \`slider()\` from Jeremy Ashkenas' [Inputs notebook](https://observablehq.com/@jashkenas/inputs). See the [documentation](#doc_rangeSlider) for a list of all available options.
-
-~~~js
-import {rangeSlider} from '${SLUG}'
-~~~
-`
-)}
-
-function _6(rangeSlider){return(
-rangeSlider({
-  min: -10,
-  max: 10,
-  step: .25,
-  value: [0, 8],
-  title: 'My slider',
-  description: 'This is a slider.',
-})
-)}
-
 function _example_basic(SLUG,md){return(
 md`---
 ### Style: Basic
@@ -79,7 +52,7 @@ import {rangeInput} from '${SLUG}'
 `
 )}
 
-function _8(rangeInput){return(
+function _6(rangeInput){return(
 rangeInput({
   min: -10,
   max: 10,
@@ -110,7 +83,7 @@ ${Object.entries({
   value: 'Lower and upper range bounds, array of number. Optional, defaults to <code>[min, max]</code>.',
   theme: 'Widget CSS, string. Defaults to [<code>theme_Flat</code>](#doc_theme_Flat).',
   color: 'Range color as CSS \`color\` value. Defaults to the theme.',
-  width: 'Range width, either number of pixels or a CSS \`width\` string. Defaults to the theme.',
+  width: 'Range width, either number of pixels or a CSS \`width\` string. Defaults to `360`.',
 }).map(([k,v]) => `  - \`${k}:\` ${v}\n`)}
 
 `
@@ -135,31 +108,6 @@ ${Object.entries({
 }).map(([k,v]) => `  - \`${k}:\` ${v}\n`)}
 
 `
-})
-)}
-
-function _doc_rangeSlider(signature,rangeSlider,md){return(
-signature(rangeSlider, {
-  description: md`
-
-**Deprecated**. Use [\`interval()\`](#doc_interval) instead.
-
-Widget that imitates the appearance and API of [\`slider()\`](https://observablehq.com/@jashkenas/inputs#slider).
-
-Arguments:
-- \`options:\` Optional. Available options:
-${Object.entries({
-      title: 'Title above widget, string. Defaults to `null`.',
-      description: 'Description below widget, string. Defaults to `null`.',
-      submit: 'Display a submit button to apply changes, boolean. Defaults to <code>false</code>.',
-      getValue: 'Value callback, Function. Defaults to <code>n => n.value.map(roundToPrecision)</code>.',
-      color: 'CSS color for range. Defaults to the theme.',
-      separator: 'Value separator. Defaults to <code>" … "</code>.',
-      precision: 'Number of decimals as Number. Defaults to <code>3</code>.',
-      format: 'Display format as [d3-format](https://github.com/d3/d3-format) string or Function. Defaults to <code>v => v</code>.',
-      display: 'Display formatter as Function. Defaults to <code>v => v.map(format).join(separator)</code>',
-    }).map(([k,v]) => `  - \`${k}:\` ${v}\n`)}`
-
 })
 )}
 
@@ -246,12 +194,12 @@ function __themeDemoInput(rangeInput,Inputs)
 }
 
 
-function _20(md){return(
+function _17(md){return(
 md`---
 ## Implementation`
 )}
 
-function _interval(DOM,rangeInput,html){return(
+function _interval(randomScope,cssLength,rangeInput,html){return(
 function interval(range = [], options = {}) {
   const [min = 0, max = 1] = range;
   const {
@@ -260,11 +208,11 @@ function interval(range = [], options = {}) {
     value = [min, max],
     format = ([start, end]) => `${start} … ${end}`,
     color,
-    width,
+    width = 360,
     theme,
+    __ns__ = randomScope(),
   } = options;
 
-  const __ns__ = DOM.uid('scope').id;
   const css = `
 #${__ns__} {
   font: 13px/1.2 var(--sans-serif);
@@ -277,7 +225,7 @@ function interval(range = [], options = {}) {
 @media only screen and (min-width: 30em) {
   #${__ns__} {
     flex-wrap: nowrap;
-    width: 360px;
+    width: ${cssLength(width)};
   }
 }
 #${__ns__} .label {
@@ -299,7 +247,7 @@ function interval(range = [], options = {}) {
 }
   `;
   
-  const $range = rangeInput({min, max, value: [value[0], value[1]], step, color, width, theme});
+  const $range = rangeInput({min, max, value: [value[0], value[1]], step, color, width: "100%", theme});
   const $output = html`<output>`;
   const $view = html`<div id=${__ns__}>
 ${label == null ? '' : html`<div class="label">${label}`}
@@ -332,7 +280,7 @@ ${html`<style>${css}`}
 }
 )}
 
-function _rangeInput(theme_Flat,randomScope,htl,cssLength,Event,invalidation){return(
+function _rangeInput(theme_Flat,randomScope,html,cssLength,Event,invalidation){return(
 function rangeInput(options = {}) {
   const {
     min = 0,
@@ -347,7 +295,6 @@ function rangeInput(options = {}) {
   const controls = {};
   const scope = randomScope();
   const clamp = (a, b, v) => v < a ? a : v > b ? b : v;
-  const html = htl.html;
 
   // Will be used to sanitize values while avoiding floating point issues.
   const input = html`<input type=range ${{min, max, step}}>`;
@@ -478,7 +425,7 @@ function rangeInput(options = {}) {
 }
 )}
 
-function _23(md){return(
+function _20(md){return(
 md`### Themes`
 )}
 
@@ -769,7 +716,7 @@ function _theme_NoUiSlider(){return(
 `
 )}
 
-function _28(md){return(
+function _25(md){return(
 md`### Utilities`
 )}
 
@@ -787,7 +734,7 @@ function _cssLength(){return(
 v => v == null ? null : typeof v === 'number' ? `${v}px` : `${v}`
 )}
 
-function _32(md){return(
+function _29(md){return(
 md`### Documentation`
 )}
 
@@ -836,7 +783,11 @@ function _SLUG(){return(
 '@mootari/range-slider'
 )}
 
-function _37(md){return(
+function _rev(){return(
+(d, n = '') => `${d} ([${n || 'latest'}](https://observablehq.com/@mootari/range-slider${n}))`
+)}
+
+function _35(md){return(
 md`### Deprecated`
 )}
 
@@ -963,13 +914,16 @@ function _d3format(require){return(
 require("d3-format@1")
 )}
 
-function _doc_changelog(md)
-{
-  const rev = (d, n = '') => `${d} ([${n || 'latest'}](https://observablehq.com/@mootari/range-slider${n}))`;
-  return md`
----
+function _doc_changelog(rev,md){return(
+md`---
 ## Changelog
-- ${rev('2023-05-03')}
+- ${rev('2025-06-21')}
+  - \`interval\`: Fixed \`width\` option being ignored
+  - \`rangeSlider\`: Removed docs
+- ${rev('2024-12-11', '@1834')}
+  - \`rangeInput\`: Reference \`html\` cell instead of \`htl\`
+  - \`interval\`: Use \`randomScope\` instead of \`DOM.uid\`; expose \`__ns__\` as option
+- ${rev('2023-05-03', '@1816')}
   - Added ISC license
 - ${rev('2023-04-30', '@1800')}
   - Removed \`lazyImport()\` in favor of the v4 module format.
@@ -994,14 +948,11 @@ function _doc_changelog(md)
   - Added provisional \`interval()\` widget to match the style of Observable's \`Inputs\` library. Thanks to [Sylvain Lesage](https://observablehq.com/@severo) for suggesting the name!
   - Removed a few static imports.
 - ${rev('2020-03-27', '@1004')}: Added new default theme "Flat", a more neutral version of the macOS Chrome theme. (via [Jed Fox](https://observablehq.com/@j-f1))
-- ${rev('2020-03-27', '@930')}: Changelog start.
-`;
-}
+- ${rev('2020-03-27', '@930')}: Changelog start.`
+)}
 
-
-function _43(md){return(
-md`---
-## Remaining Tasks / Work in progress
+function _41(md){return(
+md`## Remaining Tasks / Work in progress
 
 *Code in this section is subject to change. Only import with a pinned version!*
 
@@ -1017,14 +968,11 @@ export default function define(runtime, observer) {
   main.variable(observer("section_examples")).define("section_examples", ["md"], _section_examples);
   main.variable(observer("example_observable")).define("example_observable", ["SLUG","md"], _example_observable);
   main.variable(observer()).define(["interval"], _4);
-  main.variable(observer("example_jashkenas")).define("example_jashkenas", ["SLUG","md"], _example_jashkenas);
-  main.variable(observer()).define(["rangeSlider"], _6);
   main.variable(observer("example_basic")).define("example_basic", ["SLUG","md"], _example_basic);
-  main.variable(observer()).define(["rangeInput"], _8);
+  main.variable(observer()).define(["rangeInput"], _6);
   main.variable(observer("section_docs")).define("section_docs", ["md"], _section_docs);
   main.variable(observer("doc_interval")).define("doc_interval", ["signature","interval","md"], _doc_interval);
   main.variable(observer("doc_rangeInput")).define("doc_rangeInput", ["signature","rangeInput","md"], _doc_rangeInput);
-  main.variable(observer("doc_rangeSlider")).define("doc_rangeSlider", ["signature","rangeSlider","md"], _doc_rangeSlider);
   main.variable(observer("section_themes")).define("section_themes", ["md"], _section_themes);
   main.variable(observer("viewof example_theme_options")).define("viewof example_theme_options", ["Inputs"], _example_theme_options);
   main.variable(observer("example_theme_options")).define("example_theme_options", ["Generators", "viewof example_theme_options"], (G, _) => G.input(_));
@@ -1033,30 +981,31 @@ export default function define(runtime, observer) {
   main.variable(observer("doc_theme_Retro1")).define("doc_theme_Retro1", ["signature","md","SLUG","_themeDemoInput","theme_Retro1","example_theme_options","invalidation"], _doc_theme_Retro1);
   main.variable(observer("doc_theme_NoUiSlider")).define("doc_theme_NoUiSlider", ["signature","md","SLUG","_themeDemoInput","theme_NoUiSlider","example_theme_options","invalidation"], _doc_theme_NoUiSlider);
   main.variable(observer("_themeDemoInput")).define("_themeDemoInput", ["rangeInput","Inputs"], __themeDemoInput);
+  main.variable(observer()).define(["md"], _17);
+  main.variable(observer("interval")).define("interval", ["randomScope","cssLength","rangeInput","html"], _interval);
+  main.variable(observer("rangeInput")).define("rangeInput", ["theme_Flat","randomScope","html","cssLength","Event","invalidation"], _rangeInput);
   main.variable(observer()).define(["md"], _20);
-  main.variable(observer("interval")).define("interval", ["DOM","rangeInput","html"], _interval);
-  main.variable(observer("rangeInput")).define("rangeInput", ["theme_Flat","randomScope","htl","cssLength","Event","invalidation"], _rangeInput);
-  main.variable(observer()).define(["md"], _23);
   main.variable(observer("theme_Flat")).define("theme_Flat", _theme_Flat);
   main.variable(observer("theme_GoogleChrome_MacOS1013")).define("theme_GoogleChrome_MacOS1013", _theme_GoogleChrome_MacOS1013);
   main.variable(observer("theme_Retro1")).define("theme_Retro1", _theme_Retro1);
   main.variable(observer("theme_NoUiSlider")).define("theme_NoUiSlider", _theme_NoUiSlider);
-  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["md"], _25);
   main.variable(observer("randomScope")).define("randomScope", _randomScope);
   main.variable(observer("html")).define("html", ["htl"], _html);
   main.variable(observer("cssLength")).define("cssLength", _cssLength);
-  main.variable(observer()).define(["md"], _32);
+  main.variable(observer()).define(["md"], _29);
   const child1 = runtime.module(define1);
   main.import("signature", child1);
   main.variable(observer("requireCompat")).define("requireCompat", ["invalidation"], _requireCompat);
   main.variable(observer("disableCompat")).define("disableCompat", ["requireCompat","invalidation"], _disableCompat);
   main.variable(observer("SLUG")).define("SLUG", _SLUG);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer("rev")).define("rev", _rev);
+  main.variable(observer()).define(["md"], _35);
   main.variable(observer("rangeSlider")).define("rangeSlider", ["rangeInput","d3format","jashkenasInput","html"], _rangeSlider);
   main.variable(observer("themes")).define("themes", ["theme_Flat","theme_GoogleChrome_MacOS1013","theme_NoUiSlider","theme_Retro1"], _themes);
   main.variable(observer("jashkenasInput")).define("jashkenasInput", ["html","d3format"], _jashkenasInput);
   main.variable(observer("d3format")).define("d3format", ["require"], _d3format);
-  main.variable(observer("doc_changelog")).define("doc_changelog", ["md"], _doc_changelog);
-  main.variable(observer()).define(["md"], _43);
+  main.variable(observer("doc_changelog")).define("doc_changelog", ["rev","md"], _doc_changelog);
+  main.variable(observer()).define(["md"], _41);
   return main;
 }

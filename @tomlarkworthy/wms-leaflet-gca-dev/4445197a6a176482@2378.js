@@ -1,4 +1,4 @@
-import define1 from "./b2bbebd2f186ed03@1816.js";
+import define1 from "./b2bbebd2f186ed03@1846.js";
 
 function _1(md,keyword_style){return(
 md`# WMS Leaflet map GCA (DEV)
