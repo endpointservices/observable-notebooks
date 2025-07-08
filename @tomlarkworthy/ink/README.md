@@ -1,6 +1,6 @@
 # Ink in water
 
-https://observablehq.com/@tomlarkworthy/ink@951
+https://observablehq.com/@tomlarkworthy/ink@957
 
 View this notebook in your browser by running a web server in this folder. For
 example:

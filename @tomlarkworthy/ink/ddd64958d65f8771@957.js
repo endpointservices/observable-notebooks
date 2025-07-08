@@ -17,6 +17,9 @@ The main changes from [@jashkenas](https://observablehq.com/@jashkenas/webgl-flu
 
 Checkout [Gentle Introduction to Realtime Fluid Simulation for Programmers and Technical Artists]( https://link.medium.com/UsUv498X9jb) for building intuition over the code
 
+### Backlog
+- Try using pigment mixing (https://scrtwpns.com/mixbox/), they do have a fluid example (https://scrtwpns.com/mixbox/fluids/), suggested on [HN](https://news.ycombinator.com/item?id=42543931)
+
 ## Instructions
 
 *Click inside the rectangle below*`
