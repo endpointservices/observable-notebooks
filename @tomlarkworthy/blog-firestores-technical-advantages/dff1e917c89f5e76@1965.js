@@ -415,7 +415,7 @@ Fixes the notebook to a specific notebook, example: *@endpointservices/storage*.
 
 #### secrets
 
-An array of secret keys to request in context. Secret names must be prefixed by the user subdomain (e.g. tomlarkworthy)
+An array of secret keys to request in context. Secret names must be prefixed by the user subdomain followed by an underscore (e.g. tomlarkworthy_)
 
 #### region
 
