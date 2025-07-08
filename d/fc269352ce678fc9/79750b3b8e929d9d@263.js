@@ -22,7 +22,7 @@ async function _aq(require,aq_version,toView)
 
 
 function _aq_version(){return(
-'7.2.0'
+'8.0.1'
 )}
 
 function _5(md){return(
@@ -42,14 +42,21 @@ import { aq, op } from '@uwdata/arquero'
 )}
 
 function _8(md){return(
-md`To get started, see the [Introducing Arquero](https://observablehq.com/@uwdata/introducing-arquero) and [Arquero Cookbook](https://observablehq.com/@uwdata/arquero-cookbook) notebooks.`
+md`To use a specific version of Arquero, pass in an \`aq_version\` option, where \`aq_version\` is a named cell whose value is the desired version number.
+~~~ js
+import { aq, op } with { aq_version } from '@uwdata/arquero'
+~~~`
 )}
 
 function _9(md){return(
-md`To use Arquero outside of Observable, see [https://github.com/uwdata/arquero](https://github.com/uwdata/arquero).`
+md`To get started, see the [Introducing Arquero](https://observablehq.com/@uwdata/introducing-arquero) and [Arquero Cookbook](https://observablehq.com/@uwdata/arquero-cookbook) notebooks.`
 )}
 
 function _10(md){return(
+md`To use Arquero outside of Observable, see [https://github.com/uwdata/arquero](https://github.com/uwdata/arquero).`
+)}
+
+function _11(md){return(
 md`<hr>
 ## Examples
 
@@ -57,7 +64,7 @@ The core abstractions in Arquero are *data tables*, which model each column as a
 `
 )}
 
-function _11(md){return(
+function _12(md){return(
 md`Average hours of sunshine per month, from [https://usclimatedata.com/](https://usclimatedata.com/):`
 )}
 
@@ -69,11 +76,11 @@ aq.table({
 })
 )}
 
-function _13(md){return(
+function _14(md){return(
 md`Sorted differences between Seattle and Chicago:`
 )}
 
-function _14(dt,op){return(
+function _15(dt,op){return(
 dt.derive({
     month: d => op.row_number(),
     diff:  d => d.Seattle - d.Chicago
@@ -83,11 +90,11 @@ dt.derive({
   .view({ height: 400 })
 )}
 
-function _15(md){return(
+function _16(md){return(
 md`Is Seattle more correlated with San Francisco or Chicago?`
 )}
 
-function _16(dt,op){return(
+function _17(dt,op){return(
 dt.rollup({
     corr_sf:  op.corr('Seattle', 'San Francisco'),
     corr_chi: op.corr('Seattle', 'Chicago')
@@ -95,11 +102,11 @@ dt.rollup({
   .view()
 )}
 
-function _17(md){return(
+function _18(md){return(
 md`Summary statistics per city, as output objects:`
 )}
 
-function _18(dt,aq,op){return(
+function _19(dt,aq,op){return(
 dt.fold(aq.all(), { as: ['city', 'sun'] })
   .groupby('city')
   .rollup({
@@ -113,7 +120,7 @@ dt.fold(aq.all(), { as: ['city', 'sun'] })
   .objects()
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`<hr>
 ## Utilities
 `
@@ -185,14 +192,15 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _9);
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _12);
   main.variable(observer("dt")).define("dt", ["aq"], _dt);
-  main.variable(observer()).define(["md"], _13);
-  main.variable(observer()).define(["dt","op"], _14);
-  main.variable(observer()).define(["md"], _15);
-  main.variable(observer()).define(["dt","op"], _16);
-  main.variable(observer()).define(["md"], _17);
-  main.variable(observer()).define(["dt","aq","op"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer()).define(["dt","op"], _15);
+  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["dt","op"], _17);
+  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["dt","aq","op"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("toView")).define("toView", ["html"], _toView);
   return main;
 }
