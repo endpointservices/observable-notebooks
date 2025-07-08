@@ -1,8 +1,8 @@
 // https://observablehq.com/@tomlarkworthy/adapting-dataviz@531
 import define1 from "./29b56ba60f19a819@605.js";
-import define2 from "./653c46ed55693b1f@674.js";
+import define2 from "./653c46ed55693b1f@683.js";
 import define3 from "./41f3c8664d9e45a6@1969.js";
-import define4 from "./0e0b35a92c819d94@471.js";
+import define4 from "./0e0b35a92c819d94@474.js";
 import define5 from "./293899bef371e135@278.js";
 
 function _1(md){return(
