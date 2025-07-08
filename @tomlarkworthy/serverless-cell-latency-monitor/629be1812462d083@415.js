@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/cron@415
 import define1 from "./52d808b188b8672b@129.js";
-import define2 from "./dff1e917c89f5e76@1964.js";
+import define2 from "./dff1e917c89f5e76@1965.js";
 import define3 from "./11a5ab8b1b3a51db@1161.js";
 import define4 from "./84e66f78139ac354@830.js";
 import define5 from "./a2e58f97fd5e8d7c@756.js";
