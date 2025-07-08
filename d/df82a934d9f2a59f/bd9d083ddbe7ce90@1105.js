@@ -1,5 +1,5 @@
 import define1 from "./f92778131fd76559@1208.js";
-import define2 from "./653c46ed55693b1f@674.js";
+import define2 from "./653c46ed55693b1f@683.js";
 
 function _1(md){return(
 md`# Responsive *grid*
