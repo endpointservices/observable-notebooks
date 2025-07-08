@@ -17,6 +17,10 @@ function inspect(value) {
 }
 )}
 
+function _src(unzip,FileAttachment){return(
+unzip(FileAttachment("inspector-5@1.0.1.js.gz"))
+)}
+
 function _unzip(Response,DecompressionStream){return(
 async (attachment) => {
   const response = await new Response(
@@ -27,12 +31,10 @@ async (attachment) => {
 }
 )}
 
-async function _Inspector(unzip,FileAttachment,require)
+async function _Inspector(src,require)
 {
-  const blob = await unzip(FileAttachment("inspector-5@1.0.1.js.gz"));
-
   const objectURL = URL.createObjectURL(
-    new Blob([blob], { type: "application/javascript" })
+    new Blob([src], { type: "application/javascript" })
   );
   try {
     return (await require(objectURL)).Inspector;
@@ -60,8 +62,9 @@ export default function define(runtime, observer) {
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   main.variable(observer("inspect")).define("inspect", ["Inspector"], _inspect);
+  main.variable(observer("src")).define("src", ["unzip","FileAttachment"], _src);
   main.variable(observer("unzip")).define("unzip", ["Response","DecompressionStream"], _unzip);
-  main.variable(observer("Inspector")).define("Inspector", ["unzip","FileAttachment","require"], _Inspector);
+  main.variable(observer("Inspector")).define("Inspector", ["src","require"], _Inspector);
   main.variable(observer("isnode")).define("isnode", ["Element","Text"], _isnode);
   return main;
 }
