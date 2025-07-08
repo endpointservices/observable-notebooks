@@ -1,5 +1,5 @@
 import define1 from "./6eda90668ae03044@830.js";
-import define2 from "./0e0b35a92c819d94@471.js";
+import define2 from "./0e0b35a92c819d94@474.js";
 
 function _1(md){return(
 md`# Webcode`
