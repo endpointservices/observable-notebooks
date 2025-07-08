@@ -1,7 +1,7 @@
 // https://observablehq.com/@tomlarkworthy/rss-atom-feed@800
 import define1 from "./9e9b514f3656a16e@1255.js";
 import define2 from "./993a0c51ef1175ea@1396.js";
-import define3 from "./dff1e917c89f5e76@1964.js";
+import define3 from "./dff1e917c89f5e76@1965.js";
 
 function _1(md){return(
 md`# RSS/Atom/JSON feed
