@@ -1,4 +1,4 @@
-import define1 from "./c704620b9f688381@285.js";
+import define1 from "./c704620b9f688381@322.js";
 
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
