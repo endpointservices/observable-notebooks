@@ -1,5 +1,5 @@
 import define1 from "./ef672b935bd480fc@623.js";
-import define2 from "./dff1e917c89f5e76@1964.js";
+import define2 from "./dff1e917c89f5e76@1965.js";
 
 function _1(md){return(
 md`<div style="color: grey; font: 13px/25.5px var(--sans-serif); text-transform: uppercase;"><h1 style="display: none">Stockage CDN/proxy du fichier de référence Insee BDM idbanks</h1><a href="https://observablehq.com/@ericmauviere/insee-bdm-sommaire">INSEE BDM</a> › 4 - Mise en cache</div>
