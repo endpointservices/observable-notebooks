@@ -1,7 +1,7 @@
 import define1 from "./048a17a165be198d@271.js";
 import define2 from "./e1e1342567637708@810.js";
 import define3 from "./ef672b935bd480fc@623.js";
-import define4 from "./653c46ed55693b1f@674.js";
+import define4 from "./653c46ed55693b1f@683.js";
 import define5 from "./bb2055d580bbbab2@106.js";
 import define6 from "./b0b80d7a567305c3@10.js";
 import define7 from "./f92778131fd76559@1208.js";
@@ -533,6 +533,187 @@ function _updater_first_option_using_cell_b($0,$1,Event)
 }
 
 
+function _101(md){return(
+md`## Grid of Cells`
+)}
+
+function _cells(){return(
+[
+  {
+    labelX: "row1",
+    labelY: "col1",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row2",
+    labelY: "col1",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row3",
+    labelY: "col1",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row1",
+    labelY: "col2",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row2",
+    labelY: "col2",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row3",
+    labelY: "col2",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row1",
+    labelY: "col3",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row2",
+    labelY: "col3",
+    group: "A",
+    value: 42
+  },
+  {
+    labelX: "row3",
+    labelY: "col3",
+    group: "A",
+    value: 42
+  }
+]
+)}
+
+function _103(Plot,cells){return(
+Plot.plot({
+  color: { legend: true },
+  marks: [
+    Plot.cell(cells, {
+      x: "labelX",
+      y: "labelY",
+      fill: "value"
+    }),
+    Plot.tickY(["col2"], { dy: 11 })
+  ]
+})
+)}
+
+function _104(md){return(
+md`Exporting scales`
+)}
+
+function _plot_grid(Plot,cells){return(
+Plot.plot({
+  color: { legend: true },
+  marks: [
+    Plot.cell(cells, {
+      x: "labelX",
+      y: "labelY",
+      fill: "value"
+    }),
+    Plot.tickY(["col2"])
+  ]
+})
+)}
+
+function _x_scale(plot_grid){return(
+plot_grid.scale("x")
+)}
+
+function _107(x_scale){return(
+x_scale.apply("row2")
+)}
+
+function _108(md){return(
+md`## Connect to \`BacdiveClient\``
+)}
+
+function _response(Inputs){return(
+Inputs.button("connect", {
+  reduce: async () =>
+    (
+      await fetch(
+        "https://sso.dsmz.de/auth/realms/dsmz/protocol/openid-connect/token",
+        {
+          method: "POST",
+          headers: {
+            "content-type": "application/x-www-form-urlencoded"
+          },
+          body: "username=myUsername&password=myPassword&client_id=api.bacdive.public&grant_type=password&code=&redirect_uri=&scope=openid"
+        }
+      )
+    ).text()
+})
+)}
+
+function _110(response){return(
+response
+)}
+
+function _111(md){return(
+md`## Getting the position of a hover over`
+)}
+
+function _pos(Plot,penguins){return(
+Plot.plot({
+  marks: [
+    Plot.dot(
+      penguins,
+      Plot.pointer({
+        x: "culmen_length_mm",
+        y: "culmen_depth_mm",
+        fill: "red",
+        r: 8
+      })
+    ),
+    Plot.dot(penguins, { x: "culmen_length_mm", y: "culmen_depth_mm" })
+  ]
+})
+)}
+
+function _113(pos){return(
+pos
+)}
+
+function _114(d3){return(
+d3.csv(
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/pub?gid=2033815436&single=true&output=csv"
+)
+)}
+
+async function _115(){return(
+(
+  await fetch(
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/pub?gid=2033815436&single=true&output=csv",
+    {
+      method: "HEAD"
+    }
+  )
+).headers.get("content-length")
+)}
+
+function _faster(d3)
+{
+  const sheetId = "1Z7Dja43FepxVOJc5_pMdP0etERM6h0BPAWT74zjdbno";
+  const sheetName = "Sheet1"; // Change if your sheet name is different
+  const url = `https://docs.google.com/spreadsheets/d/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+
+  return d3.csv(url);
+}
+
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -671,5 +852,23 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["cell_c"], _97);
   main.variable(observer()).define(["cell_c"], _98);
   main.variable(observer("updater_first_option_using_cell_b")).define("updater_first_option_using_cell_b", ["viewof cell_b","viewof cell_c","Event"], _updater_first_option_using_cell_b);
+  main.variable(observer()).define(["md"], _101);
+  main.variable(observer("cells")).define("cells", _cells);
+  main.variable(observer()).define(["Plot","cells"], _103);
+  main.variable(observer()).define(["md"], _104);
+  main.variable(observer("plot_grid")).define("plot_grid", ["Plot","cells"], _plot_grid);
+  main.variable(observer("x_scale")).define("x_scale", ["plot_grid"], _x_scale);
+  main.variable(observer()).define(["x_scale"], _107);
+  main.variable(observer()).define(["md"], _108);
+  main.variable(observer("viewof response")).define("viewof response", ["Inputs"], _response);
+  main.variable(observer("response")).define("response", ["Generators", "viewof response"], (G, _) => G.input(_));
+  main.variable(observer()).define(["response"], _110);
+  main.variable(observer()).define(["md"], _111);
+  main.variable(observer("viewof pos")).define("viewof pos", ["Plot","penguins"], _pos);
+  main.variable(observer("pos")).define("pos", ["Generators", "viewof pos"], (G, _) => G.input(_));
+  main.variable(observer()).define(["pos"], _113);
+  main.variable(observer()).define(["d3"], _114);
+  main.variable(observer()).define(_115);
+  main.variable(observer("faster")).define("faster", ["d3"], _faster);
   return main;
 }
