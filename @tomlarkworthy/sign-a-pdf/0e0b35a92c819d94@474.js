@@ -19,7 +19,7 @@ The following video demonstrates its use during development of a webhook. Note a
 In other words, __*flowQueue* provides dataflow programming with a functional interface__. Consider the following
 
 ~~~js
-aysnc doWork(arg) {
+async doWork(arg) {
   const r1 = await step1(arg)
   const r2 = await step2(r1);
   return r2;
@@ -198,7 +198,6 @@ flowQueue({ timeout_ms: 100 })
 
 function _maybeReplyReplier(maybeReply,$0)
 {
-  debugger;
   if (maybeReply === "reply") $0.resolve("reply");
 }
 
@@ -206,10 +205,8 @@ function _maybeReplyReplier(maybeReply,$0)
 function _12(suite,$0,testing){return(
 suite.test("Unreplied queues recover after timeout_ms", async (done) => {
   try {
-    debugger;
     await $0.send("no reply");
   } catch (err) {
-    debugger;
     const result = await $0.send("reply");
     testing.expect(result).toEqual("reply");
     done();
