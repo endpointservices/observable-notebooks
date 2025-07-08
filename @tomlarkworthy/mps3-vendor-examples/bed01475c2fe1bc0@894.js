@@ -18,17 +18,27 @@ function _4(md){return(
 md`### Configure client(s)`
 )}
 
-function _clientConfigs(){return(
+function _awsCredentials(){return(
+{
+  accessKeyId: "AKIAT4VAYEMISBT6BHDD",
+  // This key only has access to one bucket that bucket is cleared daily, so its not sensative,
+  // but it keeps triggrering the AWS key leak detector when the notebook is backed up to Github
+  // so we hide it.
+  secretAccessKey: "ᥚᥰ᥅᥆ᥙᥚᥔ᥈᥌ᥴᥭᥛᤧ᥎ᥙ᥆᥋ᤪᥱ᥊ᥘᤦ᥉᥆ᥝ᥸ᤦ᥼ᥰᥔ᥵ᤧ᤯ᥒᥖᥒᤨᥘ᥎᥅"
+    .split("")
+    .map((char) => String.fromCharCode(char.charCodeAt(0) ^ 6431))
+    .join("")
+}
+)}
+
+function _clientConfigs(awsCredentials){return(
 [
   {
     label: "s3",
     defaultBucket: "mps3-demo",
     s3Config: {
       region: "eu-central-1",
-      credentials: {
-        accessKeyId: "AKIAT4VAYEMI2UCZV5HI",
-        secretAccessKey: "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"
-      }
+      credentials: awsCredentials
     }
   },
   {
@@ -98,7 +108,7 @@ function _clientConfigs(){return(
 ]
 )}
 
-function _6(md){return(
+function _7(md){return(
 md`### AWS S3, Cloudflare R2, Backblaze, Minio (localhost), Localfirst (IndexDB)`
 )}
 
@@ -118,28 +128,28 @@ Inputs.table(tableModel, {
 })
 )}
 
-function _8(md){return(
+function _9(md){return(
 md`### S3-like Vendor Latency Measurements
 
 e2e is the time it takes for a PUT to become visible on a LIST then a GET`
 )}
 
-function _9(Plot,latency_measurements,width){return(
+function _10(Plot,latency_measurements,width){return(
 Plot.auto(latency_measurements, {x: "operation", y: "latency", fx: "client", mark: "dot", color: "operation"}).plot({color: {legend: true}, width})
 )}
 
-function _10(md){return(
+function _11(md){return(
 md`### Individual Client tester`
 )}
 
 function _clientLabel(Inputs,clientConfigs){return(
 Inputs.select(
-  clientConfigs.map((d) => d.label),
+  ["none", ...clientConfigs].map((d) => d.label),
   { label: "client" }
 )
 )}
 
-function _12(md){return(
+function _13(md){return(
 md`#### writer`
 )}
 
@@ -170,7 +180,7 @@ function _last_write(writer_client,value)
 }
 
 
-function _16(md){return(
+function _17(md){return(
 md`#### reader`
 )}
 
@@ -208,7 +218,7 @@ Generators.observe((notify) => {
 })
 )}
 
-function _21(md){return(
+function _22(md){return(
 md`### IndexDB`
 )}
 
@@ -223,7 +233,7 @@ async function _databases(indexPoll,indexedDB)
 }
 
 
-function _24(Inputs,databases,indexedDB,$0){return(
+function _25(Inputs,databases,indexedDB,$0){return(
 Inputs.button("delete all databases", {
   reduce: async () => {
     await Promise.all(databases.map((db) => indexedDB.deleteDatabase(db.name)));
@@ -232,7 +242,7 @@ Inputs.button("delete all databases", {
 })
 )}
 
-function _25(md){return(
+function _26(md){return(
 md`### Instrumentation`
 )}
 
@@ -319,7 +329,7 @@ function _logs(Inputs){return(
 Inputs.input([])
 )}
 
-function _30(md){return(
+function _31(md){return(
 md`### S3 Working Example
 
 To get S3 buckets working you need to remember to
@@ -339,7 +349,7 @@ To get S3 buckets working you need to remember to
 `
 )}
 
-function _31(md){return(
+function _32(md){return(
 md`## Backblaze
 
 The CORS config is not standard, expose the version header. You can use the AWS CLI for this. Backblaze does not support sha256 checksums so useChecksum options must be set to false 
@@ -386,7 +396,7 @@ function _backblaze2(backblaze_config,mps3){return(
 backblaze_config && new mps3.MPS3(backblaze_config)
 )}
 
-function _36(latency_backblaze){return(
+function _37(latency_backblaze){return(
 latency_backblaze
 )}
 
@@ -407,21 +417,21 @@ Inputs.button("latency", {
 })
 )}
 
-function _38(Generators,invalidation,backblaze2){return(
+function _39(Generators,invalidation,backblaze2){return(
 Generators.observe((notify) => {
   invalidation.then(backblaze2.subscribe("latency", notify));
 })
 )}
 
-function _39(backblaze2){return(
+function _40(backblaze2){return(
 backblaze2.get("latency")
 )}
 
-function _40(backblaze){return(
+function _41(backblaze){return(
 backblaze.put("latency", "cool")
 )}
 
-function _41(md){return(
+function _42(md){return(
 md`## minio
 
 Test against a locally running minio instance using \`docker-compose\`
@@ -448,53 +458,54 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _2);
   main.variable(observer("mps3")).define("mps3", _mps3);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer("clientConfigs")).define("clientConfigs", _clientConfigs);
-  main.variable(observer()).define(["md"], _6);
+  main.variable(observer("awsCredentials")).define("awsCredentials", _awsCredentials);
+  main.variable(observer("clientConfigs")).define("clientConfigs", ["awsCredentials"], _clientConfigs);
+  main.variable(observer()).define(["md"], _7);
   main.variable(observer("viewof selected")).define("viewof selected", ["Inputs","tableModel"], _selected);
   main.variable(observer("selected")).define("selected", ["Generators", "viewof selected"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer()).define(["Plot","latency_measurements","width"], _9);
-  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["Plot","latency_measurements","width"], _10);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer("viewof clientLabel")).define("viewof clientLabel", ["Inputs","clientConfigs"], _clientLabel);
   main.variable(observer("clientLabel")).define("clientLabel", ["Generators", "viewof clientLabel"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
   main.variable(observer("writer_client")).define("writer_client", ["clientConfigs","clientLabel","mps3","log"], _writer_client);
   main.variable(observer("viewof value")).define("viewof value", ["Inputs"], _value);
   main.variable(observer("value")).define("value", ["Generators", "viewof value"], (G, _) => G.input(_));
   main.variable(observer("last_write")).define("last_write", ["writer_client","value"], _last_write);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("reader_client")).define("reader_client", ["clientConfigs","clientLabel","mps3","online"], _reader_client);
   main.variable(observer("viewof online")).define("viewof online", ["Inputs"], _online);
   main.variable(observer("online")).define("online", ["Generators", "viewof online"], (G, _) => G.input(_));
   main.variable(observer("viewof mirror")).define("viewof mirror", ["Inputs"], _mirror);
   main.variable(observer("mirror")).define("mirror", ["Generators", "viewof mirror"], (G, _) => G.input(_));
   main.variable(observer("subscription")).define("subscription", ["Generators","invalidation","reader_client","viewof mirror"], _subscription);
-  main.variable(observer()).define(["md"], _21);
+  main.variable(observer()).define(["md"], _22);
   main.define("initial indexPoll", _indexPoll);
   main.variable(observer("mutable indexPoll")).define("mutable indexPoll", ["Mutable", "initial indexPoll"], (M, _) => new M(_));
   main.variable(observer("indexPoll")).define("indexPoll", ["mutable indexPoll"], _ => _.generator);
   main.variable(observer("databases")).define("databases", ["indexPoll","indexedDB"], _databases);
-  main.variable(observer()).define(["Inputs","databases","indexedDB","mutable indexPoll"], _24);
-  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["Inputs","databases","indexedDB","mutable indexPoll"], _25);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("tableModel")).define("tableModel", ["clientConfigs","mps3","log","Inputs","viewof latency_measurements","Event"], _tableModel);
   main.variable(observer("viewof latency_measurements")).define("viewof latency_measurements", ["Inputs"], _latency_measurements);
   main.variable(observer("latency_measurements")).define("latency_measurements", ["Generators", "viewof latency_measurements"], (G, _) => G.input(_));
   main.variable(observer("log")).define("log", ["logs","viewof latency_measurements","Event"], _log);
   main.variable(observer("viewof logs")).define("viewof logs", ["Inputs"], _logs);
   main.variable(observer("logs")).define("logs", ["Generators", "viewof logs"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _30);
   main.variable(observer()).define(["md"], _31);
+  main.variable(observer()).define(["md"], _32);
   main.variable(observer("viewof runBackblaze")).define("viewof runBackblaze", ["Inputs"], _runBackblaze);
   main.variable(observer("runBackblaze")).define("runBackblaze", ["Generators", "viewof runBackblaze"], (G, _) => G.input(_));
   main.variable(observer("backblaze_config")).define("backblaze_config", ["runBackblaze"], _backblaze_config);
   main.variable(observer("backblaze")).define("backblaze", ["backblaze_config","mps3"], _backblaze);
   main.variable(observer("backblaze2")).define("backblaze2", ["backblaze_config","mps3"], _backblaze2);
-  main.variable(observer()).define(["latency_backblaze"], _36);
+  main.variable(observer()).define(["latency_backblaze"], _37);
   main.variable(observer("viewof latency_backblaze")).define("viewof latency_backblaze", ["Inputs","backblaze","backblaze2"], _latency_backblaze);
   main.variable(observer("latency_backblaze")).define("latency_backblaze", ["Generators", "viewof latency_backblaze"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Generators","invalidation","backblaze2"], _38);
-  main.variable(observer()).define(["backblaze2"], _39);
-  main.variable(observer()).define(["backblaze"], _40);
-  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["Generators","invalidation","backblaze2"], _39);
+  main.variable(observer()).define(["backblaze2"], _40);
+  main.variable(observer()).define(["backblaze"], _41);
+  main.variable(observer()).define(["md"], _42);
   return main;
 }

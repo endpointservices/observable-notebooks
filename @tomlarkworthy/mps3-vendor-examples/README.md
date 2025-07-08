@@ -1,6 +1,6 @@
 # mps3 - Offline-first DB over S3-compatible storage
 
-https://observablehq.com/@tomlarkworthy/mps3-vendor-examples@853
+https://observablehq.com/@tomlarkworthy/mps3-vendor-examples@894
 
 View this notebook in your browser by running a web server in this folder. For
 example:
