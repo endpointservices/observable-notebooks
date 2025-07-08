@@ -385,8 +385,8 @@ async (action, state, options, feedback_callback) => {
 
   const { source, report } = response;
 
-  const fileToId = report.reduce((acc, row) => {
-    acc[row.file] = row.id;
+  const fileByName = report.reduce((acc, f) => {
+    acc[f.file] = f;
     return acc;
   }, {});
   feedback_callback(
@@ -398,7 +398,8 @@ async (action, state, options, feedback_callback) => {
           columns: ["file", "size"],
           width: { file: "80%", size: "20%" },
           format: {
-            file: (f) => html`<a target="_blank" href=${fileToId[f]}>${f}`
+            file: (f) =>
+              html`<a target="_blank" href=${fileByName[f].id}>${f} (${fileByName[f].module})`
           },
           sort: "size",
           reverse: true
@@ -1133,7 +1134,8 @@ function _report(DOMParser,book)
         .querySelectorAll("script")
     ].map((script) => ({
       ...(script.getAttribute("file") && {
-        file: script.getAttribute("file")
+        file: script.getAttribute("file"),
+        module: script.getAttribute("module")
       }),
       type: script.type,
       size: script.text.length,
@@ -1142,6 +1144,7 @@ function _report(DOMParser,book)
   } catch (err) {
     report = err;
   }
+  debugger;
 
   console.log("report", report);
   return report;
