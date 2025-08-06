@@ -1,13 +1,13 @@
-import define1 from "./98f34e974bb2e4bc@468.js";
-import define2 from "./e3a019069a130d79@5805.js";
+import define1 from "./98f34e974bb2e4bc@659.js";
+import define2 from "./e3a019069a130d79@6721.js";
 import define3 from "./5845e1ca935fea5a@225.js";
 import define4 from "./048a17a165be198d@271.js";
-import define5 from "./0e0b35a92c819d94@471.js";
+import define5 from "./0e0b35a92c819d94@474.js";
 import define6 from "./1f41fef8b019cf4e@94.js";
 import define7 from "./f92778131fd76559@1208.js";
 import define8 from "./04318fffe4df9d1e@2463.js";
 import define9 from "./9ed286bafcced0c3@3013.js";
-import define10 from "./db42ae70222a8b08@646.js";
+import define10 from "./db42ae70222a8b08@1033.js";
 
 function _1(md){return(
 md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
@@ -200,7 +200,11 @@ function _prompt(whisperInput,OPENAI_API_KEY,view,cautious,Inputs,invalidation)
 }
 
 
-function _16(Inputs,cellsToClipboard,suggestion){return(
+function _16(formatted_instruction){return(
+formatted_instruction
+)}
+
+function _17(Inputs,cellsToClipboard,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => cellsToClipboard([suggestion])
 })
@@ -215,7 +219,7 @@ Inputs.textarea({
 })
 )}
 
-function _18(md){return(
+function _19(md){return(
 md`## Last Chat context`
 )}
 
@@ -239,7 +243,7 @@ Inputs.table(
 )
 )}
 
-function _20(md){return(
+function _21(md){return(
 md`### AI Settings`
 )}
 
@@ -267,7 +271,10 @@ function _models(){return(
   "o1",
   "o1-mini",
   "o1-preview",
-  "o3-mini"
+  "o3",
+  "o3-mini",
+  "o4-mini",
+  "o4-mini-high"
 ]
 )}
 
@@ -426,7 +433,7 @@ md\`Why did the chicken cross the road?... to get to the other side\`
 `
 )}
 
-function _27(md){return(
+function _28(md){return(
 md`## Roboco-op Implementation below`
 )}
 
@@ -486,7 +493,7 @@ async function _on_prompt(extension_context,prompt,$0,Event,$1,$2)
 }
 
 
-function _33(md){return(
+function _34(md){return(
 md`## Extensions`
 )}
 
@@ -515,7 +522,7 @@ async ({ question }) => {
 }
 )}
 
-function _37(md){return(
+function _38(md){return(
 md`### Context Construction`
 )}
 
@@ -525,7 +532,7 @@ Inputs.button("test context", {
 })
 )}
 
-function _39(testContext){return(
+function _40(testContext){return(
 testContext
 )}
 
@@ -634,7 +641,7 @@ is an image
   )
 )}
 
-function _48(md){return(
+function _49(md){return(
 md`### Cell Analysis`
 )}
 
@@ -702,11 +709,11 @@ function _history(Inputs){return(
 Inputs.input([])
 )}
 
-function _57(md){return(
+function _58(md){return(
 md`---`
 )}
 
-function _58(md){return(
+function _59(md){return(
 md`## LLM API Call`
 )}
 
@@ -714,7 +721,7 @@ function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 180000 })
 )}
 
-function _60(ask){return(
+function _61(ask){return(
 console.log("Ask", ask)
 )}
 
@@ -785,7 +792,8 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
   } else if (
     model == "o1-mini" ||
     model == "o1-preview" ||
-    model == "o3-mini"
+    model == "o3-mini" ||
+    model.startsWith("o4")
   ) {
     return {
       type: "chat",
@@ -915,7 +923,7 @@ function _api_call_response($0,instruction){return(
 $0.resolve(instruction) && instruction
 )}
 
-function _71(md){return(
+function _72(md){return(
 md`---`
 )}
 
@@ -940,13 +948,14 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _14);
   main.variable(observer("viewof prompt")).define("viewof prompt", ["whisperInput","OPENAI_API_KEY","view","cautious","Inputs","invalidation"], _prompt);
   main.variable(observer("prompt")).define("prompt", ["Generators", "viewof prompt"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _16);
+  main.variable(observer()).define(["formatted_instruction"], _16);
+  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _17);
   main.variable(observer("viewof suggestion")).define("viewof suggestion", ["Inputs","formatted_instruction"], _suggestion);
   main.variable(observer("suggestion")).define("suggestion", ["Generators", "viewof suggestion"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _18);
+  main.variable(observer()).define(["md"], _19);
   main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","extension_context_previous","mutable context","html","inspect"], _context_viz);
   main.variable(observer("context_viz")).define("context_viz", ["Generators", "viewof context_viz"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("models")).define("models", _models);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
@@ -957,22 +966,22 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof settings")).define("viewof settings", ["Inputs","view","models","localStorageView"], _settings);
   main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
   main.variable(observer("system_prompt")).define("system_prompt", _system_prompt);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("background_tasks")).define("background_tasks", ["submit_summary","find_context_extensions","on_prompt","context_updater","api_call_response"], _background_tasks);
   main.variable(observer("viewof user_variable_filters")).define("viewof user_variable_filters", ["Inputs","localStorageView"], _user_variable_filters);
   main.variable(observer("user_variable_filters")).define("user_variable_filters", ["Generators", "viewof user_variable_filters"], (G, _) => G.input(_));
   main.variable(observer("formatted_instruction")).define("formatted_instruction", ["response"], _formatted_instruction);
   main.variable(observer("response")).define("response", ["on_prompt"], _response);
   main.variable(observer("on_prompt")).define("on_prompt", ["extension_context","prompt","viewof extension_context_previous","Event","mutable context","viewof ask"], _on_prompt);
-  main.variable(observer()).define(["md"], _33);
+  main.variable(observer()).define(["md"], _34);
   main.variable(observer("viewof context_extensions")).define("viewof context_extensions", ["Inputs"], _context_extensions);
   main.variable(observer("context_extensions")).define("context_extensions", ["Generators", "viewof context_extensions"], (G, _) => G.input(_));
   main.variable(observer("find_context_extensions")).define("find_context_extensions", ["viewof context_extensions","code"], _find_context_extensions);
   main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _38);
   main.variable(observer("viewof testContext")).define("viewof testContext", ["Inputs","viewof contextRequest"], _testContext);
   main.variable(observer("testContext")).define("testContext", ["Generators", "viewof testContext"], (G, _) => G.input(_));
-  main.variable(observer()).define(["testContext"], _39);
+  main.variable(observer()).define(["testContext"], _40);
   main.variable(observer("viewof contextRequest")).define("viewof contextRequest", ["flowQueue"], _contextRequest);
   main.variable(observer("contextRequest")).define("contextRequest", ["Generators", "viewof contextRequest"], (G, _) => G.input(_));
   main.variable(observer("modules")).define("modules", ["contextRequest","moduleMap","runtime"], _modules);
@@ -985,7 +994,7 @@ export default function define(runtime, observer) {
   main.variable(observer("extension_context_previous")).define("extension_context_previous", ["Generators", "viewof extension_context_previous"], (G, _) => G.input(_));
   main.variable(observer("unprompted_context")).define("unprompted_context", ["code"], _unprompted_context);
   main.variable(observer("highlight_context")).define("highlight_context", ["code"], _highlight_context);
-  main.variable(observer()).define(["md"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("code")).define("code", ["mainVariables","cellMap","main","decompile"], _code);
   main.variable(observer("selected_variables")).define("selected_variables", ["mainVariables","excludes"], _selected_variables);
   main.variable(observer("excludes")).define("excludes", ["descendants","lookupVariable","thisModule"], _excludes);
@@ -996,11 +1005,11 @@ export default function define(runtime, observer) {
   main.variable(observer("tag")).define("tag", _tag);
   main.variable(observer("viewof history")).define("viewof history", ["Inputs"], _history);
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _57);
   main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["md"], _59);
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ask"], _60);
+  main.variable(observer()).define(["ask"], _61);
   main.variable(observer("prompt_messages")).define("prompt_messages", ["viewof settings","system_prompt","ask"], _prompt_messages);
   main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages"], _token_analytics);
   main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["token_analytics","d3","settings"], _trimmed_prompt);
@@ -1011,7 +1020,7 @@ export default function define(runtime, observer) {
   main.variable(observer("content")).define("content", ["process","openAiResponse"], _content);
   main.variable(observer("process")).define("process", ["domParser"], _process);
   main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
-  main.variable(observer()).define(["md"], _71);
+  main.variable(observer()).define(["md"], _72);
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("variables", child1);

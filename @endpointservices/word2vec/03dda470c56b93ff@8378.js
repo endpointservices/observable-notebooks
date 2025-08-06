@@ -1,14 +1,16 @@
-import define1 from "./09fdee029150048c@414.js";
+import define1 from "./09fdee029150048c@443.js";
 import define2 from "./57d79353bac56631@44.js";
-import define3 from "./0e0b35a92c819d94@471.js";
-import define4 from "./e1c39d41e8e944b0@939.js";
-import define5 from "./e3a019069a130d79@5805.js";
+import define3 from "./0e0b35a92c819d94@474.js";
+import define4 from "./a89ea9f0ad8c6226@1403.js";
+import define5 from "./e3a019069a130d79@6721.js";
 import define6 from "./f92778131fd76559@1208.js";
 import define7 from "./cdc303fcc82a630f@262.js";
 import define8 from "./048a17a165be198d@271.js";
 import define9 from "./54df2436d8585ee6@24.js";
 import define10 from "./56b204c6d7cdb801@32.js";
-import define11 from "./db42ae70222a8b08@646.js";
+import define11 from "./db42ae70222a8b08@1033.js";
+import define12 from "./98f34e974bb2e4bc@659.js";
+import define13 from "./db80e603859226c1@23.js";
 
 function _1(md){return(
 md`# Exporter: Single File Serializer
@@ -26,9 +28,15 @@ Serialize literate computational notebooks with their dependancies into single f
 `
 )}
 
-function _parameters(Inputs,exporter,default_style,$0,localStorageView){return(
+function _parameters(Inputs,exporter,default_style,$0,Event,localStorageView){return(
 Inputs.bind(
-  exporter({ style: default_style, output: (out) => ($0.value = out) }),
+  exporter({
+    style: default_style,
+    output: (out) => {
+      $0.value = out;
+      $0.dispatchEvent(new Event("input"));
+    }
+  }),
   localStorageView(`exporter-${document.baseURI}`, {
     json: true,
     defaultValue: exporter().value
@@ -69,6 +77,14 @@ viewof parameters = Inputs.bind(
     defaultValue: exporter().value
   })
 )
+
+\`\`\`
+
+
+If you want to export without a UI, use the function \`exportToHTML\`, see the [example](https://observablehq.com/@tomlarkworthy/export-to-html-example)
+
+\`\`\`js
+import {exportToHTML } from '@tomlarkworthy/exporter'
 \`\`\``
 )}
 
@@ -82,8 +98,7 @@ The HTML file is split into several \`<script>\` blocks that have different purp
 File attachments are static assets encoded as a base64 strings with some metadata to understand the content-type and their URL.
 
 ~~~html
-<script type="lope-file"            
-        id="https://static.observableusercontent.com/files/..."          
+<script type="lope-file"       
         file="runtime.js.gz"
         module="@tomlarkworthy/exporter"
         mime="application/gzip">
@@ -139,9 +154,7 @@ function _7(md){return(
 md`### TODO
 - Bug: Every recursive cycle more imports cells are created
 - Improve: Set S3 URL in arg
-- Improve: UI could be better sized on mobile
 - Improve: Refactor the bootloader so its not an inline string. (would avoids some escaping issues)
-- Improve: render final template in iframe first? Could shorten the debug cycle
 
 ### Known Issues
   - Doesn't work for \`with\` clauses in imports. Fixing is not a priority, they are complex.`
@@ -151,26 +164,26 @@ function _example(exporter){return(
 exporter()
 )}
 
-function _exporter(actionHandler,default_style,main,forcePeek,variable,domView,view,diskImgUrl,Inputs,createShowable,top120List,reportValidity,invalidation,bindOneWay){return(
+function _exporter(actionHandler,default_style,keepalive,exporter_module,variable,domView,exportState,view,diskImgUrl,Inputs,createShowable,top120List,reportValidity,invalidation,bindOneWay){return(
 ({
   handler = actionHandler,
   style = default_style,
   output = (out) => {},
   notebook_url = "",
-  headless = false,
+  head,
+  headless,
   debug = false
 } = {}) => {
-  // Force computation of persisted state
-  [...main._runtime._variables]
-    .filter((v) => v._name == "futureExportedState")
-    .map((v) => forcePeek(v));
+  keepalive(exporter_module, "futureExportedState");
 
   const handlerVar = variable(handler);
   const feedback = domView();
   const options = {
     style,
     output,
-    headless,
+    head: head === undefined ? exportState?.options?.head : head,
+    headless:
+      headless === undefined ? exportState?.options?.headless : headless,
     debug
   };
   const spinner = async (...args) => {
@@ -362,17 +375,12 @@ function _exporter(actionHandler,default_style,main,forcePeek,variable,domView,v
 }
 )}
 
-function _actionHandler(Inputs,main,forcePeek,getSourceModule,$0,view,html,location,getCompactISODate,AwsClient,ReadableStream,CompressionStream,Response,md){return(
+function _actionHandler(Inputs,getSourceModule,exportToHTML,view,html,location,getCompactISODate,AwsClient,ReadableStream,CompressionStream,Response,md){return(
 async (action, state, options, feedback_callback) => {
   feedback_callback(Inputs.textarea({ value: `Generating source...\n` }));
 
-  // Force observation of response
-  [...main._runtime._variables]
-    .filter((v) => v._name == "tomlarkworthy_exporter_task")
-    .map((v) => forcePeek(v));
-
   const { notebook, module } = await getSourceModule(state);
-  const response = await $0.send({
+  const response = await exportToHTML({
     notebook,
     module,
     options
@@ -384,8 +392,8 @@ async (action, state, options, feedback_callback) => {
 
   const { source, report } = response;
 
-  const fileToId = report.reduce((acc, row) => {
-    acc[row.file] = row.id;
+  const fileByName = report.reduce((acc, f) => {
+    acc[f.file] = f;
     return acc;
   }, {});
   feedback_callback(
@@ -397,7 +405,8 @@ async (action, state, options, feedback_callback) => {
           columns: ["file", "size"],
           width: { file: "80%", size: "20%" },
           format: {
-            file: (f) => html`<a target="_blank" href=${fileToId[f]}>${f}`
+            file: (f) =>
+              html`<a target="_blank" href=${fileByName[f].id}>${f} (${fileByName[f].module})`
           },
           sort: "size",
           reverse: true
@@ -464,6 +473,25 @@ async (action, state, options, feedback_callback) => {
 }
 )}
 
+function _exportToHTML(main,keepalive,exporter_module,$0){return(
+async function exportToHTML({
+  notebook, // String, name of module e.g. "@tomlarkworthy/exporter"
+  module = main, // Module, main module reference
+  modules, // Optional Map<String, Module> additional modules to add e.g. "@tomlarkworthy/agent" -> Module
+  options // Object, export options, e.g. headless
+} = {}) {
+  // Force observation of response
+  keepalive(exporter_module, "tomlarkworthy_exporter_task");
+  const response = await $0.send({
+    notebook,
+    module,
+    modules,
+    options
+  });
+  return response;
+}
+)}
+
 function _getSourceModule(notebook_name,main){return(
 async (state) => {
   if (state.source == "this notebook")
@@ -527,134 +555,126 @@ function _reportValidity(){return(
 
 function _top120List(){return(
 [
-  ...[
-    "https://observablehq.com/@jashkenas/inputs",
-    "https://observablehq.com/@d3/gallery",
-    "https://observablehq.com/@d3/learn-d3",
-    "https://observablehq.com/@makio135/creative-coding",
-    "https://observablehq.com/@observablehq/module-require-debugger",
-    "https://observablehq.com/@d3/zoomable-sunburst",
-    "https://observablehq.com/@observablehq/plot",
-    "https://observablehq.com/@tmcw/enigma-machine",
-    "https://observablehq.com/@d3/force-directed-graph-component",
-    "https://observablehq.com/@d3/bar-chart-race-explained",
-    "https://observablehq.com/@observablehq/data-wrangler",
-    "https://observablehq.com/@d3/collapsible-tree",
-    "https://observablehq.com/@sxywu/introduction-to-svg-and-d3-js",
-    "https://observablehq.com/@d3/sankey-component",
-    "https://observablehq.com/@d3/zoomable-circle-packing",
-    "https://observablehq.com/@d3/selection-join",
-    "https://observablehq.com/@bstaats/graph-visualization-introduction",
-    "https://observablehq.com/@d3/color-legend",
-    "https://observablehq.com/@uwdata/introducing-arquero",
-    "https://observablehq.com/@mbostock/10-years-of-open-source-visualization",
-    "https://observablehq.com/@nitaku/tangled-tree-visualization-ii",
-    "https://observablehq.com/@makio135/give-me-colors",
-    "https://observablehq.com/@johnburnmurdoch/bar-chart-race-the-most-populous-cities-in-the-world",
-    "https://observablehq.com/@d3/color-schemes",
-    "https://observablehq.com/@tezzutezzu/world-history-timeline",
-    "https://observablehq.com/@d3/calendar",
-    "https://observablehq.com/@observablehq/a-taste-of-observable",
-    "https://observablehq.com/@d3/bar-chart-race",
-    "https://observablehq.com/@mourner/martin-real-time-rtin-terrain-mesh",
-    "https://observablehq.com/@uwdata/introduction-to-vega-lite"
-  ],
-  ...[
-    "https://observablehq.com/@mbostock/voronoi-stippling",
-    "https://observablehq.com/@ben-tanen/a-tutorial-to-using-d3-force-from-someone-who-just-learned-ho",
-    "https://observablehq.com/@d3/hierarchical-edge-bundling",
-    "https://observablehq.com/@observablehq/introduction-to-data",
-    "https://observablehq.com/@harrystevens/directly-labelling-lines",
-    "https://observablehq.com/@observablehq/summary-table",
-    "https://observablehq.com/@observablehq/plot-cheatsheets",
-    "https://observablehq.com/@tomshanley/cheysson-color-palettes",
-    "https://observablehq.com/@tophtucker/inferring-chart-type-from-autocorrelation-and-other-evils",
-    "https://observablehq.com/@mitvis/introduction-to-d3",
-    "https://observablehq.com/@veltman/watercolor",
-    "https://observablehq.com/@veltman/centerline-labeling",
-    "https://observablehq.com/@mbostock/scrubber",
-    "https://observablehq.com/@observablehq/electoral-college-decision-tree",
-    "https://observablehq.com/@d3/tree-component",
-    "https://observablehq.com/@d3/radial-tree-component",
-    "https://observablehq.com/@d3/world-tour",
-    "https://observablehq.com/@observablehq/introduction-to-generators",
-    "https://observablehq.com/@yurivish/peak-detection",
-    "https://observablehq.com/@mkfreeman/plot-tooltip",
-    "https://observablehq.com/@aboutaaron/racial-demographic-dot-density-map",
-    "https://observablehq.com/@mbostock/methods-of-comparison-compared",
-    "https://observablehq.com/@rreusser/gpgpu-boids",
-    "https://observablehq.com/@rreusser/2d-n-body-gravity-with-poissons-equation",
-    "https://observablehq.com/@bumbeishvili/data-driven-range-sliders",
-    "https://observablehq.com/@observablehq/introducing-visual-dataflow",
-    "https://observablehq.com/@observablehq/vega-lite",
-    "https://observablehq.com/@observablehq/observable-for-jupyter-users",
-    "https://observablehq.com/@observablehq/how-observable-runs",
-    "https://observablehq.com/@unkleho/introducing-d3-render-truly-declarative-and-reusable-d3"
-  ],
-  ...[
-    "https://observablehq.com/@vega/a-guide-to-guides-axes-legends-in-vega",
-    "https://observablehq.com/@bartok32/diy-inputs",
-    "https://observablehq.com/@mbostock/polar-clock",
-    "https://observablehq.com/@dakoop/learn-js-data",
-    "https://observablehq.com/@mbostock/manipulating-flat-arrays",
-    "https://observablehq.com/@uwdata/an-illustrated-guide-to-arquero-verbs",
-    "https://observablehq.com/@daformat/rounding-polygon-corners",
-    "https://observablehq.com/@yurivish/seasonal-spirals",
-    "https://observablehq.com/@emamd/animating-lots-and-lots-of-circles-with-regl-js",
-    "https://observablehq.com/@uwdata/data-visualization-curriculum",
-    "https://observablehq.com/@d3/d3-group",
-    "https://observablehq.com/@d3/tree-of-life",
-    "https://observablehq.com/@d3/arc-diagram",
-    "https://observablehq.com/@d3/choropleth",
-    "https://observablehq.com/@mattdzugan/generative-art-using-wind-turbine-data",
-    "https://observablehq.com/@jashkenas/handy-embed-code-generator",
-    "https://observablehq.com/@analyzer2004/plot-gallery",
-    "https://observablehq.com/@nsthorat/how-to-build-a-teachable-machine-with-tensorflow-js",
-    "https://observablehq.com/@d3/sunburst-component",
-    "https://observablehq.com/@tomlarkworthy/saas-tutorial",
-    "https://observablehq.com/@mbostock/the-wealth-health-of-nations",
-    "https://observablehq.com/@yy/covid-19-fatality-rate",
-    "https://observablehq.com/@bryangingechen/importing-data-from-google-spreadsheets-into-a-notebook-we",
-    "https://observablehq.com/@mbostock/slide",
-    "https://observablehq.com/@kerryrodden/sequences-sunburst",
-    "https://observablehq.com/@d3/zoom-to-bounding-box",
-    "https://observablehq.com/@ambassadors/interactive-plot-dashboard",
-    "https://observablehq.com/@sethpipho/fractal-tree",
-    "https://observablehq.com/@mbostock/saving-svg",
-    "https://observablehq.com/@analyzer2004/west-coast-weather-from-seattle-to-san-diego"
-  ],
-  ...[
-    "https://observablehq.com/@tmcw/tables",
-    "https://observablehq.com/@observablehq/introduction-to-serverless-notebooks",
-    "https://observablehq.com/@mootari/range-slider",
-    "https://observablehq.com/@d3/animated-treemap",
-    "https://observablehq.com/@d3/treemap-component",
-    "https://observablehq.com/@uwdata/interaction",
-    "https://observablehq.com/@hydrosquall/d3-annotation-with-d3-line-chart",
-    "https://observablehq.com/@jiazhewang/introduction-to-antv",
-    "https://observablehq.com/@d3/hierarchical-bar-chart",
-    "https://observablehq.com/@uwdata/data-types-graphical-marks-and-visual-encoding-channels",
-    "https://observablehq.com/@observablehq/why-use-a-radial-data-visualization",
-    "https://observablehq.com/@kerryrodden/introduction-to-text-analysis-with-tf-idf",
-    "https://observablehq.com/@uw-info474/javascript-data-wrangling",
-    "https://observablehq.com/@karimdouieb/try-to-impeach-this-challenge-accepted",
-    "https://observablehq.com/@observablehq/plot-gallery",
-    "https://observablehq.com/@carmen-tm/women-architects-i-didnt-hear-about",
-    "https://observablehq.com/@d3/versor-dragging",
-    "https://observablehq.com/@analyzer2004/timespiral",
-    "https://observablehq.com/@d3/brushable-scatterplot-matrix",
-    "https://observablehq.com/@observablehq/require",
-    "https://observablehq.com/@anjana/functional-javascript-first-steps",
-    "https://observablehq.com/@hamzaamjad/tiny-charts",
-    "https://observablehq.com/@observablehq/views",
-    "https://observablehq.com/@yurivish/quarantine-now",
-    "https://observablehq.com/@analyzer2004/performance-chart",
-    "https://observablehq.com/@freedmand/sounds",
-    "https://observablehq.com/@d3/bubble-chart-component",
-    "https://observablehq.com/@d3/mobile-patent-suits",
-    "https://observablehq.com/@observablehq/notebook-visualizer",
-    "https://observablehq.com/@d3/force-directed-tree"
-  ]
+  "https://observablehq.com/@jashkenas/inputs",
+  "https://observablehq.com/@d3/gallery",
+  "https://observablehq.com/@d3/learn-d3",
+  "https://observablehq.com/@makio135/creative-coding",
+  "https://observablehq.com/@observablehq/module-require-debugger",
+  "https://observablehq.com/@d3/zoomable-sunburst",
+  "https://observablehq.com/@observablehq/plot",
+  "https://observablehq.com/@tmcw/enigma-machine",
+  "https://observablehq.com/@d3/force-directed-graph-component",
+  "https://observablehq.com/@d3/bar-chart-race-explained",
+  "https://observablehq.com/@observablehq/data-wrangler",
+  "https://observablehq.com/@d3/collapsible-tree",
+  "https://observablehq.com/@sxywu/introduction-to-svg-and-d3-js",
+  "https://observablehq.com/@d3/sankey-component",
+  "https://observablehq.com/@d3/zoomable-circle-packing",
+  "https://observablehq.com/@d3/selection-join",
+  "https://observablehq.com/@bstaats/graph-visualization-introduction",
+  "https://observablehq.com/@d3/color-legend",
+  "https://observablehq.com/@uwdata/introducing-arquero",
+  "https://observablehq.com/@mbostock/10-years-of-open-source-visualization",
+  "https://observablehq.com/@nitaku/tangled-tree-visualization-ii",
+  "https://observablehq.com/@makio135/give-me-colors",
+  "https://observablehq.com/@johnburnmurdoch/bar-chart-race-the-most-populous-cities-in-the-world",
+  "https://observablehq.com/@d3/color-schemes",
+  "https://observablehq.com/@tezzutezzu/world-history-timeline",
+  "https://observablehq.com/@d3/calendar",
+  "https://observablehq.com/@observablehq/a-taste-of-observable",
+  "https://observablehq.com/@d3/bar-chart-race",
+  "https://observablehq.com/@mourner/martin-real-time-rtin-terrain-mesh",
+  "https://observablehq.com/@uwdata/introduction-to-vega-lite",
+  "https://observablehq.com/@mbostock/voronoi-stippling",
+  "https://observablehq.com/@ben-tanen/a-tutorial-to-using-d3-force-from-someone-who-just-learned-ho",
+  "https://observablehq.com/@d3/hierarchical-edge-bundling",
+  "https://observablehq.com/@observablehq/introduction-to-data",
+  "https://observablehq.com/@harrystevens/directly-labelling-lines",
+  "https://observablehq.com/@observablehq/summary-table",
+  "https://observablehq.com/@observablehq/plot-cheatsheets",
+  "https://observablehq.com/@tomshanley/cheysson-color-palettes",
+  "https://observablehq.com/@tophtucker/inferring-chart-type-from-autocorrelation-and-other-evils",
+  "https://observablehq.com/@mitvis/introduction-to-d3",
+  "https://observablehq.com/@veltman/watercolor",
+  "https://observablehq.com/@veltman/centerline-labeling",
+  "https://observablehq.com/@mbostock/scrubber",
+  "https://observablehq.com/@observablehq/electoral-college-decision-tree",
+  "https://observablehq.com/@d3/tree-component",
+  "https://observablehq.com/@d3/radial-tree-component",
+  "https://observablehq.com/@d3/world-tour",
+  "https://observablehq.com/@observablehq/introduction-to-generators",
+  "https://observablehq.com/@yurivish/peak-detection",
+  "https://observablehq.com/@mkfreeman/plot-tooltip",
+  "https://observablehq.com/@aboutaaron/racial-demographic-dot-density-map",
+  "https://observablehq.com/@mbostock/methods-of-comparison-compared",
+  "https://observablehq.com/@rreusser/gpgpu-boids",
+  "https://observablehq.com/@rreusser/2d-n-body-gravity-with-poissons-equation",
+  "https://observablehq.com/@bumbeishvili/data-driven-range-sliders",
+  "https://observablehq.com/@observablehq/introducing-visual-dataflow",
+  "https://observablehq.com/@observablehq/vega-lite",
+  "https://observablehq.com/@observablehq/observable-for-jupyter-users",
+  "https://observablehq.com/@observablehq/how-observable-runs",
+  "https://observablehq.com/@unkleho/introducing-d3-render-truly-declarative-and-reusable-d3",
+  "https://observablehq.com/@vega/a-guide-to-guides-axes-legends-in-vega",
+  "https://observablehq.com/@bartok32/diy-inputs",
+  "https://observablehq.com/@mbostock/polar-clock",
+  "https://observablehq.com/@dakoop/learn-js-data",
+  "https://observablehq.com/@mbostock/manipulating-flat-arrays",
+  "https://observablehq.com/@uwdata/an-illustrated-guide-to-arquero-verbs",
+  "https://observablehq.com/@daformat/rounding-polygon-corners",
+  "https://observablehq.com/@yurivish/seasonal-spirals",
+  "https://observablehq.com/@emamd/animating-lots-and-lots-of-circles-with-regl-js",
+  "https://observablehq.com/@uwdata/data-visualization-curriculum",
+  "https://observablehq.com/@d3/d3-group",
+  "https://observablehq.com/@d3/tree-of-life",
+  "https://observablehq.com/@d3/arc-diagram",
+  "https://observablehq.com/@d3/choropleth",
+  "https://observablehq.com/@mattdzugan/generative-art-using-wind-turbine-data",
+  "https://observablehq.com/@jashkenas/handy-embed-code-generator",
+  "https://observablehq.com/@analyzer2004/plot-gallery",
+  "https://observablehq.com/@nsthorat/how-to-build-a-teachable-machine-with-tensorflow-js",
+  "https://observablehq.com/@d3/sunburst-component",
+  "https://observablehq.com/@tomlarkworthy/saas-tutorial",
+  "https://observablehq.com/@mbostock/the-wealth-health-of-nations",
+  "https://observablehq.com/@yy/covid-19-fatality-rate",
+  "https://observablehq.com/@bryangingechen/importing-data-from-google-spreadsheets-into-a-notebook-we",
+  "https://observablehq.com/@mbostock/slide",
+  "https://observablehq.com/@kerryrodden/sequences-sunburst",
+  "https://observablehq.com/@d3/zoom-to-bounding-box",
+  "https://observablehq.com/@ambassadors/interactive-plot-dashboard",
+  "https://observablehq.com/@sethpipho/fractal-tree",
+  "https://observablehq.com/@mbostock/saving-svg",
+  "https://observablehq.com/@analyzer2004/west-coast-weather-from-seattle-to-san-diego",
+  "https://observablehq.com/@tmcw/tables",
+  "https://observablehq.com/@observablehq/introduction-to-serverless-notebooks",
+  "https://observablehq.com/@mootari/range-slider",
+  "https://observablehq.com/@d3/animated-treemap",
+  "https://observablehq.com/@d3/treemap-component",
+  "https://observablehq.com/@uwdata/interaction",
+  "https://observablehq.com/@hydrosquall/d3-annotation-with-d3-line-chart",
+  "https://observablehq.com/@jiazhewang/introduction-to-antv",
+  "https://observablehq.com/@d3/hierarchical-bar-chart",
+  "https://observablehq.com/@uwdata/data-types-graphical-marks-and-visual-encoding-channels",
+  "https://observablehq.com/@observablehq/why-use-a-radial-data-visualization",
+  "https://observablehq.com/@kerryrodden/introduction-to-text-analysis-with-tf-idf",
+  "https://observablehq.com/@uw-info474/javascript-data-wrangling",
+  "https://observablehq.com/@karimdouieb/try-to-impeach-this-challenge-accepted",
+  "https://observablehq.com/@observablehq/plot-gallery",
+  "https://observablehq.com/@carmen-tm/women-architects-i-didnt-hear-about",
+  "https://observablehq.com/@d3/versor-dragging",
+  "https://observablehq.com/@analyzer2004/timespiral",
+  "https://observablehq.com/@d3/brushable-scatterplot-matrix",
+  "https://observablehq.com/@observablehq/require",
+  "https://observablehq.com/@anjana/functional-javascript-first-steps",
+  "https://observablehq.com/@hamzaamjad/tiny-charts",
+  "https://observablehq.com/@observablehq/views",
+  "https://observablehq.com/@yurivish/quarantine-now",
+  "https://observablehq.com/@analyzer2004/performance-chart",
+  "https://observablehq.com/@freedmand/sounds",
+  "https://observablehq.com/@d3/bubble-chart-component",
+  "https://observablehq.com/@d3/mobile-patent-suits",
+  "https://observablehq.com/@observablehq/notebook-visualizer",
+  "https://observablehq.com/@d3/force-directed-tree"
 ]
 )}
 
@@ -663,31 +683,39 @@ htl.html`<style>/* General layout with max-width */
   
 :root {
   --system-ui: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --code: code, "monospace";
 }
   
 body {
   font-family: var(--system-ui);
   font-size: 1rem;
+  font-weight: 200;
   line-height: 1.6;
-  max-width: 1200px;
   margin: 0 auto;
 }
 
 .observablehq {
+  max-width: 1200px;
   border-radius: 2px; 
   padding-left: 0.5rem;
   padding-right: 0.5rem;
-  margin-top: 0.5rem;
+  margin-bottom: 1px;
   background-color: #ffffff;
 }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 {
   color: #2c3e50;
-  margin: 1.25rem 0 0.75rem;
-  line-height: 1.25;
-  font-weight: 600;
+  font-weight: 400;
 }
+
+h1 { font-size: 2.5rem;  line-height: 1.2;  }
+h2 { font-size: 2rem;    line-height: 1.25; }
+h3 { font-size: 1.75rem; line-height: 1.3;  }
+h4 { font-size: 1.5rem;  line-height: 1.35; }
+h5 { font-size: 1.25rem; line-height: 1.4;  }
+h6 { font-size: 1rem;    line-height: 1.45; }
+  
 /* General layout */
 font-family: var(--system-ui);
 font-size: 1rem;
@@ -700,17 +728,6 @@ border: 1px solid #e0e0e0;
 border-radius: 6px;
 box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 
-/* Headings */
-h1, h2, h3, h4, h5, h6 {
-  color: #2c3e50;
-  margin: 1.25rem 0 0.75rem;
-  line-height: 1.25;
-  font-weight: 600;
-}
-
-h1 { font-size: 1.75rem; }
-h2 { font-size: 1.5rem; }
-h3 { font-size: 1.25rem; }
 
 /* Paragraphs */
 p {
@@ -910,18 +927,12 @@ document.querySelector("title")?.innerHTML ||
   new URL(document.baseURI).pathname.replace("/", "")
 )}
 
-function _18(md){return(
-md`## Global Config`
-)}
-
-function _globalConfig(){return(
-{
-  linkTo: (to, from) => {}
-}
-)}
-
-function _20(md){return(
+function _19(md){return(
 md`### Single File Notebook Generator Flow`
+)}
+
+function _TRACE_MODULE(){return(
+"@tomlarkworthy/lopecode-tour"
 )}
 
 function _task(flowQueue){return(
@@ -936,22 +947,25 @@ function _main_module(task){return(
 task.module
 )}
 
-function _task_runtime(main_module,task){return(
-main_module?._runtime || task.modules[0]._runtime
+function _task_runtime(main_module){return(
+main_module?._runtime
 )}
 
 function _runtime_variables(task_runtime,variableToObject){return(
 [...task_runtime._variables].map(variableToObject)
 )}
 
-function _module_map(moduleMap,task_runtime){return(
-moduleMap(task_runtime)
-)}
+function _module_map(moduleMap,task_runtime)
+{
+  debugger;
+  return moduleMap(task_runtime);
+}
+
 
 function _excluded_module_names(submit_summary,task)
 {
   submit_summary;
-  return ["TBD", "error", task.notebook];
+  return ["TBD", "error", "builtin", "main", task.notebook];
 }
 
 
@@ -977,27 +991,49 @@ new Map(
 )
 )}
 
-async function _module_specs(task,main_module,included_modules,cellMap,moduleLookup,findImports,getFileAttachments,main,generate_module_source)
+function _module_specs(module_specs_new){return(
+module_specs_new
+)}
+
+async function _module_specs_old(task,main_module,included_modules,TRACE_MODULE,cellMap,moduleLookup,findImports,getFileAttachments,main,generate_module_source)
 {
-  if (task.options.debug) debugger;
+  if (task.options?.debug) debugger;
+  const specsTodo = new Set();
   return new Map(
     await Promise.all(
       [
-        ...(main_module ? [main_module, { name: task.notebook }] : []),
+        ...(main_module ? [[main_module, { name: task.notebook }]] : []),
+        ...(task.modules
+          ? [...task.modules.entries()].map(([name, module]) => [
+              module,
+              { name }
+            ])
+          : []),
         ...included_modules.entries()
       ].map(async ([module, spec]) => {
-        console.log("Generating spec for " + spec.name);
+        specsTodo.add(spec.name);
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
+
         const cells = await cellMap(module, {
           extraModuleLookup: moduleLookup
         });
         const imports = findImports(cells);
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
         const fileAttachments = getFileAttachments(module) || new Map();
-        if (spec.name == task.notebook) {
+        if (spec.name == task.notebook && task?.options?.main_files !== false) {
           getFileAttachments(main).forEach((value, key) =>
             fileAttachments.set(key, value)
           );
         }
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
         const source = await generate_module_source(
+          spec,
           module._scope,
           cells,
           fileAttachments,
@@ -1005,7 +1041,87 @@ async function _module_specs(task,main_module,included_modules,cellMap,moduleLoo
             extraModuleLookup: moduleLookup
           }
         );
-        console.log("Generated spec for " + spec.name);
+        specsTodo.delete(spec.name);
+        console.log("Generated spec for " + spec.name, "remaining", specsTodo);
+        return [
+          spec.name,
+          {
+            url: spec.name,
+            imports,
+            fileAttachments,
+            source: source,
+            cells,
+            module,
+            define: spec.define
+          }
+        ];
+      })
+    )
+  );
+}
+
+
+async function _module_specs_new(task,cellMap,task_runtime,module_map,main_module,included_modules,TRACE_MODULE,getFileAttachments,main,generate_module_source,moduleLookup)
+{
+  if (task.options?.debug) debugger;
+  const specsTodo = new Set();
+
+  const allCells = await cellMap(
+    [...task_runtime._variables].filter((v) => v._type == 1),
+    module_map
+  );
+  return new Map(
+    await Promise.all(
+      [
+        ...(main_module ? [[main_module, { name: task.notebook }]] : []),
+        ...(task.modules
+          ? [...task.modules.entries()].map(([name, module]) => [
+              module,
+              { name }
+            ])
+          : []),
+        ...included_modules.entries()
+      ].map(async ([module, spec]) => {
+        specsTodo.add(spec.name);
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
+
+        const cellMap = allCells.get(module);
+
+        if (cellMap === undefined) {
+          throw "cannot find module: " + spec.name;
+        }
+        const imports = cellMap
+          .filter((c) => c.type == "import")
+          .map((c) => c.module_name)
+          .filter((m) => !["builtin"].includes(m));
+        const cells = new Map(cellMap.map((c) => [c.name, c.variables]));
+
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
+        const fileAttachments = getFileAttachments(module) || new Map();
+        if (spec.name == task.notebook && task?.options?.main_files !== false) {
+          getFileAttachments(main).forEach((value, key) =>
+            fileAttachments.set(key, value)
+          );
+        }
+
+        if (spec.name == TRACE_MODULE) {
+          debugger;
+        }
+        const source = await generate_module_source(
+          spec,
+          module._scope,
+          cells,
+          fileAttachments,
+          {
+            extraModuleLookup: moduleLookup
+          }
+        );
+        specsTodo.delete(spec.name);
+        console.log("Generated spec for " + spec.name, "remaining", specsTodo);
         return [
           spec.name,
           {
@@ -1049,9 +1165,9 @@ function _getFileAttachments(){return(
 }
 )}
 
-function _book(lopebook,task,module_specs)
+async function _book(lopebook,task,module_specs)
 {
-  const book = lopebook(
+  const book = await lopebook(
     {
       url: task.notebook,
       modules: module_specs
@@ -1066,7 +1182,7 @@ function _book(lopebook,task,module_specs)
 }
 
 
-function _35(Inputs,module_specs){return(
+function _37(Inputs,module_specs){return(
 Inputs.table(
   [
     ...module_specs.entries().map(([name, spec]) => ({
@@ -1096,52 +1212,65 @@ Inputs.table(
 )
 )}
 
-function _36(md){return(
+function _38(md){return(
 md`##### Generate a report on the sizes of components`
 )}
 
 function _report(DOMParser,book)
 {
-  const report = [
-    ...new DOMParser()
-      .parseFromString(book, "text/html")
-      .querySelectorAll("script")
-  ].map((script) => ({
-    ...(script.getAttribute("file") && {
-      file: script.getAttribute("file")
-    }),
-    type: script.type,
-    size: script.text.length,
-    id: script.id
-  }));
+  let report;
+  try {
+    report = [
+      ...new DOMParser()
+        .parseFromString(book, "text/html")
+        .querySelectorAll("script")
+    ].map((script) => ({
+      ...(script.getAttribute("file") && {
+        file: script.getAttribute("file"),
+        module: script.getAttribute("module")
+      }),
+      type: script.type,
+      size: script.text.length,
+      id: script.id
+    }));
+  } catch (err) {
+    report = err;
+  }
+
   console.log("report", report);
   return report;
 }
 
 
-function _tomlarkworthy_exporter_task(futureExportedState,$0,book,report)
+function _tomlarkworthy_exporter_task(book,report,futureExportedState,exporter_module,$0)
 {
-  futureExportedState;
-  return $0.resolve({
+  const result = {
     source: book,
     report: report
-  });
+  };
+  console.log("resolving exporter_task", result);
+  futureExportedState;
+  exporter_module;
+  return $0.resolve(result);
 }
 
 
-function _39(md){return(
+function _41(md){return(
 md`### Module Source Generator`
 )}
 
 function _generate_module_source(generate_definitions,generate_define){return(
 async (
+  spec,
   scope,
   cells,
   fileAttachments,
   { extraModuleLookup = new Map() } = {}
 ) =>
   `${await generate_definitions(cells, { extraModuleLookup })}
-${await generate_define(scope, cells, fileAttachments, { extraModuleLookup })}`
+${await generate_define(spec, scope, cells, fileAttachments, {
+  extraModuleLookup
+})}`
 )}
 
 function _generate_definitions(cellToDefinition,importCell){return(
@@ -1160,6 +1289,7 @@ async (cells) =>
 
 function _generate_define(cellToDefines){return(
 async (
+  spec,
   scope,
   cells,
   fileAttachments,
@@ -1171,8 +1301,11 @@ async (
         null,
         2
       )}.map(([name, entry]) => {
+        const module_name = "${spec.name}";
         const url = entry.url || entry; 
-        const file = document.querySelector(\`#\${CSS.escape(url)}\`);
+        const query = \`script[type=lope-file][module='\${CSS.escape(module_name)}'][file='\${CSS.escape(encodeURIComponent(name))}']\`;
+        console.log(query)
+        const file = document.querySelector(query);
         const base64 = file.text;
         const binary = atob(base64);
         const array = new Uint8Array(binary.length)
@@ -1208,7 +1341,17 @@ function _isLiveImport(){return(
     .includes("observablehq" + "--inspect " + "observablehq--import")
 )}
 
-function _cellToDefinition(isLiveImport){return(
+function _contentHash(){return(
+(s) => {
+  s = String(s);
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++)
+    h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  return (h >>> 0).toString(36); // compact rep
+}
+)}
+
+function _cellToDefinition(isLiveImport,contentHash){return(
 (name, variables) => {
   if (typeof name == "string") {
     if (name.startsWith("module ")) {
@@ -1226,6 +1369,10 @@ function _cellToDefinition(isLiveImport){return(
     }
   } else if (isLiveImport(variables[0])) {
     return ""; //`const _${name} = () => "live imports are stripped";\n`;
+  } else {
+    return `const _${contentHash(
+      variables[0]._definition
+    )} = ${variables[0]._definition.toString()};\n`;
   }
   return `const _${name} = ${variables[0]._definition.toString()};\n`;
 }
@@ -1274,7 +1421,7 @@ function importCell({ specifier, specifiers, notebook }, module) {
 }
 )}
 
-function _cellToDefines(sourceModule,findModuleName,findImportedName,isLiveImport){return(
+function _cellToDefines(sourceModule,findModuleName,findImportedName,isLiveImport,contentHash){return(
 async (scope, name, variables, { extraModuleLookup } = {}) => {
   const defines = [];
   if (typeof name === "string") {
@@ -1282,13 +1429,10 @@ async (scope, name, variables, { extraModuleLookup } = {}) => {
       debugger;
       return [];
     } else if (name.startsWith("module ")) {
-      if (name.includes("minicell")) {
-        debugger;
-      }
       const module = await sourceModule(variables[0]);
       const moduleName =
         extraModuleLookup.get(module) || findModuleName(scope, module);
-      // load the module
+      //load the module
       defines.push(
         `  main.define("${name}", async () => runtime.module((await import("/${moduleName}.js?v=4")).default));`
       );
@@ -1297,9 +1441,6 @@ async (scope, name, variables, { extraModuleLookup } = {}) => {
       const specifiers = new Map(); // local -> remote
       await Promise.all(
         variables.map(async (v) => {
-          if (name.includes("minicell")) {
-            debugger;
-          }
           const importedName = await findImportedName(v);
           specifiers.set(v._name, importedName);
           defines.push(
@@ -1330,13 +1471,13 @@ async (scope, name, variables, { extraModuleLookup } = {}) => {
         }
       });
       // create an anon variable to do the import
-      defines.push(
-        `  main.variable(observer()).define(["${name}"], async (m) => importCell({
-  specifier: "${moduleName}",
-  specifiers: ${JSON.stringify(trimmed_specifiers)},
-  notebook: "https://${moduleName}"
-        }, m));`
-      );
+      //     defines.push(
+      //       `  main.variable(observer()).define(["${name}"], async (m) => importCell({
+      // specifier: "${moduleName}",
+      // specifiers: ${JSON.stringify(trimmed_specifiers)},
+      // notebook: "https://${moduleName}"
+      //       }, m));`
+      //     );
     } else if (name.startsWith("viewof ")) {
       // viewof <name>
       const viewName = name.replace("viewof ", "");
@@ -1382,24 +1523,29 @@ async (scope, name, variables, { extraModuleLookup } = {}) => {
         v._inputs.length > 0
           ? `[${v._inputs.map((i) => `"${i._name.toString()}"`)}], `
           : ""
-      }_${name});`
+      }_${typeof name == "string" ? name : contentHash(v._definition)});`
     );
   }
   return defines;
 }
 )}
 
-function _47(md){return(
+function _50(md){return(
 md`## Assemble `
 )}
 
 function _lopebook(inspector_css,lopemodule,decompress_sledfile,builtin_def){return(
-async (bundle, { style, title, headless } = {}) => `<!DOCTYPE html>
+async (
+  bundle,
+  { style, title, head, headless } = {}
+) => `<!DOCTYPE html>
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>${title}</title>
-<link rel="icon" href="data:,">
-${style.outerHTML || style}
+${head ? head : `<link rel="icon" href="data:,">`}
+</head>
+${style?.outerHTML || style}
 ${inspector_css.outerHTML}
 ${(
   await Promise.all(
@@ -1448,17 +1594,24 @@ const main = runtime.module(define, ${
 </script>`
 )}
 
-function _lopemodule(CSS,arrayBufferToBase64,escapeScriptTags,rewriteImports){return(
+function _lopemodule(TRACE_MODULE,CSS,arrayBufferToBase64,escapeScriptTags,rewriteImports){return(
 async (module) => {
+  if (module.url === TRACE_MODULE) {
+    debugger;
+  }
   const files = module.fileAttachments
     ? await Promise.all(
         [...module.fileAttachments.entries()].map(
           async ([name, attachment]) => {
             const url = attachment.url || attachment;
-            // Get from local if we can find it
-            const lopefile = document.querySelector(
-              `script[type=lope-file][id='${CSS.escape(url)}']`
-            );
+            // Get from local when possible
+            const lopefile =
+              !url.startsWith("blob:") &&
+              document.querySelector(
+                `script[type=lope-file][module='${CSS.escape(
+                  module.url
+                )}'][file='${CSS.escape(encodeURIComponent(name))}']`
+              );
             let data64,
               mime = undefined;
             if (!lopefile) {
@@ -1473,7 +1626,7 @@ async (module) => {
               module.url
             }" file="${encodeURIComponent(
               name
-            )}" mime="${mime}" id="${url}">${data64}</script>\n`;
+            )}" mime="${mime}">${data64}</script>\n`;
           }
         )
       )
@@ -1512,7 +1665,7 @@ async function arrayBufferToBase64(buffer) {
 }
 )}
 
-function _53(md){return(
+function _56(md){return(
 md`### Bundled Deps`
 )}
 
@@ -1553,8 +1706,14 @@ function _builtin_def(){return(
     decompress_sledfile("marked.0.3.12.min.js.gz"),
   "lodash@4.17.21/lodash.min.js": () => decompress_sledfile("lodash-4.17.21.min.js.gz"),
   "@observablehq/highlight.js@2.0.0/highlight.min.js": () => decompress_sledfile("highlight.js-2.0.0.min.js.gz"),
-  "d3@7.9.0/dist/d3.min.js": () => decompress_sledfile("d3.v7.min.js.gz"),
-  "@observablehq/plot@0.6.16/dist/plot.umd.min.js": () => decompress_sledfile("plot.umd.min.js.gz")
+  "d3@7.9.0/dist/d3.min.js": () => {
+    console.log("d3@7.9.0/dist/d3.min.js")
+    return decompress_sledfile("d3.v7.min.js.gz")
+  },
+  "@observablehq/plot@0.6.16/dist/plot.umd.min.js": () => {
+    console.log("@observablehq/plot@0.6.16/dist/plot.umd.min.js")
+    return decompress_sledfile("plot.umd.min.js.gz")
+  }
 })`
 )}
 
@@ -1576,47 +1735,71 @@ function _fileAttachmentKeepAlive(FileAttachment)
 }
 
 
-function _58(md){return(
+function _61(md){return(
 md`### URL Hash Handling
 
 We use a FileAttachment to carry the hash state to an exported notebook, and it is restored on first page load`
 )}
 
-async function _exportState(getFileAttachment,history)
+async function _exportState(getFileAttachment,exporter_module,location,history)
 {
-  const state = (await getFileAttachment("export_state.json")?.json()) || {};
-  if (state.hash) {
+  let state;
+  try {
+    state =
+      (await getFileAttachment("export_state.json", exporter_module)?.json()) ||
+      {};
+  } catch (err) {
+    state = {};
+  }
+  if (state.hash && !location.hash) {
     try {
       history.replaceState(null, "", state.hash);
     } catch (err) {
       console.error(err);
     }
   }
+  console.log("export_state.json", state);
   return state;
 }
 
 
-async function _futureExportedState(exportState,hash,addFileAttachment,jsonFileAttachment)
+async function _futureExportedState(hash,exportState,location,save_exporter_state)
 {
+  hash;
   exportState; // ensure we get the current value first
   const savedState = {
-    ...(hash && { hash: hash })
+    ...exportState,
+    ...(location.hash && { hash: location.hash })
   };
-  await addFileAttachment(jsonFileAttachment("export_state.json", savedState));
+  console.log("futureExportedState", savedState);
+  await save_exporter_state(savedState);
 
   return savedState;
 }
 
 
-function _63(md){return(
+function _save_exporter_state(getFileAttachments,exporter_module,setFileAttachment,jsonFileAttachment){return(
+async function save_exporter_state(state) {
+  console.log("save_exporter_state", state);
+  const current = await getFileAttachments(exporter_module);
+  await setFileAttachment(
+    jsonFileAttachment("export_state.json", state),
+    exporter_module
+  );
+  const newest = await getFileAttachments(exporter_module);
+  return;
+}
+)}
+
+function _67(md){return(
 md`### Global Output`
 )}
 
-function _output(){return(
-undefined
+function _output(Inputs){return(
+Inputs.input(undefined)
 )}
 
-function _65(md){return(
+function _69(md){return(
 md`## Utils`
 )}
 
@@ -1635,109 +1818,8 @@ function getCompactISODate() {
 }
 )}
 
-function _67(md){return(
-md`### Test Module Generator
-
-We test the notebook by comparing the Observable API module definition to a synthesised one`
-)}
-
-function _test_module_selection(Inputs){return(
-Inputs.select(
-  [
-    undefined,
-    "https://api.observablehq.com/@tomlarkworthy/exporter.js?v=4",
-    "https://api.observablehq.com/@mootari/access-runtime.js?v=4",
-    "https://api.observablehq.com/@tomlarkworthy/flow-queue.js?v=4"
-  ],
-  { label: "chose a notebook for testing", width: "100%" }
-)
-)}
-
-function _test_notebook(test_module_selection){return(
-import(test_module_selection)
-)}
-
-function _70(test_notebook_module,variableToObject){return(
-[...test_notebook_module._runtime._variables].map(variableToObject)
-)}
-
-function _test_notebook_cell_map(cellMap,test_notebook_module)
-{
-  // debugger;
-  return cellMap(test_notebook_module);
-}
-
-
-function _test_notebook_define(test_notebook){return(
-test_notebook.default.toString()
-)}
-
-function _lopecode_generated_define(generate_define,test_notebook,test_notebook_cell_map,moduleLookup){return(
-generate_define(
-  test_notebook._scope,
-  test_notebook_cell_map,
-  undefined,
-  {
-    extraModuleLookup: moduleLookup
-  }
-)
-)}
-
-function _differences(compareDefines,lopecode_generated_define,test_notebook_define){return(
-compareDefines(lopecode_generated_define, test_notebook_define)
-)}
-
-async function _test_notebook_module(test_module_selection)
-{
-  const [{ Runtime }, { default: define }] = await Promise.all([
-    import(
-      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
-    ),
-    import(test_module_selection)
-  ]);
-  return new Runtime().module(define);
-}
-
-
-function _compareDefines(){return(
-{
-  prompt:
-    'The example_module_generated_define and example_module_define should be the same, lets build a helper for the comparing differences. The order of lines is not important. The output should be an object `{errors: 5, extraLines: ["...."], missingLists[]}`',
-  time: 1728887073377
-} &&
-  /**
-   * Compares two define functions and returns the differences.
-   * @param {string} define1 - The first define function as a string.
-   * @param {string} define2 - The second define function as a string.
-   * @returns {Object} An object containing the number of errors, extra lines, and missing lines.
-   */ function compareDefines(define1, define2) {
-    // Split the defines into lines and trim whitespace
-    const lines1 = define1
-      .split("\n")
-      .map((line) => line.trim().replace(/_\d+/g, "_ANON"))
-      .map((line) => line.trim().replace(/module \S+/g, "module X"))
-      .filter((line) => line);
-    const lines2 = define2
-      .split("\n")
-      .map((line) => line.trim().replace(/_\d+/g, "_ANON"))
-      .map((line) => line.trim().replace(/module \S+/g, "module X"))
-      .filter((line) => line);
-
-    // Create sets for efficient lookup
-    const set1 = new Set(lines1);
-    const set2 = new Set(lines2);
-
-    // Find extra lines in define1 that are not in define2
-    const extraLines = [...set1].filter((line) => !set2.has(line)).sort();
-
-    // Find missing lines in define1 that are present in define2
-    const missingLines = [...set2].filter((line) => !set1.has(line)).sort();
-
-    // Calculate the total number of differences
-    const errors = extraLines.length + missingLines.length;
-
-    return { errors, extraLines, missingLines };
-  }
+function _exporter_module(thisModule){return(
+thisModule()
 )}
 
 function _diskImgUrl(FileAttachment){return(
@@ -1760,7 +1842,7 @@ export default function define(runtime, observer) {
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("viewof parameters")).define("viewof parameters", ["Inputs","exporter","default_style","mutable output","localStorageView"], _parameters);
+  main.variable(observer("viewof parameters")).define("viewof parameters", ["Inputs","exporter","default_style","viewof output","Event","localStorageView"], _parameters);
   main.variable(observer("parameters")).define("parameters", ["Generators", "viewof parameters"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _3);
   main.variable(observer()).define(["md"], _4);
@@ -1769,8 +1851,9 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _7);
   main.variable(observer("viewof example")).define("viewof example", ["exporter"], _example);
   main.variable(observer("example")).define("example", ["Generators", "viewof example"], (G, _) => G.input(_));
-  main.variable(observer("exporter")).define("exporter", ["actionHandler","default_style","main","forcePeek","variable","domView","view","diskImgUrl","Inputs","createShowable","top120List","reportValidity","invalidation","bindOneWay"], _exporter);
-  main.variable(observer("actionHandler")).define("actionHandler", ["Inputs","main","forcePeek","getSourceModule","viewof task","view","html","location","getCompactISODate","AwsClient","ReadableStream","CompressionStream","Response","md"], _actionHandler);
+  main.variable(observer("exporter")).define("exporter", ["actionHandler","default_style","keepalive","exporter_module","variable","domView","exportState","view","diskImgUrl","Inputs","createShowable","top120List","reportValidity","invalidation","bindOneWay"], _exporter);
+  main.variable(observer("actionHandler")).define("actionHandler", ["Inputs","getSourceModule","exportToHTML","view","html","location","getCompactISODate","AwsClient","ReadableStream","CompressionStream","Response","md"], _actionHandler);
+  main.variable(observer("exportToHTML")).define("exportToHTML", ["main","keepalive","exporter_module","viewof task"], _exportToHTML);
   main.variable(observer("getSourceModule")).define("getSourceModule", ["notebook_name","main"], _getSourceModule);
   main.variable(observer("createShowable")).define("createShowable", ["variable","view"], _createShowable);
   main.variable(observer("reportValidity")).define("reportValidity", _reportValidity);
@@ -1778,87 +1861,72 @@ export default function define(runtime, observer) {
   main.variable(observer("default_style")).define("default_style", ["htl"], _default_style);
   main.variable(observer("inspector_css")).define("inspector_css", ["htl"], _inspector_css);
   main.variable(observer("notebook_name")).define("notebook_name", _notebook_name);
-  main.variable(observer()).define(["md"], _18);
-  main.define("initial globalConfig", _globalConfig);
-  main.variable(observer("mutable globalConfig")).define("mutable globalConfig", ["Mutable", "initial globalConfig"], (M, _) => new M(_));
-  main.variable(observer("globalConfig")).define("globalConfig", ["mutable globalConfig"], _ => _.generator);
-  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _19);
+  main.variable(observer("TRACE_MODULE")).define("TRACE_MODULE", _TRACE_MODULE);
   main.variable(observer("viewof task")).define("viewof task", ["flowQueue"], _task);
   main.variable(observer("task")).define("task", ["Generators", "viewof task"], (G, _) => G.input(_));
   main.variable(observer()).define(["task"], _22);
   main.variable(observer("main_module")).define("main_module", ["task"], _main_module);
-  main.variable(observer("task_runtime")).define("task_runtime", ["main_module","task"], _task_runtime);
+  main.variable(observer("task_runtime")).define("task_runtime", ["main_module"], _task_runtime);
   main.variable(observer("runtime_variables")).define("runtime_variables", ["task_runtime","variableToObject"], _runtime_variables);
   main.variable(observer("module_map")).define("module_map", ["moduleMap","task_runtime"], _module_map);
   main.variable(observer("excluded_module_names")).define("excluded_module_names", ["submit_summary","task"], _excluded_module_names);
   main.variable(observer("excluded_modules")).define("excluded_modules", ["module_map","excluded_module_names"], _excluded_modules);
   main.variable(observer("included_modules")).define("included_modules", ["module_map","excluded_module_names"], _included_modules);
   main.variable(observer("moduleLookup")).define("moduleLookup", ["included_modules"], _moduleLookup);
-  main.variable(observer("module_specs")).define("module_specs", ["task","main_module","included_modules","cellMap","moduleLookup","findImports","getFileAttachments","main","generate_module_source"], _module_specs);
+  main.variable(observer("module_specs")).define("module_specs", ["module_specs_new"], _module_specs);
+  main.variable(observer("module_specs_old")).define("module_specs_old", ["task","main_module","included_modules","TRACE_MODULE","cellMap","moduleLookup","findImports","getFileAttachments","main","generate_module_source"], _module_specs_old);
+  main.variable(observer("module_specs_new")).define("module_specs_new", ["task","cellMap","task_runtime","module_map","main_module","included_modules","TRACE_MODULE","getFileAttachments","main","generate_module_source","moduleLookup"], _module_specs_new);
   main.variable(observer("findImports")).define("findImports", _findImports);
   main.variable(observer("getFileAttachments")).define("getFileAttachments", _getFileAttachments);
   main.variable(observer("book")).define("book", ["lopebook","task","module_specs"], _book);
-  main.variable(observer()).define(["Inputs","module_specs"], _35);
-  main.variable(observer()).define(["md"], _36);
+  main.variable(observer()).define(["Inputs","module_specs"], _37);
+  main.variable(observer()).define(["md"], _38);
   main.variable(observer("report")).define("report", ["DOMParser","book"], _report);
-  main.variable(observer("tomlarkworthy_exporter_task")).define("tomlarkworthy_exporter_task", ["futureExportedState","viewof task","book","report"], _tomlarkworthy_exporter_task);
-  main.variable(observer()).define(["md"], _39);
+  main.variable(observer("tomlarkworthy_exporter_task")).define("tomlarkworthy_exporter_task", ["book","report","futureExportedState","exporter_module","viewof task"], _tomlarkworthy_exporter_task);
+  main.variable(observer()).define(["md"], _41);
   main.variable(observer("generate_module_source")).define("generate_module_source", ["generate_definitions","generate_define"], _generate_module_source);
   main.variable(observer("generate_definitions")).define("generate_definitions", ["cellToDefinition","importCell"], _generate_definitions);
   main.variable(observer("generate_define")).define("generate_define", ["cellToDefines"], _generate_define);
   main.variable(observer("isLiveImport")).define("isLiveImport", _isLiveImport);
-  main.variable(observer("cellToDefinition")).define("cellToDefinition", ["isLiveImport"], _cellToDefinition);
+  main.variable(observer("contentHash")).define("contentHash", _contentHash);
+  main.variable(observer("cellToDefinition")).define("cellToDefinition", ["isLiveImport","contentHash"], _cellToDefinition);
   main.variable(observer("importCell")).define("importCell", _importCell);
-  main.variable(observer("cellToDefines")).define("cellToDefines", ["sourceModule","findModuleName","findImportedName","isLiveImport"], _cellToDefines);
-  main.variable(observer()).define(["md"], _47);
+  main.variable(observer("cellToDefines")).define("cellToDefines", ["sourceModule","findModuleName","findImportedName","isLiveImport","contentHash"], _cellToDefines);
+  main.variable(observer()).define(["md"], _50);
   main.variable(observer("lopebook")).define("lopebook", ["inspector_css","lopemodule","decompress_sledfile","builtin_def"], _lopebook);
-  main.variable(observer("lopemodule")).define("lopemodule", ["CSS","arrayBufferToBase64","escapeScriptTags","rewriteImports"], _lopemodule);
+  main.variable(observer("lopemodule")).define("lopemodule", ["TRACE_MODULE","CSS","arrayBufferToBase64","escapeScriptTags","rewriteImports"], _lopemodule);
   main.variable(observer("escapeScriptTags")).define("escapeScriptTags", _escapeScriptTags);
   main.variable(observer("rewriteImports")).define("rewriteImports", _rewriteImports);
   main.variable(observer("arrayBufferToBase64")).define("arrayBufferToBase64", _arrayBufferToBase64);
-  main.variable(observer()).define(["md"], _53);
+  main.variable(observer()).define(["md"], _56);
   main.variable(observer("decompress_sledfile")).define("decompress_sledfile", ["DecompressionStream","Response"], _decompress_sledfile);
   main.variable(observer("builtin_def")).define("builtin_def", _builtin_def);
   main.variable(observer("builtins")).define("builtins", ["builtin_def"], _builtins);
   main.variable(observer("fileAttachmentKeepAlive")).define("fileAttachmentKeepAlive", ["FileAttachment"], _fileAttachmentKeepAlive);
-  main.variable(observer()).define(["md"], _58);
+  main.variable(observer()).define(["md"], _61);
   const child1 = runtime.module(define1);
   main.import("jsonFileAttachment", child1);
-  main.import("addFileAttachment", child1);
+  main.import("setFileAttachment", child1);
   main.import("getFileAttachment", child1);
   const child2 = runtime.module(define2);
   main.import("hash", child2);
-  main.variable(observer("exportState")).define("exportState", ["getFileAttachment","history"], _exportState);
-  main.variable(observer("futureExportedState")).define("futureExportedState", ["exportState","hash","addFileAttachment","jsonFileAttachment"], _futureExportedState);
-  main.variable(observer()).define(["md"], _63);
-  main.define("initial output", _output);
-  main.variable(observer("mutable output")).define("mutable output", ["Mutable", "initial output"], (M, _) => new M(_));
-  main.variable(observer("output")).define("output", ["mutable output"], _ => _.generator);
-  main.variable(observer()).define(["md"], _65);
-  main.variable(observer("getCompactISODate")).define("getCompactISODate", _getCompactISODate);
+  main.variable(observer("exportState")).define("exportState", ["getFileAttachment","exporter_module","location","history"], _exportState);
+  main.variable(observer("futureExportedState")).define("futureExportedState", ["hash","exportState","location","save_exporter_state"], _futureExportedState);
+  main.variable(observer("save_exporter_state")).define("save_exporter_state", ["getFileAttachments","exporter_module","setFileAttachment","jsonFileAttachment"], _save_exporter_state);
   main.variable(observer()).define(["md"], _67);
-  main.variable(observer("viewof test_module_selection")).define("viewof test_module_selection", ["Inputs"], _test_module_selection);
-  main.variable(observer("test_module_selection")).define("test_module_selection", ["Generators", "viewof test_module_selection"], (G, _) => G.input(_));
-  main.variable(observer("test_notebook")).define("test_notebook", ["test_module_selection"], _test_notebook);
-  main.variable(observer()).define(["test_notebook_module","variableToObject"], _70);
-  main.variable(observer("test_notebook_cell_map")).define("test_notebook_cell_map", ["cellMap","test_notebook_module"], _test_notebook_cell_map);
-  main.variable(observer("test_notebook_define")).define("test_notebook_define", ["test_notebook"], _test_notebook_define);
-  main.variable(observer("lopecode_generated_define")).define("lopecode_generated_define", ["generate_define","test_notebook","test_notebook_cell_map","moduleLookup"], _lopecode_generated_define);
-  main.variable(observer("differences")).define("differences", ["compareDefines","lopecode_generated_define","test_notebook_define"], _differences);
-  main.variable(observer("test_notebook_module")).define("test_notebook_module", ["test_module_selection"], _test_notebook_module);
-  main.variable(observer("compareDefines")).define("compareDefines", _compareDefines);
+  main.variable(observer("viewof output")).define("viewof output", ["Inputs"], _output);
+  main.variable(observer("output")).define("output", ["Generators", "viewof output"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _69);
+  main.variable(observer("getCompactISODate")).define("getCompactISODate", _getCompactISODate);
+  main.variable(observer("viewof exporter_module")).define("viewof exporter_module", ["thisModule"], _exporter_module);
+  main.variable(observer("exporter_module")).define("exporter_module", ["Generators", "viewof exporter_module"], (G, _) => G.input(_));
   main.variable(observer("diskImgUrl")).define("diskImgUrl", ["FileAttachment"], _diskImgUrl);
   const child3 = runtime.module(define3);
   main.import("flowQueue", child3);
   const child4 = runtime.module(define4);
-  main.import("runtime", child4);
-  main.import("main", child4);
-  main.import("observed", child4);
-  main.import("modules", child4);
-  main.import("viewof ex_refresh", child4);
-  main.import("ex_refresh", child4);
+  main.import("cellMap", child4);
   const child5 = runtime.module(define5);
-  main.import("cellMap", child5);
   main.import("findModuleName", child5);
   main.import("sourceModule", child5);
   main.import("findImportedName", child5);
@@ -1882,5 +1950,12 @@ export default function define(runtime, observer) {
   main.import("moduleMap", child11);
   main.import("submit_summary", child11);
   main.import("forcePeek", child11);
+  const child12 = runtime.module(define12);
+  main.import("thisModule", child12);
+  main.import("keepalive", child12);
+  main.import("runtime", child12);
+  main.import("main", child12);
+  const child13 = runtime.module(define13);
+  main.import("expect", child13);
   return main;
 }
