@@ -1,6 +1,6 @@
 # Detect notebook runtime errors with catchAll((cellName, reason) => {...})
 
-https://observablehq.com/@tomlarkworthy/catch-all@425
+https://observablehq.com/@tomlarkworthy/catch-all@427
 
 View this notebook in your browser by running a web server in this folder. For
 example:
