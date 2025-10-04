@@ -1,4 +1,4 @@
-import define1 from "./048a17a165be198d@271.js";
+import define1 from "./048a17a165be198d@273.js";
 
 function _1(md){return(
 md`# 👋 Hello, OpenAI [Responses API](https://platform.openai.com/docs/api-reference/responses/create)
@@ -230,7 +230,6 @@ async function responses({
   truncation,
   user
 } = {}) {
-  debugger;
   if (typeof input === "string") {
     input = [
       {
@@ -322,12 +321,6 @@ async function runTools(response) {
           const tool = response.tools.find((t) => t.name == call.name);
           const result = await tool.execute(call.arguments);
           return [
-            ...(index > 1
-              ? [
-                  /*response.output[index - 2],*/
-                  /*response.output[index - 1]*/
-                ]
-              : []),
             {
               type: "function_call_output",
               call_id: call.call_id,

@@ -1,12 +1,11 @@
 import define1 from "./a2a7845a5e2a5aec@139.js";
 import define2 from "./f92778131fd76559@1208.js";
-import define3 from "./98f34e974bb2e4bc@650.js";
-import define4 from "./03dda470c56b93ff@8246.js";
-import define5 from "./db42ae70222a8b08@995.js";
+import define3 from "./98f34e974bb2e4bc@699.js";
+import define4 from "./03dda470c56b93ff@8385.js";
+import define5 from "./a89ea9f0ad8c6226@1403.js";
 import define6 from "./b6a507744fc577c7@35.js";
 import define7 from "./0e0b35a92c819d94@474.js";
-import define8 from "./e3a019069a130d79@6074.js";
-import define9 from "./62b9866907f960f0@235.js";
+import define8 from "./62b9866907f960f0@235.js";
 
 function _title(md){return(
 md`# Visualizer: Own Cell Renderer
@@ -354,22 +353,11 @@ function _inspectors(visualizers)
 }
 
 
-async function _cellMaps(allVariables,visualizers,cellMap){return(
-allVariables &&
-  new Map(
-    await Promise.all(
-      [...new Set([...visualizers].map((root) => root.module))].map(
-        async (m) => [m, await cellMap(m)]
-      )
-    )
-  )
-)}
-
 function _TRACE_CELL(){return(
 "observe"
 )}
 
-function _syncers(inspectors,$0,cellMaps,TRACE_CELL,visualizers,observe,allVariables,$1)
+function _syncers(inspectors,$0,liveCellMap,TRACE_CELL,variables,visualizers,observe,allVariables,$1)
 {
   try {
     console.log("sync");
@@ -400,9 +388,10 @@ function _syncers(inspectors,$0,cellMaps,TRACE_CELL,visualizers,observe,allVaria
       const seen = new Set();
       let i = 0;
       const state = {};
-      const cells = cellMaps.get(root.module);
-      [...cells.entries()].forEach(([cell_name, variables]) => {
-        const v = variables[0];
+      const cells = liveCellMap.get(root.module);
+      cells.forEach((cell) => {
+        const cell_name = cell.name;
+        const v = cell.variables[0];
         if (v._name === TRACE_CELL) debugger;
         if (!root.filter(cell_name, variables, i++, state)) return;
         // don't put containers in containers, TODO, if pending it can get attached
@@ -501,7 +490,7 @@ function _syncers(inspectors,$0,cellMaps,TRACE_CELL,visualizers,observe,allVaria
 }
 
 
-function _38(md){return(
+function _37(md){return(
 md`### Drag change handler - onUpdate`
 )}
 
@@ -509,7 +498,7 @@ function _updateEvent(flowQueue){return(
 flowQueue()
 )}
 
-function _40(updateEvent){return(
+function _39(updateEvent){return(
 updateEvent
 )}
 
@@ -550,7 +539,7 @@ function _onUpdateAction(updateEvent,$0,repositionSetElement,$1)
 }
 
 
-function _43(md){return(
+function _42(md){return(
 md`### background jobs and keep alive`
 )}
 
@@ -571,7 +560,7 @@ function _thisModule(runtime,notebook_tag){return(
   ._module
 )}
 
-function _47(md){return(
+function _46(md){return(
 md`### imports`
 )}
 
@@ -615,20 +604,19 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof visualizersToDelete")).define("viewof visualizersToDelete", ["Inputs"], _visualizersToDelete);
   main.variable(observer("visualizersToDelete")).define("visualizersToDelete", ["Generators", "viewof visualizersToDelete"], (G, _) => G.input(_));
   main.variable(observer("inspectors")).define("inspectors", ["visualizers"], _inspectors);
-  main.variable(observer("cellMaps")).define("cellMaps", ["allVariables","visualizers","cellMap"], _cellMaps);
   main.variable(observer("TRACE_CELL")).define("TRACE_CELL", _TRACE_CELL);
-  main.variable(observer("syncers")).define("syncers", ["inspectors","viewof visualizersToDelete","cellMaps","TRACE_CELL","visualizers","observe","allVariables","viewof visualizers"], _syncers);
-  main.variable(observer()).define(["md"], _38);
+  main.variable(observer("syncers")).define("syncers", ["inspectors","viewof visualizersToDelete","liveCellMap","TRACE_CELL","variables","visualizers","observe","allVariables","viewof visualizers"], _syncers);
+  main.variable(observer()).define(["md"], _37);
   main.variable(observer("viewof updateEvent")).define("viewof updateEvent", ["flowQueue"], _updateEvent);
   main.variable(observer("updateEvent")).define("updateEvent", ["Generators", "viewof updateEvent"], (G, _) => G.input(_));
-  main.variable(observer()).define(["updateEvent"], _40);
+  main.variable(observer()).define(["updateEvent"], _39);
   main.variable(observer("lastVariableMoved")).define("lastVariableMoved", ["toObject","updateEvent"], _lastVariableMoved);
   main.variable(observer("onUpdateAction")).define("onUpdateAction", ["updateEvent","viewof allVariables","repositionSetElement","viewof updateEvent"], _onUpdateAction);
-  main.variable(observer()).define(["md"], _43);
+  main.variable(observer()).define(["md"], _42);
   main.variable(observer("backgroundJobs")).define("backgroundJobs", ["keepalive","thisModule"], _backgroundJobs);
   main.variable(observer("notebook_tag")).define("notebook_tag", _notebook_tag);
   main.variable(observer("thisModule")).define("thisModule", ["runtime","notebook_tag"], _thisModule);
-  main.variable(observer()).define(["md"], _47);
+  main.variable(observer()).define(["md"], _46);
   const child1 = runtime.module(define1);
   main.import("Inspector", child1);
   main.import("isnode", child1);
@@ -649,15 +637,13 @@ export default function define(runtime, observer) {
   main.import("exporter", child4);
   main.import("module_map", child4);
   const child5 = runtime.module(define5);
-  main.import("moduleMap", child5);
+  main.import("liveCellMap", child5);
   const child6 = runtime.module(define6);
   main.import("Sortable", child6);
   const child7 = runtime.module(define7);
   main.import("flowQueue", child7);
   const child8 = runtime.module(define8);
-  main.import("cellMap", child8);
-  const child9 = runtime.module(define9);
-  main.import("into", "minicellInto", child9);
-  main.import("style", "minicell_style", child9);
+  main.import("into", "minicellInto", child8);
+  main.import("style", "minicell_style", child8);
   return main;
 }

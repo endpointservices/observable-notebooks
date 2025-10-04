@@ -1,8 +1,8 @@
 import define1 from "./a6a56ee61aba9799@406.js";
-import define2 from "./db42ae70222a8b08@995.js";
-import define3 from "./98f34e974bb2e4bc@650.js";
+import define2 from "./db42ae70222a8b08@1033.js";
+import define3 from "./98f34e974bb2e4bc@699.js";
 import define4 from "./db80e603859226c1@23.js";
-import define5 from "./f096db8fcbc444bf@563.js";
+import define5 from "./f096db8fcbc444bf@565.js";
 import define6 from "./57d79353bac56631@44.js";
 
 function _1(md){return(
@@ -62,10 +62,7 @@ function _cellMapViz(hash,Plot,width,d3,filteredMap,edges,linkTo,isOnObservableC
         fontSize: 14,
         frameAnchor: "top-left",
         dy: 8,
-        href: (cell) => {
-          debugger;
-          return linkTo(`${cell}`);
-        },
+        href: (cell) => linkTo(`${cell}`),
         ...(isOnObservableCom() && { target: "_blank" })
       }),
       Plot.text(
@@ -181,13 +178,34 @@ Inputs.table(filteredMap, {
 })
 )}
 
+function _9(md){return(
+md`## \`liveCellMap\`
+
+Prefer using this variable for an always live view of the runtime state`
+)}
+
+async function _liveCellMap(keepalive,cellMapModule,Inputs,cellMap)
+{
+  keepalive(cellMapModule, "maintain_live_cell_map");
+  return Inputs.input(await cellMap());
+}
+
+
+async function _maintain_live_cell_map(runtime_variables,$0,cellMap,Event)
+{
+  runtime_variables;
+  $0.value = await cellMap();
+  $0.dispatchEvent(new Event("input"));
+}
+
+
 function _usage(md){return(
 md`## cellMap function
 
 You can call it with zero args to default to the current runtime, or pass in a subset of variables to extract the cell structure from just those.
 
 \`\`\`js
-import {cellMap} from "@tomlarkworthy/cell-map"
+import {cellMap, liveCellMap} from "@tomlarkworthy/cell-map"
 \`\`\`
 
 If you wanted to use the visualizations in your own notebooks. You would import the views e.g.
@@ -201,16 +219,18 @@ and then call them in your notebooks`
 
 function _cellMap(runtime,moduleMap,importedModule,findModuleName){return(
 async (variables, _moduleMap) => {
+  const map = new Map();
   if (!variables) variables = runtime._variables;
-  if (!_moduleMap) _moduleMap = await moduleMap(runtime);
+  variables = [...variables];
+  if (variables.length == 0) return map;
+  if (!_moduleMap) _moduleMap = await moduleMap(variables[0]._module._runtime);
 
   // do one module at a time
-  const map = new Map();
   const modules = new Map();
-  [...variables].forEach((v) => {
+  variables.forEach((v) => {
     const info = _moduleMap.get(v._module);
     if (!info) {
-      debugger;
+      console.warn("Cannot find module for ", v);
       return;
     }
     if (!modules.has(info.module)) {
@@ -262,7 +282,6 @@ async (variables, _moduleMap) => {
               viewofs.add(v);
               groups.set(v._name, []);
             } else if (v._name.startsWith("mutable ")) {
-              debugger;
               const vars = [];
               cells.set(v, {
                 type: "mutable",
@@ -310,7 +329,6 @@ async (variables, _moduleMap) => {
         }
 
         for (const v of mutables) {
-          debugger;
           const name = v._name.substring(8);
           const intital = "initial " + name;
           if (groups.has(name) && groups.has(intital)) {
@@ -333,11 +351,13 @@ async (variables, _moduleMap) => {
         }
 
         for (const [module, variables] of imports.entries()) {
+          const module_name = moduleNames.get(module);
           cells.set(variables[0], {
             type: "import",
-            lang: ["ojs"]
+            lang: ["ojs"],
+            module_name: module_name
           });
-          const name = `module ${moduleNames.get(module)}`;
+          const name = `module ${module_name}`;
           groups.set(name, variables);
         }
 
@@ -364,7 +384,25 @@ async (variables, _moduleMap) => {
 }
 )}
 
-function _11(md){return(
+function _14(md){return(
+md`### \`cellMapCompat\`
+
+Migration helper from old cellMap`
+)}
+
+function _cellMapCompat(cellMap){return(
+async (module, { excludeInbuilt = true } = {}) => {
+  const map = await cellMap(
+    [...module._runtime._variables].filter(
+      (v) => v._module == module && (!excludeInbuilt || v._type == 1)
+    )
+  );
+  const cells = map.get(module) || [];
+  return new Map(cells.map((c) => [c.name, c.variables]));
+}
+)}
+
+function _16(md){return(
 md`## Visualizations`
 )}
 
@@ -443,14 +481,14 @@ function _nodes(clustered){return(
 clustered.descendants().map((n) => ({ name: n.data._name, ...n }))
 )}
 
-function _20(md){return(
+function _25(md){return(
 md`### visualize the cell ordering`
 )}
 
-async function _runtimeMap(runtime_variables,cellMap)
+function _runtimeMap(runtime_variables,liveCellMap)
 {
   runtime_variables;
-  return [...(await cellMap()).values()].flat();
+  return [...liveCellMap.values()].flat();
 }
 
 
@@ -484,11 +522,11 @@ function _cellMapModule(thisModule){return(
 thisModule()
 )}
 
-function _32(md){return(
+function _37(md){return(
 md`## testing`
 )}
 
-function _33(tests){return(
+function _38(tests){return(
 tests({
   filter: (t) =>
     t.name.includes("@tomlarkworthy/cell-map") || t.name.includes("main")
@@ -503,11 +541,11 @@ function _moduleLookup(modules){return(
 new Map([...modules.values()].map((info) => [info.name, info]))
 )}
 
-function _36(md){return(
+function _41(md){return(
 md`low-level variables in this module`
 )}
 
-function _37(Inputs,runtime_variables,cellMapModule,toObject,modules){return(
+function _42(Inputs,runtime_variables,cellMapModule,toObject,modules){return(
 Inputs.table(
   [...runtime_variables]
     .filter((v) => v._module == cellMapModule)
@@ -572,10 +610,6 @@ async function _test_findModuleName(expect,findModuleName,importedModule,reached
 }
 
 
-function _43(cellMap,unreached_main_import,reached_main_import,modules){return(
-cellMap(new Set([unreached_main_import, reached_main_import]), modules)
-)}
-
 async function _test_cellmap_mutable(main_mutable,lookupVariable,cellMapModule,cellMap,modules,expect)
 {
   const initialMutable =
@@ -600,7 +634,19 @@ async function _test_cellmap_mutable(main_mutable,lookupVariable,cellMapModule,c
 }
 
 
-function _45(md){return(
+function _49(md){return(
+md`### Ntoebook 2.0 Compatability`
+)}
+
+function _cellMapVizView($0){return(
+$0
+)}
+
+function _51(md){return(
+md`detailVizView = viewof detailViz`
+)}
+
+function _52(md){return(
 md`### Utilities`
 )}
 
@@ -695,9 +741,15 @@ export default function define(runtime, observer) {
   main.variable(observer("detailViz")).define("detailViz", ["Generators", "viewof detailViz"], (G, _) => G.input(_));
   main.variable(observer()).define(["md"], _7);
   main.variable(observer()).define(["Inputs","filteredMap"], _8);
+  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("viewof liveCellMap")).define("viewof liveCellMap", ["keepalive","cellMapModule","Inputs","cellMap"], _liveCellMap);
+  main.variable(observer("liveCellMap")).define("liveCellMap", ["Generators", "viewof liveCellMap"], (G, _) => G.input(_));
+  main.variable(observer("maintain_live_cell_map")).define("maintain_live_cell_map", ["runtime_variables","viewof liveCellMap","cellMap","Event"], _maintain_live_cell_map);
   main.variable(observer("usage")).define("usage", ["md"], _usage);
   main.variable(observer("cellMap")).define("cellMap", ["runtime","moduleMap","importedModule","findModuleName"], _cellMap);
-  main.variable(observer()).define(["md"], _11);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("cellMapCompat")).define("cellMapCompat", ["cellMap"], _cellMapCompat);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer("nodeToSymbol")).define("nodeToSymbol", ["variableToCell"], _nodeToSymbol);
   main.variable(observer("focus_variables")).define("focus_variables", ["cellMapViz","descendants","ascendants"], _focus_variables);
   main.variable(observer("focus_cells")).define("focus_cells", ["focus_variables","variableToCell"], _focus_cells);
@@ -706,8 +758,8 @@ export default function define(runtime, observer) {
   main.variable(observer("layout")).define("layout", ["d3","descendents"], _layout);
   main.variable(observer("clustered")).define("clustered", ["dedupeHierarchy","layout"], _clustered);
   main.variable(observer("nodes")).define("nodes", ["clustered"], _nodes);
-  main.variable(observer()).define(["md"], _20);
-  main.variable(observer("runtimeMap")).define("runtimeMap", ["runtime_variables","cellMap"], _runtimeMap);
+  main.variable(observer()).define(["md"], _25);
+  main.variable(observer("runtimeMap")).define("runtimeMap", ["runtime_variables","liveCellMap"], _runtimeMap);
   main.variable(observer("variableToCell")).define("variableToCell", ["runtimeMap"], _variableToCell);
   main.variable(observer("filteredMap")).define("filteredMap", ["runtimeMap","filter"], _filteredMap);
   main.variable(observer("filter")).define("filter", ["showBuiltins","showAnon"], _filter);
@@ -719,6 +771,7 @@ export default function define(runtime, observer) {
   main.import("moduleMap", child2);
   main.import("runtime", child2);
   const child3 = runtime.module(define3);
+  main.import("keepalive", child3);
   main.import("runtime_variables", child3);
   main.import("lookupVariable", child3);
   main.import("thisModule", child3);
@@ -732,12 +785,12 @@ export default function define(runtime, observer) {
   main.variable(observer("cellMapModule")).define("cellMapModule", ["Generators", "viewof cellMapModule"], (G, _) => G.input(_));
   const child5 = runtime.module(define5);
   main.import("tests", child5);
-  main.variable(observer()).define(["md"], _32);
-  main.variable(observer()).define(["tests"], _33);
+  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["tests"], _38);
   main.variable(observer("modules")).define("modules", ["moduleMap","runtime"], _modules);
   main.variable(observer("moduleLookup")).define("moduleLookup", ["modules"], _moduleLookup);
-  main.variable(observer()).define(["md"], _36);
-  main.variable(observer()).define(["Inputs","runtime_variables","cellMapModule","toObject","modules"], _37);
+  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["Inputs","runtime_variables","cellMapModule","toObject","modules"], _42);
   main.variable(observer("unreached_main_import")).define("unreached_main_import", ["toObject","lookupVariable","cellMapModule"], _unreached_main_import);
   main.variable(observer("reached_main_import")).define("reached_main_import", ["runtime","lookupVariable","cellMapModule"], _reached_main_import);
   main.define("initial main_mutable", _main_mutable);
@@ -745,9 +798,11 @@ export default function define(runtime, observer) {
   main.variable(observer("main_mutable")).define("main_mutable", ["mutable main_mutable"], _ => _.generator);
   main.variable(observer("test_importedModule")).define("test_importedModule", ["expect","modules","importedModule","reached_main_import","unreached_main_import"], _test_importedModule);
   main.variable(observer("test_findModuleName")).define("test_findModuleName", ["expect","findModuleName","importedModule","reached_main_import","modules","unreached_main_import"], _test_findModuleName);
-  main.variable(observer()).define(["cellMap","unreached_main_import","reached_main_import","modules"], _43);
   main.variable(observer("test_cellmap_mutable")).define("test_cellmap_mutable", ["main_mutable","lookupVariable","cellMapModule","cellMap","modules","expect"], _test_cellmap_mutable);
-  main.variable(observer()).define(["md"], _45);
+  main.variable(observer()).define(["md"], _49);
+  main.variable(observer("cellMapVizView")).define("cellMapVizView", ["viewof cellMapViz"], _cellMapVizView);
+  main.variable(observer()).define(["md"], _51);
+  main.variable(observer()).define(["md"], _52);
   main.variable(observer("importedModule")).define("importedModule", _importedModule);
   main.variable(observer("findModuleName")).define("findModuleName", _findModuleName);
   const child6 = runtime.module(define6);

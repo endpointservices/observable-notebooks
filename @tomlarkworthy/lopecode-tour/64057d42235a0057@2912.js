@@ -1,24 +1,29 @@
-import define1 from "./cdc303fcc82a630f@262.js";
-import define2 from "./db42ae70222a8b08@995.js";
-import define3 from "./e3a019069a130d79@6074.js";
-import define4 from "./a2a7845a5e2a5aec@139.js";
-import define5 from "./b69d20b9e3533ef8@149.js";
-import define6 from "./048a17a165be198d@271.js";
-import define7 from "./26b0ee4d8f136fca@364.js";
-import define8 from "./98f34e974bb2e4bc@650.js";
-import define9 from "./f096db8fcbc444bf@563.js";
-import define10 from "./ee79b1fa5101d6d9@3211.js";
+import define1 from "./03dda470c56b93ff@8385.js";
+import define2 from "./cdc303fcc82a630f@262.js";
+import define3 from "./db42ae70222a8b08@1033.js";
+import define4 from "./e3a019069a130d79@6742.js";
+import define5 from "./a89ea9f0ad8c6226@1403.js";
+import define6 from "./a2a7845a5e2a5aec@139.js";
+import define7 from "./b69d20b9e3533ef8@158.js";
+import define8 from "./048a17a165be198d@273.js";
+import define9 from "./26b0ee4d8f136fca@374.js";
+import define10 from "./98f34e974bb2e4bc@699.js";
+import define11 from "./f096db8fcbc444bf@565.js";
+import define12 from "./ee79b1fa5101d6d9@3283.js";
+import define13 from "./db80e603859226c1@23.js";
+import define14 from "./50e53b27a28761aa@783.js";
 
 function _1(md){return(
-md`# Roboco-op 2.0: Agentic Notebook Assistent
+md`# Roboco-op 3.0: Agentic Notebook Assistent
 `
 )}
 
-function _ui(endpoint,keepalive,myModule,htl,reversibleAttach,ui_attached,style,$0,$1,$2,$3,$4,$5,$6,$7,$8,$9)
+function _ui(endpoint,keepalive,myModule,htl,reversibleAttach,ui_attached,style,$0,$1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
 {
   endpoint;
   keepalive(myModule, "initial_response");
   const ui = htl.html`<div>
+  <h2>Robocoop 3.0</h2>
   ${reversibleAttach(ui_attached, style)}
   ${reversibleAttach(ui_attached, $0)}
   ${
@@ -33,19 +38,30 @@ function _ui(endpoint,keepalive,myModule,htl,reversibleAttach,ui_attached,style,
   ${reversibleAttach(ui_attached, $5)}
   ${reversibleAttach(ui_attached, $6)}
   ${reversibleAttach(ui_attached, $7)}
+  ${reversibleAttach(ui_attached, $8)}
   <div style="max-height: 1024px; overflow: auto">
-    ${reversibleAttach(ui_attached, $8)}
+    ${reversibleAttach(ui_attached, $9)}
   </div>
-  ${reversibleAttach(ui_attached, $9)}
+  ${reversibleAttach(ui_attached, $10)}
 </div>`;
 
   setTimeout(() => {
-    $8.parentNode.scrollTop =
-      $8.parentNode.scrollHeight;
+    $9.parentNode.scrollTop =
+      $9.parentNode.scrollHeight;
   }, 0);
   return ui;
 }
 
+
+function _3(history){return(
+history
+)}
+
+function _4(md){return(
+md`\`\`\`js
+import { ui, expect} from "@tomlarkworthy/agentic-planner"
+\`\`\``
+)}
 
 function _about(md){return(
 md`## About
@@ -57,7 +73,11 @@ This is a better workflow for agents than mainstream development tooling, where 
 Inline unit tests update reactively too, and the notebook supports data-viz out-of-the-box. When running on [ObservableHQ.com](https://observablehq.com/@tomlarkworthy/agentic-planner) the cells it creates are not visible, but they exist and can be depended on, when running on [Lopecode](https://github.com/tomlarkworthy/lopecode) changes are visible. `
 )}
 
-function _4(md){return(
+function _6(md){return(
+md`## TDD`
+)}
+
+function _7(md){return(
 md`## Failing Tests`
 )}
 
@@ -67,11 +87,15 @@ tests({
 })
 )}
 
-function _6(md){return(
+function _tests_module($0,myModule){return(
+$0.value.get(myModule)
+)}
+
+function _10(md){return(
 md`## Architecture`
 )}
 
-function _7(md){return(
+function _11(md){return(
 md`Inspired by [Cline](https://github.com/cline/cline)`
 )}
 
@@ -98,7 +122,7 @@ ${mermaid`flowchart TD
 `}`
 )}
 
-function _9(md){return(
+function _13(md){return(
 md`## TODO
 
 - MCP integration
@@ -107,7 +131,11 @@ md`## TODO
 - Fix main issue with tests`
 )}
 
-function _10(md){return(
+function _15(exporter){return(
+exporter()
+)}
+
+function _16(md){return(
 md`## Interface`
 )}
 
@@ -175,6 +203,15 @@ function _prompt_example(Inputs,prompts){return(
 Inputs.select(prompts, { label: "example prompts" })
 )}
 
+function _workingModule(Inputs,currentModules){return(
+Inputs.select(
+  [...currentModules.values()].map((m) => m.name),
+  {
+    label: "working module"
+  }
+)
+)}
+
 function _prompt(Inputs,prompt_example){return(
 Inputs.textarea({
   label: "prompt",
@@ -210,7 +247,7 @@ Inputs.button("undo last", {
 })
 )}
 
-function _24(md){return(
+function _31(md){return(
 md`## Tools`
 )}
 
@@ -229,7 +266,7 @@ function _tools(attempt_completionTool,ask_followup_questionTool,list_modulesToo
 ]
 )}
 
-function _26(md){return(
+function _33(md){return(
 md`#### attempt_completion
 
 `
@@ -282,7 +319,7 @@ function _attempCompletetionDialog($0,runTools,Event,htl,md){return(
 }
 )}
 
-function _30(md){return(
+function _37(md){return(
 md`#### ask_followup_question `
 )}
 
@@ -333,15 +370,15 @@ function _followUpQuestionDialog($0,runTools,Event,htl,md){return(
 }
 )}
 
-function _34(md){return(
+function _41(md){return(
 md`#### evalJavaScriptTool`
 )}
 
-function _35(evalJavaScriptTool){return(
+function _42(evalJavaScriptTool){return(
 evalJavaScriptTool
 )}
 
-function _36(md){return(
+function _43(md){return(
 md`#### list_modules `
 )}
 
@@ -386,11 +423,11 @@ async function _test_list_modulesTool(md,list_modulesTool){return(
 md`${await list_modulesTool.execute()}`
 )}
 
-function _41(md){return(
+function _48(md){return(
 md`#### list_cells`
 )}
 
-function _list_cellsTool(getModule,cellMap,summarizeCell){return(
+function _list_cellsTool(getModule,cellMapCompat,summarizeCell){return(
 {
   type: "function",
   name: "list_cells",
@@ -410,7 +447,7 @@ function _list_cellsTool(getModule,cellMap,summarizeCell){return(
   execute: async ({ module_name } = {}) => {
     const module = await getModule(module_name);
     if (!module) return `Error: module ${module_name} not found`;
-    const cells = await cellMap(module.module);
+    const cells = await cellMapCompat(module.module);
 
     return `${module_name} contents:\n
 ${[...cells.entries()]
@@ -429,11 +466,11 @@ list_cellsTool.execute({
 })
 )}
 
-function _44(md){return(
+function _51(md){return(
 md`### search_cells`
 )}
 
-function _search_cellsTool(getModule,moduleMap,runtime,cellMap,decompile,cellDescription){return(
+function _search_cellsTool(getModule,moduleMap,runtime,cellMapCompat,decompile,cellDescription){return(
 {
   type: "function",
   name: "search_cells",
@@ -468,7 +505,7 @@ function _search_cellsTool(getModule,moduleMap,runtime,cellMap,decompile,cellDes
 
     for (let module of modules) {
       if (results.length >= 20) break;
-      const cells = await cellMap(module.module);
+      const cells = await cellMapCompat(module.module);
 
       for (const [cell_name, variables] of cells.entries()) {
         if (results.length >= 20) break;
@@ -521,7 +558,9 @@ Inputs.text({
 
 function _test_search_for_cell_digit_name(search_cellsTool,searchPattern)
 {
+  debugger;
   const result = search_cellsTool.execute({
+    module_name: null,
     pattern: searchPattern,
     flags: ""
   });
@@ -543,7 +582,7 @@ function _summarizeCell(){return(
 }
 )}
 
-function _50(md){return(
+function _58(md){return(
 md`#### describe_cells`
 )}
 
@@ -572,7 +611,7 @@ ${source}
 }
 )}
 
-function _describe_cellsTool(getModule,cellMap,decompile,cellDescription){return(
+function _describe_cellsTool(getModule,cellMapCompat,decompile,cellDescription){return(
 {
   type: "function",
   name: "describe_cells",
@@ -598,7 +637,7 @@ function _describe_cellsTool(getModule,cellMap,decompile,cellDescription){return
   execute: async ({ module_name, cell_names } = {}) => {
     const module = await getModule(module_name);
     if (!module) return `Error: module ${module_name} not found`;
-    const cells = await cellMap(module.module);
+    const cells = await cellMapCompat(module.module);
 
     return `### module ${module_name}
 ${(
@@ -625,11 +664,11 @@ describe_cellsTool.execute({
 })
 )}
 
-function _54(md){return(
+function _62(md){return(
 md`### create_cell`
 )}
 
-function _create_cellTool(getModule,cellMap,runtime,createCell,repositionSetElement,summarizeVariable){return(
+function _create_cellTool(getModule,cellMapCompat,runtime,createCell,repositionSetElement,summarizeVariable){return(
 {
   type: "function",
   name: "create_cell",
@@ -651,7 +690,7 @@ function _create_cellTool(getModule,cellMap,runtime,createCell,repositionSetElem
     if (!module) return `Error: module ${module_name} not found`;
     let idx = -1;
     if (after_cell) {
-      const cells = await cellMap(module.module);
+      const cells = await cellMapCompat(module.module);
       if (!cells.has(after_cell))
         return `Error: cell '${after_cell}' not found in module '${module_name}'`;
       const target = cells.get(after_cell).at(-1);
@@ -730,11 +769,11 @@ function _test_create_cell_anon(createCell,myModule){return(
 createCell({ module: myModule, source: "45" })
 )}
 
-function _61(md){return(
+function _69(md){return(
 md`### replace_cell`
 )}
 
-function _replace_cellTool(getModule,cellMap,replaceCell){return(
+function _replace_cellTool(getModule,cellMapCompat,replaceCell){return(
 {
   type: "function",
   name: "replace_cell",
@@ -759,7 +798,7 @@ function _replace_cellTool(getModule,cellMap,replaceCell){return(
   execute: async ({ module_name, cell_name, source } = {}) => {
     const module = await getModule(module_name);
     if (!module) return `Error: module ${module_name} not found`;
-    const cells = await cellMap(module.module);
+    const cells = await cellMapCompat(module.module);
     if (!cells.has(cell_name))
       return `Error: cell '${cell_name}' in module '${module_name}' not found.`;
     const variables = cells.get(cell_name);
@@ -818,11 +857,11 @@ replace_cellTool.execute({
 })
 )}
 
-function _66(md){return(
+function _74(md){return(
 md`### peek_cell`
 )}
 
-function _67(md){return(
+function _75(md){return(
 md`TODO:
 - Allow applying a function to the output with Javascript (e.g. CSS selector)`
 )}
@@ -853,7 +892,7 @@ async function summarizeVariable(
 }
 )}
 
-function _peek_variableTool(getModule,cellMap,summarizeVariable){return(
+function _peek_variableTool(getModule,cellMapCompat,summarizeVariable){return(
 {
   type: "function",
   name: "peek_variable",
@@ -879,7 +918,7 @@ function _peek_variableTool(getModule,cellMap,summarizeVariable){return(
   execute: async ({ module_name, variable_name, max_size } = {}) => {
     const module = await getModule(module_name);
     if (!module) return `Error: module ${module_name} not found`;
-    const cells = await cellMap(module.module);
+    const cells = await cellMapCompat(module.module);
     const options = [
       variable_name,
       `viewof ${variable_name}`,
@@ -954,8 +993,13 @@ peek_variableTool.execute({
 })
 )}
 
-function _79(md){return(
+function _87(md){return(
 md`### Helpers`
+)}
+
+function _moduleVariables(){return(
+(module) =>
+  module._runtime._variables.filter((v) => v._module == module)
 )}
 
 function _myModule(thisModule){return(
@@ -975,7 +1019,7 @@ async function getModule(name) {
 }
 )}
 
-function _88(md){return(
+function _97(md){return(
 md`## Static Data`
 )}
 
@@ -990,10 +1034,10 @@ function _prompts(){return(
 )}
 
 function _reasoning_models(){return(
-["o4-mini", "o3-mini", "o3"]
+["gpt-5-mini", "o4-mini", "o3-mini", "o3"]
 )}
 
-function _91(md){return(
+function _100(md){return(
 md`## State`
 )}
 
@@ -1021,11 +1065,15 @@ async function _initial_response($0,Event,responses,$1,model,instructions,prompt
 }
 
 
+function _102(step,calls){return(
+step(calls[5])
+)}
+
 function _calls(Inputs){return(
 Inputs.input([])
 )}
 
-function _94(md){return(
+function _104(md){return(
 md`## UI Builders`
 )}
 
@@ -1218,78 +1266,95 @@ function _output_message_content_output_text(htl,md){return(
 </div>`
 )}
 
-function _109(md){return(
+function _119(md){return(
 md`## Prompt`
 )}
 
-function _110(context_menu){return(
+function _120(context_menu){return(
 context_menu
 )}
 
-function _112(md,instructions){return(
-md`${instructions}`
-)}
+async function _122(workingModule,md,instructions)
+{
+  workingModule;
+  return md`${await instructions()}`;
+}
 
-function _instructions($0){return(
-() => `RULES
+
+function _instructions(keepalive,myModule,$0,tests_module,peek_variableTool)
+{
+  keepalive(myModule, "failing_tests");
+  return async () => `RULES
 - You are Roboco-op, a highly professional software engineer with extensive knowledge Observable notebooks, data analysis and visualization, and literate programming.
-- You are executing inside a browser, collaberating with a user on a notebook, executing inside the notebook. Your JavascriptEnvironment is thus browser based and your scoping is an execution inside a function. You may access globals like window or document, but most interactions will use the tools that operate on the Observable reactive runtime.
-- A notebook is made up of modules, cells and fileattachments. It is a literate programming environment and most modules contain useful information to understand the motivation, read those anonymous cells.
-- Both you and the user can only append Observable source code to the notebook. All usage suggestions to the user should thus be in the form of Observable cell source code.
-- You are capable of querying the notebook to discover its capabilities. Use the tooling to provide answers based on facts.
-- When understanding cells, always run describe_cells on preceeding anonymous cells, as they may contain critical information needed to understand the cell properly. Prefer decribing more cells than you think you need to ensure coverage and full understanding. Follow the inputs to cells to ensure you understand the dependancies before answering.
+- You are executing inside a browser, collaberating with a user on a notebook, executing inside the notebook. 
+- A notebook is made up of modules, cells and fileattachments. It is a literate programming environment and most modules contain useful information in anonymous markdown cells.
+- Both you and the user can manipulate Observable source code in the notebook. All usage suggestions to the user should thus be in the form of Observable cell source code.
+- You are capable of querying the notebook to discover its capabilities. Use tools to provide answers based on facts.
+- When understanding cells, always run 'describe_cells' on preceeding anonymous cells, as they may contain critical information needed to understand the cell properly. Prefer decribing more cells than you think you need to ensure coverage and full understanding. Follow the inputs to cells to ensure you understand the dependancies before answering.
 - Use the replace_cell or create_cell tool modify the notebook. You do not need to display the changes before using the tool.
 - Do not ask for more information than necessary. Use the tools provided to accomplish the user's request efficiently and effectively. When you've completed your task, you *MUST* use the attempt_completion tool to present the result to the user. The user may provide feedback, which you can use to make improvements and try again.
 - You are only allowed to ask the user questions using the ask_followup_question tool. Use this tool only when you need additional details to complete a task, and be sure to use a clear and concise question that will help you move forward with the task. However if you can use the available tools to avoid having to ask the user questions, you should do so. For example, if the user mentions a specific cell, you should use the list_modules tool to list the modules in the runtime and check if the cell they are talking about is there, rather than asking the user to provide the cell themselves.
-- Your goal is to try to accomplish the user's task, NOT engage in a back and forth conversation.
+- Your goal is to try to accomplish the user's task, NOT engage in a back and forth conversation. Be terse.
 - Never suggest code you have not executed and checked the result of. Use temporary cells for scratch calculations, but if creating a cannonical test use a unit test prefixed with 'test_'.
 - NEVER end attempt_completion result with a question or request to engage in further conversation! Formulate the end of your result in a way that is final and does not require further input from the user.
 - You are STRICTLY FORBIDDEN from starting your messages with "Great", "Certainly", "Okay", "Sure". You should NOT be conversational in your responses, but rather direct and to the point. For example you should NOT say "Great, I've updated the CSS" but instead something like "I've updated the CSS". It is important you be clear and technical in your messages.
 - When presented with images, utilize your vision capabilities to thoroughly examine them and extract meaningful information. Incorporate these insights into your thought process as you accomplish the user's task.
 - Like any professional software engineer, you make mistakes, which is why you attempt to verify operations have executed as you expected with peek_cell. Furthermore, you document examples through unit tests.
-- You check for failing tests in the "main" module, cell "failing_tests", and cell prefixed with 'test_' is automatically picked up by the test suite.
-
-
-====
-
-OBJECTIVE
-
-You accomplish a given task iteratively, breaking it down into clear steps and working through them methodically.
-
-1. Analyze the user's task and set clear, achievable goals to accomplish it. Prioritize these goals in a logical order.
-2. Work through these goals sequentially, utilizing available tools one at a time as necessary. Each goal should correspond to a distinct step in your problem-solving process. You will be informed on the work completed and what's remaining as you go.
-3. Remember, you have extensive capabilities with access to a wide range of tools that can be used in powerful and clever ways as necessary to accomplish each goal. Before calling a tool, think about it before hand. Think about which of the provided tools is the most relevant tool to accomplish the user's task. Next, go through each of the required parameters of the relevant tool and determine if the user has directly provided or given enough information to infer a value. When deciding if the parameter can be inferred, carefully consider all the context to see if it supports a specific value. If all of the required parameters are present or can be reasonably inferred, stop thinking and proceed with the tool use. BUT, if one of the values for a required parameter is missing, DO NOT invoke the tool (not even with fillers for the missing params) and instead, ask the user to provide the missing parameters using the ask_followup_question tool. DO NOT ask for more information on optional parameters if it is not provided.
-4. Once you've completed the user's task, you *MUST* use the attempt_completion tool to present the result of the task to the user. You may also provide an example cell to showcase the result of your task.
-5. The user may provide feedback, which you can use to make improvements and try again. But DO NOT continue in pointless back and forth conversations, i.e. don't end your responses with questions or offers for further assistance.
+- You check for failing tests in the "@tomlarkworthy/agentic-planner" module, cell "failing_tests", cells prefixed with 'test_' is automatically picked up by the test suite. If you observe an empty array in "failing_tests" then nothing is failing!
+- You can write a test like so 
+<code>
+test_foo = {
+  expect(await "foo").toEqual("bar");
+}"
+</code>
+- You write in observablejs source code, so a simple cell might look like
+<code>
+myCell = {
+  return "foo"
+}
+</code>
 
 ====
 
 USER CONTEXT
 
-The user has the notebook open on "${
-  $0.value.module.name
-}" and selected cell "${$0.value.name}"
+You are to do most of your work in "${$0.value}" module.
 
-You can look for failing tests in the "main" notebook, peek_cell "failing_tests"
 
-`
-)}
+You can look for failing tests in the "${
+    tests_module.name
+  }" notebook, cell "failing_tests". It currently is evaluating to
+
+${await peek_variableTool.execute({
+  module_name: tests_module.name,
+  variable_name: "failing_tests"
+})}
+`;
+}
+
 
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("ui")).define("ui", ["endpoint","keepalive","myModule","htl","reversibleAttach","ui_attached","style","viewof endpoint","viewof OPENAI_API_KEY","viewof model","viewof active_tools","viewof prompt_example","viewof prompt","viewof yolo","viewof clear","viewof history_ui","viewof undo_last"], _ui);
-  main.variable(observer("about")).define("about", ["md"], _about);
+  main.variable(observer("ui")).define("ui", ["endpoint","keepalive","myModule","htl","reversibleAttach","ui_attached","style","viewof endpoint","viewof OPENAI_API_KEY","viewof model","viewof active_tools","viewof workingModule","viewof prompt_example","viewof prompt","viewof yolo","viewof clear","viewof history_ui","viewof undo_last"], _ui);
+  main.variable(observer()).define(["history"], _3);
   main.variable(observer()).define(["md"], _4);
-  main.variable(observer("viewof failing_tests")).define("viewof failing_tests", ["tests"], _failing_tests);
-  main.variable(observer("failing_tests")).define("failing_tests", ["Generators", "viewof failing_tests"], (G, _) => G.input(_));
+  main.variable(observer("about")).define("about", ["md"], _about);
   main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["md"], _7);
-  main.variable(observer("design")).define("design", ["mermaid","md"], _design);
-  main.variable(observer()).define(["md"], _9);
+  main.variable(observer("viewof failing_tests")).define("viewof failing_tests", ["tests"], _failing_tests);
+  main.variable(observer("failing_tests")).define("failing_tests", ["Generators", "viewof failing_tests"], (G, _) => G.input(_));
+  main.variable(observer("tests_module")).define("tests_module", ["viewof currentModules","myModule"], _tests_module);
   main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
+  main.variable(observer("design")).define("design", ["mermaid","md"], _design);
+  main.variable(observer()).define(["md"], _13);
   const child1 = runtime.module(define1);
-  main.import("reversibleAttach", child1);
+  main.import("exporter", child1);
+  main.variable(observer()).define(["exporter"], _15);
+  main.variable(observer()).define(["md"], _16);
+  const child2 = runtime.module(define2);
+  main.import("reversibleAttach", child2);
   main.variable(observer("viewof ui_attached")).define("viewof ui_attached", ["Inputs"], _ui_attached);
   main.variable(observer("ui_attached")).define("ui_attached", ["Generators", "viewof ui_attached"], (G, _) => G.input(_));
   main.variable(observer("style")).define("style", ["htl"], _style);
@@ -1303,6 +1368,8 @@ export default function define(runtime, observer) {
   main.variable(observer("active_tools")).define("active_tools", ["Generators", "viewof active_tools"], (G, _) => G.input(_));
   main.variable(observer("viewof prompt_example")).define("viewof prompt_example", ["Inputs","prompts"], _prompt_example);
   main.variable(observer("prompt_example")).define("prompt_example", ["Generators", "viewof prompt_example"], (G, _) => G.input(_));
+  main.variable(observer("viewof workingModule")).define("viewof workingModule", ["Inputs","currentModules"], _workingModule);
+  main.variable(observer("workingModule")).define("workingModule", ["Generators", "viewof workingModule"], (G, _) => G.input(_));
   main.variable(observer("viewof prompt")).define("viewof prompt", ["Inputs","prompt_example"], _prompt);
   main.variable(observer("prompt")).define("prompt", ["Generators", "viewof prompt"], (G, _) => G.input(_));
   main.variable(observer("viewof yolo")).define("viewof yolo", ["Inputs"], _yolo);
@@ -1313,63 +1380,67 @@ export default function define(runtime, observer) {
   main.variable(observer("history_ui")).define("history_ui", ["Generators", "viewof history_ui"], (G, _) => G.input(_));
   main.variable(observer("viewof undo_last")).define("viewof undo_last", ["Inputs","viewof calls","Event"], _undo_last);
   main.variable(observer("undo_last")).define("undo_last", ["Generators", "viewof undo_last"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _31);
   main.variable(observer("tools")).define("tools", ["attempt_completionTool","ask_followup_questionTool","list_modulesTool","list_cellsTool","describe_cellsTool","create_cellTool","replace_cellTool","peek_variableTool","search_cellsTool"], _tools);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _33);
   main.variable(observer("attempt_completionTool")).define("attempt_completionTool", ["viewof completionFeedback"], _attempt_completionTool);
   main.variable(observer("viewof completionFeedback")).define("viewof completionFeedback", ["Inputs"], _completionFeedback);
   main.variable(observer("completionFeedback")).define("completionFeedback", ["Generators", "viewof completionFeedback"], (G, _) => G.input(_));
   main.variable(observer("attempCompletetionDialog")).define("attempCompletetionDialog", ["viewof completionFeedback","runTools","Event","htl","md"], _attempCompletetionDialog);
-  main.variable(observer()).define(["md"], _30);
+  main.variable(observer()).define(["md"], _37);
   main.variable(observer("ask_followup_questionTool")).define("ask_followup_questionTool", ["viewof followUpResponse"], _ask_followup_questionTool);
   main.variable(observer("viewof followUpResponse")).define("viewof followUpResponse", ["Inputs"], _followUpResponse);
   main.variable(observer("followUpResponse")).define("followUpResponse", ["Generators", "viewof followUpResponse"], (G, _) => G.input(_));
   main.variable(observer("followUpQuestionDialog")).define("followUpQuestionDialog", ["viewof followUpResponse","runTools","Event","htl","md"], _followUpQuestionDialog);
-  main.variable(observer()).define(["md"], _34);
-  main.variable(observer()).define(["evalJavaScriptTool"], _35);
-  main.variable(observer()).define(["md"], _36);
-  const child2 = runtime.module(define2);
-  main.import("moduleMap", child2);
+  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["evalJavaScriptTool"], _42);
+  main.variable(observer()).define(["md"], _43);
+  const child3 = runtime.module(define3);
+  main.import("moduleMap", child3);
+  main.import("viewof currentModules", child3);
+  main.import("currentModules", child3);
   main.variable(observer("list_modulesTool")).define("list_modulesTool", ["runtimeSummary"], _list_modulesTool);
   main.variable(observer("runtimeSummary")).define("runtimeSummary", ["getModules"], _runtimeSummary);
   main.variable(observer("test_list_modulesTool")).define("test_list_modulesTool", ["md","list_modulesTool"], _test_list_modulesTool);
-  main.variable(observer()).define(["md"], _41);
-  main.variable(observer("list_cellsTool")).define("list_cellsTool", ["getModule","cellMap","summarizeCell"], _list_cellsTool);
+  main.variable(observer()).define(["md"], _48);
+  main.variable(observer("list_cellsTool")).define("list_cellsTool", ["getModule","cellMapCompat","summarizeCell"], _list_cellsTool);
   main.variable(observer("test_list_cellsTool")).define("test_list_cellsTool", ["list_cellsTool"], _test_list_cellsTool);
-  main.variable(observer()).define(["md"], _44);
-  main.variable(observer("search_cellsTool")).define("search_cellsTool", ["getModule","moduleMap","runtime","cellMap","decompile","cellDescription"], _search_cellsTool);
+  main.variable(observer()).define(["md"], _51);
+  main.variable(observer("search_cellsTool")).define("search_cellsTool", ["getModule","moduleMap","runtime","cellMapCompat","decompile","cellDescription"], _search_cellsTool);
   main.variable(observer("viewof searchPattern")).define("viewof searchPattern", ["Inputs"], _searchPattern);
   main.variable(observer("searchPattern")).define("searchPattern", ["Generators", "viewof searchPattern"], (G, _) => G.input(_));
   main.variable(observer("test_search_for_cell_digit_name")).define("test_search_for_cell_digit_name", ["search_cellsTool","searchPattern"], _test_search_for_cell_digit_name);
-  const child3 = runtime.module(define3);
-  main.import("decompile", child3);
-  main.import("compile", child3);
-  main.import("cellMap", child3);
+  const child4 = runtime.module(define4);
+  main.import("decompile", child4);
+  main.import("compile", child4);
+  main.import("cellMap", child4);
+  const child5 = runtime.module(define5);
+  main.import("cellMapCompat", child5);
   main.variable(observer("summarizeCell")).define("summarizeCell", _summarizeCell);
-  main.variable(observer()).define(["md"], _50);
+  main.variable(observer()).define(["md"], _58);
   main.variable(observer("cellDescription")).define("cellDescription", ["summarizeVariable"], _cellDescription);
-  main.variable(observer("describe_cellsTool")).define("describe_cellsTool", ["getModule","cellMap","decompile","cellDescription"], _describe_cellsTool);
+  main.variable(observer("describe_cellsTool")).define("describe_cellsTool", ["getModule","cellMapCompat","decompile","cellDescription"], _describe_cellsTool);
   main.variable(observer("test_describe_cellsTool")).define("test_describe_cellsTool", ["describe_cellsTool"], _test_describe_cellsTool);
-  main.variable(observer()).define(["md"], _54);
-  main.variable(observer("create_cellTool")).define("create_cellTool", ["getModule","cellMap","runtime","createCell","repositionSetElement","summarizeVariable"], _create_cellTool);
+  main.variable(observer()).define(["md"], _62);
+  main.variable(observer("create_cellTool")).define("create_cellTool", ["getModule","cellMapCompat","runtime","createCell","repositionSetElement","summarizeVariable"], _create_cellTool);
   main.variable(observer("test_create_cellTool")).define("test_create_cellTool", ["create_cellTool"], _test_create_cellTool);
   main.variable(observer("test_create_cell_dupe")).define("test_create_cell_dupe", ["create_cellTool"], _test_create_cell_dupe);
   main.variable(observer("test_create_cell_after")).define("test_create_cell_after", ["create_cellTool"], _test_create_cell_after);
   main.variable(observer("createCell")).define("createCell", ["compile","main"], _createCell);
   main.variable(observer("test_create_cell_anon")).define("test_create_cell_anon", ["createCell","myModule"], _test_create_cell_anon);
-  main.variable(observer()).define(["md"], _61);
-  main.variable(observer("replace_cellTool")).define("replace_cellTool", ["getModule","cellMap","replaceCell"], _replace_cellTool);
+  main.variable(observer()).define(["md"], _69);
+  main.variable(observer("replace_cellTool")).define("replace_cellTool", ["getModule","cellMapCompat","replaceCell"], _replace_cellTool);
   main.variable(observer("replaceCell")).define("replaceCell", ["compile","runtime","repositionSetElement"], _replaceCell);
   main.variable(observer("sample_variable")).define("sample_variable", _sample_variable);
   main.variable(observer("test_replace_cellTool")).define("test_replace_cellTool", ["replace_cellTool"], _test_replace_cellTool);
-  main.variable(observer()).define(["md"], _66);
-  main.variable(observer()).define(["md"], _67);
-  const child4 = runtime.module(define4);
-  main.import("inspect", child4);
-  main.import("Inspector", child4);
-  main.import("src", child4);
+  main.variable(observer()).define(["md"], _74);
+  main.variable(observer()).define(["md"], _75);
+  const child6 = runtime.module(define6);
+  main.import("inspect", child6);
+  main.import("Inspector", child6);
+  main.import("src", child6);
   main.variable(observer("summarizeVariable")).define("summarizeVariable", ["observe","summarizeJS"], _summarizeVariable);
-  main.variable(observer("peek_variableTool")).define("peek_variableTool", ["getModule","cellMap","summarizeVariable"], _peek_variableTool);
+  main.variable(observer("peek_variableTool")).define("peek_variableTool", ["getModule","cellMapCompat","summarizeVariable"], _peek_variableTool);
   main.variable(observer("test_peek_variableTool")).define("test_peek_variableTool", ["peek_variableTool"], _test_peek_variableTool);
   main.define("initial cool", _cool);
   main.variable(observer("mutable cool")).define("mutable cool", ["Mutable", "initial cool"], (M, _) => new M(_));
@@ -1380,36 +1451,38 @@ export default function define(runtime, observer) {
   main.variable(observer("test_peek_variableTool_error")).define("test_peek_variableTool_error", ["peek_variableTool"], _test_peek_variableTool_error);
   main.variable(observer("test_peek_variableTool_pending")).define("test_peek_variableTool_pending", ["peek_variableTool"], _test_peek_variableTool_pending);
   main.variable(observer("test_peek_variableTool_tests")).define("test_peek_variableTool_tests", ["peek_variableTool"], _test_peek_variableTool_tests);
-  main.variable(observer()).define(["md"], _79);
-  const child5 = runtime.module(define5);
-  main.import("summarizeJS", child5);
-  const child6 = runtime.module(define6);
-  main.import("localStorageView", child6);
+  main.variable(observer()).define(["md"], _87);
+  main.variable(observer("moduleVariables")).define("moduleVariables", _moduleVariables);
   const child7 = runtime.module(define7);
-  main.import("responses", child7);
-  main.import("runTools", child7);
-  main.import("evalJavaScriptTool", child7);
+  main.import("summarizeJS", child7);
   const child8 = runtime.module(define8);
-  main.import("thisModule", child8);
-  main.import("keepalive", child8);
-  main.import("main", child8);
-  main.import("runtime", child8);
-  main.import("repositionSetElement", child8);
-  main.import("observe", child8);
+  main.import("localStorageView", child8);
+  const child9 = runtime.module(define9);
+  main.import("responses", child9);
+  main.import("runTools", child9);
+  main.import("evalJavaScriptTool", child9);
+  const child10 = runtime.module(define10);
+  main.import("thisModule", child10);
+  main.import("keepalive", child10);
+  main.import("main", child10);
+  main.import("runtime", child10);
+  main.import("repositionSetElement", child10);
+  main.import("observe", child10);
   main.variable(observer("viewof myModule")).define("viewof myModule", ["thisModule"], _myModule);
   main.variable(observer("myModule")).define("myModule", ["Generators", "viewof myModule"], (G, _) => G.input(_));
   main.variable(observer("getModules")).define("getModules", ["moduleMap"], _getModules);
   main.variable(observer("getModule")).define("getModule", ["getModules"], _getModule);
-  const child9 = runtime.module(define9);
-  main.import("tests", child9);
-  main.variable(observer()).define(["md"], _88);
+  const child11 = runtime.module(define11);
+  main.import("tests", child11);
+  main.variable(observer()).define(["md"], _97);
   main.variable(observer("prompts")).define("prompts", _prompts);
   main.variable(observer("reasoning_models")).define("reasoning_models", _reasoning_models);
-  main.variable(observer()).define(["md"], _91);
+  main.variable(observer()).define(["md"], _100);
   main.variable(observer("initial_response")).define("initial_response", ["viewof calls","Event","responses","viewof endpoint","model","instructions","prompt","viewof active_tools"], _initial_response);
+  main.variable(observer()).define(["step","calls"], _102);
   main.variable(observer("viewof calls")).define("viewof calls", ["Inputs"], _calls);
   main.variable(observer("calls")).define("calls", ["Generators", "viewof calls"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _94);
+  main.variable(observer()).define(["md"], _104);
   main.variable(observer("actions")).define("actions", ["error","viewof yolo","runTools","Event","htl","Inputs","followUpQuestionDialog","attempCompletetionDialog"], _actions);
   main.variable(observer("error")).define("error", ["htl"], _error);
   main.variable(observer("plan")).define("plan", ["htl","step","actions","viewof calls"], _plan);
@@ -1424,13 +1497,17 @@ export default function define(runtime, observer) {
   main.variable(observer("output_message")).define("output_message", ["htl","output_message_content"], _output_message);
   main.variable(observer("output_message_content")).define("output_message_content", ["output_message_content_output_text"], _output_message_content);
   main.variable(observer("output_message_content_output_text")).define("output_message_content_output_text", ["htl","md"], _output_message_content_output_text);
-  main.variable(observer()).define(["md"], _109);
-  main.variable(observer()).define(["context_menu"], _110);
-  const child10 = runtime.module(define10);
-  main.import("viewof selectedCell", child10);
-  main.import("selectedCell", child10);
-  main.import("context_menu", child10);
-  main.variable(observer()).define(["md","instructions"], _112);
-  main.variable(observer("instructions")).define("instructions", ["viewof selectedCell"], _instructions);
+  main.variable(observer()).define(["md"], _119);
+  main.variable(observer()).define(["context_menu"], _120);
+  const child12 = runtime.module(define12);
+  main.import("viewof selectedCell", child12);
+  main.import("selectedCell", child12);
+  main.import("context_menu", child12);
+  main.variable(observer()).define(["workingModule","md","instructions"], _122);
+  main.variable(observer("instructions")).define("instructions", ["keepalive","myModule","viewof workingModule","tests_module","peek_variableTool"], _instructions);
+  const child13 = runtime.module(define13);
+  main.import("expect", child13);
+  const child14 = runtime.module(define14);
+  main.import("foo", child14);
   return main;
 }

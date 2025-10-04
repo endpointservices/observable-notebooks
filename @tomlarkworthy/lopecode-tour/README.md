@@ -1,6 +1,6 @@
 # The Lopecode Tour
 
-https://observablehq.com/@tomlarkworthy/lopecode-tour@1038
+https://observablehq.com/@tomlarkworthy/lopecode-tour@1163
 
 View this notebook in your browser by running a web server in this folder. For
 example:
