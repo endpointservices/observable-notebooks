@@ -1,6 +1,6 @@
-# Roboco-op 2.0: Agentic Notebook Assistent
+# Roboco-op 3.0: Agentic Notebook Assistent
 
-https://observablehq.com/@tomlarkworthy/agentic-planner@2754
+https://observablehq.com/@tomlarkworthy/agentic-planner@2912
 
 View this notebook in your browser by running a web server in this folder. For
 example:

@@ -7,7 +7,7 @@ Wraps [Observable's inspect](https://github.com/observablehq/inspector) to a sin
 )}
 
 function _max_size(Inputs){return(
-Inputs.range([20, 500], { label: "max size", step: 1 })
+Inputs.range([3, 500], { label: "max size", step: 1 })
 )}
 
 function _example(summarizeJS,data,max_size){return(
@@ -67,7 +67,15 @@ function summarizeJS(value, { max_size = 5000 } = {}) {
     text = postProcess(inspection);
   }
   // If we've gone over max_size, return the last “prior” snapshot; otherwise current
-  return prior && text.length > max_size ? prior : text;
+  const best = prior && text.length > max_size ? prior : text;
+
+  if (best.length > max_size) {
+    const trimmed =
+      best.slice(0, (max_size - 1) / 2) +
+      "…" +
+      best.slice(best.length - (max_size - 1) / 2, best.length);
+    return trimmed;
+  } else return best;
 }
 )}
 
