@@ -1,40 +1,46 @@
-import define1 from "./98f34e974bb2e4bc@650.js";
-import define2 from "./e3a019069a130d79@6074.js";
+import define1 from "./98f34e974bb2e4bc@699.js";
+import define2 from "./e3a019069a130d79@6742.js";
 import define3 from "./5845e1ca935fea5a@225.js";
-import define4 from "./048a17a165be198d@271.js";
+import define4 from "./048a17a165be198d@273.js";
 import define5 from "./0e0b35a92c819d94@474.js";
 import define6 from "./1f41fef8b019cf4e@94.js";
 import define7 from "./f92778131fd76559@1208.js";
 import define8 from "./04318fffe4df9d1e@2463.js";
 import define9 from "./9ed286bafcced0c3@3013.js";
-import define10 from "./db42ae70222a8b08@995.js";
+import define10 from "./db42ae70222a8b08@1033.js";
 
 function _1(md){return(
-md`# Roboco-op 2.0: a computational blackboard for efficient human/AI collaboration
+md`# Roboco-op: a computational blackboard for efficient human/AI collaboration
+`
+)}
 
+function _2(md){return(
+md`⚠️ [Roboco-op 2.0 is out](https://observablehq.com/@tomlarkworthy/robocoop-2)`
+)}
+
+function _3(md){return(
+md`
 Robocoop is a different approach to building an AI coding assistant. In Robocoop, the LLM context is paired with code so it can be hand edited, imported, deleted and forked at any point during development. Its like Chat + Computational Notebook + RAG all wrapped into one.
 
 
 Roboco-op blends [Observablehq.com](https://observablehq.com/)'s reactive notebooks with an **open source** userspace AI coding assistant. Observable notebooks are a unique coding environment because the code development and runtime state are mixed together. This means Robocoop can write code, a human can edit, and the LLM read the output of program fragments all within a single fluid environment.
-
-TODO
-- Try it out button`
+`
 )}
 
-function _2(md){return(
+function _4(md){return(
 md`### [Forkable Quickstart Notebook](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate)
 
 A *"blank slate"* notebook is available [here](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate) which you should fork from for new projects. There are a selection of pre-packaged skill [here](https://observablehq.com/@tomlarkworthy/robocoop-skills) which can be copied and pasted into notebooks to provide specific expertise.`
 )}
 
-function _3(md){return(
+function _5(md){return(
 md`### Automatic Source <--> LLM Context
 
 In Roboco-op, a notebook cell is: code, execution, a prompt and an AI context **in a single atomic unit**. The chat context is a summation over all the cell's source code. You can edit _anything_ at _any_ time, in _any_ order **without losing state**. **The notebook _is_ the LLM state**. The AI will build upon whatever curated knowledge base that has been laid out via in-context learning.
 `
 )}
 
-function _4(html,md){return(
+function _6(html,md){return(
 md`### Copy and Paste Domain expertise with Skills
 ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/wx93r1pY_6Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
 
@@ -43,7 +49,7 @@ With Roboco-op notebook cells can become copy and pasteable [skills](https://obs
 `
 )}
 
-function _5(html,md){return(
+function _7(html,md){return(
 md`### \`highlight(<expr>)\` to bring runtime values into LLM context
 
 ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/RAEYuWhWtY4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
@@ -54,26 +60,29 @@ Roboco-op automatically synchronises notebook source code, but you can also prog
 Test-driven-development using \`highlight\` is such a powerful technique for producing production quality code that we have a template to fork directly from [here](https://observablehq.com/@tomlarkworthy/ai-tdd-template)`
 )}
 
-function _6(highlight){return(
+function _8(highlight){return(
 highlight(Math.random())
 )}
 
-function _7(md){return(
+function _9(md){return(
 md`If highlight is passed a Blob with an image mime type it will convert to a vision prompt. However, not all models support image prompting so the following cell is commented out (but works)`
 )}
 
-function _8(highlight,example_image){return(
-highlight(example_image)
+function _11(md){return(
+md`### RAG for getting started
+
+The [RAG extension](https://observablehq.com/@tomlarkworthy/rag-extension) adds relevant examples to the context based on the question, which helps with getting started on a fresh notebook.
+`
 )}
 
-function _9(md){return(
+function _12(md){return(
 md`### More
 
 
 Browse the main Roboco-op notebook ecosystem [here](https://observablehq.com/@tomlarkworthy/robocoop?collection=@tomlarkworthy/robocoop), or ask questions in <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>`
 )}
 
-function _10(md){return(
+function _13(md){return(
 md`
 Changes
 - 2025-02-06 Switch to XML
@@ -90,7 +99,7 @@ TODO:
 - Investigate Summarization (https://github.com/jimmc414/1filellm)`
 )}
 
-function _11(md){return(
+function _14(md){return(
 md`## Random Cell Made by Roboco-op`
 )}
 
@@ -164,13 +173,9 @@ function _pong_game(width)
 }
 
 
-function _13(md){return(
+function _16(md){return(
 md`## Prompt Interface
 `
-)}
-
-function _14(openaiCompletion){return(
-openaiCompletion({ prompt: "Write a haiku about Observable notebooks." })
 )}
 
 function _prompt(whisperInput,OPENAI_API_KEY,view,cautious,Inputs,invalidation)
@@ -201,13 +206,11 @@ function _prompt(whisperInput,OPENAI_API_KEY,view,cautious,Inputs,invalidation)
 }
 
 
-function _include_deps(Inputs){return(
-Inputs.toggle({
-  label: "include dependancies in context?"
-})
+function _18(formatted_instruction){return(
+formatted_instruction
 )}
 
-function _17(Inputs,cellsToClipboard,suggestion){return(
+function _19(Inputs,cellsToClipboard,suggestion){return(
 Inputs.button("copy code", {
   reduce: () => cellsToClipboard([suggestion])
 })
@@ -222,21 +225,31 @@ Inputs.textarea({
 })
 )}
 
-function _context_viz(Inputs,context){return(
-Inputs.textarea({
-  label: "context",
-  rows: 20,
-  width: "100%",
-  disabled: true,
-  value: context.map(({ role, content }) => `${role}:\n${content}\n`).join("\n")
-})
-)}
-
-function _20(context){return(
-context
-)}
-
 function _21(md){return(
+md`## Last Chat context`
+)}
+
+function _context_viz(Inputs,extension_context_previous,$0,html,inspect){return(
+Inputs.table(
+  [...extension_context_previous, ...$0.value].map((r) => ({
+    role: r.role,
+    content_or_function_call: r.content || r.function_call
+  })),
+  {
+    format: {
+      role: (role) =>
+        html`<span style="color: ${
+          role == "assistant" ? "red" : "black"
+        }">${role}`,
+      content_or_function_call: (f) =>
+        f.arguments ? inspect(JSON.parse(f.arguments)) : f
+    },
+    layout: "auto"
+  }
+)
+)}
+
+function _23(md){return(
 md`### AI Settings`
 )}
 
@@ -319,14 +332,14 @@ function _settings(Inputs,view,models,localStorageView){return(
     ]}</div>
     <div>${[
       "max_prompt_tokens",
-      Inputs.range([1, 200000], {
+      Inputs.range([1, 12000], {
         value: 4000,
         label: "max_tokens sent (oldest are truncated)"
       })
     ]}</div>
     <div>${[
       "max_tokens",
-      Inputs.range([1, 200000], {
+      Inputs.range([1, 32000], {
         value: 1000,
         label: "max_tokens for response"
       })
@@ -348,8 +361,8 @@ function _settings(Inputs,view,models,localStorageView){return(
       defaultValue: {
         model: "gpt-4-turbo",
         temperature: 0.7,
-        max_prompt_tokens: 10000,
-        max_tokens: 10000,
+        max_prompt_tokens: 4000,
+        max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
@@ -375,9 +388,7 @@ import <LIBRARY>
 assistant:
 <cell>
 <deps></deps>
-<![CDATA[
 import("https://esm.sh/<LIBRARY>@2.5.0")
-]]>
 </cell>
 
 user:
@@ -386,9 +397,7 @@ create an SVG element
 assistant:
 <cell>
 <deps>htl</deps>
-<code><![CDATA[
 htl.html\`<svg>\`
-]]></code>
 </cell>
 
 user:
@@ -397,9 +406,7 @@ create an UI for temperate variable from -10 to 10
 assistant:
 <cell>
 <deps>Inputs</deps>
-<code><![CDATA[
 viewof temperature = Inputs.range([-10, 10], {label: "set the temperature"})
-]]></code>
 </cell>
 
 user:
@@ -408,13 +415,10 @@ create a 1 second counter
 assistant:
 <cell>
 <deps></deps>
-<code><![CDATA[
 mutable counterIndirect = 0
-]]></code>
 </cell>
 <cell>
 <deps>mutable counterIndirect</deps>
-<code><![CDATA[
 mutable counter = {
   let i = 0;
   while (i < 100) {
@@ -423,7 +427,6 @@ mutable counter = {
   }
   yield i;
 }
-]]></code>
 </cell>
 
 user:
@@ -431,24 +434,21 @@ Tell me a joke
 assistant:
 <cell>
 <deps>md</deps>
-<code><![CDATA[
 md\`Why did the chicken cross the road?... to get to the other side\`
-]]></code>
 </cell>
 `
 )}
 
-function _28(md){return(
+function _30(md){return(
 md`## Roboco-op Implementation below`
 )}
 
-function _background_tasks(submit_context,submit_summary,find_context_extensions,on_prompt,api_call_response)
+function _background_tasks(submit_summary,find_context_extensions,on_prompt,context_updater,api_call_response)
 {
-  submit_context;
   submit_summary;
   find_context_extensions;
   on_prompt;
-
+  context_updater;
   api_call_response;
 }
 
@@ -466,10 +466,6 @@ Inputs.bind(
 )
 )}
 
-function _31(response){return(
-response.cells
-)}
-
 function _formatted_instruction(response)
 {
   if (response.action == "upsert_cells") {
@@ -483,49 +479,44 @@ function _response(on_prompt){return(
 on_prompt
 )}
 
-async function _on_prompt($0,system_prompt,$1,include_deps,prompt,$2,$3)
+async function _on_prompt(extension_context,prompt,$0,Event,$1,$2)
 {
-  // const extension_context_now = await extension_context({
-  //   question: prompt
-  // });
-  // viewof extension_context_previous.value = extension_context_now;
-  // viewof extension_context_previous.dispatchEvent(new Event("input"));
+  const extension_context_now = await extension_context({
+    question: prompt
+  });
+  $0.value = extension_context_now;
+  $0.dispatchEvent(new Event("input"));
   const payload = [
-    //...extension_context_now,
-    {
-      role: $0.value.model.startsWith("o1") ? "user" : "system",
-      content: system_prompt
-    },
-    ...(await $1.send({ include_deps })),
+    ...extension_context_now,
+    ...$1.value,
     {
       role: "user",
       content: prompt
     }
   ];
-  $2.value = payload;
   console.log("on_prompt", payload);
-  return $3.send(payload);
+  return $2.send(payload);
 }
 
 
-function _35(md){return(
-md`## Extensions
-
-Extensions like RAG dynamically build additional context on demand`
+function _36(md){return(
+md`## Extensions`
 )}
 
 function _context_extensions(Inputs){return(
 Inputs.input(new Set())
 )}
 
-function _find_context_extensions(runtime){return(
-[...runtime._variables].reduce((set, v) => {
-  if (v._value?.robocoop?.onContext) {
-    set.add(v._value?.robocoop?.onContext);
-  }
-  return set;
-}, new Set())
-)}
+function _find_context_extensions($0,code)
+{
+  $0.value = new Set(
+    Object.entries(code)
+      .map(([name, c]) => c)
+      .filter((cell) => cell.variables[0]._value?.robocoop?.onContext)
+      .map((cell) => cell.variables[0]._value?.robocoop?.onContext)
+  );
+}
+
 
 function _extension_context($0){return(
 async ({ question }) => {
@@ -537,174 +528,183 @@ async ({ question }) => {
 }
 )}
 
-function _39(md){return(
+function _40(md){return(
 md`### Context Construction`
 )}
 
-function _contextRequest(flowQueue){return(
-flowQueue({ timeout_ms: 180000 })
+function _testContext(Inputs,$0){return(
+Inputs.button("test context", {
+  reduce: () => $0.send()
+})
 )}
 
-function _41(contextRequest){return(
-contextRequest
+function _42(testContext){return(
+testContext
+)}
+
+function _contextRequest(flowQueue){return(
+flowQueue()
 )}
 
 function _modules(contextRequest,moduleMap,runtime)
 {
   contextRequest;
-  return moduleMap(contextRequest.runtime || runtime);
+  return moduleMap(runtime);
 }
 
 
-function _module_cells(main,modules,cellMap){return(
+function _cells(modules,cellMap){return(
 Promise.all(
-  [
-    [
-      main,
-      {
-        type: "main",
-        name: "main",
-        module: main
-      }
-    ],
-    ...modules.entries()
-  ].map(async ([m, mInfo]) => ({
+  [...modules.entries()].map(async ([m, mInfo]) => ({
     ...mInfo,
     cells: await cellMap(m)
   }))
 )
 )}
 
-function _module_summary(decompile){return(
-async (mInfo) => {
-  return `
-module: ${mInfo.name}
-
-${(
-  await Promise.all(
-    [...mInfo.cells.entries()].map(
-      async ([name, vars]) => `<cell>
-<deps>${vars[0]._inputs.map((i) => i._name).join(", ")}</deps>
-<code><![CDATA[
-${await decompile(vars).catch((err) => {
-  console.error("Unable to decompile", vars);
-})}
-]]></code>
-</cell>
-`
-    )
-  )
-).join("\n")}
-`;
-}
-)}
-
-function _main_module_summary(module_summary,module_cells){return(
-module_summary(module_cells[0])
-)}
-
-async function _all_module_summary(module_cells,module_summary){return(
-(await Promise.all(module_cells.map(module_summary))).join(
-  "\n"
-)
-)}
-
-function _submit_context($0,contextRequest,all_module_summary,main_module_summary,highlight_context){return(
-$0.resolve([
-  {
-    role: "user",
-    content: contextRequest.include_deps
-      ? all_module_summary
-      : main_module_summary
-  },
-  ...highlight_context
-])
-)}
-
 function _context(){return(
 []
 )}
 
-function _49(md){return(
-md`#### Compute highlighted Runtime Context`
+function _context_updater(unprompted_context,highlight_context,_,$0)
+{
+  const context = [...unprompted_context, ...highlight_context];
+  if (!_.isEqual($0.value, context)) {
+    $0.value = context;
+  }
+}
+
+
+function _extension_context_previous(Inputs){return(
+Inputs.input([])
 )}
 
-async function _highlight_context(module_cells,decompile,modelConfig){return(
-(
-  await Promise.all(
-    module_cells
-      .flatMap((m) => [...m.cells.entries()])
-      .flatMap(([name, variables]) =>
-        variables.map((variable) => [name, { variable, variables }])
-      )
-      .reduce((array, [name, { variable, variables }]) => {
-        if (variable._value && variable._value.robocoop) {
-          array.push({
-            name: name,
-            variable,
-            variables,
-            robocoop: variable._value.robocoop,
-            source: decompile(variables)
-          });
-        }
-        return array;
-      }, [])
-      .map(async (cell) => ({
-        ...cell,
-        source: await cell.source
-      }))
-  )
-).map(({ name, variable, variables, robocoop, source }) =>
-  robocoop.type === "json"
-    ? {
-        role: "user",
-        content: `
-The cell \`${name}\` defined as
-<cell>
-<deps>${variables[0]._inputs.map((i) => i._name).join(", ")}</deps>
-<code><![CDATA[
-${source}
-]]></code>
+function _unprompted_context(code){return(
+Object.entries(code)
+  .map(([name, c]) => c)
+  .filter((c) => !c.prompt)
+  .filter((c) => c.code && c.code !== "$0")
+  .sort((a, b) => a.time - b.time)
+  .flatMap((c) => [
+    {
+      role: "assistant",
+      content: `<cell>
+<deps>${c.variables[0]._inputs.map((i) => i._name).join(", ")}</deps>
+${c.code}
 </cell>
+`
+    }
+  ])
+)}
+
+function _highlight_context(code){return(
+Object.entries(code)
+  .flatMap(([k, cell]) =>
+    cell.variables[0]._value && cell.variables[0]._value.robocoop
+      ? [
+          {
+            cell: cell,
+            robocoop: cell.variables[0]._value.robocoop
+          }
+        ]
+      : []
+  )
+  .map(({ cell, robocoop }) =>
+    robocoop.type === "json"
+      ? {
+          role: "user",
+          content: `
+The cell \`${cell.cell_name}\` defined as
+~~~json
+${cell.code}
+~~~
 evaluated to
 ~~~${robocoop.type}
 ${robocoop.value}
 ~~~
 `
-      }
-    : {
-        role: "user",
-        content: [
-          {
-            type: "text",
-            text: `The cell \`${name}\` defined as
-<cell>
-<deps>${variables[0]._inputs.map((i) => i._name).join(", ")}</deps>
-<code><![CDATA[
-${source}
-]]></code>
-</cell>
+        }
+      : {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `The cell \`${cell.cell_name}\` defined as
+~~~json
+${cell.code}
+~~~
 is an image
 `
-          },
-
-          ...(modelConfig.image_url
-            ? [
-                {
-                  type: "image_url",
-                  image_url: {
-                    url: robocoop.value
-                  }
-                }
-              ]
-            : [])
-        ]
-      }
-)
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: robocoop.value
+              }
+            }
+          ]
+        }
+  )
 )}
 
 function _51(md){return(
-md`### History Memory`
+md`### Cell Analysis`
+)}
+
+async function _code(mainVariables,cellMap,main,decompile){return(
+mainVariables &&
+  Object.fromEntries(
+    await Promise.all(
+      [...(await cellMap(main, { excludeInbuilt: true })).entries()]
+        .filter(
+          ([name, variables]) =>
+            variables[0] !== undefined &&
+            !(typeof name == "string" && name.startsWith("@variable "))
+        )
+        .map(async ([name, variables]) => {
+          try {
+            return [
+              name,
+              {
+                module: "main",
+                code: await decompile(variables),
+                variables
+              }
+            ];
+          } catch (e) {
+            debugger;
+            throw e;
+          }
+        })
+    )
+  )
+)}
+
+function _selected_variables(mainVariables,excludes){return(
+Object.fromEntries(
+  mainVariables
+    .filter((v) => !excludes.has(v) && v._type == 1)
+    .map((v) => [v._name || v._observer.id, v])
+)
+)}
+
+async function _excludes(descendants,lookupVariable,thisModule){return(
+new Set([
+  ...descendants(await lookupVariable("mutable context", thisModule)),
+  ...descendants(await lookupVariable("viewof prompt", thisModule))
+])
+)}
+
+function _mainVariables(allVariables,main){return(
+[...allVariables].filter((v) => v._module === main)
+)}
+
+function _allVariables(variables,runtime){return(
+variables(runtime)
+)}
+
+function _thisModule(allVariables,tag){return(
+[...allVariables].find((v) => v._value === tag)._module
 )}
 
 function _tag(){return(
@@ -715,11 +715,11 @@ function _history(Inputs){return(
 Inputs.input([])
 )}
 
-function _54(md){return(
+function _60(md){return(
 md`---`
 )}
 
-function _55(md){return(
+function _61(md){return(
 md`## LLM API Call`
 )}
 
@@ -727,12 +727,16 @@ function _ask(flowQueue){return(
 flowQueue({ timeout_ms: 180000 })
 )}
 
-function _57(ask){return(
+function _63(ask){return(
 console.log("Ask", ask)
 )}
 
-function _prompt_messages(ask){return(
+function _prompt_messages($0,system_prompt,ask){return(
 [
+  {
+    role: $0.value.model.startsWith("o1") ? "user" : "system",
+    content: system_prompt
+  },
   ...ask
 ]
 )}
@@ -792,13 +796,13 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
       })
     };
   } else if (
-    model == "o3-mini" ||
     model == "o1-mini" ||
-    model == "o1-preview"
+    model == "o1-preview" ||
+    model == "o3-mini" ||
+    model.startsWith("o4")
   ) {
     return {
       type: "chat",
-      image_url: false,
       api: "https://api.openai.com/v1/chat/completions",
       roles: ["user", "assistant"],
       settings: {
@@ -814,16 +818,10 @@ function _modelConfig($0,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
         Authorization: `Bearer ${OPENAI_API_KEY}`
       })
     };
-  } else if (
-    model == "o1" ||
-    model == "o3" ||
-    model == "o4-mini" ||
-    model == "o4-mini-high"
-  ) {
+  } else if (model == "o1") {
     return {
       api: "https://api.openai.com/v1/chat/completions",
       type: "chat",
-      image_url: true,
       roles: ["user", "system", "assistant"],
       settings: {
         //functions: functions,
@@ -916,12 +914,13 @@ function process(content) {
     "text/xml"
   );
   const cells = [...doc.querySelectorAll("cell")];
+  debugger;
   return cells.map((cell) => ({
     inputs: cell
       .querySelector("deps")
       .textContent.split(",")
       .map((s) => s.trim()),
-    code: cell.querySelector("code").textContent.trim()
+    code: content
   }));
 }
 )}
@@ -930,7 +929,7 @@ function _api_call_response($0,instruction){return(
 $0.resolve(instruction) && instruction
 )}
 
-function _68(md){return(
+function _74(md){return(
 md`---`
 )}
 
@@ -943,28 +942,28 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer()).define(["html","md"], _4);
-  main.variable(observer()).define(["html","md"], _5);
-  main.variable(observer()).define(["highlight"], _6);
-  main.variable(observer()).define(["md"], _7);
-  main.variable(observer()).define(["highlight","example_image"], _8);
+  main.variable(observer()).define(["md"], _4);
+  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["html","md"], _6);
+  main.variable(observer()).define(["html","md"], _7);
+  main.variable(observer()).define(["highlight"], _8);
   main.variable(observer()).define(["md"], _9);
-  main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
-  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
+  main.variable(observer()).define(["md"], _12);
   main.variable(observer()).define(["md"], _13);
-  main.variable(observer()).define(["openaiCompletion"], _14);
+  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("pong_game")).define("pong_game", ["width"], _pong_game);
+  main.variable(observer()).define(["md"], _16);
   main.variable(observer("viewof prompt")).define("viewof prompt", ["whisperInput","OPENAI_API_KEY","view","cautious","Inputs","invalidation"], _prompt);
   main.variable(observer("prompt")).define("prompt", ["Generators", "viewof prompt"], (G, _) => G.input(_));
-  main.variable(observer("viewof include_deps")).define("viewof include_deps", ["Inputs"], _include_deps);
-  main.variable(observer("include_deps")).define("include_deps", ["Generators", "viewof include_deps"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _17);
+  main.variable(observer()).define(["formatted_instruction"], _18);
+  main.variable(observer()).define(["Inputs","cellsToClipboard","suggestion"], _19);
   main.variable(observer("viewof suggestion")).define("viewof suggestion", ["Inputs","formatted_instruction"], _suggestion);
   main.variable(observer("suggestion")).define("suggestion", ["Generators", "viewof suggestion"], (G, _) => G.input(_));
-  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","context"], _context_viz);
-  main.variable(observer("context_viz")).define("context_viz", ["Generators", "viewof context_viz"], (G, _) => G.input(_));
-  main.variable(observer()).define(["context"], _20);
   main.variable(observer()).define(["md"], _21);
+  main.variable(observer("viewof context_viz")).define("viewof context_viz", ["Inputs","extension_context_previous","mutable context","html","inspect"], _context_viz);
+  main.variable(observer("context_viz")).define("context_viz", ["Generators", "viewof context_viz"], (G, _) => G.input(_));
+  main.variable(observer()).define(["md"], _23);
   main.variable(observer("models")).define("models", _models);
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
   main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
@@ -975,44 +974,51 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof settings")).define("viewof settings", ["Inputs","view","models","localStorageView"], _settings);
   main.variable(observer("settings")).define("settings", ["Generators", "viewof settings"], (G, _) => G.input(_));
   main.variable(observer("system_prompt")).define("system_prompt", _system_prompt);
-  main.variable(observer()).define(["md"], _28);
-  main.variable(observer("background_tasks")).define("background_tasks", ["submit_context","submit_summary","find_context_extensions","on_prompt","api_call_response"], _background_tasks);
+  main.variable(observer()).define(["md"], _30);
+  main.variable(observer("background_tasks")).define("background_tasks", ["submit_summary","find_context_extensions","on_prompt","context_updater","api_call_response"], _background_tasks);
   main.variable(observer("viewof user_variable_filters")).define("viewof user_variable_filters", ["Inputs","localStorageView"], _user_variable_filters);
   main.variable(observer("user_variable_filters")).define("user_variable_filters", ["Generators", "viewof user_variable_filters"], (G, _) => G.input(_));
-  main.variable(observer()).define(["response"], _31);
   main.variable(observer("formatted_instruction")).define("formatted_instruction", ["response"], _formatted_instruction);
   main.variable(observer("response")).define("response", ["on_prompt"], _response);
-  main.variable(observer("on_prompt")).define("on_prompt", ["viewof settings","system_prompt","viewof contextRequest","include_deps","prompt","mutable context","viewof ask"], _on_prompt);
-  main.variable(observer()).define(["md"], _35);
+  main.variable(observer("on_prompt")).define("on_prompt", ["extension_context","prompt","viewof extension_context_previous","Event","mutable context","viewof ask"], _on_prompt);
+  main.variable(observer()).define(["md"], _36);
   main.variable(observer("viewof context_extensions")).define("viewof context_extensions", ["Inputs"], _context_extensions);
   main.variable(observer("context_extensions")).define("context_extensions", ["Generators", "viewof context_extensions"], (G, _) => G.input(_));
-  main.variable(observer("find_context_extensions")).define("find_context_extensions", ["runtime"], _find_context_extensions);
+  main.variable(observer("find_context_extensions")).define("find_context_extensions", ["viewof context_extensions","code"], _find_context_extensions);
   main.variable(observer("extension_context")).define("extension_context", ["viewof context_extensions"], _extension_context);
-  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["md"], _40);
+  main.variable(observer("viewof testContext")).define("viewof testContext", ["Inputs","viewof contextRequest"], _testContext);
+  main.variable(observer("testContext")).define("testContext", ["Generators", "viewof testContext"], (G, _) => G.input(_));
+  main.variable(observer()).define(["testContext"], _42);
   main.variable(observer("viewof contextRequest")).define("viewof contextRequest", ["flowQueue"], _contextRequest);
   main.variable(observer("contextRequest")).define("contextRequest", ["Generators", "viewof contextRequest"], (G, _) => G.input(_));
-  main.variable(observer()).define(["contextRequest"], _41);
   main.variable(observer("modules")).define("modules", ["contextRequest","moduleMap","runtime"], _modules);
-  main.variable(observer("module_cells")).define("module_cells", ["main","modules","cellMap"], _module_cells);
-  main.variable(observer("module_summary")).define("module_summary", ["decompile"], _module_summary);
-  main.variable(observer("main_module_summary")).define("main_module_summary", ["module_summary","module_cells"], _main_module_summary);
-  main.variable(observer("all_module_summary")).define("all_module_summary", ["module_cells","module_summary"], _all_module_summary);
-  main.variable(observer("submit_context")).define("submit_context", ["viewof contextRequest","contextRequest","all_module_summary","main_module_summary","highlight_context"], _submit_context);
+  main.variable(observer("cells")).define("cells", ["modules","cellMap"], _cells);
   main.define("initial context", _context);
   main.variable(observer("mutable context")).define("mutable context", ["Mutable", "initial context"], (M, _) => new M(_));
   main.variable(observer("context")).define("context", ["mutable context"], _ => _.generator);
-  main.variable(observer()).define(["md"], _49);
-  main.variable(observer("highlight_context")).define("highlight_context", ["module_cells","decompile","modelConfig"], _highlight_context);
+  main.variable(observer("context_updater")).define("context_updater", ["unprompted_context","highlight_context","_","mutable context"], _context_updater);
+  main.variable(observer("viewof extension_context_previous")).define("viewof extension_context_previous", ["Inputs"], _extension_context_previous);
+  main.variable(observer("extension_context_previous")).define("extension_context_previous", ["Generators", "viewof extension_context_previous"], (G, _) => G.input(_));
+  main.variable(observer("unprompted_context")).define("unprompted_context", ["code"], _unprompted_context);
+  main.variable(observer("highlight_context")).define("highlight_context", ["code"], _highlight_context);
   main.variable(observer()).define(["md"], _51);
+  main.variable(observer("code")).define("code", ["mainVariables","cellMap","main","decompile"], _code);
+  main.variable(observer("selected_variables")).define("selected_variables", ["mainVariables","excludes"], _selected_variables);
+  main.variable(observer("excludes")).define("excludes", ["descendants","lookupVariable","thisModule"], _excludes);
+  main.variable(observer("mainVariables")).define("mainVariables", ["allVariables","main"], _mainVariables);
+  main.variable(observer("viewof allVariables")).define("viewof allVariables", ["variables","runtime"], _allVariables);
+  main.variable(observer("allVariables")).define("allVariables", ["Generators", "viewof allVariables"], (G, _) => G.input(_));
+  main.variable(observer("thisModule")).define("thisModule", ["allVariables","tag"], _thisModule);
   main.variable(observer("tag")).define("tag", _tag);
   main.variable(observer("viewof history")).define("viewof history", ["Inputs"], _history);
   main.variable(observer("history")).define("history", ["Generators", "viewof history"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _54);
-  main.variable(observer()).define(["md"], _55);
+  main.variable(observer()).define(["md"], _60);
+  main.variable(observer()).define(["md"], _61);
   main.variable(observer("viewof ask")).define("viewof ask", ["flowQueue"], _ask);
   main.variable(observer("ask")).define("ask", ["Generators", "viewof ask"], (G, _) => G.input(_));
-  main.variable(observer()).define(["ask"], _57);
-  main.variable(observer("prompt_messages")).define("prompt_messages", ["ask"], _prompt_messages);
+  main.variable(observer()).define(["ask"], _63);
+  main.variable(observer("prompt_messages")).define("prompt_messages", ["viewof settings","system_prompt","ask"], _prompt_messages);
   main.variable(observer("token_analytics")).define("token_analytics", ["prompt_messages"], _token_analytics);
   main.variable(observer("trimmed_prompt")).define("trimmed_prompt", ["token_analytics","d3","settings"], _trimmed_prompt);
   main.variable(observer("modelConfig")).define("modelConfig", ["viewof settings","ANTHROPIC_API_KEY","OPENAI_API_KEY"], _modelConfig);
@@ -1022,7 +1028,7 @@ export default function define(runtime, observer) {
   main.variable(observer("content")).define("content", ["process","openAiResponse"], _content);
   main.variable(observer("process")).define("process", ["domParser"], _process);
   main.variable(observer("api_call_response")).define("api_call_response", ["viewof ask","instruction"], _api_call_response);
-  main.variable(observer()).define(["md"], _68);
+  main.variable(observer()).define(["md"], _74);
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("variables", child1);

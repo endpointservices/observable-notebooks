@@ -1,5 +1,5 @@
-import define1 from "./98f34e974bb2e4bc@650.js";
-import define2 from "./f096db8fcbc444bf@563.js";
+import define1 from "./98f34e974bb2e4bc@699.js";
+import define2 from "./f096db8fcbc444bf@565.js";
 
 function _1(md){return(
 md`# lopepage urls`

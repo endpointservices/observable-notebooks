@@ -1,6 +1,6 @@
-# Roboco-op 2.0: a computational blackboard for efficient human/AI collaboration
+# Roboco-op 2.1: Notebook collaborator
 
-https://observablehq.com/@tomlarkworthy/robocoop-2@3870
+https://observablehq.com/@tomlarkworthy/robocoop-2@4417
 
 View this notebook in your browser by running a web server in this folder. For
 example:
