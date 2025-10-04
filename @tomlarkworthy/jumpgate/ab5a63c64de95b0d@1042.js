@@ -1,14 +1,15 @@
 import define1 from "./893cd17fd1ceac98@21.js";
-import define2 from "./09fdee029150048c@436.js";
-import define3 from "./db42ae70222a8b08@995.js";
-import define4 from "./03dda470c56b93ff@8246.js";
+import define2 from "./09fdee029150048c@443.js";
+import define3 from "./db42ae70222a8b08@1033.js";
+import define4 from "./03dda470c56b93ff@8385.js";
 import define5 from "./00ef42626bb8784f@29.js";
 import define6 from "./674c4d9c6d6b8b60@66.js";
-import define7 from "./cc0400a7ad6d96d0@2961.js";
-import define8 from "./048a17a165be198d@271.js";
+import define7 from "./cc0400a7ad6d96d0@2964.js";
+import define8 from "./048a17a165be198d@273.js";
 import define9 from "./0e0b35a92c819d94@474.js";
-import define10 from "./98f34e974bb2e4bc@650.js";
+import define10 from "./98f34e974bb2e4bc@699.js";
 import define11 from "./1a271ff51d899f30@488.js";
+import define12 from "./db80e603859226c1@23.js";
 
 async function _1(FileAttachment,md){return(
 md`<div>
@@ -282,11 +283,20 @@ function _output(){return(
 undefined
 )}
 
-function _modules(embedded_frame,embedded_source,moduleMap,embedded_runtime)
+async function _modules(embedded_frame,embedded_source,moduleMap,embedded_runtime)
 {
   embedded_frame;
   embedded_source;
-  return moduleMap(embedded_runtime);
+  const modules = await moduleMap(embedded_runtime);
+
+  return modules;
+}
+
+
+function _check_module_map_invariants(expect,modules,embedded_frame,embedded_source)
+{
+  expect(modules.get(embedded_frame)).toBeDefined();
+  expect(modules.get(embedded_source)).toBeDefined();
 }
 
 
@@ -340,6 +350,7 @@ function _exported(register_additional_module,register_export_state,exportToHTML
 {
   register_additional_module;
   register_export_state;
+  debugger;
   return exportToHTML({
     notebook: frame_notebook,
     module: embedded_frame,
@@ -526,7 +537,7 @@ function _push_git(commit_git,git,filesystem,http,dir,ref,corsProxy,github_token
 }
 
 
-function _56(md){return(
+function _57(md){return(
 md`## Imports`
 )}
 
@@ -584,6 +595,7 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable output")).define("mutable output", ["Mutable", "initial output"], (M, _) => new M(_));
   main.variable(observer("output")).define("output", ["mutable output"], _ => _.generator);
   main.variable(observer("modules")).define("modules", ["embedded_frame","embedded_source","moduleMap","embedded_runtime"], _modules);
+  main.variable(observer("check_module_map_invariants")).define("check_module_map_invariants", ["expect","modules","embedded_frame","embedded_source"], _check_module_map_invariants);
   main.variable(observer("module_selections")).define("module_selections", ["modules"], _module_selections);
   main.variable(observer("exporters")).define("exporters", ["modules"], _exporters);
   main.variable(observer("register_additional_module")).define("register_additional_module", ["embedded_frame","embedded_source","module_selections","jsonFileAttachment","source_notebook","setFileAttachment"], _register_additional_module);
@@ -603,7 +615,7 @@ export default function define(runtime, observer) {
   main.variable(observer("add_git")).define("add_git", ["written_file","git","filesystem","dir"], _add_git);
   main.variable(observer("commit_git")).define("commit_git", ["commit","add_git","git","filesystem","dir","ref"], _commit_git);
   main.variable(observer("push_git")).define("push_git", ["commit_git","git","filesystem","http","dir","ref","corsProxy","github_token"], _push_git);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _57);
   const child1 = runtime.module(define1);
   main.import("Runtime", child1);
   main.import("Inspector", child1);
@@ -638,5 +650,7 @@ export default function define(runtime, observer) {
   main.import("toObject", child10);
   const child11 = runtime.module(define11);
   main.import("urlQueryFieldView", child11);
+  const child12 = runtime.module(define12);
+  main.import("expect", child12);
   return main;
 }

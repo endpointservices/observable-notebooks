@@ -1,6 +1,6 @@
 # Jumpgate
 
-https://observablehq.com/@tomlarkworthy/jumpgate@1015
+https://observablehq.com/@tomlarkworthy/jumpgate@1042
 
 View this notebook in your browser by running a web server in this folder. For
 example:

@@ -1,8 +1,8 @@
 import define1 from "./95647fc7733e3482@83.js";
-import define2 from "./f6282eaf525a00db@2236.js";
-import define3 from "./de3abeb05c4b090e@526.js";
-import define4 from "./98f34e974bb2e4bc@650.js";
-import define5 from "./ee79b1fa5101d6d9@3211.js";
+import define2 from "./f6282eaf525a00db@2251.js";
+import define3 from "./de3abeb05c4b090e@754.js";
+import define4 from "./98f34e974bb2e4bc@699.js";
+import define5 from "./ee79b1fa5101d6d9@3283.js";
 
 function _page(isOnObservableCom,lopeviz_handle_css,base_css,light_theme_css,linkTo,htl){return(
 htl.html`<div id="lopepage" style="height: ${isOnObservableCom() ? '800px' : '100vh'}">
@@ -308,11 +308,7 @@ function _imports(md){return(
 md`## Imports`
 )}
 
-function _vars(variables,runtime){return(
-variables(runtime)
-)}
-
-function _25(context_menu){return(
+function _24(context_menu){return(
 context_menu
 )}
 
@@ -348,7 +344,6 @@ export default function define(runtime, observer) {
   main.import("runtime", child2);
   main.import("visualizer", child2);
   main.import("Inspector", child2);
-  main.import("cellMaps", child2);
   main.import("lopeviz_handle_css", child2);
   const child3 = runtime.module(define3);
   main.import("viewof notebookModule", child3);
@@ -360,7 +355,6 @@ export default function define(runtime, observer) {
   main.import("serializeGoldenDSL", child3);
   main.import("parseGoldenDSL", child3);
   main.import("linkTo", child3);
-  main.import("variables", child3);
   main.import("exportState", child3);
   main.import("persistedAttachments", child3);
   main.import("getHashModules", child3);
@@ -371,9 +365,7 @@ export default function define(runtime, observer) {
   main.import("ascendants", child4);
   main.import("toObject", child4);
   main.import("isOnObservableCom", child4);
-  main.variable(observer("viewof vars")).define("viewof vars", ["variables","runtime"], _vars);
-  main.variable(observer("vars")).define("vars", ["Generators", "viewof vars"], (G, _) => G.input(_));
-  main.variable(observer()).define(["context_menu"], _25);
+  main.variable(observer()).define(["context_menu"], _24);
   const child5 = runtime.module(define5);
   main.import("context_menu", child5);
   return main;
