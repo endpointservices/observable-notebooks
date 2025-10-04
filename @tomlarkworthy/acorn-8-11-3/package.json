@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/acorn-8-11-3",
+  "main": "ba7429882b352b5b@18.js",
+  "version": "18.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/acorn-8-11-3",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
