@@ -1,6 +1,6 @@
 # Secure random ID
 
-https://observablehq.com/@tomlarkworthy/randomid@69
+https://observablehq.com/@tomlarkworthy/randomid@71
 
 View this notebook in your browser by running a web server in this folder. For
 example:
