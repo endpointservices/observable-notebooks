@@ -1,0 +1,218 @@
+<!doctype html>
+<notebook theme="air">
+  <title>How to make a Twitter BlueSky Bot</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# How to make a <strike>Twitter</strike> BlueSky Bot
+
+    <strike>This notebook describes how to use [@endpointservices](https://observablehq.com/@endpointservices) [cron](https://observablehq.com/@endpointservices/cron)/[zapier](https://observablehq.com/@endpointservices/zapier)/[serverless-cells](https://observablehq.com/@endpointservices/serverless-cells) to build a Twitter bot that tweets the [top trending notebook](https://observablehq.com/trending) on Observable once a day (Twitter account [@trendingnotebo2](https://twitter.com/trendingnotebo2)). This shows how to execute custom notebook logic on a schedule, which can be useful for lots of different things. </strike>
+
+    ### Update 2024-11-30
+    I have switched the bot over to BlueSky ([trendingnotebooks.bsky.social](https://bsky.app/profile/trendingnotebooks.bsky.social)). Instead of using Zapier, I post directly using the API (see [@tomlarkworthy/post-to-bluesky](https://observablehq.com/@tomlarkworthy/post-to-bluesky)).
+
+
+    Everything is done within the browser, there are no tools to install! The video is less than 10 minutes, information dense and does not waste time.
+
+    `
+  </script>
+  <script id="163" type="application/vnd.observable.javascript">
+    html`<iframe width="${width}" height="${width * 0.6}"src="https://www.youtube.com/embed/hE-XaOZE4Es" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+  </script>
+  <script id="263" type="application/vnd.observable.javascript">
+    md`#### Change log
+
+    - 11/03/2021 Tweet deduplication logic added using HTTP cache and content hashing`
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    md`## Cron job
+
+    A "cron" job calls another URL on a regular schedule. We will use this to trigger a tweet once day, by setting the URL to a serverless-cell HTTP handler served from this Notebook.
+    `
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    import {createCron} from '@endpointservices/cron'
+  </script>
+  <script id="125" type="application/vnd.observable.javascript">
+    viewof cronJob = createCron({
+      name: "tweetdaily",
+      schedule: "15 12 * * *", // Daily at 12:15 pm UTC
+      url: topTrending.href
+    })
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    md`## URL handler
+
+    The URL handler receives the ping from the cron service on a regular schedule. 
+
+    We create a custom handler using a serverless-cell. Calling "deploy" creates a public URL which will execute the code within the handler when called.
+
+    In our case we wish to send a Tweet about the top trending Notebook on [Observable](https://observablehq.com)
+
+
+    `
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    import { deploy } from "@endpointservices/webcode"
+  </script>
+  <script id="15" type="application/vnd.observable.javascript" pinned="">
+    topTrending = deploy(
+      "tweetTopTrending",
+      async (req, res, context) => {
+        const hasSent = (await db.child(contentHash).once("value")).val() !== null;
+        if (hasSent) return res.send("Already sent");
+        else {
+          try {
+            const response = await postWithImage(
+              "trendingnotebooks.bsky.social",
+              context.secrets["BLUESKY_TRENDING_APP_PASSWORD"],
+              imgBlob,
+              text
+            );
+            await db.child(contentHash).set(true);
+            return res.send(JSON.stringify(response));
+          } catch (err) {
+            return res.status(400).send(err.message);
+          }
+        }
+      },
+      {
+        modifiers: ["orchestrator"],
+        secrets: ["endpointservices_BLUESKY_TRENDING_APP_PASSWORD"]
+      }
+    )
+  </script>
+  <script id="301" type="application/vnd.observable.javascript">
+    db = firebase.database().ref(`/@endpointservices/twitter-bot`)
+  </script>
+  <script id="299" type="application/vnd.observable.javascript">
+    import {
+      firebase,
+      FKEY
+    } with { FIREBASE_CONFIG as firebaseConfig } from "@tomlarkworthy/firebase"
+  </script>
+  <script id="296" type="application/vnd.observable.javascript">
+    FIREBASE_CONFIG = ({
+      apiKey: "AIzaSyBN4bxw6d0cM0CGPNzRrkRlBqwFQnPLdN4",
+      databaseURL:
+        "https://larkworthy-dfb11-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "larkworthy-dfb11",
+      appId: "1:786910701676:web:8d7dd002acf3b78c74d049"
+    })
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    md`## <strike>Send Tweet</strike>
+
+    Calling the Twitter API and authenticating is quite a lot of work. Instead of figuring out how to do that we use Zapier. Zapier has integrations for thousands of things including Twitter. Endpoint Services has an integration with [Zapier](https://observablehq.com/@endpointservices/zapier), so we can reach *a lot* of functionality just by using [@endpointservices/zapier](https://observablehq.com/@endpointservices/zapier).
+
+
+    `
+  </script>
+  <script id="96" type="application/vnd.observable.javascript">
+    import {createTrigger} from '@endpointservices/zapier'
+  </script>
+  <script id="98" type="application/vnd.observable.javascript" pinned="">
+    sendTweet = createTrigger({
+        name: "sendTweet",
+        authorized_public_keys: ["cg24TseUZnvEiO3XtXCFD08E9bX83Sv4rBHe2cjvpmU="],
+        // Serverside check, ensure only the current trending tweet is used
+        checkPayload: (payload) => payload.text === text && payload.img.startsWith("https://static.observableusercontent.com/thumbnail/"), 
+        sample: {
+          text: text,
+          img: imgURL
+        }
+      })
+  </script>
+  <script id="353" type="text/markdown">
+    ## Post to BlueSky
+  </script>
+  <script id="355" type="application/vnd.observable.javascript">
+    import { postWithImage } from "@tomlarkworthy/post-to-bluesky"
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    viewof password = Inputs.password({
+      label: "app password"
+    })
+  </script>
+  <script id="367" type="application/vnd.observable.javascript">
+    imgBlob = (await fetchp(imgURL)).blob()
+  </script>
+  <script id="369" type="application/vnd.observable.javascript" pinned="">
+    postWithImage("trendingnotebooks.bsky.social", password, imgBlob, text)
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    md`## Fetching Top Trending Notebook
+
+    To figure out the top trending Tweet we call the Observable API.
+    `
+  </script>
+  <script id="90" type="application/vnd.observable.javascript">
+    md`
+    Observable's trending URL (/documents/public/trending) does not support cross origin requests so we use [fetchp](https://observablehq.com/@tomlarkworthy/fetchp) to get the data instead.
+    `
+  </script>
+  <script id="28" type="application/vnd.observable.javascript">
+    import {fetchp} from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="149" type="application/vnd.observable.javascript">
+    md`Now we can call the Observable API`
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    trendingResponse = await fetchp(
+      "https://api.observablehq.com/documents/public/trending?page=1"
+    )
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    trending = trendingResponse.status == 200
+      ? trendingResponse.json()
+      : new Error(await trendingResponse.text())
+  </script>
+  <script id="201" type="application/vnd.observable.javascript">
+    md`The top notebook is the first result`
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    topNotebook = trending.results[0]
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    md`#### Top notebook Tweet Text`
+  </script>
+  <script id="345" type="application/vnd.observable.javascript">
+    suffix = topNotebook.slug == null
+      ? `d/${topNotebook.id}`
+      : `@${topNotebook.owner.login}/${topNotebook.slug}`
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    text = `"${topNotebook.title}" by ${topNotebook.owner.name} https://observablehq.com/${suffix}`
+  </script>
+  <script id="58" type="application/vnd.observable.javascript">
+    md`#### Top Notebook image`
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    imgURL = `https://static.observableusercontent.com/thumbnail/${topNotebook.thumbnail}.jpg`
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    img = html`<img src=${imgURL}></img>`
+  </script>
+  <script id="246" type="application/vnd.observable.javascript">
+    md`### Content hash`
+  </script>
+  <script id="234" type="application/vnd.observable.javascript">
+    hash = async (str) => {
+      let strBuf = new TextEncoder('utf-8').encode(str);
+      const buffer = await crypto.subtle.digest("SHA-256", strBuf);
+      const hashArray = Array.from(new Uint8Array(buffer));                    
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      return hashHex;
+    }
+  </script>
+  <script id="249" type="application/vnd.observable.javascript" pinned="">
+    contentHash = hash(text)
+  </script>
+  <script id="310" type="application/vnd.observable.javascript" pinned="">
+    contentHash.length
+  </script>
+  <script id="339" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="341" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

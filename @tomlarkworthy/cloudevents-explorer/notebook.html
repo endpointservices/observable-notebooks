@@ -1,0 +1,314 @@
+<!doctype html>
+<notebook theme="air">
+  <title>CloudEvents Explorer</title>
+  <script id="0" type="text/markdown">
+    # [CloudEvents](https://github.com/cloudevents/spec/blob/v1.0.1/spec.md) Explorer
+
+    Events are an extremely common concept in computers to decouple generic producers and consumers. For instance, Zapier allows actions to be triggers by events. Github exposes subscriptions of repository events in their API. Kubernetes has an internal events bus etc.
+
+    There is no standard for what an events should look like. The [Cloud Native Computing Foundation (CNCF)](https://cncf.io/) had a stab at it though, so I will use their deliberations as a base for event driven work. 
+
+    *"CloudEvents is a vendor-neutral specification for defining the format of event data." https://github.com/cloudevents/spec/blob/v1.0.1/spec.md*
+
+    It defines some useful common metadata (id, time, type, source and subject) along with an opaque data payload and the data encoding formal (e.g. JSON/gRPC).
+
+    This notebook is a UI component for exploring some deserialized CloudEvent data drawn from *somewhere* using Plot. For the demo I have taken some IP network data and transformed put it in the CloudEvents envelope. This dataset has too many pointscand dimensions which messes up the scale.
+
+  </script>
+  <script id="370" type="application/vnd.observable.javascript">
+    eventExplorer = (events, settings) => {
+      let options = {
+        ...(settings.xDim && { x: (d) => _.get(d, settings.xDim) }),
+        ...(settings.yDim && { y: (d) => _.get(d, settings.yDim) }),
+        ...(settings.zDim && { z: (d) => _.get(d, settings.zDim) }),
+        ...(settings.fillDim && { fill: (d) => _.get(d, settings.fillDim) }),
+        ...(settings.strokeDim && { stroke: (d) => _.get(d, settings.strokeDim) }),
+        title: tooltip
+      };
+
+      options = settings.groupX
+        ? Plot.groupX({ y: settings.groupX }, options)
+        : options;
+      options = settings.groupY
+        ? Plot.groupY({ x: settings.groupY }, options)
+        : options;
+
+      return addTooltips(
+        Plot.plot({
+          x: {
+            //type: "time"
+          },
+          facet: {
+            data: events,
+            ...(settings.facetX && { x: (d) => _.get(d, settings.facetX) }),
+            ...(settings.facetY && { y: (d) => _.get(d, settings.facetY) })
+          },
+          marks: [_.get(Plot, settings.mark)(events, options)]
+        })
+      );
+    }
+  </script>
+  <script id="204" type="text/markdown">
+    ### Demo Data: IP Network Traffic Flows Labeled with 75 Apps
+    *Labeled IP flows with their Application Protocol*
+
+    source: https://www.kaggle.com/jsrojas/ip-network-traffic-flows-labeled-with-87-apps
+  </script>
+  <script id="567" type="application/vnd.observable.javascript">
+    {
+      const preset = (args) => {
+        viewof settings.value = _.merge(viewof settings.value, args);
+        viewof settings.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      return htl.html`
+        <h4>Demo Presets</h4>
+        <div style="display: flex">
+          ${Inputs.button("Bytes/sec per LABEL over time", {
+            reduce: () => {
+              preset({
+                mark: "barY",
+                xDim: "time",
+                yDim: "data.flow_bytes_s",
+                zDim: null,
+                strokeDim: null,
+                fillDim: null,
+                facetX: null,
+                facetY: "data.protocolname",
+                groupX: "sum",
+                groupY: null
+              });
+            }
+          })}
+
+          ${Inputs.button("sourceports", {
+            reduce: () => {
+              preset({
+                mark: "barY",
+                xDim: "data.source_port",
+                yDim: null,
+                zDim: null,
+                strokeDim: null,
+                fillDim: null,
+                facetX: null,
+                facetY: null,
+                groupX: "count",
+                groupY: null
+              });
+            }
+          })}
+
+          ${Inputs.button("fwd_packets_s", {
+            reduce: () => {
+              preset({
+                mark: "tickX",
+                xDim: "data.fwd_packets_s",
+                yDim: null,
+                zDim: null,
+                strokeDim: null,
+                fillDim: null,
+                facetX: null,
+                facetY: null,
+                groupX: null,
+                groupY: null
+              });
+            }
+          })}
+
+        `;
+    }
+  </script>
+  <script id="724" type="application/vnd.observable.javascript">
+    md`
+
+    Code for the graph below
+    ~~~js
+    eventExplorer(data, ${JSON.stringify(
+      Object.fromEntries(Object.entries(settings).filter(([k, v]) => v)),
+      null,
+      2
+    )})
+    ~~~
+
+    `
+  </script>
+  <script id="399" type="application/vnd.observable.javascript">
+    viewof settings = view`<div>
+      ${[
+        "mark",
+        Inputs.select(marks, {
+          label: "mark"
+        })
+      ]}
+      ${[
+        "xDim",
+        Inputs.select([undefined].concat(dims), {
+          label: "xDim"
+        })
+      ]}
+      ${[
+        "yDim",
+        Inputs.select([undefined].concat(dims), {
+          label: "yDim"
+        })
+      ]}
+      ${[
+        "zDim",
+        Inputs.select([undefined].concat(dims), {
+          label: "zDim"
+        })
+      ]}
+      ${[
+        "strokeDim",
+        Inputs.select([undefined].concat(dims), {
+          label: "strokeDim"
+        })
+      ]}
+      ${[
+        "fillDim",
+        Inputs.select([undefined].concat(dims), {
+          label: "fillDim"
+        })
+      ]}
+      ${[
+        "facetX",
+        Inputs.select([undefined].concat(dims), {
+          label: "facetX"
+        })
+      ]}
+      ${[
+        "facetY",
+        Inputs.select([undefined].concat(dims), {
+          label: "facetY"
+        })
+      ]}
+      ${[
+        "groupX",
+        Inputs.select([undefined].concat(reducers), {
+          label: "groupX"
+        })
+      ]}
+      ${[
+        "groupY",
+        Inputs.select([undefined].concat(reducers), {
+          label: "groupY"
+        })
+      ]}
+    `
+  </script>
+  <script id="521" type="application/vnd.observable.javascript">
+    viewof exampleEventExplorer = eventExplorer(events, settings)
+  </script>
+  <script id="673" type="text/markdown">
+    ### Cloud events
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    // Helper, just supply at-least data
+    createEvent = (args) => ({
+      specversion: "1.0",
+      id: randomId(),
+      time: new Date(),
+      type: "default",
+      source: "createEvent()",
+      subject: "default",
+      datacontenttype: "application/json",
+      data: undefined,
+      ...args
+    })
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    exampleEvent = createEvent()
+  </script>
+  <script id="464" type="application/vnd.observable.javascript">
+    viewof storedSettings = localStorageView("settings", { json: true })
+  </script>
+  <script id="467" type="application/vnd.observable.javascript" pinned="">
+    pageLoad = {
+      _.merge(viewof settings.value, {
+        // Default if no data in storage
+        mark: "tickX",
+        xDim: "data.fwd_packets_s"
+      });
+      _.merge(viewof settings.value, viewof storedSettings.value);
+    }
+  </script>
+  <script id="471" type="application/vnd.observable.javascript">
+    saveToStorage = (pageLoad, Inputs.bind(viewof storedSettings, viewof settings))
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    randomId = () => Math.random().toString(16).substring(2, 12)
+  </script>
+  <script id="43" type="application/vnd.observable.javascript" pinned="">
+    events = ipNetwork
+  </script>
+  <script id="515" type="application/vnd.observable.javascript">
+    reducers = [
+      "count",
+      "sum",
+      "proportion",
+      "min",
+      "max",
+      "mean",
+      "median",
+      "variance",
+      "deviation",
+      "first",
+      "last"
+    ]
+  </script>
+  <script id="535" type="application/vnd.observable.javascript">
+    marks = ["dot", "tickX", "tickY", "barX", "barY", "cell", "line", "rect"]
+  </script>
+  <script id="118" type="application/vnd.observable.javascript">
+    tooltip = (d) => JSON.stringify(d, null, 2)
+  </script>
+  <script id="350" type="application/vnd.observable.javascript" pinned="">
+    dims = Object.keys(events[0])
+      .filter((k) => k !== "data")
+      .concat(Object.keys(events[0].data).map((k) => "data." + k))
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    import { addTooltips } from "@mkfreeman/plot-tooltip"
+  </script>
+  <script id="215" type="application/vnd.observable.javascript" pinned="">
+    ipNetwork = {
+      const parseTime = d3.timeParse("%d/%m/%Y%H:%M:%S");
+      return network_csv.map((d) =>
+        createEvent({
+          time: parseTime(d.Timestamp),
+          subject: d["Flow.ID"],
+          data: Object.fromEntries(
+            Object.entries(d).map(([key, v]) => {
+              key = key.toLowerCase().replaceAll(".", "_");
+              if (key.includes("total")) return [key, Number.parseInt(v)];
+              if (key.includes("count")) return [key, Number.parseInt(v)];
+              if (key.includes("mean")) return [key, Number.parseFloat(v)];
+              if (key.includes("std")) return [key, Number.parseFloat(v)];
+              if (key.includes("port")) return [key, Number.parseInt(v)];
+              if (key.includes("bytes_s")) return [key, Number.parseFloat(v)];
+              if (key.includes("packets_s")) return [key, Number.parseFloat(v)];
+              if (key.includes("min")) return [key, Number.parseFloat(v)];
+              if (key.includes("max")) return [key, Number.parseFloat(v)];
+              if (key.includes("duration")) return [key, Number.parseInt(v)];
+
+              if (key == "timestamp") return [key, parseTime(v)];
+              return [key, v];
+            })
+          )
+        })
+      );
+    }
+  </script>
+  <script id="210" type="application/vnd.observable.javascript">
+    network_csv = (
+      await FileAttachment("Dataset-Unicauca-Version2-10k.csv.zip").zip()
+    )
+      .file("Dataset-Unicauca-Version2-10k.csv")
+      .csv()
+  </script>
+  <script id="366" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view"
+  </script>
+  <script id="390" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+</notebook>

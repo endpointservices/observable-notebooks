@@ -1,0 +1,166 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Code generation with multi-cell clipboard pasting</title>
+  <script id="0" type="text/markdown">
+    # Code generation with multi-cell clipboard pasting
+
+    With this notebook, you can programmatically populate clipboard data with pastable cells. The intent is to help code-generation. After the core utilities, there is an ES6 module destructurer intended to help wrap dynamically imported modules in a notebook enabling destructuring.
+
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/E2e_TcvS6Bg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </script>
+  <script id="53" type="application/vnd.observable.javascript" pinned="">
+    viewof clipboard = {
+      const ui = Inputs.textarea({
+        label:
+          "Paste a cell selection into here to see the format of multicell clipboard data"
+      });
+      ui.addEventListener("paste", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        ui.value = event.clipboardData.getData(MIME_TYPE);
+        ui.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      return ui;
+    }
+  </script>
+  <script id="368" type="application/vnd.observable.javascript" pinned="">
+    $foo
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    {
+      const ui = Inputs.textarea({
+        label: "Copy multicell data from here",
+        rows: 10,
+        value: `[{"id":80,"value":"viewof name = Inputs.text({ label: \\\"Enter your name\\\" })","pinned":false,"mode":"js","data":null,"name":null},{"id":84,"value":"md\`👋 hi '${name}'.\`","pinned":true,"mode":"js","data":null,"name":null}]`
+      });
+      ui.addEventListener("copy", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const source = JSON.parse(ui.value);
+        event.clipboardData.setData("text/plain", source.join("\n\n"));
+        event.clipboardData.setData(
+          "application/vnd.observablehq+json",
+          JSON.stringify(source)
+        );
+      });
+      return ui;
+    }
+  </script>
+  <script id="145" type="text/markdown">
+    ### Module destructurer
+
+    Observable doesn't support destructuring syntax with external ES modules, for example:-
+
+    ```js
+    import { getAuth, onAuthStateChanged } from "firebase/auth";
+    ```
+  </script>
+  <script id="162" type="text/markdown">
+    However, we can simply write a cell for each destructurable method that forwards to a common dynamically imported module for the same effect. This enclosing notebook *can* be destructured on import:
+
+    ```js
+    import { getAuth, onAuthStateChanged } from "@tom.larkworthy/firebase-auth";
+    ```
+
+    so you end up with an identical API. The painful part is writing all the cells, so here have build a helper for auto-generating the code based on reflection of the module object
+  </script>
+  <script id="148" type="application/vnd.observable.javascript">
+    viewof modulePath = {
+      const ui = Inputs.text({
+        submit: true,
+        label: "Path to a dynamic module",
+        value: "https://www.gstatic.com/firebasejs/9.9.2/firebase-remote-config.js"
+      });
+
+      return ui;
+    }
+  </script>
+  <script id="181" type="application/vnd.observable.javascript">
+    identifier = [...modulePath]
+      .map((char) => (allowedCharacters.includes(char) ? char : "_"))
+      .join("")
+  </script>
+  <script id="175" type="application/vnd.observable.javascript">
+    module = import(modulePath)
+  </script>
+  <script id="178" type="application/vnd.observable.javascript">
+    code = [
+      {
+        id: 2,
+        value: `---
+    #### ${viewof modulePath.value}
+    generated with [paste-codegen](https://observablehq.com/@tomlarkworthy/paste-codegen)`,
+        pinned: false,
+        mode: "md",
+        data: null,
+        name: ""
+      },
+      {
+        id: 3,
+        value: `${identifier} = import('${modulePath}')`,
+        pinned: false,
+        mode: "js",
+        data: null,
+        name: null
+      }
+    ].concat(
+      Object.keys(module)
+        .sort()
+        .filter((property) => property !== "default")
+        .map((property, i) => ({
+          id: i + 4,
+          value: `${property} = ${identifier}['${property}']`,
+          pinned: false,
+          mode: "js",
+          data: null,
+          name: null
+        }))
+    )
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    {
+      const ui = Inputs.textarea({
+        label: "Copy destructured code here",
+        rows: 10,
+        value: JSON.stringify(code)
+      });
+      ui.addEventListener("copy", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const source = JSON.parse(ui.value);
+        event.clipboardData.setData("text/plain", source.join("\n\n"));
+        event.clipboardData.setData(
+          "application/vnd.observablehq+json",
+          JSON.stringify(source)
+        );
+      });
+      return ui;
+    }
+  </script>
+  <script id="34" type="text/markdown">
+    ## Technical Background
+
+    so I don't forget how to debug this!
+  </script>
+  <script id="38" type="application/vnd.observable.javascript">
+    MIME_TYPE = "application/vnd.observablehq+json"
+  </script>
+  <script id="30" type="text/markdown">
+
+    Observable uses a special mime-type to enable pasting of cells. You can discover this by setting a breakpoint on ClipboardEvents and pasting as normal, which will reveal the ClipBoardEvent and its types in the debugger
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    image = FileAttachment("image.png").image()
+  </script>
+  <script id="185" type="application/vnd.observable.javascript">
+    allowedCharacters = [
+      ..."abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    ]
+  </script>
+  <script id="247" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="274" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,558 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Notebook Process Visualizer</title>
+  <script id="0" type="text/markdown">
+    # Notebook Process Visualizer
+
+    Notes: only fetching by cookie works
+
+  </script>
+  <script id="2805" type="application/vnd.observable.javascript">
+    example = ({
+      first_public_version: null,
+      paused_version: null,
+      published_versions: [],
+      events: [
+        {
+          type: "create",
+          version: 2763,
+          node_id: null,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:43:49.741Z"
+        },
+        {
+          type: "modify_node",
+          version: 2765,
+          node_id: 2764,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:46:00.349Z",
+          is_new: true,
+          node_value_start: 'Inputs.input("notebook URL")'
+        },
+        {
+          type: "unpin_node",
+          version: 2766,
+          node_id: 2764,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:46:02.601Z"
+        },
+        {
+          type: "modify_node",
+          version: 2767,
+          node_id: 2764,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:46:18.167Z",
+          node_name: "notebookURL"
+        },
+        {
+          type: "remove_node",
+          version: 2768,
+          node_id: 2764,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:46:29.687Z"
+        },
+        {
+          type: "modify_node",
+          version: 2770,
+          node_id: 2769,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:46:56.598Z",
+          is_new: true,
+          node_name: "targetURL"
+        },
+        {
+          type: "unpin_node",
+          version: 2771,
+          node_id: 2769,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:47:01.299Z"
+        },
+        {
+          type: "modify_node",
+          version: 2773,
+          node_id: 2772,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:47:48.714Z",
+          is_new: true,
+          node_value_start: 'import { fetchp } from "@tomlarkworthy/'
+        },
+        {
+          type: "unpin_node",
+          version: 2774,
+          node_id: 2772,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-05T05:47:50.343Z"
+        },
+        {
+          type: "modify_node",
+          version: 2775,
+          node_id: 0,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T07:57:25.571Z",
+          node_value_start: "# Notebook Process Visualizer\n"
+        },
+        {
+          type: "modify_title",
+          version: 2776,
+          node_id: null,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T07:57:25.717Z",
+          title: "Notebook Process Visualizer"
+        },
+        {
+          type: "modify_node",
+          version: 2778,
+          node_id: 2777,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:13:34.186Z",
+          is_new: true,
+          node_name: "jwtPassword"
+        },
+        {
+          type: "unpin_node",
+          version: 2779,
+          node_id: 2777,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:13:35.477Z"
+        },
+        {
+          type: "modify_node",
+          version: 2780,
+          node_id: 2777,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:13:49.334Z",
+          node_name: "jwtPassword"
+        },
+        {
+          type: "remove_node",
+          version: 2781,
+          node_id: 2777,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:17:10.977Z"
+        },
+        {
+          type: "remove_node",
+          version: 2782,
+          node_id: 2769,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:17:15.954Z"
+        },
+        {
+          type: "modify_node",
+          version: 2784,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:17:54.288Z",
+          is_new: true,
+          node_name: "notebook_json"
+        },
+        {
+          type: "modify_node",
+          version: 2785,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:17:59.443Z",
+          node_name: "notebook_json"
+        },
+        {
+          type: "modify_node",
+          version: 2787,
+          node_id: 2786,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:18:18.577Z",
+          is_new: true,
+          node_value_start: "highlight(notebook_json)"
+        },
+        {
+          type: "unpin_node",
+          version: 2788,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:18:58.908Z"
+        },
+        {
+          type: "modify_node",
+          version: 2789,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:19:08.318Z",
+          node_name: "notebook_json"
+        },
+        {
+          type: "modify_node",
+          version: 2790,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:19:32.257Z",
+          node_name: "notebook_json"
+        },
+        {
+          type: "modify_node",
+          version: 2792,
+          node_id: 2791,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:20:43.143Z",
+          is_new: true,
+          node_name: "events_over_time"
+        },
+        {
+          type: "remove_node",
+          version: 2793,
+          node_id: 2791,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:20:48.080Z"
+        },
+        {
+          type: "modify_node",
+          version: 2795,
+          node_id: 2794,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:21:46.713Z",
+          is_new: true,
+          node_value_start: "Plot.plot({\n    y: {\n        label: 'Ac"
+        },
+        {
+          type: "modify_node",
+          version: 2796,
+          node_id: 2794,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:21:49.636Z",
+          node_value_start: 'Plot.plot({\n  y: {\n    label: "Action",'
+        },
+        {
+          type: "modify_node",
+          version: 2798,
+          node_id: 2797,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:22:20.623Z",
+          is_new: true,
+          node_name: "history"
+        },
+        {
+          type: "modify_node",
+          version: 2799,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:22:25.085Z",
+          node_name: "notebook_history_str"
+        },
+        {
+          type: "modify_node",
+          version: 2800,
+          node_id: 2786,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:22:28.489Z",
+          node_value_start: "highlight(notebook_history_str)"
+        },
+        {
+          type: "modify_node",
+          version: 2801,
+          node_id: 2786,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:22:35.401Z",
+          node_value_start: "highlight(history)"
+        },
+        {
+          type: "modify_node",
+          version: 2802,
+          node_id: 2783,
+          user_id: "5215f6ec4a999d40",
+          time: "2024-10-06T09:24:02.311Z",
+          node_name: "notebook_history_str"
+        }
+      ],
+      merges: [],
+      users: [
+        {
+          id: "5215f6ec4a999d40",
+          avatar_url:
+            "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+          login: "tomlarkworthy",
+          name: "Tom Larkworthy",
+          bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+          home_url: "https://taktile.com",
+          tier: "pro"
+        }
+      ],
+      identifiers: [
+        [
+          0,
+          {
+            node_value_start: "# Roboco-op: Blank Slate <!-- REWRITE TH"
+          }
+        ],
+        [
+          81,
+          {
+            node_value_start: "viewof prompt"
+          }
+        ],
+        [
+          1014,
+          {
+            node_value_start: 'Inputs.button("copy code", {\n  reduce: ('
+          }
+        ],
+        [
+          105,
+          {
+            node_value_start: "viewof suggestion"
+          }
+        ],
+        [
+          1463,
+          {
+            node_value_start: "## Current Chat context\ncode is automati"
+          }
+        ],
+        [
+          1252,
+          {
+            node_value_start: "viewof context_viz"
+          }
+        ],
+        [
+          1692,
+          {
+            node_value_start: "### AI Settings"
+          }
+        ],
+        [
+          29,
+          {
+            node_value_start: "viewof OPENAI_API_KEY"
+          }
+        ],
+        [
+          2061,
+          {
+            node_value_start: "viewof api_endpoint"
+          }
+        ],
+        [
+          2163,
+          {
+            node_value_start: "viewof settings"
+          }
+        ],
+        [
+          2760,
+          {
+            node_value_start: "rag"
+          }
+        ],
+        [
+          2193,
+          {
+            node_value_start: "---"
+          }
+        ],
+        [
+          2114,
+          {
+            node_value_start: "import {\n  ask,\n  excludes,\n  cells,\n  u"
+          }
+        ],
+        [
+          2738,
+          {
+            node_value_start: 'import { extension as rag } from "@tomla'
+          }
+        ],
+        [
+          2179,
+          {
+            node_value_start: "background_tasks"
+          }
+        ]
+      ]
+    })
+  </script>
+  <script id="2869" type="application/vnd.observable.javascript">
+    viewof observable_api_key = Inputs.bind(
+      Inputs.password({
+        label: "Observable API KEY"
+      }),
+      localStorageView("OBSERVABLE_API_KEY")
+    )
+  </script>
+  <script id="2783" type="application/vnd.observable.javascript">
+    viewof notebook_history_str = ({
+      prompt:
+        "Add a text area for pasting the nobook /history endpoint response JSON",
+      time: 1728206267469
+    } &&
+      Inputs.textarea({
+        label: "Paste notebookc/history endpoint response JSON here",
+        placeholder: "{...}",
+        value: JSON.stringify(example, null, 2)
+      }))
+  </script>
+  <script id="2797" type="application/vnd.observable.javascript" pinned="">
+    history = JSON.parse(notebook_history_str)
+  </script>
+  <script id="2815" type="application/vnd.observable.javascript" pinned="">
+    events = history.events.map((e) => ({
+      ...e,
+      time: new Date(e.time)
+    }))
+  </script>
+  <script id="2786" type="application/vnd.observable.javascript" pinned="">
+    highlight(events)
+  </script>
+  <script id="2833" type="application/vnd.observable.javascript" pinned="">
+    sample_version = events[0].version
+  </script>
+  <script id="2837" type="application/vnd.observable.javascript" pinned="">
+    (await fetchp(`https://api.observablehq.com/document/869e23521ea3e7eb`)).text()
+  </script>
+  <script id="2856" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(`https://api.observablehq.com/document/869e23521ea3e7eb@2846`)
+    ).text()
+  </script>
+  <script id="2850" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/document/@tomlarkworthy/scrape-notebook-history`
+      )
+    ).text()
+  </script>
+  <script id="2859" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/document/@tomlarkworthy/scrape-notebook-history@2846`
+      )
+    ).text()
+  </script>
+  <script id="2893" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/document/@tomlarkworthy/scrape-notebook-history@2846`
+      )
+    ).text()
+  </script>
+  <script id="2879" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/d/869e23521ea3e7eb@2844.js?v=3&api_key=${observable_api_key}`,
+        {
+          headers: {
+            authorization: `APIKey ${observable_api_key}`
+          }
+        }
+      )
+    ).text()
+  </script>
+  <script id="2888" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/d/869e23521ea3e7eb@2844.js?v=3&api_key=${observable_api_key}`,
+        {
+          headers: {
+            origin: "https://observablehq.com",
+            authorization: `APIKey ${observable_api_key}`
+          }
+        }
+      )
+    ).text()
+  </script>
+  <script id="2874" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://api.observablehq.com/document/@tomlarkworthy/scrape-notebook-history@2768`,
+        {
+          headers: {
+            Authorization: `APIKey ${observable_api_key}`
+          }
+        }
+      )
+    ).text()
+  </script>
+  <script id="2906" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetchp(
+        `https://webcode.run/observablehq.com/@endpointservices/realtime-request-log`,
+        {
+          headers: {
+            authorization: `Bearer eyJpZCI6IjUyMTVmNmVjNGE5OTlkNDAiLCJleHBpcmF0aW9uIjoxNzI4NzU2MDAwMDAwLCJpZHMiOlt7ImlkIjoiNTUxNWU1MzJlOTYxNmFkMiIsIm9yZyI6IiIsInNvIjoxNzIxNDE2NzY3NzExLCJhdCI6MTcyODIyMTQwMDAwMH1dLCJhbHBoYSI6dHJ1ZSwiYmV0YSI6ZmFsc2V9.M1VYZdhwWP7y2M7PdMHBfOiGnOJWKFlnqpSFLb2Dghg=`
+          }
+        }
+      )
+    ).text()
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+    code is automatically added to the context. Use `highlight(<expr>)` to selectively bring runtime values into the context as well
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2760" type="application/vnd.observable.javascript">
+    rag
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      variables,
+      api_call_response,
+      background_tasks,
+      ndd,
+      _ndd,
+      instruction,
+      _events,
+      highlight,
+      mutable context,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="2738" type="application/vnd.observable.javascript">
+    import { extension as rag } from "@tomlarkworthy/rag-extension"
+  </script>
+  <script id="2772" type="application/vnd.observable.javascript">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="2867" type="application/vnd.observable.javascript" pinned="">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+</notebook>

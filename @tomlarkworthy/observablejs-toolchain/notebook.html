@@ -1,0 +1,2828 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Bidirectional Observable JS &lt;=&gt; Runtime Toolchain</title>
+  <script id="0" type="text/markdown">
+    # Bidirectional Observable JS <=> Runtime Toolchain
+
+    ```js
+    import {decompile, compile, cellMap} from "@tomlarkworthy/observablejs-toolchain"
+    ```
+  </script>
+  <script id="2882" type="text/markdown">
+    ### Compilation, source to runtime variable(s)
+
+    Compilation takes notebook source cells written in `Observable Javascript` and turns them into reactive variables for execution in the `Observable Runtime`. A cell is usually compiled to one runtime variable, however, mutable variables are more complicated and are represented as three runtime variables.
+
+    ObservableHQ does the compilation process as part of the hosted notebook experience but in this notebook we provide a way to do it in userspace.
+  </script>
+  <script id="2953" type="text/markdown">
+    ### Decompilation, Runtime variables(s) to source
+    The aim of decompilation is to go from the live runtime variable definitions, back to the source as best as possible. ObseervableHQ does not have this feature. In this notebook we implement it in userspace.
+
+  </script>
+  <script id="4764" type="text/markdown">
+    ### Codeveloped with AI
+
+    This notebook is setup for was AI collaboration. Important runtime values, such as the test suite report, are highlighted to the LLM, which helps it decide how to fix test cases.
+  </script>
+  <script id="4778" type="text/markdown">
+    ### Prior work
+
+    _Alex Garcia_ pioneered the first third-party Observable **_compiler_** [[asg017/unofficial-observablehq-compiler](https://github.com/asg017/unofficial-observablehq-compiler)]. The compiler here differs by being entirely text/data based, _i.e._ the output is a string/JSON, not hydrated variables and functions.
+
+    This is the first **_decompiler_**.
+  </script>
+  <script id="3946" type="text/markdown">
+    ## TODO
+    - Tagged templates (decompilation works, but there is no source compile for them)
+    - notebook imports (WIP some decompilation works)
+       - need to dedupe some of the implied imports, e.g. `viewof foo` also imports `foo` but we don't need to explicitly import `foo`, it's implied
+    - anonymous variables work, but the test cases fail due to naming mismatches
+    - Bug with unobserved module imports, moduleSource does not resolve, we just adjusted source to avoid that problem now 
+    - cellmap: assigning an imported viewof to a variable creates two cells where there should be 1
+    - class body assignments can't be decompiled
+  </script>
+  <script id="3326" type="application/vnd.observable.javascript">
+    observable = import(
+      "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js"
+    )
+  </script>
+  <script id="5816" type="text/markdown">
+    ## Continuous Integration Testing
+
+    We sniff the entire runtime to test that each cell is de-compilable
+  </script>
+  <script id="5809" type="application/vnd.observable.javascript">
+    import { tests, viewof runtime_variables, modules } from "@tomlarkworthy/tests"
+  </script>
+  <script id="5812" type="application/vnd.observable.javascript">
+    tests()
+  </script>
+  <script id="5819" type="text/markdown">
+    ### All cells are decompileable
+  </script>
+  <script id="5840" type="application/vnd.observable.javascript">
+    cellMaps = cellMap2()
+  </script>
+  <script id="5852" type="application/vnd.observable.javascript">
+    allCells = [...cellMaps.values()]
+      .map((cells) =>
+        [...cells.values()]
+          .filter((c) => c.module !== "builtin")
+          .map((c) => c.variables)
+      )
+      .flat()
+  </script>
+  <script id="5992" type="application/vnd.observable.javascript">
+    all_decompiled = Promise.all(
+      allCells.map(async (cell) => {
+        try {
+          return {
+            cell,
+            source: await decompile(cell)
+          };
+        } catch (error) {
+          return {
+            cell,
+            error
+          };
+        }
+      })
+    )
+  </script>
+  <script id="5822" type="application/vnd.observable.javascript">
+    test_all_cells_decompilable = {
+      const errors = all_decompiled.filter((s) => s.error);
+      if (errors.length > 0) throw errors;
+      return `${all_decompiled.length} cells decompiled without error`;
+    }
+  </script>
+  <script id="5876" type="text/markdown">
+    ### All decompiled cells can be recompiled
+  </script>
+  <script id="5967" type="application/vnd.observable.javascript">
+    all_compiled = all_decompiled
+      .filter((source) => !source.error)
+      .map((source) => {
+        try {
+          return {
+            ...source,
+            compiled: compile(source.source)
+          };
+        } catch (error) {
+          return {
+            ...source,
+            error
+          };
+        }
+      })
+  </script>
+  <script id="5881" type="application/vnd.observable.javascript">
+    test_decompiled_cells_recompilable = {
+      const errored = all_compiled.filter((cell) => cell.error);
+      if (errored.length > 0) throw JSON.stringify(errored, null, 2);
+      return `${all_compiled.length} cells recompiled without error`;
+    }
+  </script>
+  <script id="5889" type="text/markdown">
+    ### All cells roundtrip compile
+  </script>
+  <script id="5896" type="application/vnd.observable.javascript">
+    roundtripped = Promise.all(
+      all_compiled
+        .filter((c) => !c.error)
+        .map(async (cell) => {
+          try {
+            const decompiled = await decompile(cell.compiled);
+            return {
+              ...cell,
+              decompiled
+            };
+          } catch (error) {
+            return {
+              ...cell,
+              error
+            };
+          }
+        })
+    )
+  </script>
+  <script id="5950" type="application/vnd.observable.javascript">
+    test_all_cells_roundtrippable = {
+      const errored = roundtripped.filter((cell) => cell.error);
+      if (errored.length > 0) throw JSON.stringify(errored, null, 2);
+      return `${roundtripped} cells decompiled, recompiled and decompiled again without error`;
+    }
+  </script>
+  <script id="3355" type="text/markdown">
+    ## Reference Data
+  </script>
+  <script id="3299" type="text/markdown">
+    ### Source code
+    The source code of a [reference notebook](https://observablehq.com/@tomlarkworthy/notebook-semantics?collection=@tomlarkworthy/lopebook) is extracted directly from the `https://api.observablehq.com/document/...` endpoint
+
+  </script>
+  <script id="3302" type="application/vnd.observable.javascript">
+    dependancy_document = ({
+      id: "1fb3132464653a8f",
+      slug: "dependancy",
+      trashed: false,
+      description: "",
+      likes: 0,
+      publish_level: "live_unlisted",
+      forks: 0,
+      fork_of: null,
+      has_importers: true,
+      update_time: "2024-10-15T18:06:59.080Z",
+      first_public_version: 16,
+      paused_version: null,
+      publish_time: "2024-10-15T18:07:25.850Z",
+      publish_version: 16,
+      latest_version: 16,
+      thumbnail: "52bb3d5b2f48b727e0eea931c0093fe5778fb9b809bebb1edfb949d2f4b5590a",
+      default_thumbnail:
+        "52bb3d5b2f48b727e0eea931c0093fe5778fb9b809bebb1edfb949d2f4b5590a",
+      roles: [],
+      sharing: null,
+      owner: {
+        id: "7db5ed2b0697d645",
+        avatar_url:
+          "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+        login: "tomlarkworthy",
+        name: "Tom Larkworthy",
+        bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+        home_url: "https://taktile.com",
+        type: "team",
+        tier: "starter_2024"
+      },
+      creator: {
+        id: "5215f6ec4a999d40",
+        avatar_url:
+          "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+        login: "tomlarkworthy",
+        name: "Tom Larkworthy",
+        bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+        home_url: "https://taktile.com",
+        tier: "pro"
+      },
+      authors: [
+        {
+          id: "5215f6ec4a999d40",
+          avatar_url:
+            "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+          name: "Tom Larkworthy",
+          login: "tomlarkworthy",
+          bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+          home_url: "https://taktile.com",
+          tier: "pro",
+          approved: true,
+          description: ""
+        }
+      ],
+      collections: [
+        {
+          id: "cf72f19f55f3a048",
+          type: "public",
+          slug: "lopebook",
+          title: "lopebook",
+          description: "",
+          update_time: "2024-10-11T18:10:59.078Z",
+          pinned: false,
+          ordered: false,
+          custom_thumbnail: null,
+          default_thumbnail: null,
+          thumbnail: null,
+          listing_count: 0,
+          parent_collection_count: 0,
+          owner: {
+            id: "7db5ed2b0697d645",
+            avatar_url:
+              "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+            login: "tomlarkworthy",
+            name: "Tom Larkworthy",
+            bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+            home_url: "https://taktile.com",
+            type: "team",
+            tier: "starter_2024"
+          }
+        }
+      ],
+      files: [],
+      comments: [],
+      commenting_lock: null,
+      suggestion_from: null,
+      suggestions_to: [],
+      version: 16,
+      title: "Dependancy",
+      license: null,
+      copyright: "",
+      nodes: [
+        {
+          id: 0,
+          value: "# Dependancy",
+          pinned: false,
+          mode: "md",
+          data: null,
+          name: ""
+        },
+        {
+          id: 7,
+          value: 'dep = "a"',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 9,
+          value: "viewof viewdep = Inputs.input()",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 11,
+          value: "mutable mutabledep = ({})",
+          pinned: false,
+          mode: "js",
+          data: null,
+          name: null
+        }
+      ],
+      resolutions: [],
+      schedule: null,
+      last_view_time: null
+    })
+  </script>
+  <script id="3379" type="application/vnd.observable.javascript">
+    dependancy_source = dependancy_document.nodes.map((s) => ({
+      value: s.value,
+      name: s.name
+    }))
+  </script>
+  <script id="4541" type="text/markdown">
+
+    ```
+    curl https://api.observablehq.com/document/@tomlarkworthy/notebook-semantics
+    ```
+  </script>
+  <script id="3304" type="application/vnd.observable.javascript">
+    notebook_semantics_document = ({
+      id: "483a346021943f64",
+      slug: "notebook-semantics",
+      trashed: false,
+      description: "",
+      likes: 0,
+      publish_level: "live_unlisted",
+      forks: 0,
+      fork_of: null,
+      has_importers: false,
+      update_time: "2025-03-17T18:36:45.520Z",
+      first_public_version: 90,
+      paused_version: null,
+      publish_time: "2024-10-15T18:29:58.853Z",
+      publish_version: 152,
+      latest_version: 152,
+      thumbnail: "10dc93e33f09bad8366c143415404f378b6bd94f1148589113ff5fb2d22573ee",
+      default_thumbnail:
+        "10dc93e33f09bad8366c143415404f378b6bd94f1148589113ff5fb2d22573ee",
+      roles: [],
+      sharing: null,
+      edits: [
+        { node_id: 48, value: 'file = FileAttachment("empty")' },
+        { node_id: 55, value: "mutable_dep_2 = {\n  file;\n  return q + 1;\n}" },
+        { node_id: 151, value: "thisReference = (this || 0) + 1" }
+      ],
+      owner: {
+        id: "7db5ed2b0697d645",
+        avatar_url:
+          "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+        login: "tomlarkworthy",
+        name: "Tom Larkworthy",
+        bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+        home_url: "https://taktile.com",
+        type: "team",
+        tier: "starter_2024"
+      },
+      creator: {
+        id: "5215f6ec4a999d40",
+        avatar_url:
+          "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+        login: "tomlarkworthy",
+        name: "Tom Larkworthy",
+        bio: "Tech Lead at Taktile. ex Firebase, Google.\n🦋 larkworthy.bsky.social",
+        home_url: "https://bsky.app/profile/larkworthy.bsky.social",
+        tier: "pro"
+      },
+      authors: [
+        {
+          id: "5215f6ec4a999d40",
+          avatar_url:
+            "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+          name: "Tom Larkworthy",
+          login: "tomlarkworthy",
+          bio: "Tech Lead at Taktile. ex Firebase, Google.\n🦋 larkworthy.bsky.social",
+          home_url: "https://bsky.app/profile/larkworthy.bsky.social",
+          tier: "pro",
+          approved: true,
+          description: ""
+        }
+      ],
+      collections: [
+        {
+          id: "cf72f19f55f3a048",
+          type: "public",
+          slug: "lopebook",
+          title: "lopecode",
+          description: "",
+          update_time: "2024-11-17T07:27:34.529Z",
+          pinned: false,
+          ordered: true,
+          custom_thumbnail: null,
+          default_thumbnail:
+            "dab1604ccf4a760060379630da0876da27b79509b738f8d5c300c9a9a320e38a",
+          thumbnail:
+            "dab1604ccf4a760060379630da0876da27b79509b738f8d5c300c9a9a320e38a",
+          listing_count: 9,
+          parent_collection_count: 0,
+          owner: {
+            id: "7db5ed2b0697d645",
+            avatar_url:
+              "https://avatars.observableusercontent.com/avatar/47327a8bc1966f2186dcb3ebf4b7ee6e4e7ab9a5c2a07405aff57200ea778f71",
+            login: "tomlarkworthy",
+            name: "Tom Larkworthy",
+            bio: "Tech Lead at Taktile.\nFormerly Firebase, Google",
+            home_url: "https://taktile.com",
+            type: "team",
+            tier: "starter_2024"
+          }
+        }
+      ],
+      files: [
+        {
+          id: "50cad75d56578d08f50d560a50a6f4a66919f1f0b9c189221c6768a04dc958323335dac14ca3526e6527019d02e9e00d21d247eb5c2646b38ec7720e0ddcaa7e",
+          url: "https://static.observableusercontent.com/files/50cad75d56578d08f50d560a50a6f4a66919f1f0b9c189221c6768a04dc958323335dac14ca3526e6527019d02e9e00d21d247eb5c2646b38ec7720e0ddcaa7e",
+          download_url:
+            "https://static.observableusercontent.com/files/50cad75d56578d08f50d560a50a6f4a66919f1f0b9c189221c6768a04dc958323335dac14ca3526e6527019d02e9e00d21d247eb5c2646b38ec7720e0ddcaa7e?response-content-disposition=attachment%3Bfilename*%3DUTF-8%27%27empty",
+          name: "empty",
+          create_time: "2024-10-15T18:03:32.575Z",
+          mime_type: "application/octet-stream",
+          status: "public",
+          size: 2,
+          content_encoding: null,
+          private_bucket_id: null
+        }
+      ],
+      comments: [],
+      commenting_lock: null,
+      suggestion_from: null,
+      suggestions_to: [],
+      version: 152,
+      title: "Test Notebook of Semantics",
+      license: "mit",
+      copyright: "Copyright 2024 Tom Larkworthy",
+      nodes: [
+        {
+          id: 0,
+          value: "# Test Notebook of Semantics",
+          pinned: false,
+          mode: "md",
+          data: null,
+          name: ""
+        },
+        { id: 9, value: "1", pinned: true, mode: "js", data: null, name: null },
+        {
+          id: 31,
+          value: '{\n  ("");\n}',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 100,
+          value: "<div>",
+          pinned: false,
+          mode: "html",
+          data: null,
+          name: "html"
+        },
+        {
+          id: 115,
+          value: "obj_literal = ({})",
+          pinned: false,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 11,
+          value: 'x = ""',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 13,
+          value: "y = x",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 15,
+          value: 'z = {\n  ("");\n  return x + y;\n}',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 145,
+          value: 'comments = {\n  // a comment\n  return "";\n}',
+          pinned: false,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 17,
+          value: "generator = {\n  yield x + y;\n}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 20,
+          value: "_function = function () {}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 71,
+          value: "asyncfunction = async function () {}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 25,
+          value: "named_function = function foo() {}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 151,
+          value: "thisReference = (this || 0) + 1",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 22,
+          value: "lambda = () => {}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 33,
+          value: "error = {\n  throw new Error();\n}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 39,
+          value: "viewof view = Inputs.input()",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 42,
+          value: "mutable q = 6",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 45,
+          value: "inbuilt = _",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 48,
+          value: 'file = FileAttachment("empty")',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 52,
+          value:
+            "mutable_dep = {\n  viewof view;\n  lambda;\n  mutable q;\n  return mutable q;\n}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 55,
+          value: "mutable_dep_2 = {\n  file;\n  return q + 1;\n}",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 57,
+          value: "viewofdep_inline = viewof view",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        {
+          id: 61,
+          value: "viewofdatadep = view",
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        },
+        { id: 93, value: "dep", pinned: true, mode: "js", data: null, name: null },
+        {
+          id: 64,
+          value:
+            'import {\n  dep,\n  mutable mutabledep,\n  viewof viewdep,\n  dep as dep_alias,\n  mutable mutabledep as aslias_mutabledep,\n  viewof viewdep as aslias_viewdep,\n  mutabledep as aslias_mutabledep_data,\n  viewdep as aslias_viewdep_data\n} from "@tomlarkworthy/dependancy";',
+          pinned: true,
+          mode: "js",
+          data: null,
+          name: null
+        }
+      ],
+      resolutions: [],
+      schedule: null,
+      last_view_time: null
+    })
+  </script>
+  <script id="3375" type="application/vnd.observable.javascript">
+    notebook_semantics_source = notebook_semantics_document.nodes.map((s) => ({
+      value: s.value,
+      name: s.mode == "js" ? parser.parseCell(s.value)?.id?.name : null,
+      mode: s.mode
+    }))
+  </script>
+  <script id="3312" type="text/markdown">
+    ### Runtime Representation (v4)
+  </script>
+  <script id="3338" type="application/vnd.observable.javascript">
+    dependancy_module = import(
+      "https://api.observablehq.com/@tomlarkworthy/dependancy.js?v=4"
+    )
+  </script>
+  <script id="3340" type="application/vnd.observable.javascript">
+    notebook_semantics_module = import(
+      "https://api.observablehq.com/@tomlarkworthy/notebook-semantics.js?v=4"
+    )
+  </script>
+  <script id="3318" type="application/vnd.observable.javascript">
+    dependancy_runtime = {
+      const runtime = new observable.Runtime();
+      runtime.module(dependancy_module.default);
+      return runtime;
+    }
+  </script>
+  <script id="3348" type="application/vnd.observable.javascript">
+    notebook_semantics_runtime = {
+      dependancy_module;
+      const runtime = new observable.Runtime();
+      const module = runtime.module(
+        notebook_semantics_module.default,
+        observable.Inspector.into(document.createElement("div"))
+      );
+      await runtime._computeNow();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      return {
+        runtime,
+        module
+      };
+    }
+  </script>
+  <script id="3362" type="application/vnd.observable.javascript">
+    notebook_semantics_variables = [
+      ...notebook_semantics_runtime.runtime._variables
+    ]
+      .filter((v) => v._type == 1)
+      .map(variableToObject)
+  </script>
+  <script id="6475" type="application/vnd.observable.javascript">
+    import {
+      cellMap as cellMap2,
+      moduleMap,
+      cellMapCompat
+    } from "@tomlarkworthy/cell-map"
+  </script>
+  <script id="6483" type="application/vnd.observable.javascript" pinned="">
+    notebook_semantics_modules = moduleMap(notebook_semantics_runtime.runtime)
+  </script>
+  <script id="6461" type="application/vnd.observable.javascript" pinned="">
+    notebook_semantics_cells = (
+      await cellMap2(
+        notebook_semantics_runtime.runtime._variables,
+        notebook_semantics_modules
+      )
+    ).get(notebook_semantics_runtime.module)
+  </script>
+  <script id="3406" type="application/vnd.observable.javascript">
+    notebook_define = notebook_semantics_module.default.toString()
+  </script>
+  <script id="4378" type="text/markdown">
+    ### Cell map - ⚠️ Deprecated use https://observablehq.com/@tomlarkworthy/cell-map
+
+    `viewof` and `mutable` cells define more than one runtime variable, so we need to group variables by their cell function.
+
+  </script>
+  <script id="5276" type="application/vnd.observable.javascript">
+    sourceModule = async (v) => {
+      if (
+        // imported variable is observed
+        v._inputs.length == 1 && // always a single dependancy
+        v._inputs[0]._module !== v._module // bridging across modules
+      )
+        return v._inputs[0]._module;
+
+      // Import from API
+      // 'async () => runtime.module((await import("/@tomlarkworthy/exporter.js?v=4&resolutions=ab5a63c64de95b0d@298")).default)'
+      /*
+      if (
+        v._inputs.length == 0 &&
+        v._definition.toString().includes("runtime.module((await import")
+      ) {
+        debugger;
+        v._value = await v._definition();
+        return v._value;
+      }*/
+      if (
+        // imported variable unobserved and loaded by API
+        v._inputs.length == 2 && // always a single dependancy
+        v._inputs[1]._name == "@variable" // bridging across modules
+      ) {
+        if (v._inputs[0]._value) return v._inputs[0]._value;
+        else {
+          return;
+          //const module = await v._inputs[0]._definition();
+          //debugger;
+          //return module;
+        }
+      }
+
+      // The inline case for live notebook
+      // _definition: "async t=>t.import(e.name,e.alias,await i)"
+      if (
+        v._inputs.length == 1 &&
+        v._inputs[0]._name == "@variable" &&
+        v._definition.toString().includes("import(")
+      ) {
+        return await new Promise(async (resolve, reject) => {
+          try {
+            await v._definition({
+              import: (...args) => resolve(args[2])
+            });
+          } catch (err) {
+            if (v._definition.toString().includes("derive")) {
+              console.error("Subbing derrived module for original", v);
+              const derrived = await v._definition(v);
+              resolve(derrived._source);
+            } else {
+              console.error("Cannot sourceModule for ", v);
+              debugger;
+              throw err;
+            }
+          }
+        });
+      }
+
+      return null;
+    }
+  </script>
+  <script id="6710" type="application/vnd.observable.javascript">
+    cellMap = cellMapCompat
+  </script>
+  <script id="4385" type="application/vnd.observable.javascript">
+    semanticsCells = {
+      debugger;
+      return cellMap(notebook_semantics_runtime.module);
+    }
+  </script>
+  <script id="5108" type="text/markdown">
+    ### Imports
+  </script>
+  <script id="5003" type="text/markdown">
+    observed modules are variables in the parent notebook, so their module is the main, however, their dependency is something else. -- this holds even for live notebook. They can only have one dependancy (inputs.length = 1)
+  </script>
+  <script id="5022" type="text/markdown">
+    ### runtime in observable
+  </script>
+  <script id="4127" type="text/markdown">
+    ## Test cases
+  </script>
+  <script id="4449" type="application/vnd.observable.javascript">
+    test_cases = {
+      let anonIdx = 1; // hack to get things to align as we filtered by ".js" , test suite specific
+      const testCases = notebook_semantics_source
+        .filter((s) => s.mode == "js")
+        .map((source) => {
+          const comments = [],
+            tokens = [];
+          const ast = parser.parseCell(source.value, {
+            ranges: true,
+            onComment: comments,
+            onToken: tokens
+          });
+          const prefix =
+            ast?.id?.type == "ViewExpression"
+              ? "viewof "
+              : ast?.id?.type == "MutableExpression"
+              ? "mutable "
+              : "";
+          const importName =
+            ast.body.type == "ImportDeclaration" &&
+            "module @tomlarkworthy/dependancy";
+          const name = ast.id?.name || ast?.id?.id?.name || importName || anonIdx++;
+          const variables = semanticsCells.get(
+            typeof name === "string" ? prefix + name : name
+          );
+          return {
+            ast,
+            name,
+            source: {
+              name: source.name,
+              value: source.value
+            },
+            normalizeSource: source && normalizeObservableSource(source.value),
+            variables
+          };
+        });
+      return testCases;
+    }
+  </script>
+  <script id="6519" type="application/vnd.observable.javascript">
+    importFake = async function (variable, module_name) {
+      const runtime = new observable.Runtime({}, () => {});
+      const importer = runtime.module();
+      let _import_definition;
+      eval(`_import_definition = async () => "${module_name}" && runtime.module()`);
+      const importVariable = importer.define(
+        `module ${module_name}`,
+        _import_definition
+      );
+      const importee = (importVariable._value = await importVariable._definition());
+      importee.define(variable._inputs[0], [], () => null);
+      return importer.import([variable._inputs[0]], variable._name, importee);
+    }
+  </script>
+  <script id="6083" type="application/vnd.observable.javascript">
+    test_decompile_$variable = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: "function _x($variable) {return ($variable);}",
+          _inputs: [
+            {
+              _name: "@variable"
+            }
+          ]
+        }
+      ]);
+      expect(decompiled).toEqual("v = $variable");
+      return "@variable support: ok";
+    }
+  </script>
+  <script id="6579" type="application/vnd.observable.javascript">
+    test_decompile_import_variable = {
+      const decompiled = await decompile([
+        await importFake(
+          {
+            _name: "dep",
+            _definition: "function Yn(e){return e}",
+            _inputs: ["dep"]
+          },
+          "@tomlarkworthy/dependancy"
+        )
+      ]);
+      expect(decompiled).toEqual(`import {dep} from "@tomlarkworthy/dependancy"`);
+      return "ok";
+    }
+  </script>
+  <script id="6587" type="application/vnd.observable.javascript">
+    test_decompile_import_variable_alias = {
+      const decompiled = await decompile([
+        await importFake(
+          {
+            _name: "alias",
+            _definition: "function Yn(e){return e}",
+            _inputs: ["dep"]
+          },
+          "@tomlarkworthy/dependancy"
+        )
+      ]);
+      expect(decompiled).toEqual(
+        `import {dep as alias} from "@tomlarkworthy/dependancy"`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6091" type="application/vnd.observable.javascript">
+    test_decompile_import_many = {
+      const decompiled = await decompile([
+        await importFake(
+          {
+            _name: "dep",
+            _definition: "function Yn(e){return e}",
+            _inputs: ["dep"]
+          },
+          "@tomlarkworthy/dependancy"
+        ),
+        {
+          _name: "mutable mutabledep",
+          _definition: '(_, v) => v.import("mutable mutabledep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "mutabledep",
+          _definition: '(_, v) => v.import("mutabledep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "viewof viewdep",
+          _definition: '(_, v) => v.import("viewof viewdep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "viewdep",
+          _definition: '(_, v) => v.import("viewdep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "dep_alias",
+          _definition: '(_, v) => v.import("dep", "dep_alias", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "error_dep",
+          _definition: "function Yn(e){return e}",
+          _inputs: ["module 1", "error_dep"]
+        },
+        {
+          _name: "mutable aslias_mutabledep",
+          _definition:
+            '(_, v) => v.import("mutable mutabledep", "mutable aslias_mutabledep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "aslias_mutabledep",
+          _definition: '(_, v) => v.import("mutabledep", "aslias_mutabledep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "viewof aslias_viewdep",
+          _definition:
+            '(_, v) => v.import("viewof viewdep", "viewof aslias_viewdep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "aslias_viewdep",
+          _definition: '(_, v) => v.import("viewdep", "aslias_viewdep", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "aslias_mutabledep_data",
+          _definition:
+            '(_, v) => v.import("mutabledep", "aslias_mutabledep_data", _)',
+          _inputs: ["module 1", "@variable"]
+        },
+        {
+          _name: "aslias_viewdep_data",
+          _definition: '(_, v) => v.import("viewdep", "aslias_viewdep_data", _)',
+          _inputs: ["module 1", "@variable"]
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `import {dep, mutable mutabledep, mutabledep, viewof viewdep, viewdep, dep as dep_alias, error_dep, mutable mutabledep as mutable aslias_mutabledep, mutabledep as aslias_mutabledep, viewof viewdep as viewof aslias_viewdep, viewdep as aslias_viewdep, mutabledep as aslias_mutabledep_data, viewdep as aslias_viewdep_data} from "@tomlarkworthy/dependancy"`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6098" type="application/vnd.observable.javascript">
+    test_decompile_markdown_cell = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: `function _1(md){return(\nmd\`# Test Notebook of Semantics\`\n)}`,
+          _inputs: [
+            {
+              _name: "md"
+            }
+          ]
+        }
+      ]);
+      expect(decompiled).toEqual(`v = md\`# Test Notebook of Semantics\``);
+      return "ok";
+    }
+  </script>
+  <script id="6103" type="application/vnd.observable.javascript">
+    test_decompile_constant = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: `function _2(){return(
+    1
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`v = 1`);
+      return "ok";
+    }
+  </script>
+  <script id="6109" type="application/vnd.observable.javascript">
+    test_decompile_string_literal = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: function _3() {
+            ("");
+          },
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`v = {
+        '';
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6113" type="application/vnd.observable.javascript">
+    test_decompile_html_cell = {
+      const decompiled = await decompile([
+        {
+          _name: "html",
+          _definition: `function _html(htl){return(\nhtl.html\`<div>\`\n)}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`html = htl.html\`<div>\``);
+      return "ok";
+    }
+  </script>
+  <script id="6143" type="application/vnd.observable.javascript">
+    test_decompile_class = {
+      const decompiled = await decompile([
+        {
+          _name: "myclass",
+          _definition: `function _myclass(){return(
+    class myclass {}
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`myclass = class myclass {
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6007" type="application/vnd.observable.javascript">
+    // Bug in escodegen https://github.com/estools/escodegen/pull/467
+    test_decompile_class_with_property = decompile([
+      {
+        _inputs: [],
+        _definition: `function _Cls(){return(
+            class Cls {
+              d;
+            }
+        )}`
+      }
+    ])
+  </script>
+  <script id="6146" type="application/vnd.observable.javascript">
+    test_decompile_object_literal = {
+      const decompiled = await decompile([
+        {
+          _name: "obj_literal",
+          _definition: "function _obj_literal(){return(\n{}\n)}",
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`obj_literal = ({})`);
+      return "ok";
+    }
+  </script>
+  <script id="6153" type="application/vnd.observable.javascript">
+    test_decompile_reference = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: `function _y(x){return(
+    x
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`v = x`);
+      return "ok";
+    }
+  </script>
+  <script id="6155" type="application/vnd.observable.javascript">
+    test_decompile_block = {
+      const decompiled = await decompile([
+        {
+          _name: "v",
+          _definition: `function _z(x,y)
+    {
+      ("");
+      return x + y;
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`v = {
+        '';
+        return x + y;
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6162" type="application/vnd.observable.javascript">
+    test_decompile_comments = {
+      const decompiled = await decompile([
+        {
+          _name: "comments",
+          _definition: `function _comments()
+    {
+      // a comment
+      return "";
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`comments = {
+        // a comment
+        return '';
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6171" type="application/vnd.observable.javascript">
+    test_decompile_generator = {
+      const decompiled = await decompile([
+        {
+          _name: "generator",
+          _definition: `function* _generator(x,y)
+    {
+      yield x + y;
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`generator = {
+        yield x + y;
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6184" type="application/vnd.observable.javascript">
+    test_decompile_function = {
+      const decompiled = await decompile([
+        {
+          _name: "_function",
+          _definition: `function __function(){return(
+    function () {}
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`_function = function () {
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6186" type="application/vnd.observable.javascript">
+    test_decompile_async_function = {
+      const decompiled = await decompile([
+        {
+          _name: "asyncfunction",
+          _definition: `function _asyncfunction(){return(
+    async function () {}
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`asyncfunction = async function () {
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6188" type="application/vnd.observable.javascript">
+    test_decompile_named_function = {
+      const decompiled = await decompile([
+        {
+          _name: "named_function",
+          _definition: `function _named_function(){return(
+    function foo() {}
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`named_function = function foo() {
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6190" type="application/vnd.observable.javascript">
+    test_decompile_this_reference = {
+      const decompiled = await decompile([
+        {
+          _name: "thisReference",
+          _definition: `function _thisReference(){return(
+    (this || 0) + 1
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`thisReference = (this || 0) + 1`);
+      return "ok";
+    }
+  </script>
+  <script id="6192" type="application/vnd.observable.javascript">
+    test_decompile_lambda = {
+      const decompiled = await decompile([
+        {
+          _name: "lambda",
+          _definition: `function _lambda(){return(
+    () => {}
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`lambda = () => {
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6195" type="application/vnd.observable.javascript">
+    test_decompile_error = {
+      const decompiled = await decompile([
+        {
+          _name: "error",
+          _definition: `function _error()
+    {
+      throw new Error();
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`error = {
+        throw new Error();
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6197" type="application/vnd.observable.javascript">
+    test_decompile_error_object = {
+      const decompiled = await decompile([
+        {
+          _name: "error_obj",
+          _definition: `function _error_obj()
+    {
+      throw { foo: "bar" };
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`error_obj = {
+        throw { foo: 'bar' };
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6450" type="text/markdown">
+    ⚠️ This cells have not been grouped correctly, should be a single import being decompiled
+  </script>
+  <script id="6199" type="application/vnd.observable.javascript">
+    test_decompile_anon_error_dep = {
+      const decompiled = await decompile([
+        {
+          _definition: `function _19(error_dep){return(
+    error_dep
+    )}`,
+          _inputs: ["error_dep"]
+        }
+      ]);
+      expect(decompiled).toEqual(`error_dep`);
+      return "ok";
+    }
+  </script>
+  <script id="6206" type="application/vnd.observable.javascript">
+    test_decompile_viewof = {
+      const decompiled = await decompile([
+        {
+          _name: "viewof view",
+          _definition: `function _view(Inputs){return(
+    Inputs.input()
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`viewof view = Inputs.input()`);
+      return "ok";
+    }
+  </script>
+  <script id="6210" type="application/vnd.observable.javascript">
+    test_decompile_mutable = {
+      const decompiled = await decompile([
+        {
+          _name: "initial q",
+          _definition: `function _q(){return(
+    6
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`mutable q = 6`);
+      return "ok";
+    }
+  </script>
+  <script id="6213" type="application/vnd.observable.javascript">
+    test_decompile_builtin = {
+      const decompiled = await decompile([
+        {
+          _name: "inbuilt",
+          _definition: `function _inbuilt(_){return(
+    _
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`inbuilt = _`);
+      return "ok";
+    }
+  </script>
+  <script id="6215" type="application/vnd.observable.javascript">
+    test_decompile_fileattachment = {
+      const decompiled = await decompile([
+        {
+          _name: "file",
+          _definition: `function _file(FileAttachment){return(
+    FileAttachment("empty")
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`file = FileAttachment('empty')`);
+      return "ok";
+    }
+  </script>
+  <script id="6217" type="application/vnd.observable.javascript">
+    test_decompile_mutable_dependancy = {
+      const decompiled = await decompile([
+        {
+          _name: "mutable_dep",
+          _definition: `function _mutable_dep($0,lambda,$1)
+    {
+      $0;
+      lambda;
+      $1.value;
+      return $1.value;
+    }`,
+          _inputs: ["viewof view", "mutable q"]
+        }
+      ]);
+      expect(decompiled).toEqual(`mutable_dep = {
+        viewof view;
+        lambda;
+        mutable q;
+        return mutable q;
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6221" type="application/vnd.observable.javascript">
+    test_decompile_mutable_dependancy_2 = {
+      const decompiled = await decompile([
+        {
+          _name: "mutable_dep_2",
+          _definition: `function _mutable_dep_2(file,q)
+    {
+      file;
+      return q + 1;
+    }`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`mutable_dep_2 = {
+        file;
+        return q + 1;
+    }`);
+      return "ok";
+    }
+  </script>
+  <script id="6242" type="application/vnd.observable.javascript">
+    test_decompile_viewof_dep = {
+      const decompiled = await decompile([
+        {
+          _name: "viewofdep_inline",
+          _definition: `function _viewofdep_inline($0){return(
+    $0
+    )}`,
+          _inputs: ["viewof view"]
+        }
+      ]);
+      expect(decompiled).toEqual(`viewofdep_inline = viewof view`);
+      return "ok";
+    }
+  </script>
+  <script id="6244" type="application/vnd.observable.javascript">
+    test_decompile_viewof_data_dep = {
+      const decompiled = await decompile([
+        {
+          _name: "viewofdatadep",
+          _definition: `function _viewofdatadep(view){return(
+    view
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`viewofdatadep = view`);
+      return "ok";
+    }
+  </script>
+  <script id="6246" type="application/vnd.observable.javascript">
+    test_decompile_anon_dep = {
+      const decompiled = await decompile([
+        {
+          _definition: `function _28(dep){return(
+    dep
+    )}`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`dep`);
+      return "ok";
+    }
+  </script>
+  <script id="6248" type="application/vnd.observable.javascript">
+    test_decompile_import_mutable = {
+      const decompiled = await decompile([
+        {
+          _name: "mutable mutabledep",
+          _definition: `(_, v) => v.import("mutable mutabledep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `mutable mutabledep = v.import('mutable mutabledep', _)`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6257" type="application/vnd.observable.javascript">
+    test_decompile_import_viewof = {
+      const decompiled = await decompile([
+        {
+          _name: "viewof viewdep",
+          _definition: `(_, v) => v.import("viewof viewdep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`viewof viewdep = v.import('viewof viewdep', _)`);
+      return "ok";
+    }
+  </script>
+  <script id="6260" type="application/vnd.observable.javascript">
+    test_decompile_viewof_data = {
+      const decompiled = await decompile([
+        {
+          _name: "viewdep",
+          _definition: `(_, v) => v.import("viewdep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`viewdep = v.import('viewdep', _)`);
+      return "ok";
+    }
+  </script>
+  <script id="6264" type="application/vnd.observable.javascript">
+    test_decompile_import_alias = {
+      const decompiled = await decompile([
+        {
+          _name: "dep_alias",
+          _definition: `(_, v) => v.import("dep", "dep_alias", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(`dep_alias = v.import('dep', 'dep_alias', _)`);
+      return "ok";
+    }
+  </script>
+  <script id="6266" type="application/vnd.observable.javascript">
+    test_decompile_import_mutable_alias = {
+      const decompiled = await decompile([
+        {
+          _name: "mutable aslias_mutabledep",
+          _definition: `(_, v) => v.import("mutable mutabledep", "mutable aslias_mutabledep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `mutable aslias_mutabledep = v.import('mutable mutabledep', 'mutable aslias_mutabledep', _)`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6268" type="application/vnd.observable.javascript">
+    test_decompile_import_mutable_data_alias = {
+      const decompiled = await decompile([
+        {
+          _name: "aslias_mutabledep",
+          _definition: `(_, v) => v.import("mutabledep", "aslias_mutabledep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `aslias_mutabledep = v.import('mutabledep', 'aslias_mutabledep', _)`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6270" type="application/vnd.observable.javascript">
+    test_decompile_import_viewof_alias = {
+      const decompiled = await decompile([
+        {
+          _name: "viewof aslias_viewdep",
+          _definition: `(_, v) => v.import("viewof viewdep", "viewof aslias_viewdep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `viewof aslias_viewdep = v.import('viewof viewdep', 'viewof aslias_viewdep', _)`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6272" type="application/vnd.observable.javascript">
+    test_decompile_import_viewof_data_alias = {
+      const decompiled = await decompile([
+        {
+          _name: "aslias_viewdep",
+          _definition: `(_, v) => v.import("viewdep", "aslias_viewdep", _)`,
+          _inputs: []
+        }
+      ]);
+      expect(decompiled).toEqual(
+        `aslias_viewdep = v.import('viewdep', 'aslias_viewdep', _)`
+      );
+      return "ok";
+    }
+  </script>
+  <script id="6165" type="application/vnd.observable.javascript">
+    decompile_unit_test_template = Inputs.textarea({
+      value: `test_decompile_ = {
+      const decompiled = await decompile(${JSON.stringify(
+        decompileCellCase.variables.map(variableToObject),
+        null,
+        2
+      )});
+      expect(decompiled).toEqual(\`${decompiled_example}\`);
+      return "ok";
+    }`,
+      disabled: true,
+      rows: 20,
+      label: "decompile template"
+    })
+  </script>
+  <script id="3160" type="text/markdown">
+    ### The Decompiler
+  </script>
+  <script id="3283" type="application/vnd.observable.javascript">
+    import { escodegen } from "@tomlarkworthy/escodegen"
+  </script>
+  <script id="3899" type="application/vnd.observable.javascript">
+    viewof decompileCellCase = Inputs.select(notebook_semantics_cells, {
+      label: "decompile cell",
+      format: (cell) => cell.name
+    })
+  </script>
+  <script id="6472" type="application/vnd.observable.javascript" pinned="">
+    decompileCellCase
+  </script>
+  <script id="3904" type="application/vnd.observable.javascript" pinned="">
+    decompiled_example = {
+      return decompile(decompileCellCase.variables);
+    }
+  </script>
+  <script id="6315" type="text/markdown">
+    ### `extractModuleInfo` 
+    static analysis of module imports
+  </script>
+  <script id="5086" type="application/vnd.observable.javascript">
+    function extractModuleInfo(str) {
+      const named = /@([^/]+)\/([^.]+)\.js\?v=\d+(?:&resolutions=[^@]+@(\d+))?/;
+      const matchNamed = str.match(named);
+
+      if (matchNamed) {
+        const namespace = matchNamed[1];
+        const notebook = matchNamed[2];
+        const version = matchNamed[3];
+        return { namespace, notebook, version };
+      }
+      const id = /\/?d\/([^@]+)@?(\d+)/;
+      const matchId = str.match(id);
+
+      if (matchId) {
+        const notebook = matchId[1];
+        const version = matchId[2];
+        return { id: notebook, version };
+      }
+
+      const lopebook = /"@([^/]+)\/([^"]+)"/;
+      const lopebookId = str.match(lopebook);
+
+      if (lopebookId) {
+        const namespace = lopebookId[1];
+        const notebook = lopebookId[2];
+        return { namespace, notebook };
+      }
+
+      return {};
+    }
+  </script>
+  <script id="5419" type="application/vnd.observable.javascript">
+    test_extractModuleInfo_notebook_resolution = {
+      expect(
+        extractModuleInfo(
+          'async () => runtime.module((await import("/@tomlarkworthy/whisper-input.js?v=4&resolutions=03dda470c56b93ff@4883")).default)'
+        )
+      ).toEqual({
+        namespace: "tomlarkworthy",
+        notebook: "whisper-input",
+        version: "4883"
+      });
+      return "ok";
+    }
+  </script>
+  <script id="5407" type="application/vnd.observable.javascript">
+    test_extractModuleInfo_id_version_resolution = {
+      expect(
+        extractModuleInfo(
+          'async () => runtime.module((await import("/d/c2dae147641e012a@46.js?v=4&resolutions=03dda470c56b93ff@4883")).default)'
+        )
+      ).toEqual({ id: "c2dae147641e012a", version: "46" });
+      return "ok";
+    }
+  </script>
+  <script id="5574" type="application/vnd.observable.javascript">
+    test_extractModuleInfo_id_version = {
+      expect(
+        extractModuleInfo(
+          'async () => runtime.module((await import("d/58f3eb7334551ae6@215")).default)'
+        )
+      ).toEqual({ id: "58f3eb7334551ae6", version: "215" });
+      return "ok";
+    }
+  </script>
+  <script id="5472" type="application/vnd.observable.javascript">
+    test_extractModuleInfo_test_4 = {
+      expect(
+        extractModuleInfo(
+          'await import("https://api.observablehq.com/@tomlarkworthy/observable-notes.js?v=4"'
+        )
+      ).toEqual({
+        namespace: "tomlarkworthy",
+        notebook: "observable-notes"
+      });
+      return "ok";
+    }
+  </script>
+  <script id="6075" type="application/vnd.observable.javascript">
+    test_extractModuleInfo_alias_hack = {
+      expect(
+        extractModuleInfo(
+          'async () => "@tom/blank" && runtime.module((await import("blob:https://tomlarkworthy.static.observableusercontent.com/4cdeb9db-e473-436b-b343-95abd7e4c16f")).default)'
+        )
+      ).toEqual({
+        namespace: "tom",
+        notebook: "blank"
+      });
+      return "ok";
+    }
+  </script>
+  <script id="6324" type="text/markdown">
+    ### `findModuleName` and `findImportedName`
+  </script>
+  <script id="5258" type="application/vnd.observable.javascript">
+    import_ast_example = parser.parseCell(
+      'import {runtime, viewof main as foo} from "@mootari/access-runtime"'
+    )
+  </script>
+  <script id="5074" type="application/vnd.observable.javascript">
+    findModuleName = (scope, module, { unknown_id = Math.random() } = {}) => {
+      try {
+        const scopedVariables = [...scope.values()];
+        const moduleVariables = scopedVariables.filter((v) => v._module == module);
+        // Look for module definition cell
+        const module_definition_variable = scopedVariables.find((v) => {
+          if (v._value == module) {
+            const dfn = v._definition.toString();
+            const info = extractModuleInfo(dfn);
+            if (info.id || info.notebook) {
+              return true;
+            }
+          }
+          return false;
+        });
+        if (module_definition_variable) {
+          const dfn = module_definition_variable._definition.toString();
+          const info = extractModuleInfo(dfn);
+          if (info.namespace) {
+            return `@${info.namespace}/${info.notebook}`;
+          } else if (info.id) {
+            return `d/${info.id}@${info.version}`;
+          } else {
+            debugger;
+          }
+        }
+        return `<unknown ${unknown_id}>`;
+      } catch (e) {
+        debugger;
+        return "error";
+      }
+    }
+  </script>
+  <script id="5322" type="application/vnd.observable.javascript">
+    findImportedName = async (v) => {
+      if (v._inputs.length == 1 && v._inputs[0]._name === "@variable") {
+        // import in a live-notebook hides the alias in a closure
+        let capture;
+        await v._definition({ import: (...args) => (capture = args) });
+        return capture[0];
+      }
+      if (v._inputs.length == 1) {
+        return v._inputs[0]._name;
+      }
+      const regex = /v\.import\("([^"]+)",\s*"([^"]+)"/;
+      const match = v._definition.toString().match(regex);
+      if (match) {
+        // Handle two cases (two arguments)
+        return match[1];
+      }
+      return v._name;
+    }
+  </script>
+  <script id="6326" type="text/markdown">
+    ### `decompile`
+  </script>
+  <script id="2964" type="application/vnd.observable.javascript">
+    decompile = ({ prompt: "fix tests", time: 1726546383668 } &&
+      async function decompile(variables) {
+        // Non-import cases
+        if (!variables || variables.length == 0)
+          throw new Error("no variables to decompile");
+
+        try {
+          // Import cases
+          if (
+            variables[0]._inputs.length == 1 &&
+            variables[0]._module !== variables[0]._inputs[0]._module
+          ) {
+            const module_name = findModuleName(
+              variables[0]._module._scope,
+              variables[0]._inputs[0]._module
+            );
+            const import_aliasses = await Promise.all(
+              variables.map(async (v) => {
+                const importedName = await findImportedName(v);
+                return importedName == v._name
+                  ? v._name
+                  : `${importedName} as ${v._name}`;
+              })
+            );
+            return `import {${import_aliasses.join(", ")}} from "${module_name}"`;
+          }
+
+          const variable = variables[0];
+
+          const name = variable._name;
+          const compiled =
+            typeof variable._definition == "string"
+              ? variable._definition
+              : variable._definition.toString();
+          const inputs = variable._inputs.map((i) =>
+            typeof i == "string" ? i : i._name
+          );
+          const wrappedCode = "(" + compiled + ")";
+          const comments = [],
+            tokens = [];
+          let parsed = acorn.parse(wrappedCode, {
+            ecmaVersion: 2022,
+            sourceType: "module",
+            ranges: true,
+            onComment: comments,
+            onToken: tokens
+          });
+          parsed = escodegen.attachComments(parsed, comments, tokens);
+
+          const functionExpression = parsed.body[0].expression;
+          const body = functionExpression.body;
+
+          let varName = name;
+          let prefix = "";
+
+          // Handle special variables
+          if (name) {
+            if (name.startsWith("initial ")) {
+              prefix = "mutable ";
+              varName = name.replace(/^initial /, "");
+            } else if (name.startsWith("mutable ")) {
+              prefix = "mutable ";
+              varName = name.replace(/^mutable /, "");
+            } else if (name.startsWith("viewof ")) {
+              prefix = "viewof ";
+              varName = name.replace(/^viewof /, "");
+            }
+          }
+
+          let expression = "";
+          if (
+            body.type === "BlockStatement" &&
+            body.body.length === 1 &&
+            body.body[0].type === "ReturnStatement" &&
+            comments.length == 0
+          ) {
+            // If the body is a single ReturnStatement, decompile its argument
+            if (wrappedCode[body.body[0].argument.start] == "{") {
+              // bugfix if the body is an object literal we need to escape it
+              expression = `(${escodegen.generate(body.body[0].argument, {
+                comment: true
+              })})`;
+            } else {
+              expression = escodegen.generate(body.body[0].argument, {
+                comment: true
+              });
+            }
+          } else {
+            // For other types, decompile the whole body
+            expression = escodegen.generate(body, { comment: true });
+          }
+          let source = `${varName ? `${prefix}${varName} = ` : ""}${expression}`;
+
+          // replace mutable and viewofs
+          let id = 0;
+          inputs.forEach((input, idx) => {
+            if (input.startsWith("mutable ")) {
+              source = source.replaceAll(`$${id++}.value`, input);
+            } else if (input.startsWith("viewof ")) {
+              source = source.replaceAll(`$${id++}`, input);
+            } else if (input == "@variable") {
+              source = source.replaceAll(`$${id++}`, input);
+            }
+          });
+          return source;
+        } catch (e) {
+          debugger;
+          throw e;
+        }
+      })
+  </script>
+  <script id="4175" type="text/markdown">
+    ## Javascript Source Normalization
+  </script>
+  <script id="4182" type="application/vnd.observable.javascript">
+    viewof normalizeJavascriptSourceSelector = Inputs.select(
+      notebook_semantics_variables.map((s) => s._definition),
+      {
+        label: "variable source",
+        value: notebook_semantics_variables[5]._definition
+      }
+    )
+  </script>
+  <script id="4179" type="application/vnd.observable.javascript">
+    normalizeJavascriptSource = (source) => {
+      var comments = [];
+      var tokens = [];
+
+      var ast = acorn.parse(source, {
+        ranges: true,
+        onComment: comments,
+        onToken: tokens
+      });
+
+      escodegen.attachComments(ast, comments, tokens);
+      return escodegen.generate(ast, {
+        comment: true
+      });
+    }
+  </script>
+  <script id="4186" type="application/vnd.observable.javascript" pinned="">
+    {
+      return normalizeJavascriptSource(normalizeJavascriptSourceSelector);
+    }
+  </script>
+  <script id="4205" type="application/vnd.observable.javascript">
+    normalizeVariables = (variables) =>
+      variables.map(variableToObject).map((v) => ({
+        ...v,
+        _definition: normalizeJavascriptSource(v._definition)
+      }))
+  </script>
+  <script id="4163" type="application/vnd.observable.javascript">
+    variableToObject = (v) => ({
+      _name: v._name,
+      _definition: v._definition.toString(),
+      _inputs: v._inputs.map((v) => v._name || v)
+    })
+  </script>
+  <script id="3778" type="text/markdown">
+    ## Observable Source Normalization
+  </script>
+  <script id="3715" type="application/vnd.observable.javascript">
+    viewof normalizeObservableSourceSelector = Inputs.select(
+      notebook_semantics_source.map((s) => s.value),
+      { label: "test case", value: "1" }
+    )
+  </script>
+  <script id="3869" type="application/vnd.observable.javascript">
+    normalizeObservableSource(normalizeObservableSourceSelector)
+  </script>
+  <script id="3728" type="application/vnd.observable.javascript">
+    parsed = parser.parseCell(normalizeObservableSourceSelector)
+  </script>
+  <script id="3881" type="application/vnd.observable.javascript">
+    function generate(node, source) {
+      if (node.type == "Cell") {
+        if (
+          node.body.type != "BlockStatement" &&
+          source &&
+          source[node.body.start] == "{"
+        ) {
+          return `${node.id ? `${generate(node.id)} = ` : ""}(${escodegen.generate(
+            node.body
+          )})`;
+        } else {
+          return `${node.id ? `${generate(node.id)} = ` : ""}${escodegen.generate(
+            node.body
+          )}`;
+        }
+      } else if (node.type == "Identifier") {
+        return escodegen.generate(node);
+      } else if (node.type == "ViewExpression") {
+      } else {
+        throw node.type;
+      }
+    }
+  </script>
+  <script id="3685" type="application/vnd.observable.javascript">
+    normalizeObservableSource = ({
+      prompt:
+        'I see some of the test are failing because the AST generator uses a different set of quotes than the original source and various formatting quirks. This should not count as failure. I would suggest normalizing. Its not super easy because source code is not vanilla JS, we need to normalize just the bit after the block expression, and replace the "viewof XX" and "mutable XXX" macros with a placeholder whic we can normalize and then undo. Write the normalizeObservableSource.',
+      time: 1729097489369
+    } &&
+      function normalizeObservableSource(source) {
+        // Replace viewof and mutable with placeholders
+        const viewofRegex = /viewof\s+([a-zA-Z_][a-zA-Z0-9_]*)/g;
+        const mutableRegex = /mutable\s+([a-zA-Z_][a-zA-Z0-9_]*)/g;
+
+        // Temporary placeholders
+        const VIEWOF_PLACEHOLDER = "__VIEWOF_PLACEHOLDER__";
+        const MUTABLE_PLACEHOLDER = "__MUTABLE_PLACEHOLDER__";
+
+        // Maps to store original names
+        const viewOfMap = new Map();
+        const mutableMap = new Map();
+
+        // Replace viewof XX with placeholder and store mapping
+        source = source.replace(viewofRegex, (match, p1) => {
+          const placeholder = `${VIEWOF_PLACEHOLDER}_${p1}`;
+          viewOfMap.set(placeholder, p1);
+          return placeholder;
+        });
+
+        // Replace mutable XXX with placeholder and store mapping
+        source = source.replace(mutableRegex, (match, p1) => {
+          const placeholder = `${MUTABLE_PLACEHOLDER}_${p1}`;
+          mutableMap.set(placeholder, p1);
+          return placeholder;
+        });
+
+        // Normalize quotes: convert all to single quotes
+        const comments = [],
+          tokens = [];
+        const cell = parser.parseCell(source, {
+          ranges: true,
+          onComment: comments,
+          onToken: tokens
+        });
+
+
+        source = generate(cell, source);
+
+        // Restore original viewof and mutable identifiers
+        viewOfMap.forEach((original, placeholder) => {
+          source = source.replaceAll(placeholder, `viewof ${original}`);
+        });
+
+        mutableMap.forEach((original, placeholder) => {
+          source = source.replaceAll(placeholder, `mutable ${original}`);
+        });
+
+        return source;
+      })
+  </script>
+  <script id="3971" type="text/markdown">
+    ## The Compiler
+
+
+  </script>
+  <script id="6037" type="application/vnd.observable.javascript" pinned="">
+    test_async_interpolation = eval(
+      "let _fn = " +
+        compile("md`${await FileAttachment('image@1.png').url() }`")[0]._definition
+    )
+  </script>
+  <script id="6060" type="application/vnd.observable.javascript" pinned="">
+    {
+      debugger;
+      compile("md`${await FileAttachment('image@1.png').url() }`")[0];
+    }
+  </script>
+  <script id="6328" type="application/vnd.observable.javascript">
+    test_compile_integer = {
+      const compiled = await compile("1");
+      expect(compiled).toEqual([
+        {
+          _definition: "function _anonymous() {return (1);}",
+          _inputs: [],
+          _name: null
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6354" type="application/vnd.observable.javascript">
+    test_compile_string = {
+      const compiled = await compile(`""`);
+      expect(compiled).toEqual([
+        {
+          _name: null,
+          _inputs: [],
+          _definition: "function _anonymous() {return ('');}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6384" type="application/vnd.observable.javascript">
+    test_compile_obj_literal = {
+      const compiled = await compile(`obj_literal = ({})`);
+      expect(compiled).toEqual([
+        {
+          _name: "obj_literal",
+          _inputs: [],
+          _definition: "function _obj_literal() {return ({});}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6387" type="application/vnd.observable.javascript">
+    test_compile_assignment = {
+      const compiled = await compile(`x = ""`);
+      expect(compiled).toEqual([
+        {
+          _name: "x",
+          _inputs: [],
+          _definition: "function _x() {return ('');}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6390" type="application/vnd.observable.javascript">
+    test_compile_dependancy = {
+      const compiled = await compile(`y = x`);
+      expect(compiled).toEqual([
+        {
+          _name: "y",
+          _inputs: ["x"],
+          _definition: "function _y(x) {return (x);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6393" type="application/vnd.observable.javascript">
+    test_compile_block_dependancy = {
+      const compiled = await compile(`z = {
+      ("");
+      return x + y;
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "z",
+          _inputs: ["x", "y"],
+          _definition: "function _z(x,y) {\n    '';\n    return x + y;\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6396" type="application/vnd.observable.javascript">
+    test_compile_comments = {
+      const compiled = await compile(`comments = {
+      // a comment
+      return "";
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "comments",
+          _inputs: [],
+          _definition: "function _comments() {\n    // a comment\n    return '';\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6399" type="application/vnd.observable.javascript">
+    test_compile_generator = {
+      const compiled = await compile(`generator = {
+      yield x + y;
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "generator",
+          _inputs: ["x", "y"],
+          _definition: "function* _generator(x,y) {\n    yield x + y;\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6402" type="application/vnd.observable.javascript">
+    test_compile_function = {
+      const compiled = await compile(`_function = function () {}`);
+      expect(compiled).toEqual([
+        {
+          _name: "_function",
+          _inputs: [],
+          _definition: "function __function() {return (function () {\n});}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6405" type="application/vnd.observable.javascript">
+    test_compile_async_function = {
+      const compiled = await compile(`asyncfunction = async function () {}`);
+      expect(compiled).toEqual([
+        {
+          _name: "asyncfunction",
+          _inputs: [],
+          _definition:
+            "function _asyncfunction() {return (async function () {\n});}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6408" type="application/vnd.observable.javascript">
+    test_compile_named_function = {
+      const compiled = await compile(`named_function = function foo() {}`);
+      expect(compiled).toEqual([
+        {
+          _name: "named_function",
+          _inputs: [],
+          _definition: "function _named_function() {return (function foo() {\n});}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6411" type="application/vnd.observable.javascript">
+    test_compile_this_reference = {
+      const compiled = await compile(`thisReference = (this || 0) + 1`);
+      expect(compiled).toEqual([
+        {
+          _name: "thisReference",
+          _inputs: [],
+          _definition: "function _thisReference() {return ((this || 0) + 1);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6414" type="application/vnd.observable.javascript">
+    test_compile_lambda = {
+      const compiled = await compile(`lambda = () => {}`);
+      expect(compiled).toEqual([
+        {
+          _name: "lambda",
+          _inputs: [],
+          _definition: "function _lambda() {return (() => {\n});}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6417" type="application/vnd.observable.javascript">
+    test_compile_error = {
+      const compiled = await compile(`error = {
+      throw new Error();
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "error",
+          _inputs: [],
+          _definition: "function _error() {\n    throw new Error();\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6420" type="application/vnd.observable.javascript">
+    test_compile_viewof = {
+      const compiled = await compile(`viewof view = Inputs.input()`);
+      expect(compiled).toEqual([
+        {
+          _name: "viewof view",
+          _inputs: ["Inputs"],
+          _definition: "function _view(Inputs) {return (Inputs.input());}"
+        },
+        {
+          _name: "view",
+          _inputs: ["Generators", "viewof view"],
+          _definition: "(G, _) => G.input(_);"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6423" type="application/vnd.observable.javascript">
+    test_compile_mutable = {
+      const compiled = await compile(`mutable q = 6`);
+      expect(compiled).toEqual([
+        {
+          _name: "initial q",
+          _inputs: [],
+          _definition: "function _q() {return (6);}"
+        },
+        {
+          _name: "mutable q",
+          _inputs: ["Mutable", "initial q"],
+          _definition: "(M, _) => new M(_);"
+        },
+        {
+          _name: "q",
+          _inputs: ["mutable q"],
+          _definition: "_ => _.generator;"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6426" type="application/vnd.observable.javascript">
+    test_compile_builtin = {
+      const compiled = await compile(`inbuilt = _`);
+      expect(compiled).toEqual([
+        {
+          _name: "inbuilt",
+          _inputs: ["_"],
+          _definition: "function _inbuilt(_) {return (_);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6429" type="application/vnd.observable.javascript">
+    test_compile_fileattachment = {
+      const compiled = await compile(`file = FileAttachment("empty")`);
+      expect(compiled).toEqual([
+        {
+          _name: "file",
+          _inputs: ["FileAttachment"],
+          _definition:
+            "function _file(FileAttachment) {return (FileAttachment('empty'));}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6432" type="application/vnd.observable.javascript">
+    test_compile_mutable_dep = {
+      const compiled = await compile(`mutable_dep = {
+      viewof view;
+      lambda;
+      mutable q;
+      return mutable q;
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "mutable_dep",
+          _inputs: ["viewof view", "lambda", "mutable q"],
+          _definition:
+            "function _mutable_dep($0,lambda,$1) {\n    $0;\n    lambda;\n    $1.value;\n    return $1.value;\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6435" type="application/vnd.observable.javascript">
+    test_compile_mutable_dep2 = {
+      const compiled = await compile(`mutable_dep_2 = {
+      file;
+      return q + 1;
+    }`);
+      expect(compiled).toEqual([
+        {
+          _name: "mutable_dep_2",
+          _inputs: ["file", "q"],
+          _definition:
+            "function _mutable_dep_2(file,q) {\n    file;\n    return q + 1;\n}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6438" type="application/vnd.observable.javascript">
+    test_compile_inline_viewof = {
+      const compiled = await compile(`viewofdep_inline = viewof view`);
+      expect(compiled).toEqual([
+        {
+          _name: "viewofdep_inline",
+          _inputs: ["viewof view"],
+          _definition: "function _viewofdep_inline($0) {return ($0);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6441" type="application/vnd.observable.javascript">
+    test_compile_view_dep = {
+      const compiled = await compile(`viewofdatadep = view`);
+      expect(compiled).toEqual([
+        {
+          _name: "viewofdatadep",
+          _inputs: ["view"],
+          _definition: "function _viewofdatadep(view) {return (view);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6444" type="application/vnd.observable.javascript">
+    test_compile_dep = {
+      const compiled = await compile(`dep`);
+      expect(compiled).toEqual([
+        {
+          _name: null,
+          _inputs: ["dep"],
+          _definition: "function _anonymous(dep) {return (dep);}"
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6699" type="application/vnd.observable.javascript">
+    test_compile_class = {
+      const compiled = await compile(`v = class {}`);
+      expect(compiled).toEqual([
+        {
+          _name: "v",
+          _inputs: [],
+          _definition: `function _v() {return (class {\n});}`
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6722" type="application/vnd.observable.javascript">
+    test_compile_event = {
+      const compiled = await compile(`event = new Event('input')`);
+      expect(compiled).toEqual([
+        {
+          _name: "event",
+          _inputs: ["Event"],
+          _definition: `function _event(Event) {return (new Event('input'));}`
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6728" type="application/vnd.observable.javascript">
+    test_compile_tagged_literal = {
+      const compiled = await compile(`htl.html\`hi\``);
+      expect(compiled).toEqual([
+        {
+          _name: null,
+          _inputs: ["htl"],
+          _definition: `function _anonymous(htl) {return (htl.html\`hi\`);}`
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6343" type="application/vnd.observable.javascript">
+    compile_unit_test_template = Inputs.textarea({
+      value: `test_compile_ = {
+      const compiled = await compile(\`${test_case.value}\`);
+      expect(compiled).toEqual(${JSON.stringify(compiled, null, 2)});
+      return "ok";
+    }`,
+      disabled: true,
+      rows: 20,
+      label: "compile test template"
+    })
+  </script>
+  <script id="6447" type="application/vnd.observable.javascript" pinned="">
+    test_compile_import = {
+      const compiled = await compile(`import {
+      dep,
+      mutable mutabledep,
+      viewof viewdep,
+      dep as dep_alias,
+      mutable mutabledep as aslias_mutabledep,
+      viewof viewdep as aslias_viewdep,
+      mutabledep as aslias_mutabledep_data,
+      viewdep as aslias_viewdep_data
+    } from "@tomlarkworthy/dependancy";`);
+      debugger;
+      expect(compiled).toEqual([
+        {
+          _name: "module @tomlarkworthy/dependancy",
+          _inputs: [],
+          _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
+        },
+        {
+          _name: "dep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("dep", _)`
+        },
+        {
+          _name: "mutabledep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("mutabledep", _)`
+        },
+        {
+          _name: "viewdep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("viewdep", _)`
+        },
+        {
+          _name: "viewof viewdep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("viewof viewdep", _)`
+        },
+        {
+          _name: "dep_alias",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("dep_alias", _)`
+        },
+        {
+          _name: "mutable aslias_mutabledep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("mutable aslias_mutabledep", _)`
+        },
+        {
+          _name: "aslias_mutabledep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("aslias_mutabledep", _)`
+        },
+        {
+          _name: "viewof aslias_viewdep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("viewof aslias_viewdep", _)`
+        },
+        {
+          _name: "aslias_viewdep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("aslias_viewdep", _)`
+        },
+        {
+          _name: "aslias_viewdep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("aslias_viewdep", _)`
+        },
+        {
+          _name: "aslias_mutabledep_data",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("aslias_mutabledep_data", _)`
+        },
+        {
+          _name: "aslias_viewdep_data",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("aslias_viewdep_data", _)`
+        },
+        {
+          _name: "mutable mutabledep",
+          _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+          _definition: `(_, v) => v.import("mutable mutabledep", _)`
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="6615" type="application/vnd.observable.javascript" pinned="">
+    test_compile_import_notebook = {
+      const compiled = await compile(
+        `import {escodegen} from "@tomlarkworthy/escodegen"`
+      );
+      expect(compiled).toEqual([
+        {
+          _name: `module @tomlarkworthy/escodegen`,
+          _inputs: [],
+          _definition:
+            'async () => runtime.module((await import("@tomlarkworthy/escodegen")).default)'
+        },
+        {
+          _name: `escodegen`,
+          _inputs: ["module @tomlarkworthy/escodegen", "@variable"],
+          _definition: '(_, v) => v.import("escodegen", _)'
+        }
+      ]);
+      return "ok";
+    }
+  </script>
+  <script id="3997" type="application/vnd.observable.javascript">
+    viewof test_case = Inputs.select(
+      notebook_semantics_source.filter((s) => s.mode == "js"),
+      {
+        label: "compilation test case",
+        format: (v) => v.value
+      }
+    )
+  </script>
+  <script id="6377" type="application/vnd.observable.javascript" pinned="">
+    test_case.value
+  </script>
+  <script id="4225" type="application/vnd.observable.javascript">
+    compiled = await compile(test_case.value)
+  </script>
+  <script id="4744" type="application/vnd.observable.javascript">
+    {
+      const comments = [];
+      const tokens = [];
+      const ast = parser.parseCell(test_case.value, {
+        ranges: true,
+        onComment: comments,
+        onToken: tokens
+      });
+
+      return {
+        ast,
+        comments,
+        tokens
+      };
+    }
+  </script>
+  <script id="4720" type="application/vnd.observable.javascript" pinned="">
+    viewof compiled_selector = Inputs.radio(compiled, {
+      format: (v) => v._name,
+      value: compiled[0]
+    })
+  </script>
+  <script id="4724" type="application/vnd.observable.javascript">
+    JSON.stringify(
+      {
+        ...compiled_selector,
+        _definition: normalizeJavascriptSource(compiled_selector._definition)
+      },
+      null,
+      2
+    )
+  </script>
+  <script id="4282" type="application/vnd.observable.javascript">
+    compile(test_case.value)
+  </script>
+  <script id="4229" type="application/vnd.observable.javascript" pinned="">
+    normalizeVariables(test_case.variables)[0]._definition
+  </script>
+  <script id="4098" type="application/vnd.observable.javascript">
+    singleCompileTest = {
+      try {
+        const compiled = await compile(test_case.source.value);
+        return expect(normalizeVariables(compiled)).toEqual(
+          normalizeVariables(test_case.variables)
+        );
+      } catch (e) {
+        return e;
+      }
+    }
+  </script>
+  <script id="4104" type="application/vnd.observable.javascript" pinned="">
+    compile = ({ prompt: "fix the singleCompileTest", time: 1729232320503 } &&
+      function compile(source, { anonymousName = "_anonymous" } = {}) {
+        // Parse the cell using the Observable parser
+        const comments = [],
+          tokens = [];
+        const cell = parser.parseCell(source, {
+          ranges: true,
+          onComment: comments,
+          onToken: tokens
+        });
+        let dollarIdx = 0;
+        const inputToArgMap = {};
+        const dollarToMacro = {};
+        // references contain all source references, so expect duplication
+        const inputs = Array.from(cell.references || []).flatMap((i) => {
+          if (i.name) {
+            if (inputToArgMap[i.name]) return [];
+            inputToArgMap[i.name] = i.name;
+            return i.name;
+          } else {
+            if (inputToArgMap[i.id.name]) return [];
+            const dollarName = "$" + dollarIdx;
+            inputToArgMap[i.id.name] = dollarName;
+            dollarToMacro[dollarName] =
+              i.type == "ViewExpression"
+                ? "viewof " + i.id.name
+                : "mutable " + i.id.name;
+            dollarIdx++;
+            return dollarName;
+          }
+        });
+
+        // Determine the function name
+        let variables;
+        if (cell.id) {
+          if (cell.id.type === "Identifier") {
+            variables = [
+              {
+                functionName: "_" + cell.id.name,
+                name: cell.id.name,
+                inputs,
+                params: inputs.join(",")
+              }
+            ];
+          } else if (cell.id.type === "ViewExpression") {
+            variables = [
+              {
+                functionName: "_" + cell.id.id.name,
+                name: "viewof " + cell.id.id.name,
+                inputs,
+                params: inputs.join(",")
+              },
+              {
+                functionName: "_" + cell.id.id.name,
+                name: cell.id.id.name,
+                _definition: "(G, _) => G.input(_);",
+                inputs: ["Generators", "viewof " + cell.id.id.name],
+                params: inputs.join(",")
+              }
+            ];
+          } else if (cell.id.type === "MutableExpression") {
+            variables = [
+              {
+                functionName: "_" + cell.id.id.name,
+                name: "initial " + cell.id.id.name,
+                inputs,
+                params: inputs.join(",")
+              },
+              {
+                functionName: "_" + cell.id.id.name,
+                name: "mutable " + cell.id.id.name,
+                _definition: "(M, _) => new M(_);",
+                inputs: ["Mutable", "initial " + cell.id.id.name],
+                params: inputs.join(",")
+              },
+              {
+                functionName: "_" + cell.id.id.name,
+                name: cell.id.id.name,
+                _definition: "_ => _.generator;",
+                inputs: ["mutable " + cell.id.id.name],
+                params: inputs.join(",")
+              }
+            ];
+          }
+        } else {
+          // Imports are pure body
+          if (cell.body.type == "ImportDeclaration") {
+            const module_name = cell.body.source.value;
+            const cell_variables = [
+              {
+                _name: `module ${module_name}`,
+                _inputs: [],
+                _definition: `async () => runtime.module((await import("${module_name}")).default)`
+              }
+            ];
+            for (let specifier of cell.body.specifiers) {
+              const imported = specifier.imported.name;
+              const alias = specifier.local.name;
+              cell_variables.push({
+                _name: alias,
+                _inputs: [`module ${module_name}`, "@variable"],
+                _definition: `(_, v) => v.import("${imported}", _)`
+              });
+            }
+            return cell_variables;
+          } else {
+            // For anonymous cells
+            variables = [
+              {
+                functionName: anonymousName,
+                name: null,
+                inputs,
+                params: inputs.join(",")
+              }
+            ];
+          }
+        }
+
+        // Generate code for the function body
+        return variables.map((v) => {
+          let _definition = v._definition;
+
+          if (!_definition) {
+            let functionBody;
+            if (cell.body.type === "BlockStatement") {
+              // For BlockStatement, use the block directly
+              functionBody = observableToJs(
+                cell.body,
+                inputToArgMap,
+                comments,
+                tokens
+              );
+            } else {
+              // For other expressions, wrap in return ()
+              const bodyCode = observableToJs(
+                cell.body,
+                inputToArgMap,
+                comments,
+                tokens
+              );
+              functionBody = `{return (${bodyCode});}`;
+            }
+
+            // Construct the function definition
+            _definition = `${cell.async ? "async " : ""}function${
+              cell.generator ? "*" : ""
+            } ${v.functionName}(${v.inputs.map(
+              (i) => inputToArgMap[i] || i
+            )}) ${functionBody}`;
+          }
+
+          return {
+            _name: v.name,
+            _inputs: v.inputs.map(
+              (i) => dollarToMacro[i] || (i == "$variable" ? "@variable" : i)
+            ),
+            _definition: _definition
+          };
+        });
+      })
+  </script>
+  <script id="4569" type="application/vnd.observable.javascript" pinned="">
+    observableToJs = (ast, inputMap, comments, tokens) => {
+      // Replace ViewExpression with their id so they are removed from
+      // source and replaced with a JS compatible one
+      const offset = 0;
+      acorn_walk.ancestor(
+        ast,
+        {
+          ViewExpression(node, ancestors) {
+            const reference = "viewof " + node.id.name;
+            node.type = "Identifier";
+            node.name = inputMap[node.id.name];
+          },
+          MutableExpression(node, ancestors) {
+            const reference = "mutable " + node.id.name;
+            node.type = "Identifier";
+            // hack as ".value" is not valid identifier, but escodegen allows it
+            node.name = inputMap[node.id.name] + ".value";
+          }
+        },
+        parser.walk
+      );
+      escodegen.attachComments(ast, comments, tokens);
+      const js = escodegen.generate(ast, { comment: true });
+      return js;
+    }
+  </script>
+  <script id="5548" type="text/markdown">
+    ### Bundled deps
+  </script>
+  <script id="5495" type="application/vnd.observable.javascript">
+    decompress_url = async (attachment, overrides) => {
+      let decompressedStream;
+
+      if (!overrides) {
+        decompressedStream = (await attachment.stream()).pipeThrough(
+          new DecompressionStream("gzip")
+        );
+      } else {
+        decompressedStream = (await attachment.stream())
+          .pipeThrough(new DecompressionStream("gzip"))
+          .pipeThrough(new TextDecoderStream())
+          .pipeThrough(
+            new TransformStream({
+              transform(chunk, controller) {
+                // Rewrite URLs in the text
+                let modifiedChunk = chunk;
+                Object.entries(overrides).forEach(([override, replacement]) => {
+                  modifiedChunk = modifiedChunk.replace(override, replacement);
+                });
+                controller.enqueue(modifiedChunk);
+              }
+            })
+          )
+          .pipeThrough(new TextEncoderStream());
+      }
+      const arrayBuffer = await new Response(decompressedStream).arrayBuffer();
+
+      // Create a Blob from the ArrayBuffer
+      const blob = new Blob([arrayBuffer], { type: "application/javascript" });
+
+      return URL.createObjectURL(blob);
+    }
+  </script>
+  <script id="3859" type="application/vnd.observable.javascript">
+    parser = import(
+      await decompress_url(FileAttachment("parser-6.1.0.js.gz"), {
+        "/npm/acorn@8.11.3/+esm": acorn_url,
+        "/npm/acorn-walk@8.3.2/+esm": acorn_walk_url
+      })
+    )
+  </script>
+  <script id="4589" type="application/vnd.observable.javascript">
+    acorn_walk = import(acorn_walk_url)
+  </script>
+  <script id="5527" type="application/vnd.observable.javascript">
+    import { acorn } from "@tomlarkworthy/acorn-8-11-3"
+  </script>
+  <script id="5543" type="application/vnd.observable.javascript">
+    acorn_walk_url = decompress_url(FileAttachment("acorn-walk-8.3.2.js.gz"))
+  </script>
+  <script id="5514" type="application/vnd.observable.javascript">
+    acorn_url = decompress_url(FileAttachment("acorn-8.11.3.js.gz"))
+  </script>
+  <script id="2660" type="application/vnd.observable.javascript">
+    import { expect } from "@tomlarkworthy/jest-expect-standalone"
+  </script>
+</notebook>

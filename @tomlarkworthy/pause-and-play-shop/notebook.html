@@ -1,0 +1,125 @@
+<!doctype html>
+<notebook theme="air">
+  <title> Pause and Play STEM Activities Book</title>
+  <script id="297" type="application/vnd.observable.javascript">
+    html`<div class="content">
+    <h1> Pause and Play STEM Activities Book</h1>
+    <p style="max-width: 100%;">
+    Hey! I am a stay at home mum of twins, previously a scientist. I wrote a book for young kids (ages 3–7). The book has simple, graphical instructions on how to set up and play with science activities at home. It allows young children, even without reading skills to decide which science activity they want to explore & to prepare & play with the activities independently. Every science activity is linked to a QR code with an engaging Youtube video from <a href="https://www.youtube.com/channel/UCpL1E-yK38HGsNaIfVPdc8w">my channel</a>. The videos offer further insights into the activities through a different types of media. Our science activities only use household items aiming for minimal preparations. The book also includes suggestions on how to extend the activities and kid-friendly scientific explanations. By combining this print book, our Youtube videos, and minimal parental support, we create a holistic, real-life experience allowing young kids to choose, play, and learn science.
+    </p>
+    `
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    {
+      if (location.search == "?success") {
+        return html`<div class="content"><h1>Thank you for your support!!!`
+      } else return html` `
+    }
+  </script>
+  <script id="275" type="application/vnd.observable.javascript">
+    html`<center><img width="600" src=${await FileAttachment("pauseandplay.jpg").url()}>`
+  </script>
+  <script id="508" type="application/vnd.observable.javascript">
+    html`<div class="content">
+    <h4> You try it out. The full book is availible as a <a href="https://www.dropbox.com/s/0z8p8yb533pz0vc/Book_Nov21_PageCorrection%20copy.pdf?dl=0">pdf</a>.</h4>
+    `
+  </script>
+  <script id="358" type="application/vnd.observable.javascript">
+    html`<div class="content">
+    <h2> Live outside the EU?</h2>
+
+    You can get the book through <a href="https://geni.us/0vWW">Amazon</a>.
+
+    <h2> Live inside the EU?</h2>
+
+    ${api.inStock() ? html`We have books in stock that we can mail directly. You can also buy from <a href="https://geni.us/0vWW">Amazon</a>.`: 
+                      html`Sorry, we are out of stock for direct mail, but you can also buy from <a href="https://geni.us/0vWW">Amazon</a>.`}
+
+
+
+    `
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    html`<center>${location.search != "?success" && api.inStock()? html`
+      <button class="button is-primary"
+              onclick=${() => api.buy('price_1Hzps5HGNosi6Ft0NRhFBcVZ')}>
+        Buy 1 Pause and Play activity book for 13 EUR
+      </button>
+      <br><br>
+      <button class="button is-primary"
+              onclick=${() => api.buy('price_1IA0TNHGNosi6Ft0HtAb2qOz')}>
+        Buy 2 Pause and Play activites books 20 EUR
+      </button>
+    </center>`: null}`
+  </script>
+  <script id="545" type="application/vnd.observable.javascript">
+    md`<pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </pre>
+    `
+  </script>
+  <script id="310" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2>Ignore everything below `
+  </script>
+  <script id="444" type="application/vnd.observable.javascript">
+    api = ({
+      inStock () {return true},
+      buy (code) {
+        stripe.redirectToCheckout({
+          lineItems: [{
+            price: code,
+            quantity: 1,
+          }],
+          mode: 'payment',
+          successUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?success',
+          cancelUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?cancel',
+          shippingAddressCollection: {
+            allowedCountries: ["BE","GR","LT","PT","BG","ES","LU","RO","CZ","FR","HU","SI","DK","HR",
+                               "MT","SK","DE","IT","NL","FI","EE","CY","AT","SE","IE","LV","PL"]
+          }
+        });
+      },
+    });
+  </script>
+  <script id="153" type="application/vnd.observable.javascript">
+    Stripe = require('https://js.stripe.com/v3/').then(() => window["Stripe"]).catch(() => window["Stripe"])
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    STRIPE_API_KEY = "pk_live_51HbQzcHGNosi6Ft0JM18AKCtG3cIs707E1ft1B5ePvpptHb5yoLnXHXLWkyBbDjHgtlPMOT0233jrcfvWAGj6AYp00RxIZdaky"
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    stripe = Stripe(STRIPE_API_KEY)
+  </script>
+  <script id="53" type="application/vnd.observable.javascript">
+    bulma
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    import {bulma} from '@tomlarkworthy/bulma'
+  </script>
+  <script id="70" type="application/vnd.observable.javascript">
+    import {html} from "@observablehq/htl"
+  </script>
+</notebook>

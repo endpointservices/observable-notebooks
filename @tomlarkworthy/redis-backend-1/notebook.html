@@ -1,0 +1,969 @@
+<!doctype html>
+<notebook theme="air">
+  <title>A Causally Consistent Redis Backend for a Realtime Database</title>
+  <script id="4010" type="text/markdown">
+    ${await FileAttachment("firebase_secret@4.jpg").image({
+      style: `max-width: ${Math.min(640, width)}px`
+    })}
+    # A Causally Consistent Redis Backend for a Realtime Database
+  </script>
+  <script id="4022" type="text/markdown">
+    ${await FileAttachment(
+      "43537da5-2c25-4b47-9fd0-11b0a117482e_tlark_httpss.mj.runFpimq4__dropped_capital_letter_F_on_medieval_parchment_in_red_and_gold_with_hand_drawn_.jpg"
+    ).image({ style: "width: 4em; float:left; padding-right: 0.1em; border-radius: 0.3em" })}<span style="display:none">F</span>irebase's databases may be easy-to-use and intuitive, but they actually solve some of the trickiest problems in distributed databases. **Firebase is often misclassified as an eventually consistent database**, but if that were the full truth, you would hear developers complain of data loss footguns and logically "impossible" security holes.
+
+    The reason why Firebase is intuitive to use, even for inexperienced programmers, is because a phenomenal amount of engineering resources were dedicated in ensuring the database achieved the best possible consistency guarantees you could hope for in a distributed setting *i.e.* **causal consistency**.
+
+    Causal consistency provides the bedrock on which other advanced features, such as offline persistency, optimistic updates, can be built upon. In this notebook we advance our [hackable Firebase-compatible server](https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1) by developing a Redis backend suitable for use in a serverless architecture.
+  </script>
+  <script id="4173" type="application/vnd.observable.javascript">
+    toc("h2,h3")
+  </script>
+  <script id="4196" type="text/markdown">
+    ## Causal Consistency
+
+    The technical definition of *causal consistency* is that all clients *observe* operations in an agreed *causal* order. Causal ordering is defined by the *happens-before* relation. The weedle room in that definition is that non-causally related operations can be reordered relative to one another. ([Time, Clocks, and the Ordering of Events in a Distributed System](https://lamport.azurewebsites.net/pubs/time-clocks.pdf) by _Leslie Lamport_ is a classic paper on the subject)
+
+
+    As an individual client will generally only observe a small portion of the global dataset, they will only assert constraints on the ordering of the things they *read* and *write*. I tend to think of client's continuously making statements like: *"I saw the data at location was X so I performed mutation Y"* is how these causal relation are realized in practice.
+
+    In the case of *Firebase* where all clients connect to a central server, _causal consistency_ implies that **clients always see _other_ client's operations in the order they occurred**. There may be significant delays to observing the operations of an individual client — it could be offline — but when it does sync, those operations are observed in order. Operations made by different clients, on the other hand, may be observed in any order relative to one another.
+
+    ${await FileAttachment("cc@1.svg").image({ style: "max-width: 400px;" })}
+  </script>
+  <script id="1787" type="text/markdown">
+    The stronger distributed consistency model, *sequential* consistency, requires a global ordering of operations and doesn't permit progress during network partitions. So sequential consistency is a non-starter for a distributed setting with ephemeral participants like web page visitors.
+
+    <svg width="${Math.min(600, width)}px" viewBox="0 0 600 164" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+        <title>Artboard</title>
+        <desc>Created with Sketch.</desc>
+        <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+            <circle id="Oval" stroke="#000000" stroke-width="7" cx="68" cy="60" r="26.5"></circle>
+            <circle id="Oval" stroke="#000000" stroke-width="7" cx="532" cy="60" r="26.5"></circle>
+            <circle id="Oval" stroke="#000000" stroke-width="7" cx="300" cy="60" r="26.5"></circle>
+            <line x1="98.5" y1="60.5" x2="270.5" y2="60.5" id="Line" stroke="#000000" stroke-width="7" stroke-linecap="square"></line>
+            <line x1="330.5" y1="60.5" x2="502.5" y2="60.5" id="Line" stroke="#000000" stroke-width="7" stroke-linecap="square"></line>
+            <line x1="68.5" y1="90.5" x2="69" y2="103" id="Line" stroke="#000000" stroke-width="7" stroke-linecap="square"></line>
+            <line x1="299.5" y1="90.5" x2="300" y2="103" id="Line" stroke="#000000" stroke-width="7" stroke-linecap="square"></line>
+            <line x1="531.5" y1="90.5" x2="532" y2="103" id="Line" stroke="#000000" stroke-width="7" stroke-linecap="square"></line>
+            <text id="eventual" font-family="Helvetica-BoldOblique, Helvetica" font-size="20" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="27.4287109" y="128">eventual</tspan>
+            </text>
+            <text id="causal" font-family="Helvetica-BoldOblique, Helvetica" font-size="20" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="268.867188" y="128">causal</tspan>
+            </text>
+            <text id="sequential" font-family="Helvetica-BoldOblique, Helvetica" font-size="20" font-style="italic" font-weight="bold" fill="#000000">
+                <tspan x="482.541992" y="128">sequential</tspan>
+            </text>
+        </g>
+    </svg>
+
+    Going the other way, *eventual* consistency, implies nothing other than operations eventually become visible, but says nothing about ordering. Eventual consistency can be the cause of hard to replicate race conditions, and can leave you second guessing root causes of bugs. 
+
+    Causal consistency, on the other hand, is the optimal middle ground, which seems to match programmer's expectations of semantics. The ergonomics of causal consistency is one of the reasons why Firebase was such a hit. So suffice it to say that **causal consistency is what you want in a distributed database, and the key is preserving the order of operations**
+
+  </script>
+  <script id="3999" type="text/markdown">
+    ## A Literate, End User Programmable Implementation on Redis
+  </script>
+  <script id="4060" type="text/markdown">
+    This notebook is a prototype of a Redis based backend intended for the next iteration of a [**hackable 3rd party Firebase-compatible database server**](https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1). This notebook is live code! the code is executed in *your* browser. Its will eventually become part of a **transparent cloud** where all services are auditable, extendable, self-hostable and [remixable](https://nickarner.com/notes/remixable-software-guest-post-may-31-2022/). This notebook includes integration tests that exercise the broad features. The implementation connects to an external Redis server which you can verify in your browser's development tools. If you fork this notebook, you can change the code, the commands will hit the same external Redis server unless you also change the [redisConfig](https://observablehq.com/@tomlarkworthy/redis-backend-1#redisConfig) cell below.
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    redisConfig = ({
+      socket: {
+        host: "redis.webcode.run",
+        port: 443,
+        tls: true
+      }
+    })
+  </script>
+  <script id="4209" type="text/markdown">
+    If you have any questions, you can ask them inline with a [comment](https://observablehq.com/@observablehq/comments).
+  </script>
+  <script id="2500" type="application/vnd.observable.javascript">
+    viewof suite = createSuite({ name: "Reactive Integration Tests" })
+  </script>
+  <script id="1776" type="text/markdown">
+    ## Why we are building this: end user programmability
+  </script>
+  <script id="1783" type="text/markdown">
+    *(BTW, this comes from painful personal realization from reflecting on my work on the [Firebase Rules](https://firebase.blog/posts/2018/01/introducing-query-based-security-rules), [Blaze Compiler](https://github.com/googlearchive/blaze_compiler) and the [Common Expression Language](https://github.com/google/cel-spec))*
+  </script>
+  <script id="1527" type="text/markdown">
+    In my imagination of a better Realtime Database server, I think, **I want to use an ordinary programming language for authorization rules** and, I want to **query over different data-sources through federation**. Within auth checks, I want to be able to **call 3rd party APIs**, and write inefficient code if I want, **synchronously**. What I don't want to do, is to conform to some *deliberately constraining bespoke language* which is what Firebase asks me to do. 
+
+    Firebase, and similar products, don't allow general programming languages in the critical path because authorization is part of the database engine where latency impacts throughput. To enable end user customization, we need to rethink the architecture. Luckily new options have appeared since Firebase was developed. Modern infrastructure, like serverless, offers new opportunities for horizontal scaling. So let's try to execute our authorization rules and other services in horizontally scaled stateless workers. With this architecture, slow authorization or federation code would cost slightly more to run, but it would be isolated from the primary database performance.
+
+
+  </script>
+  <script id="4218" type="application/vnd.observable.javascript">
+    a = FileAttachment("a.svg").image({ style: "max-width: 600px" })
+  </script>
+  <script id="4216" type="text/markdown">
+
+    Horizontal compute, like serverless, add additional design constraints though. Workers are ephemeral and stateless. But this statelessness clashes with stateful clients like Firebase that require executing a carefully ordered stateful wire protocol to meet their consistency guarantees. We will resolve this conundrum by externalizing all state into a stateful backend that the workers connect to, and for this prototype, we will try Redis.
+  </script>
+  <script id="2122" type="text/markdown">
+    ## Redis as the Shared State
+
+    In this new architecture, we use shared state that all the stateless workers will need to access every request. We chose Redis, as it is offered everywhere, it is known for low latency, and because we can also  use it as the primary storage too. In this architecture, the stateless workers terminate public client connections and execute the database protocol by moving state around a Redis backend.
+
+    Redis has some fantastic features for ensuring *at-least-once delivery*, *exactly-one* processing and therefore _causal consistency_. Firstly, queues, hashmaps and stream are all first class citizens in Redis with their own specialised instructions for manipulation. Secondly, sequences of Redis commands can be applied atomically in a [transaction](https://redis.io/docs/manual/transactions/). For example, we can pop an instruction from an inbox, apply the effects, and write notifications to other inboxes in a single atomic operation. 
+
+    This is an amazing because if we can apply client operations, including all the event deliveries to all other clients, in atomic operations, we can meet the requirements for _causal consistency_. The main requirement for _causal consistency_ is that other clients observe a client's operations in the order they were raised. So, if we pop operations from a clients inbox in order, and ensure they are applied atomically, then the effects on other client's outbox observations are also in causal order, and we are free to execute instructions from different clients in parallel.  
+  </script>
+  <script id="2231" type="text/markdown">
+    ### Connecting to Redis: *createClient*
+  </script>
+  <script id="2207" type="text/markdown">
+    We will dedicate Redis client for each Firebase client. We will identify a client by its **client_id**, which will map to Firebase's connection id ([source](https://github.com/firebase/firebase-js-sdk/blob/8bece487710aa6315c7dd98bcb086cd18fc9a943/packages/database/src/realtime/Connection.ts#L98)). 
+  </script>
+  <script id="1453" type="application/vnd.observable.javascript" pinned="">
+    createClient = async (redisConfig, client_id) => ({
+      redis: await createRedisClient(redisConfig),
+      client_id
+    })
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    import { createClient as createRedisClient } from "@tomlarkworthy/redis"
+  </script>
+  <script id="2476" type="text/markdown">
+    So that we can run functionality in *this* notebook, let's create an example client now!
+  </script>
+  <script id="461" type="application/vnd.observable.javascript" pinned="">
+    exampleClient = {
+      restartClients; // Depend on restartClients cell so we can cycle this client
+      return createClient(redisConfig, "exampleClient");
+    }
+  </script>
+  <script id="2484" type="text/markdown">
+    As Redis connections are stateful, if we hit a bug it is useful to cycle them
+  </script>
+  <script id="1047" type="application/vnd.observable.javascript" pinned="">
+    viewof restartClients = Inputs.button("restart clients")
+  </script>
+  <script id="2488" type="text/markdown">
+    We can test the client is working by sending a PING command. Lets put this in a unit test so we can confirm a working connection to a Redis server. 
+  </script>
+  <script id="4434" type="application/vnd.observable.javascript" pinned="">
+    exampleClient.redis.sendCommand(["PING"])
+  </script>
+  <script id="2511" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Example client responds to PING with PONG", async () => {
+      expect(await exampleClient.redis.sendCommand(["PING"])).toBe("PONG");
+    })
+  </script>
+  <script id="2228" type="text/markdown">
+    ### Initializing the state for a fresh client: *init_client*
+
+    Central to the ordering guarantees is that client operations are processed in order, implying a queue for each client. 
+
+    ${await FileAttachment("Q.SVG").image({style: "max-width: 640px"})}
+
+    When an SDK connects for the first time to the server, we need to setup two queues streams for the inbound (operations) and outbound (notifications) directions. We use Redis [streams](https://redis.io/docs/manual/data-types/streams/) to implement the queues, as they have features for ensuring *at-least-once* delivery which are beyond the basic [lists](https://redis.io/docs/manual/data-types/#lists).
+  </script>
+  <script id="481" type="application/vnd.observable.javascript" pinned="">
+    init_client = ({ redis, client_id }) => {
+      clear_operations({ redis, client_id });
+      clear_notifications({ redis, client_id });
+      set_head_operation_id({ redis, client_id }, "0");
+      return set_head_notify_id({ redis, client_id }, "0-0");
+    }
+  </script>
+  <script id="2411" type="text/markdown">
+    #### Key helpers
+
+    All data-structures in Redis are stored under keys. We use helper functions for generating key names for per client data-structure.
+  </script>
+  <script id="455" type="application/vnd.observable.javascript" pinned="">
+    client_operation_queue_key = (client_id) => `c-${client_id}-actions`
+  </script>
+  <script id="942" type="application/vnd.observable.javascript" pinned="">
+    client_notify_queue_key = (client_id) => `c-${client_id}-replies`
+  </script>
+  <script id="2415" type="text/markdown">
+    #### Clearing streams
+  </script>
+  <script id="2383" type="text/markdown">
+    Clearing streams is as simple as issuing the [DEL](https://redis.io/commands/del/) to the key holding the stream.
+  </script>
+  <script id="890" type="application/vnd.observable.javascript" pinned="">
+    clear_operations = ({ redis, client_id } = {}) =>
+      redis.sendCommand(["DEL", client_operation_queue_key(client_id)])
+  </script>
+  <script id="965" type="application/vnd.observable.javascript" pinned="">
+    clear_notifications = ({ redis, client_id } = {}) =>
+      redis.sendCommand(["DEL", client_notify_queue_key(client_id)])
+  </script>
+  <script id="2431" type="text/markdown">
+    #### Manipulating the head of queue pointer
+
+    For *ordered at-least-once* delivery, a queue should shift up **after** the action has been applied. This implies we need keys to remember where we are in the queue, which will be incremented as we do the work. Redis streams already have entry IDs, so we will reusing that.
+
+  </script>
+  <script id="2443" type="text/markdown">
+    First we define helper functions for the keys
+  </script>
+  <script id="499" type="application/vnd.observable.javascript" pinned="">
+    client_operation_head_id_key = (client_id) => `c-${client_id}-actions-head`
+  </script>
+  <script id="945" type="application/vnd.observable.javascript" pinned="">
+    client_notify_head_id_key = (client_id) => `c-${client_id}-replies-head`
+  </script>
+  <script id="2448" type="text/markdown">
+    Then we define helpers for setting them. The [SET](https://redis.io/commands/set/) command updates the key with the provided value.
+  </script>
+  <script id="521" type="application/vnd.observable.javascript" pinned="">
+    set_head_operation_id = ({ redis, client_id } = {}, value) =>
+      redis.sendCommand(["SET", client_operation_head_id_key(client_id), value])
+  </script>
+  <script id="955" type="application/vnd.observable.javascript" pinned="">
+    set_head_notify_id = ({ redis, client_id } = {}, value) =>
+      redis.sendCommand(["SET", client_notify_head_id_key(client_id), value])
+  </script>
+  <script id="2459" type="text/markdown">
+    Of course, later we will need the [GET](https://redis.io/commands/get/) too.
+  </script>
+  <script id="503" type="application/vnd.observable.javascript" pinned="">
+    get_head_operation_id = ({ redis, client_id } = {}) =>
+      redis.sendCommand(["GET", client_operation_head_id_key(client_id)])
+  </script>
+  <script id="949" type="application/vnd.observable.javascript" pinned="">
+    get_head_notify_id = ({ redis, client_id } = {}) =>
+      redis.sendCommand(["GET", client_notify_head_id_key(client_id)])
+  </script>
+  <script id="2522" type="text/markdown">
+    So after we initialize a client, we expect their head pointers to be 0-0. Let's confirm that with an integration test:
+  </script>
+  <script id="2524" type="application/vnd.observable.javascript" pinned="">
+    suite.test("init_client resets queues and heads", async () => {
+      const client = await createClient(redisConfig, "init_client");
+      enqueue_operation(client, {}); // Put some data in the queue
+
+      init_client(client); // reset the client
+
+      expect(await get_head_operation_id(client)).toBe("0");
+      expect(await get_head_notify_id(client)).toBe("0-0");
+      expect(await next_operation(client)).toBe(null);
+      expect(await next_notify(client)).toBe(null);
+    })
+  </script>
+  <script id="2550" type="text/markdown">
+    ## Initializing a new long poll session: *createLongpollSession*
+
+    Interfacing to Firebase's long polling transport requires some additional metadata to be tracked across requests. Its not hugely relevant to *causal consistency* but just something we need. We use Redis' [HSET](https://redis.io/commands/hset/) and [HMGET](https://redis.io/commands/hmget/) to associate a dictionary of values for each client. So far we are only using it to store the long poll session password.
+
+    The session password is a security measure that prevents other agents manipulating a running long poll session ([source](https://github.com/firebase/firebase-js-sdk/blob/master/packages/database/src/realtime/BrowserPollConnection.ts#L54)).
+  </script>
+  <script id="1574" type="application/vnd.observable.javascript" pinned="">
+    client_longpoll_session_key = (client_id) => `c-${client_id}-lp`
+  </script>
+  <script id="1567" type="application/vnd.observable.javascript" pinned="">
+    createLongpollSession = async (client, { password } = {}) => {
+      init_client(client);
+      client.redis.sendCommand([
+        "HSET",
+        client_longpoll_session_key(client.client_id),
+        "password",
+        password
+      ]);
+      return {
+        client,
+        password
+      };
+    }
+  </script>
+  <script id="1587" type="application/vnd.observable.javascript" pinned="">
+    retrieveLongpollSession = async (client) => {
+      const response = await client.redis.sendCommand([
+        "HMGET",
+        client_longpoll_session_key(client.client_id),
+        "password"
+      ]);
+      return {
+        client,
+        password: response[0]
+      };
+    }
+  </script>
+  <script id="2585" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "createLongpollSession can set a password that is visible to retrieveLongpollSession",
+      async () => {
+        const randomPassword = Math.random().toString();
+        createLongpollSession(exampleClient, { password: randomPassword });
+        const retrieveSession = await retrieveLongpollSession(exampleClient);
+        expect(retrieveSession.password).toBe(randomPassword);
+      }
+    )
+  </script>
+  <script id="2625" type="text/markdown">
+    #### Monotonic long poll response numbering with: *incrementLongpollResponseNum*
+
+    The Firebase database server numbers each server-to-client longpoll packet with a sequentially increasing response number. It is used by the client to derive the correct response ordering ([source](https://github.com/firebase/firebase-js-sdk/blob/c424340aaeedbf1772db06437e65ab252d7a90e5/packages/database/src/realtime/polling/PacketReceiver.ts#L20)). 
+  </script>
+  <script id="1615" type="application/vnd.observable.javascript">
+    client_longpoll_response_num_key = (client_id) => `c-${client_id}-rp`
+  </script>
+  <script id="1623" type="application/vnd.observable.javascript" pinned="">
+    incrementLongpollResponseNum = async ({ redis, client_id }) => {
+      return (
+        (await redis.sendCommand(["INCR", client_longpoll_response_num_key(client_id)])) -
+        1
+      );
+    }
+  </script>
+  <script id="2637" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "incrementLongpollResponseNum increases by one each time",
+      async () => {
+        const current = await incrementLongpollResponseNum(exampleClient);
+        expect(await incrementLongpollResponseNum(exampleClient)).toBe(current + 1);
+      }
+    )
+  </script>
+  <script id="2647" type="text/markdown">
+    ## Database Semantics: Listenable Key-Value Store
+
+    Firebase' data model boils down to a Key-Value store that clients can register for changes. So for a single data *location*, we need: 1, a place to store its *value*, and 2, a list of interested data *listeners*. 
+
+    ${await FileAttachment("l.svg").image({style: "max-width: 640px"})}
+
+    *Firebase is a bit more complex, listeners can be queries over a collection, and the JSON structure cascades across data locations, but for this early prototype we are ignoring these details. *
+  </script>
+  <script id="811" type="application/vnd.observable.javascript" pinned="">
+    data_key = (location) => `${location}-data`
+  </script>
+  <script id="712" type="application/vnd.observable.javascript" pinned="">
+    data_listeners_key = (location) => `${location}-listeners`
+  </script>
+  <script id="2676" type="text/markdown">
+    The data holder can be accessed with Redis' scalar [GET](https://redis.io/commands/get/)/[SET](https://redis.io/commands/set/) operations. It's worth noting that we never *await* on these commands, as this will be pipelined in [transactions](https://redis.io/docs/manual/transactions/) later. I expect the data holder will be upgraded to a [RedisJSON ](https://redis.io/docs/stack/json/) representation in the future.
+  </script>
+  <script id="821" type="application/vnd.observable.javascript" pinned="">
+    set_data = ({ redis, client_id } = {}, location, value) =>
+      redis.sendCommand(["SET", data_key(location), value])
+  </script>
+  <script id="829" type="application/vnd.observable.javascript" pinned="">
+    get_data = ({ redis, client_id } = {}, location) =>
+      redis.sendCommand(["GET", data_key(location)])
+  </script>
+  <script id="2715" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "Read our writes. get_data retreives data previously set by set_data",
+      async () => {
+        const data = JSON.stringify(Math.random());
+        set_data(exampleClient, "read_our_writes_test", data);
+        const fetched = await get_data(exampleClient, "read_our_writes_test");
+        expect(fetched).toBe(data);
+      }
+    )
+  </script>
+  <script id="2703" type="text/markdown">
+    We store the registered *listeners* as a Redis [list](https://redis.io/docs/manual/data-types/#lists). This means we use [LPUSH](https://redis.io/commands/lpush/) (left push), [LREM](https://redis.io/commands/lrem/) (list remove) to add and remove to the list, and [LRANGE](https://redis.io/commands/lrange/) (list range query) to read the whole list.
+
+    Again, no *awaiting* in the code! these will functions will be pipelined and used in transactions.
+  </script>
+  <script id="705" type="application/vnd.observable.javascript" pinned="">
+    add_data_listener = ({ redis, client_id } = {}, location) =>
+      redis.sendCommand(["LPUSH", data_listeners_key(location), client_id])
+  </script>
+  <script id="1336" type="application/vnd.observable.javascript" pinned="">
+    remove_data_listener = ({ redis, client_id } = {}, location) =>
+      redis.sendCommand(["LREM", data_listeners_key(location), "1", client_id])
+  </script>
+  <script id="788" type="application/vnd.observable.javascript" pinned="">
+    get_data_listeners = ({ redis, client_id } = {}, location) =>
+      redis.sendCommand(["LRANGE", data_listeners_key(location), "0", "-1"])
+  </script>
+  <script id="1239" type="application/vnd.observable.javascript" pinned="">
+    clear_data_listeners = ({ redis, client_id } = {}, location) =>
+      redis.sendCommand(["DEL", data_listeners_key(location)])
+  </script>
+  <script id="2728" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "Listeners: add_data_listener, remove_data_listener, get_data_listeners, clear_data_listeners record client_id in a list",
+      async () => {
+        const location = "listeners-test";
+        clear_data_listeners(exampleClient, location);
+        const afterClear = get_data_listeners(exampleClient, location);
+        add_data_listener(exampleClient, location);
+        const afterAdd = get_data_listeners(exampleClient, location);
+        remove_data_listener(exampleClient, location);
+        const afterRemove = get_data_listeners(exampleClient, location);
+
+        expect(await afterClear).toEqual([]);
+        expect(await afterAdd).toEqual([exampleClient.client_id]);
+        expect(await afterRemove).toEqual([]);
+      }
+    )
+  </script>
+  <script id="2740" type="text/markdown">
+    ## Exactly-once operations
+
+    In normal operation, the Firebase clients request that the server to perform database operations, such as adding a data listener to a data location or setting the value of a data location. For the system to meet the _causal consistency_ goals, the order of a client's operations and the server's responses need to be preserved. To that end we use two queues per client. One queue for each direction of traffic.
+  </script>
+  <script id="2771" type="text/markdown">
+    So when an operation comes in, we need to push that into a queue. However, consider what happens if we crash immediately after doing so? The client will not know whether we received the operation, and will resend. So, if we are not careful, we will push the operation onto the work queue a second time, and this will cause problems (operations are **NOT** idempotent).
+  </script>
+  <script id="2786" type="text/markdown">
+    Firebase solves this by sending a *request id* ([source](https://github.com/firebase/firebase-js-sdk/blob/1a06d5d6064bd3b6b3672a352b0f128f86d6d89a/packages/database/src/core/PersistentConnection.ts#L181)) with each operation, so duplicates can be detected. *At-least-once* queues are neatly implemented in Redis using a stream and we use [XADD](https://redis.io/commands/xadd/) to enqueue. We can achieve *exactly-once* processing by using Firebase's integer *request_id* to reject duplicates, as the following implementation of *enqueue_operation* does.
+  </script>
+  <script id="403" type="application/vnd.observable.javascript" pinned="">
+    enqueue_operation = ({ redis, client_id } = {}, action) =>
+      redis
+        .sendCommand(
+          [
+            "XADD",
+            client_operation_queue_key(client_id),
+            `0-${action.request_id}`
+          ].concat(Object.entries(action).flatMap((_) => _))
+        )
+        .catch((err) => {
+          if (err.message.includes("ID specified in XADD is equal or smaller"))
+            console.log(`Non-monotonic request id ${action.request_id}`);
+          else {
+            throw err;
+          }
+        })
+  </script>
+  <script id="2814" type="text/markdown">
+    While *enqueue_operation* adds to the back of the queue, *next_operation* reads the front of the queue. Redis streams are similar to Kafka whereby readers maintain their read position in the stream. So first, *get_head_operation_id* is called to discover where the head is. This costs a round trip to Redis (note the *await*). We *could* eliminate the round trip by using [LUA scripting](https://redis.io/docs/manual/programmability/eval-intro/), but we will leave performance optimizations for another day. So instead we close our eyes and use the Redis stream instruction [XREAD](https://redis.io/commands/xread/) to read one item from the queue.
+  </script>
+  <script id="444" type="application/vnd.observable.javascript" pinned="">
+    next_operation = async ({ redis, client_id } = {}) => {
+      const id = await get_head_operation_id({ redis, client_id });
+      const response = await redis.sendCommand([
+        "XREAD",
+        "COUNT",
+        "1",
+        "STREAMS",
+        client_operation_queue_key(client_id),
+        `0-${id}`
+      ]);
+      if (response === "QUEUED")
+        throw new Error("Can't use next_operation in transaction");
+      return (
+        response &&
+        response[0][1][0][1].reduce((obj, val, index, arr) => {
+          if (index % 2 == 1) obj[arr[index - 1]] = arr[index];
+          return obj;
+        }, {})
+      );
+    }
+  </script>
+  <script id="2850" type="text/markdown">
+    After calling *next_operation* a worker should actually try to apply the operation to the database. There can be two outcomes, the operation is applied successfully, in which case the *head_operation_id* should increment, or the operation fails, in which case we should retry. 
+
+    Incrementing the *head_operation_id* acknowledges the item in the operation queue was processed successfully, so we call this function *ack_operation* and it the stream id of the item we wish to move beyond. **We can achieve *exactly-once* processing if operation acknowledgement is in the same transaction as the operation's effect, thereby combining them atomically.** Though, we additionally need to exclude two processes from calling *ack_operation* twice for the same work with [WATCH](https://redis.io/commands/watch/) on the *head_operation_id*.
+  </script>
+  <script id="495" type="application/vnd.observable.javascript" pinned="">
+    ack_operation = ({ redis, client_id } = {}, stream_id) => {
+      return set_head_operation_id({ redis, client_id }, stream_id);
+    }
+  </script>
+  <script id="2879" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "Client operation queue: enqueue_operation, next_operation, ack_operation",
+      async () => {
+        const client = await createClient(redisConfig, "operation_queue_client");
+        init_client(client);
+
+        enqueue_operation(client, {
+          request_id: "1",
+          payload: "init"
+        });
+        // If we write twice with the same request_id it is deduplicated
+        enqueue_operation(client, {
+          request_id: "1",
+          payload: "dedupe_test"
+        });
+
+        enqueue_operation(client, {
+          request_id: "2",
+          payload: "second"
+        });
+
+        const next1 = next_operation(client);
+        const next2 = next_operation(client);
+
+        ack_operation(client, "1");
+
+        const next3 = next_operation(client);
+
+        ack_operation(client, "2");
+
+        const next4 = next_operation(client);
+
+        expect(await next1).toEqual({
+          request_id: "1",
+          payload: "init"
+        });
+
+        expect(await next2).toEqual({
+          request_id: "1",
+          payload: "init"
+        });
+
+        expect(await next3).toEqual({
+          request_id: "2",
+          payload: "second"
+        });
+
+        expect(await next4).toEqual(null);
+      }
+    )
+  </script>
+  <script id="2905" type="text/markdown">
+    ## At-most-once notifications
+
+    The server responds to every incoming operation through a server-to-client notification stream. If any data is written to location with an active *listen*, the server will inform the client through this channel too. Because this channel contains operation replies AND data notifications, we cannot use the 1-at-a-time incremented *request_id* as the *stream_id*. This is kind of annoying as we can't form an at-least-once request pipeline, but it doesn't compromise consistency because if an notification goes missing the client can detect it and restart the session (how the detection works is transport dependant).
+
+    Largely this code is the same as the queue for the *operation_queue*, the major difference is we let it auto-generate its own *stream_id* when calling [XADD](https://redis.io/commands/xadd/).
+
+  </script>
+  <script id="856" type="application/vnd.observable.javascript" pinned="">
+    enqueue_notify = ({ redis, client_id } = {}, target_client_id, reply) =>
+      redis.sendCommand(
+        ["XADD", client_notify_queue_key(target_client_id), "*"].concat(
+          Object.entries(reply).flatMap((_) => _)
+        )
+      )
+  </script>
+  <script id="3027" type="application/vnd.observable.javascript" pinned="">
+    enqueue_notify(exampleClient, exampleClient.client_id, { payload: "hi" })
+  </script>
+  <script id="940" type="application/vnd.observable.javascript" pinned="">
+    next_notify = async ({ redis, client_id } = {}) => {
+      const id = await get_head_notify_id({ redis, client_id });
+      const response = await redis.sendCommand([
+        "XREAD",
+        "COUNT",
+        "1",
+        "STREAMS",
+        client_notify_queue_key(client_id),
+        id
+      ]);
+      return (
+        response && [
+          response[0][1][0][0],
+          response[0][1][0][1].reduce((obj, val, index, arr) => {
+            if (index % 2 == 1) obj[arr[index - 1]] = arr[index];
+            return obj;
+          }, {})
+        ]
+      );
+    }
+  </script>
+  <script id="953" type="application/vnd.observable.javascript" pinned="">
+    ack_notify = ({ redis, client_id } = {}, id) => {
+      return set_head_notify_id({ redis, client_id }, id);
+    }
+  </script>
+  <script id="407" type="text/markdown">
+    ## process_operation
+
+    Processing an operation is the meat of the implementation. It is where we actually do database-like things like setting data values and registering listener. Of course, care must be taken to ensure we meet our causal consistency goals.
+
+    Specifically, *process_operation*, removes an item from operation queue, effects it and ACKS it **within a single transaction**. The transaction ensures the *operation* is applied atomically _i.e._ all or nothing. Some of the operation side-effects might include enqueueing *notifications* to other client's outbound message queues. Within the transaction, a [WATCH](https://redis.io/commands/watch/) on the *head_operation_id* ensures that **only one** worker can process this work task, leading to *exactly-once* processing.  
+
+  </script>
+  <script id="4291" type="text/html">
+    <figure>
+      ${await FileAttachment("t.svg").image({ style: "max-width: 640px" })}
+      <figcaption>Casual conistincy implies applying operations exactly-once and notifing observers through queues. This can be acheived in Redis within a transaction that does various datastructure manipulations.</figcaption>
+    </figure>
+  </script>
+  <script id="2956" type="text/markdown">
+    To help with observability during development, the functional interface is converted to dataflow using a [*flowQueue*](https://observablehq.com/@tomlarkworthy/flow-queue). This allows us to break the program flow across notebook cells so it's easier to diagnose how decisions are made. It also gives the autocomplete visibility into the data on the wire. So, the main *process_operation* function just forwards the function arguments to the beginning of corresponding flowQueue cell *process_operation_args*.
+  </script>
+  <script id="416" type="application/vnd.observable.javascript" pinned="">
+    process_operation = (client) => viewof process_operation_args.send(client)
+  </script>
+  <script id="570" type="application/vnd.observable.javascript" pinned="">
+    viewof process_operation_args = flowQueue({
+      name: "process_operation_args",
+      timeout_ms: 2000
+    })
+  </script>
+  <script id="2972" type="text/markdown">
+    The *process_operation_args* variable holds the last value seen:  
+  </script>
+  <script id="624" type="application/vnd.observable.javascript" pinned="">
+    process_operation_args
+  </script>
+  <script id="2982" type="text/markdown">
+    First we fetch the next action after [WATCH](https://redis.io/commands/watch/)ing the *operation_head_id_key*. The WATCH prevents multiple workers doing the same operation.
+  </script>
+  <script id="574" type="application/vnd.observable.javascript" pinned="">
+    action = {
+      const client = process_operation_args;
+      client.redis.sendCommand([
+        "WATCH",
+        client_operation_head_id_key(client.client_id)
+      ]);
+      const actionRaw = await next_operation(process_operation_args);
+      if (!actionRaw) {
+        client.redis.sendCommand(["UNWATCH"]);
+        viewof process_operation_args.respond("NOOP");
+        return invalidation;
+      } else {
+        return actionRaw;
+      }
+    }
+  </script>
+  <script id="3173" type="text/markdown">
+    Some operations require additional data to be available before they can be fulfilled correctly. For a PUT operation, we need to know what the active listeners are. With the list of active listeners, a transaction can update the data location **and** notify the listeners through their queues in a single atomic update. To do this consistently, the prerequisite data must be not change during operation processing, so the gathered data is locked with [WATCH](https://redis.io/commands/watch/).
+  </script>
+  <script id="3164" type="application/vnd.observable.javascript" pinned="">
+    prerequisites = {
+      const client = process_operation_args;
+      const operation = action.action;
+      try {
+        if (operation === "PUT") {
+          client.redis.sendCommand(["WATCH", data_listeners_key(action.key)]);
+          return {
+            listeners: await get_data_listeners(client, action.key)
+          };
+        } else if (operation === "GET" || operation === "LISTEN") {
+          client.redis.sendCommand(["WATCH", data_key(action.key)]);
+          return {
+            data: await get_data(client, action.key)
+          };
+        }
+      } catch (err) {
+        client.redis.sendCommand(["UNWATCH"]);
+        console.error(err.message, action);
+        viewof process_operation_args.reject(err);
+        return err;
+      }
+      return {};
+    }
+  </script>
+  <script id="2996" type="text/markdown">
+    After gathering the prerequisite data for the operation, we execute all the mutations within a transaction block [MULTI](https://redis.io/commands/multi/). Exactly what is mutated depends on the operation, which is handled by _operation_ specific flowQueues (explained later). 
+  </script>
+  <script id="605" type="application/vnd.observable.javascript" pinned="">
+    process_operation_effect = {
+      const client = process_operation_args;
+      const operation = action.action;
+      try {
+        client.redis.sendCommand(["MULTI"]);
+        const handler = {
+          PUT: viewof run_put_operation_args,
+          GET: viewof run_get_operation_args,
+          LISTEN: viewof run_listen_operation_args,
+          UNLISTEN: viewof run_unlisten_operation_args
+        }[operation];
+
+        if (handler === undefined)
+          throw new Error("Unknown operation " + operation);
+
+        return await handler.send({
+          ...prerequisites,
+          client,
+          action
+        });
+      } catch (err) {
+        console.error(err.message, action);
+        client.redis.sendCommand(["DISCARD"]);
+        viewof process_operation_args.reject(err);
+        return err;
+      }
+    }
+  </script>
+  <script id="3014" type="text/markdown">
+    Finally, after the operation specific effects are queued, we acknowledge the operation to indicate it is processed, and execute the everything in an atomic transaction. Because *ack_operation* mutates the *client_operation_head_id_key* and we WATCHed it at the beginning, we guarantee that only one worker can do an operation. Because we also do the effect in the same transaction, we ensure we only *ack_operation* if the effect is applied. So we achieve *exactly-once* operation processing. 
+
+    The response of the transaction is passed back to the enclosing [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue) using the *respond* function.
+  </script>
+  <script id="660" type="application/vnd.observable.javascript" pinned="">
+    ack_process_operation = {
+      const client = process_operation_args;
+      process_operation_effect;
+      try {
+        ack_operation(client, action.request_id);
+        const response = client.redis.sendCommand(["EXEC"]);
+        viewof process_operation_args.respond(response);
+        return response;
+      } catch (err) {
+        await client.redis.sendCommand(["DISCARD"]);
+        viewof process_operation_args.reject(err);
+        return err;
+      }
+    }
+  </script>
+  <script id="976" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "smoke test process_operation with LISTEN/PUT/GET/UNLISTEN",
+      async () => {
+        const client = await createClient(
+          redisConfig,
+          "process_operation_smoke_test"
+        );
+        clear_data_listeners(client, "foo");
+        init_client(client);
+        enqueue_operation(client, {
+          request_id: "1",
+          action: "PUT",
+          key: "foo",
+          value: "baz"
+        });
+        enqueue_operation(client, {
+          request_id: "2",
+          action: "LISTEN",
+          key: "foo"
+        });
+        enqueue_operation(client, {
+          request_id: "3",
+          action: "PUT",
+          key: "foo",
+          value: "bar"
+        });
+        enqueue_operation(client, {
+          request_id: "4",
+          action: "GET",
+          key: "foo"
+        });
+
+        enqueue_operation(client, {
+          request_id: "5",
+          action: "UNLISTEN",
+          key: "foo"
+        });
+
+        while ((await process_operation(client)) !== "NOOP") {}
+
+        const history = [];
+        var next = await next_notify(client);
+        while (next) {
+          const [id, reply] = next;
+          history.push(reply);
+          ack_notify(client, id);
+          next = await next_notify(client);
+        }
+        expect(history).toEqual([
+          {
+            request_id: "1",
+            status: "ok"
+          },
+          {
+            action: "DATA",
+            data: "baz",
+            key: "foo"
+          },
+          {
+            request_id: "2",
+            status: "ok"
+          },
+          {
+            action: "DATA",
+            data: "bar",
+            key: "foo"
+          },
+          {
+            request_id: "3",
+            status: "ok"
+          },
+          {
+            data: "bar",
+            request_id: "4",
+            status: "ok"
+          },
+          {
+            request_id: "5",
+            status: "ok"
+          }
+        ]);
+      }
+    )
+  </script>
+  <script id="3191" type="text/markdown">
+    ## Operation Effects
+  </script>
+  <script id="3966" type="application/vnd.observable.javascript" pinned="">
+    operations = [
+      put_operation_response,
+      get_operation_response,
+      listen_operation_response,
+      unlisten_operation_response
+    ]
+  </script>
+  <script id="738" type="text/markdown">
+    ### run_put_operation
+
+    A PUT operation overwrites a data location with a new value, and notifies all listeners of the change. Thus to apply the operation the liste of listeners at that location is required.
+  </script>
+  <script id="743" type="application/vnd.observable.javascript" pinned="">
+    viewof run_put_operation_args = flowQueue({
+      name: "run_put_operation_args"
+    })
+  </script>
+  <script id="763" type="application/vnd.observable.javascript" pinned="">
+    run_put_operation_args
+  </script>
+  <script id="778" type="application/vnd.observable.javascript" pinned="">
+    run_put_operation_effect = {
+      const client = run_put_operation_args.client;
+      const action = run_put_operation_args.action;
+      var result = set_data(client, action.key, action.value);
+      run_put_operation_args.listeners.forEach((client_id) => {
+        var result = enqueue_notify(client, client_id, {
+          action: "DATA",
+          key: action.key,
+          data: action.value
+        });
+      });
+      return enqueue_notify(client, client.client_id, {
+        request_id: action.request_id,
+        status: "ok"
+      });
+    }
+  </script>
+  <script id="863" type="application/vnd.observable.javascript" pinned="">
+    put_operation_response = viewof run_put_operation_args.respond(
+      run_put_operation_effect
+    )
+  </script>
+  <script id="1257" type="text/markdown">
+    ### run_get_operation
+
+    A GET operation retrieves the data at a data location.
+  </script>
+  <script id="1261" type="application/vnd.observable.javascript" pinned="">
+    viewof run_get_operation_args = flowQueue({
+      name: "run_get_operation_args"
+    })
+  </script>
+  <script id="1263" type="application/vnd.observable.javascript" pinned="">
+    run_get_operation_args
+  </script>
+  <script id="1265" type="application/vnd.observable.javascript" pinned="">
+    run_get_operation_effect = {
+      const client = run_get_operation_args.client;
+      const action = run_get_operation_args.action;
+      const data = run_get_operation_args.data;
+      return enqueue_notify(client, client.client_id, {
+        request_id: action.request_id,
+        status: "ok",
+        data
+      });
+    }
+  </script>
+  <script id="1267" type="application/vnd.observable.javascript" pinned="">
+    get_operation_response = viewof run_get_operation_args.respond(
+      run_get_operation_effect
+    )
+  </script>
+  <script id="601" type="text/markdown">
+    ### run_listen_operation
+
+    A LISTEN operation adds a client to the list of listeners at a data location. The client is also informed of the current value of the data location.
+
+    TODO: Firebase also supports query filters and listening over collections of location too.
+  </script>
+  <script id="621" type="application/vnd.observable.javascript" pinned="">
+    viewof run_listen_operation_args = flowQueue({
+      name: "run_listen_operation_args"
+    })
+  </script>
+  <script id="627" type="application/vnd.observable.javascript" pinned="">
+    run_listen_operation_args
+  </script>
+  <script id="694" type="application/vnd.observable.javascript" pinned="">
+    run_listen_effect = {
+      const client = run_listen_operation_args.client;
+      const action = run_listen_operation_args.action;
+      const data = run_listen_operation_args.data;
+      enqueue_notify(client, client.client_id, {
+        action: "DATA",
+        key: action.key,
+        data: data
+      });
+      add_data_listener(client, action.key);
+      return enqueue_notify(client, client.client_id, {
+        request_id: action.request_id,
+        status: "ok"
+      });
+    }
+  </script>
+  <script id="647" type="application/vnd.observable.javascript" pinned="">
+    listen_operation_response = viewof run_listen_operation_args.respond(
+      run_listen_effect
+    )
+  </script>
+  <script id="734" type="text/markdown">
+    ### run_unlisten
+
+    Unlisten removes a listener at a data location.
+  </script>
+  <script id="1325" type="application/vnd.observable.javascript" pinned="">
+    viewof run_unlisten_operation_args = flowQueue({
+      name: "run_unlisten_operation_args"
+    })
+  </script>
+  <script id="1327" type="application/vnd.observable.javascript" pinned="">
+    run_unlisten_operation_args
+  </script>
+  <script id="1332" type="application/vnd.observable.javascript" pinned="">
+    run_unlisten_effect = {
+      const client = run_unlisten_operation_args.client;
+      const action = run_unlisten_operation_args.action;
+      remove_data_listener(client, action.key);
+      return enqueue_notify(client, client.client_id, {
+        request_id: action.request_id,
+        status: "ok"
+      });
+    }
+  </script>
+  <script id="1334" type="application/vnd.observable.javascript" pinned="">
+    unlisten_operation_response = viewof run_unlisten_operation_args.respond(
+      run_unlisten_effect
+    )
+  </script>
+  <script id="4305" type="text/markdown">
+    ## Conclusion and Next Steps
+
+    So this notebook implements a Redis backend for a *causally consistent* backend for a Realtime Database. We should perform some fuzz testing before considering the semantics finished, but I would prefer to integrate this into a working 3rd party Firebase-compatible server first, so we can fuzz using the vanilla Firebase clients.
+
+    Note the real Firebase Realtime Database server has more semantics than we have implemented. Its LISTENs can query and filter, its values can contain JSON documents, so this is far from a feature complete server backend. However, under the literate programming paradigm, I prefer each notebook to concentrate on a single topic. This notebook is about *causal consistency*. We will add query semantics in dedicated notebook later. They can all be found in the [Firebase collection](https://observablehq.com/collection/@tomlarkworthy/firebase).
+
+    I spoke with [*Andrew Lee*](https://startupandrew.com/about/), the former CTO of Firebase about this post, and he said that the original Firebase Realtime Database *was* prototyped on Redis. This explains why Firebase's wire protocol has an identical PONG for a PING command like Redis does! Anyway, Firebase did not go further with Redis because they needed disk persistence to be economical in the multi-tenancy use case (this was 2014, Redis Flash options were thinner then). So going back to Redis perhaps represents a full circle for Firebase.
+
+    Anyway, I hope you have enjoyed this writeup! Please ❤️ at the top and spread the word!
+  </script>
+  <script id="4308" type="text/markdown">
+    ### Follow along
+    on [Twitter](https://twitter.com/tomlarkworthy) or 
+    <iframe src="https://webcode.substack.com/embed" width="640" height="200px" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+  </script>
+  <script id="596" type="text/markdown">
+    ---
+  </script>
+  <script id="588" type="text/markdown">
+    ## Notebook Dependencies
+  </script>
+  <script id="3992" type="application/vnd.observable.javascript">
+    import { toc } from "@nebrius/indented-toc"
+  </script>
+  <script id="4228" type="application/vnd.observable.javascript">
+    import { gfx } from "@tomlarkworthy/hackable-realtime-database-title-graphic"
+  </script>
+  <script id="544" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="4244" type="application/vnd.observable.javascript">
+    import { createSuite, expect } from "@tomlarkworthy/testing"
+  </script>
+  <script id="1681" type="text/markdown">
+    ### Notebook Backups and Analytics
+  </script>
+  <script id="1679" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="1686" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

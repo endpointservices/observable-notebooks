@@ -1,0 +1,100 @@
+<!doctype html>
+<notebook theme="air">
+  <title>How To Keep an API key secret in a Public Notebook</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# How To Keep an API key secret in a Public Notebook
+
+    <mark>I now recommend using the <a href="https://observablehq.com/@endpointservices/public-api-keys">webcode</a> dashboard for setting secrets</mark>
+
+    You can keep a secret in a public notebook by using a combination of [Secret Manager](https://observablehq.com/@tomlarkworthy/secret-manager) and [Serverless Cells](https://observablehq.com/@tomlarkworthy/serverless-cells)
+
+    motivation:
+    https://talk.observablehq.com/t/is-it-possible-to-encapsulate-secret-based-code-for-public-notebook-use/4649
+    `
+  </script>
+  <script id="32" type="application/vnd.observable.javascript">
+    md`
+    ## Save your secret to [Secret Manager](https://observablehq.com/@tomlarkworthy/secret-manager)
+
+
+    ![](${await FileAttachment("image@1.png").url()})
+    `
+
+  </script>
+  <script id="30" type="application/vnd.observable.javascript">
+    md`## Inject secret into serverless cell handler that calls the protected API
+
+    In the deploy options, tell the runtime to inject your secret. In the handler, you can retreive the secret in the runtime context.
+
+    Then call the API using the secret, and pipe the result to the response of the serverless-cell.
+
+    `
+  </script>
+  <script id="19" type="application/vnd.observable.javascript" pinned="">
+    proxy = deploy(
+      "proxy",
+      async (request, response, context) => {
+        const format_url = (x) => x;
+        const base_url =
+          "http://openapi.data.go.kr/openapi/service/rest/Covid19/getCovid19SidoInfStateJson";
+
+        const key = context.secrets["endpointservices_example_secret"];
+        const date1 = format_url(request.query.start);
+        const date2 = format_url(request.query.end);
+
+        const xml_url = `${base_url}?serviceKey=${encodeURIComponent(
+          key
+        )}&startCreateDt=${date1}&endCreateDt=${date2}`;
+
+        // Sometimes its enough to debug intermediate steps by returning information via the response.
+        // return response.send(xml_url)
+
+        const apiResponse = await fetch(xml_url);
+
+        response.status(apiResponse.status).send(await apiResponse.text());
+      },
+      {
+        secrets: ["endpointservices_example_secret"]
+      }
+    )
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    md`## PUBLISH YOUR NOTEBOOK
+
+    The Serverless cell runtime needs to be able to access your notebook to read the handler code. So you must link share or publish your notebook. 
+    `
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    md`## Try the link manually
+
+    The link returned by the _deploy_ command is one you can click on. (though it won't have URL parameters)
+    `
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    html`${proxy}`
+  </script>
+  <script id="70" type="application/vnd.observable.javascript">
+    md`## Call the link programatically
+
+    (of course I don't have access to a real API_KEY so it breaks with 500)
+    `
+  </script>
+  <script id="72" type="application/vnd.observable.javascript" pinned="">
+    proxyResponse = fetch(`${proxy.href}?start=20200101&end=20200201`)
+  </script>
+  <script id="76" type="application/vnd.observable.javascript" pinned="">
+    proxyResponse.text()
+  </script>
+  <script id="78" type="application/vnd.observable.javascript" pinned="">
+    proxyResponse.status
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverless-cells'
+  </script>
+  <script id="100" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="104" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,221 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Fuse Bead Craft Planner</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Fuse Bead Craft Planner
+
+    My family and I love wax bead crafts! This tool will help us plan our creations. I want my 5 years olds to appreciate the power of software in everyday life.
+
+    ![Bead craft pictures](${await FileAttachment("IMG_20201209_194259 (1).jpg").url()})
+
+    Gift them <a href="https://geni.us/BPN47" target="_blank">Amazon</a> _(paid link)_
+    `
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    boardSelection = {
+      function newBoard(option) {
+        console.log(`New board: ${option}`)
+        mutable board = [];
+        if (option == '❤️') {
+          for (var i = 0; i < 10; i++)
+          for (var j = 0; j < 10; j++) {
+            if ( i > 6 && j > 6) continue
+            mutable board.push({
+              x: i,
+              y: j,
+              bead: "empty"})
+          }
+          const rd = [0.55,1.6,2.8];
+          const d = [2,5,8];
+          for (var r = 0; r < 3; r++)
+          for (var j = 0; j < d[r]; j++) {
+            mutable board.push({
+              y: Math.cos(j * (Math.PI - 0.2) / (d[r] - 1) - Math.PI / 2 + 0.1) * rd[r] + 9.85,
+              x: Math.sin(j * (Math.PI - 0.2) / (d[r] - 1) - Math.PI / 2 + 0.1) * rd[r] + 3,
+              bead: "empty"})
+
+            mutable board.push({
+              x: Math.cos(j * (Math.PI - 0.2) / (d[r] - 1) - Math.PI / 2 + 0.1) * rd[r] + 9.85,
+              y: Math.sin(j * (Math.PI - 0.2) / (d[r] - 1) - Math.PI / 2 + 0.1) * rd[r] + 3,
+              bead: "empty"})
+          }
+          const root2 = 0.70710678118;
+          mutable board = mutable board.map(b => ({...b,
+            x: - root2 * b.x + root2 * b.y + 8, y: - root2 * b.x - root2 * b.y + 13}))
+
+        } else if (option == 'r9') {
+          const d = [1,6,12,18,24,30,36,42,48];
+          for (var r = 0; r < 9; r++)
+          for (var j = 0; j < d[r]; j++) {
+            mutable board.push({
+              x: Math.cos(2 * j * Math.PI / d[r] ) * r + 9,
+              y: Math.sin(2 * j * Math.PI / d[r] ) * r + 9,
+              bead: "empty"})
+          }
+        } else if (option == '18x18') {
+          for (var i = 0; i < 18; i++)
+          for (var j = 0; j < 18; j++) {
+            mutable board.push({x: i, y: j, bead: "empty"})
+          }
+        } else if (option == '29x29') {
+          for (var i = 0; i < 29; i++)
+          for (var j = 0; j < 29; j++) {
+            mutable board.push({x: i, y: j, bead: "empty"})
+          }
+        }
+      }
+      newBoard('❤️')
+
+      return html`<select onchange=${(evt) => newBoard(evt.target.value)}>
+        <option value="❤️">❤️</option>
+        <option value="r9">◎ 9</option>
+        <option value="18x18">18x18</option>
+        <option value="29x29">29x29</option>
+      </select>
+      Board shape
+      `
+    }
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    viewof currentBead = {
+      function click(bead) {
+        console.log("Click ", bead)
+        form.value = bead
+        form.dispatchEvent(new CustomEvent("input"));
+      }
+      const beadCodes = Object.keys(beads)
+      const form = svg`<svg viewBox="0 0 ${beadCodes.length} 1"
+                        width="50%" 
+                        xmlns="http://www.w3.org/2000/svg">
+        <style>
+          .white {
+            fill: white;
+          }
+        </style>
+
+        ${Object.keys(beads).map(bead => 
+          svg`
+            <style>
+              .${bead} {
+                fill: ${beads[bead]};
+              }
+            </style>
+            <symbol id="${bead}" width="1" height="1" viewBox="0 0 2 2">
+              <circle class="${bead}" cx="1" cy="1" r="1"/>
+              <circle class="white" cx="1" cy="1" r="0.5"/>
+            </symbol>
+          `
+        )}
+
+        ${beadCodes.map((bead, idx) => {
+          return svg`<use onclick=${() => click(bead)}
+                          href="#${bead}"
+                          x="${idx}" y="0"></use>`
+        })}
+      `
+      form.value = "blue"
+      return form;
+    }
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    viewof boardView = {
+        function click(cell, evt) {
+          let coord;
+          if (evt.buttons) {
+            coord = [evt.target.x.baseVal.value, evt.target.y.baseVal.value];
+          } else if (evt.touches) {
+            var myLocation = evt.touches[0];
+            var realTarget = document.elementFromPoint(myLocation.clientX, myLocation.clientY);
+            coord = [realTarget.x.baseVal.value, realTarget.y.baseVal.value];
+            if (coord[0] == 0 && coord[1] == 0) return; // we have a bug with false triggers
+          } else {
+            return;
+          }
+          if (cell.bead !== currentBead) {
+            cell.bead = currentBead;
+            mutable board = board;
+          }
+        }
+        const desktop = window.screen.availHeight < width;
+        return reconcile(this, svg`<svg id="boardView" viewBox="0 0 ${boardMax[0] + 1} ${boardMax[1] + 1}"
+                        width=${desktop?'60%':'100%'}               
+                        xmlns="http://www.w3.org/2000/svg"
+                        style=${{'touch-action': 'none'}}>
+
+        ${board.map(cell => {
+          return svg`<use onmousedown=${click.bind(null, cell)}
+                          onmouseover=${click.bind(null, cell)}
+                          ontouchmove=${click.bind(null, cell)}
+                          ontouchstart=${click.bind(null, cell)}
+                          href="#${cell.bead}"
+                          id="${cell.x + "," + cell.y}"
+                          x="${cell.x}" y="${cell.y}"></use>`
+        })}
+      `);
+    }
+  </script>
+  <script id="139" type="application/vnd.observable.javascript">
+    {
+      function save() {
+        const button = document.getElementById("saveBtn")
+        const backup = button.innerHTML
+        button.innerHTML = "Saving!"
+
+        // save the board
+        copy(`${html`<a href="#">`.href}${encodeURIComponent(JSON.stringify(board))}`)
+
+        setTimeout(() => button.innerHTML = backup, 1000)
+      }
+      return html`<button id="saveBtn" onclick=${save}>save as link to clipboard</button>`
+    }
+  </script>
+  <script id="162" type="application/vnd.observable.javascript">
+    init = {
+      boardSelection; // Should run after the initial board wipe
+      if (location.hash)
+        mutable board = JSON.parse(decodeURIComponent(location.hash.substring(1)));
+
+    }
+  </script>
+  <script id="245" type="application/vnd.observable.javascript" pinned="">
+    mutable board = []
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    boardMax = board.reduce(
+      (acc, val) => {
+        return [Math.max(acc[0], val.x), Math.max(acc[1], val.y)]
+      } 
+      ,[0,0]
+    )
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    beads = ({
+      "red": "red",
+      "orange": "orange",
+      "yellow": "yellow",
+      "fuchsia": "fuchsia",
+      "violet": "violet",
+      "green": "green",
+      "blue": "blue",
+      "brown": "brown",
+      "black": "black",
+      "white": "white",
+      "empty": "#EEE",
+    })
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    import {html, svg} from '@observablehq/htl'
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    import {reconcile} from '@tomlarkworthy/reconcile-nanomorph'
+  </script>
+  <script id="147" type="application/vnd.observable.javascript">
+    import {copy} from '@mbostock/copy-to-clipboard'
+  </script>
+  <script id="330" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="348" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

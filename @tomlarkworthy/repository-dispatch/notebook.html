@@ -1,0 +1,186 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Starting Github Action Workflows From Observable</title>
+  <script id="0" type="text/markdown">
+    # Starting [Github Action](https://docs.github.com/en/actions) Workflows From [Observable](https://observablehq.com/)
+
+    A [repository dispatch](https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#repository_dispatch) triggers [Github Action](https://docs.github.com/en/actions) workflows via an authenticated HTTP request. See the [documentation](https://docs.github.com/en/actions/learn-github-actions/events-that-trigger-workflows#repository_dispatch) on Github. From there you can do all kinds of things, even programmatically creating commits.
+
+    In this notebook, we document two major ways to trigger actions from [Observable](https://observablehq.com)
+    1. authenticated, where notebook **readers** provide the access token to trigger a workflow
+    2. pre-authenticated, where the notebook **author** configures a proxy using their own creds, so anybody can trigger workflows on the author's blessed path.
+
+    To use
+    ~~~js
+    import {dispatch, createDispatchProxy} from '@tomlarkworthy/repository-dispatch-min'
+    ~~~
+
+  </script>
+  <script id="491" type="application/vnd.observable.javascript">
+    tweet("1475383403285467145")
+  </script>
+  <script id="56" type="text/markdown">
+    ## Repository Dispatch Client Library for Observable
+
+    The authenticated dispatch function takes an access token, plus the other options, to perform the dispatch
+  </script>
+  <script id="143" type="application/vnd.observable.javascript">
+    signature(dispatch, {
+      description:
+        "Pass a GitHub access token in 'token' and dispatch will trigger a repository workflow in the target repository."
+    })
+  </script>
+  <script id="147" type="text/markdown">
+    ## Example Usecase 1: Pass Personal Token In Notebook
+
+    To use our simple dispatch function, we need a Github API access token. A simple way is to ask the reader for one.
+  </script>
+  <script id="114" type="application/vnd.observable.javascript">
+    viewof token = Inputs.bind(
+      Inputs.text({
+        label: md`Enter [personal token](https://github.com/settings/tokens/new)`,
+        minlength: 10
+      }),
+      localStorageView("gh_token")
+    )
+  </script>
+  <script id="296" type="text/markdown">
+    Note: If you use [localStorageView](https://observablehq.com/@tomlarkworthy/local-storage-view#localStorageView) you can remember the input across page sessions in local storage.
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    dispatch(token, {
+      owner: "tomlarkworthy",
+      repo: "octokit-test"
+    })
+  </script>
+  <script id="301" type="text/markdown">
+    There are situations where you don't want the reader to provide a token. For this, we need to introduce a secure environment.
+  </script>
+  <script id="169" type="text/markdown">
+    ## Example Usecase 2: Use Shared Secret Stored in [Webcode.run](https://webcode.run) to pre-authorize a configuration
+
+    Code executed on [webcode.run](https://webcode.run) is remote, and so secrets are not exposed to notebook readers. By creating a proxy to do the request, we can expose Github workflows to the public without requiring them to supply tokens. Instead, the secret can be set in the inline UI (or at [@endpointservices/secrets](https://observablehq.com/@endpointservices/secrets)). But default, the secret should be called `github_token`, but you can override this in the `createDispatchProxy` arguments.
+  </script>
+  <script id="218" type="application/vnd.observable.javascript">
+    signature(createDispatchProxy, {
+      description: `returns a preconfigured and authorized dispatch function
+    ~~~js
+    (client_payload) => status
+    ~~~
+
+    which you can call to invoke a github workflow
+    `
+    })
+  </script>
+  <script id="308" type="text/markdown">
+    Note, configuration of the dispatch function has to be done when creating the proxy so that the endpoint cannot be used against arbitrary repositories. An opt-in exception is that when the `client_payload` arg is set to undefined, the client can pass a value of `client_payload` as the first argument (this is to enable passing data into a workflow).
+  </script>
+  <script id="317" type="text/markdown">
+    ```js
+    viewof remoteDispatch = createDispatchProxy({
+      owner: "tomlarkworthy",
+      repo: "octokit-test"
+    })
+    ```
+
+    The result of a `createDispatchProxy` call is a view. The UI is the default [webcode.run](https://webcode.run) UI, which provides a method of setting the secret once you are logged in. You will need to create a stored secret called `github_token` **and** bind it to the endpoint. If you forget to configure the secret, the underlying Octokit API will throw `HTTPError: Not Found` exceptions. Your notebook needs to be published for it to work when you are logged out.
+  </script>
+  <script id="501" type="application/vnd.observable.javascript" pinned="">
+    viewof remoteDispatch = createDispatchProxy({
+      owner: "tomlarkworthy",
+      repo: "octokit-test",
+      event_type: "log"
+    })
+  </script>
+  <script id="331" type="text/markdown">
+    The data channel of the returned `createDispatchProxy` view is a dispatch function. When called, it will run the dispatch remotely, but importantly, you do not need to pass any authentication credentials. So you can just place it in a button for anybody to use. Try mine below.
+  </script>
+  <script id="201" type="application/vnd.observable.javascript" pinned="">
+    viewof lastResult = Inputs.button("trigger workflow", {
+      reduce: () => remoteDispatch()
+    })
+  </script>
+  <script id="274" type="application/vnd.observable.javascript" pinned="">
+    lastResult
+  </script>
+  <script id="337" type="text/markdown">
+    The above workflow will trigger [this workflow](https://github.com/tomlarkworthy/octokit-test/blob/main/.github/workflows/log-http.yml) which in turn write back into the repository as a log entry found [here](https://github.com/tomlarkworthy/octokit-test/blob/main/log/http.log). So you can see for yourself that your triggers are registered by inspecting the timestamps in the logs!
+
+    The example here will cause a commit to occur in a repository you would not normally have permissions to! Now imagine what is possible when you can offload storage into git repositories for public users on [Observablehq](https://observablehq.com)!
+
+  </script>
+  <script id="386" type="text/markdown">
+    ## Writing workflows
+
+    I recommend [Triggering GitHub Actions Using Repository Dispatches](https://dev.to/teamhive/triggering-github-actions-using-repository-dispatches-39d1) for a good overview of the technique.
+
+    At the beginning of a workflow file (stored in `/.github/workflows/<name>.yml`) you announce how the workflow is triggered. For an externally HTTP triggered workflow you use `repository_dispatch`. You also can *optionally* restrict what the `event_type` must be through the `types` array property:-
+    ~~~yaml
+
+    name: HTTP triggered workflow
+    on:
+      repository_dispatch:
+      types: [start-example-workflow]
+    ~~~
+
+    Next, you list jobs with steps. Steps can include anything off the vast Github Actions [marketplace](https://github.com/marketplace?type=actions) or just simple shell scripting!
+
+    ~~~yaml
+    jobs:
+      commit-timestamp:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@v2
+          - name: Log workflow execution in log
+            run: |
+              mkdir -p ./log
+              echo "$(date '+%Y-%m-%d %H:%M:%S') inbound HTTP" >> ./log/http.log
+          - name: Commit updated log
+            run: |
+              git config --global user.name 'Log External HTTP'
+              git config --global user.email 'robot@webcode.run'
+              git add ./log/http.log
+              git commit -am "Log inbound HTTP"
+              git push
+    ~~~
+
+
+
+  </script>
+  <script id="422" type="text/markdown">
+    ### Observable + Github Actions
+  </script>
+  <script id="389" type="text/markdown">
+    Observable is a great way to provide a lightweight interactive UI with minimal development effort. When paired with Github actions you can use Observable to create a nice GUI over the Action primitives. You can also use Actions to enhance the Observable experience, for example, auto-backing up notebooks into a Github repo using the [onversion hook](https://observablehq.com/@endpointservices/onversion).
+  </script>
+  <script id="161" type="text/markdown">
+    ## Supporting Libraries
+  </script>
+  <script id="68" type="application/vnd.observable.javascript">
+    Octokit = await import("https://cdn.skypack.dev/@octokit/core")
+  </script>
+  <script id="495" type="application/vnd.observable.javascript">
+    import {
+      dispatch,
+      createDispatchProxy
+    } from "@tomlarkworthy/repository-dispatch-min"
+  </script>
+  <script id="128" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="140" type="application/vnd.observable.javascript">
+    import { signature } from "@mootari/signature"
+  </script>
+  <script id="183" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="90" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="485" type="application/vnd.observable.javascript">
+    import { tweet } from "@mbostock/tweet"
+  </script>
+  <script id="92" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

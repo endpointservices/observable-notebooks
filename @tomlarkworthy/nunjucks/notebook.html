@@ -1,0 +1,209 @@
+<!doctype html>
+<notebook theme="air">
+  <title>👋 Hello Nunjucks</title>
+  <script id="0" type="text/markdown">
+    # 👋 Hello Nunjucks
+
+    [Nunjucks](https://mozilla.github.io/nunjucks/) is a fully featured string templating engine by Mozilla. It's very powerful and well known for building websites and programmatic documentation. It can be used to create reusable snippets for markdown, html or anything else! It is one of main engines in the popular [Eleventy](https://www.11ty.dev/) static site builder, so you can often find commercial website templates using Nunjucks (templates use the *.njs* extension)
+
+    In this integration we bind the Nunjucks processor to the *html*, *md* and *tex* *cellmodes*. Tex is used to create high performance compiled templates, perhaps useful for servers. *htl* and *md* adds the Nunjucks process into *html* and *md* blocks. You don't need to import all of them though!
+  </script>
+  <script id="136" type="text/markdown">
+    ### Configure and Import
+
+    Configuration is done inline with importing the dependency, if you wish to customize, override the *options* object. Import the tex, htl or md variables to get the custom cell mode. Note you should import the [nunjucks-min](https://observablehq.com/@tomlarkworthy/nunjucks) notebook rather than this one.
+
+    ~~~js
+    import { nunjucks, tex, md, html} with { options } from "@tomlarkworthy/nunjucks-min"
+    ~~~
+  </script>
+  <script id="143" type="application/vnd.observable.javascript" pinned="">
+    options = ({
+      lstripBlocks: true, // automatically remove leading whitespace from a block/tag
+      trimBlocks: true, // automatically remove trailing newlines from a block/tag
+      configure: (env) => {
+        // Hook to perform additional configuration of the Environemnt (e.g. addFilters, addExtension)
+      }
+    })
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    import {
+      nunjucks,
+      tex,
+      md,
+      htl
+    } with { options } from "@tomlarkworthy/nunjucks-min"
+  </script>
+  <script id="92" type="text/markdown">
+    ### Vanilla Use
+
+    Nunjucks has a function *renderString*, or *render* on a compiled template, passing the context variables as an object to hydrate into the template. 
+  </script>
+  <script id="12" type="application/vnd.observable.javascript" pinned="">
+    nunjucks.renderString("Hello {{ username }}", { username: "James" })
+  </script>
+  <script id="428" type="application/vnd.observable.javascript" pinned="">
+    template = nunjucks.compile("Hello {{ username }}")
+  </script>
+  <script id="431" type="application/vnd.observable.javascript" pinned="">
+    template.render({ username: "James" })
+  </script>
+  <script id="100" type="text/markdown">
+    ### import Tex for *template compilation*
+
+    We override the Tex cellmode so we have have a custom nunjuck template cellmode which generates compiled templates. This is very useful for webserver usage where a template is repeatedly used.
+  </script>
+  <script id="31" type="application/x-tex" pinned="">
+    Hello {{ username }}
+  </script>
+  <script id="642" type="text/markdown">
+    so if you name the cell, you can reference it in other cells to render it
+  </script>
+  <script id="231" type="application/vnd.observable.javascript" pinned="">
+    helloExampleTemplate.render({ username: "James" })
+  </script>
+  <script id="560" type="text/markdown">
+    Templates can define functionality for other templates to import
+  </script>
+  <script id="571" type="application/x-tex" pinned="">
+    {% macro callout(content) %}
+    <div style="border-radius: 10px;background-color: yellow;border: solid;padding:10px;padding-left: 50px; display: flex">
+      <span>💡<span>
+      <span>{{caller()}}</span>
+    </div>
+    {% endmacro %}
+
+    {% macro user(name) %}
+    <a href="https://observablehq.com/@{{name}}" target="_blank">@{{name}}</a>
+    {% endmacro %}
+  </script>
+  <script id="440" type="text/markdown">
+    ### import htl for *rendering* HTML
+
+    We override the HTML cellmode (note variable is called *htl* though) to produce DOM content while accepting nunjucks code
+  </script>
+  <script id="470" type="text/html" pinned="">
+    {# Comments in HTML #}
+    {% from ${definitions_njk} import callout %}
+
+    {% call callout() %}
+      Callout are useful for creating <b>readable</b> documentation. It's easy to encapsulate features like this into <i>macros</i>
+    {% endcall %}
+
+  </script>
+  <script id="536" type="text/markdown">
+    ### import md for *rendering* MD cells
+
+    We override the Markdown cellmode (note variable is called *md*) to produce DOM content from Markdown source.
+  </script>
+  <script id="545" type="text/markdown" pinned="">
+    {# Normally macros are imported from other templates #}
+    {% from ${definitions_njk} import user %}
+
+    This notebook was written by {{ user('tomlarkworthy') }}
+
+  </script>
+  <script id="243" type="text/markdown">
+    ### Using cell variables
+
+    Instead of passing variables in the render, you can use template variables. These variables are automatically bound to the render function via some monkey patching.
+  </script>
+  <script id="48" type="application/vnd.observable.javascript">
+    username = "James as a cell variable"
+  </script>
+  <script id="233" type="application/x-tex" pinned="">
+    Hello {{ ${username}}}
+  </script>
+  <script id="238" type="application/vnd.observable.javascript" pinned="">
+    templateVariables.render() // Look no variable here
+  </script>
+  <script id="215" type="text/markdown">
+    ### Comments
+  </script>
+  <script id="220" type="text/markdown" pinned="">
+    {# This is how you comment #}
+    Only this renders
+  </script>
+  <script id="121" type="text/markdown">
+    ### Extending a base template
+
+    Nunjucks supports single inheritance of templates. Extension templates can fill in the blocks defined by the ancestor. 
+
+    {% from ${definitions_njk} import callout %}
+
+    {% call callout() %}
+      The hack to support template literal variables breaks down in the parent, so you must pass in an variables you wish to pass across scopes
+    {% endcall %}
+
+
+  </script>
+  <script id="209" type="application/x-tex" pinned="">
+    <!DOCTYPE html>
+    <html>
+      <head>
+        {% block header %}{% endblock %}
+      </head>
+      <body>
+        {% block content %}{% endblock %}
+      </body>
+      {# DOES NOT WORK #}
+      <p> Tag expressions don't work in extends/imports: {{ ${new Date().toString()} }} </p>
+      {# the following will work if you set the data variable #}
+      <p> You need to set the variables manually in the child: {{ date }} </p>
+    </html>
+  </script>
+  <script id="149" type="application/vnd.observable.javascript">
+    title = "Nunjuck example"
+  </script>
+  <script id="133" type="application/vnd.observable.javascript">
+    items = ({
+      apples: 5,
+      bananas: "yum"
+    })
+  </script>
+  <script id="127" type="text/html" pinned="">
+    {% set date = ${'🤘'} %}
+
+    {% extends ${base_njk} %}
+    {% block header %}
+    <h3>{{ ${title} }}</h3>
+    {% endblock %}
+    {% block content %}
+    <ul>
+      {% for name, item in ${items} %}
+      <li>{{ name }}: {{ item }}</li>
+      {% endfor %}
+    </ul>
+    {% endblock %}
+  </script>
+  <script id="315" type="text/markdown">
+    ### Macro
+
+    Macros can be passed arguments and expand to chunks of content, similar conceptually to functions. We can use these to create easily reused, parameterized snippets.
+  </script>
+  <script id="324" type="application/x-tex" pinned="">
+    {% macro user(name) %}
+    <a href="https://observablehq.com/@{{name}}">@{{name}}</a>
+    {% endmacro %}
+  </script>
+  <script id="348" type="text/markdown">
+    ### Imports
+
+    there are a few different syntaxes for imports, they can be used to bring in macros from other templates (among other things)
+  </script>
+  <script id="346" type="text/html" pinned="">
+    {% from ${observable_njk} import user %}
+    Hi {{ user('tomlarkworthy') }}
+  </script>
+  <script id="614" type="text/markdown">
+    ## Read more
+
+    There is more documentation at https://mozilla.github.io/nunjucks/
+  </script>
+  <script id="636" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="638" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,716 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Ink in water</title>
+  <script id="704" type="text/markdown">
+    # Ink in water
+  </script>
+  <script id="0" type="text/markdown">
+    Using [@jashkenas](https://observablehq.com/@jashkenas/webgl-fluid-simulation)'s port of [Pavel Dobryakov’s](https://github.com/PavelDoGreat) [WebGL-Fluid-Simulation](https://github.com/PavelDoGreat/WebGL-Fluid-Simulation/blob/master/script.js) [(MIT License)](https://opensource.org/licenses/MIT) as a base, an **ink** model. 
+
+    Our long term destination is *Suminagashi*, but we need multi-fluid simulation to model the surfactant.
+
+    The main changes from [@jashkenas](https://observablehq.com/@jashkenas/webgl-fluid-simulation)
+    - we add pressure with the splat function to make the ink shoot outward
+    - continuous mouse controls
+    - inverted the color mixing model to be subtractive (which is more like ink).
+    - the ink color rotates each click
+
+    Checkout [Gentle Introduction to Realtime Fluid Simulation for Programmers and Technical Artists]( https://link.medium.com/UsUv498X9jb) for building intuition over the code
+
+    ### Backlog
+    - Try using pigment mixing (https://scrtwpns.com/mixbox/), they do have a fluid example (https://scrtwpns.com/mixbox/fluids/), suggested on [HN](https://news.ycombinator.com/item?id=42543931)
+
+    ## Instructions
+
+    *Click inside the rectangle below*
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    canvas = {
+      const canvas = DOM.canvas(
+        width * devicePixelRatio,
+        height * devicePixelRatio
+      );
+      canvas.style.border = "solid";
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      canvas.style["touch-action"] = "none";
+
+      canvas.addEventListener("pointerdown", (evt) => {
+        ink.unshift(ink.pop()); // Rotate colors every click
+        mutable mouse = evt;
+      });
+      canvas.addEventListener(
+        "pointermove",
+        (evt) => (mutable mouse = mutable mouse && evt) // Track mouse position when currently pressed
+      );
+      canvas.addEventListener("pointerup", (evt) => (mutable mouse = undefined)); // Release mouse
+      return canvas;
+    }
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    viewof height = Inputs.range([100, 1000], { value: 570, label: "height" })
+  </script>
+  <script id="405" type="application/vnd.observable.javascript">
+    viewof dt = Inputs.range([0, 0.035], {
+      value: 0.016,
+      step: 0.001,
+      label: "time step per frame"
+    })
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    viewof downsample = Inputs.range([0.1, 5], {
+      value: 1.5,
+      step: 0.01,
+      label: "Lower resolution"
+    })
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    viewof densityDissipation = Inputs.range([0.8, 1.1], {
+      value: 0.99,
+      step: 0.001,
+      label: "Ink dissipation"
+    })
+  </script>
+  <script id="21" type="application/vnd.observable.javascript">
+    viewof velocityDissipation = Inputs.range([0.95, 1.05], {
+      value: 0.99,
+      step: 0.001,
+      label: "velocity dissipation"
+    })
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    viewof curlDegree = Inputs.range([0, 50], {
+      value: 17,
+      step: 0.1,
+      label: "curl"
+    })
+  </script>
+  <script id="817" type="application/vnd.observable.javascript">
+    mutable ink = [255, 0, 0]
+  </script>
+  <script id="714" type="application/vnd.observable.javascript">
+    mutable mouse = undefined
+  </script>
+  <script id="153" type="application/vnd.observable.javascript">
+    function mouseSplat(evt) {
+      const color = [ink[0], ink[1], ink[2]];
+      const dx = 0;
+      const dy = 0;
+      const p = 5000;
+      splat(
+        evt.offsetX * window.devicePixelRatio,
+        evt.offsetY * window.devicePixelRatio,
+        dx,
+        dy,
+        color,
+        p
+      );
+    }
+  </script>
+  <script id="55" type="application/vnd.observable.javascript">
+    ctx = {
+      const params = {alpha: false, depth: false, stencil: false, antialias: false};
+
+      let gl = canvas.getContext('webgl2', params);
+      const isWebGL2 = !!gl;
+      if (!isWebGL2) {
+        gl = canvas.getContext('webgl', params) || canvas.getContext('experimental-webgl', params);
+      }
+
+      let halfFloat;
+      let supportLinearFloat;
+      if (isWebGL2) {
+        gl.getExtension('EXT_color_buffer_float');
+        supportLinearFloat = gl.getExtension('OES_texture_float_linear');
+      } else {
+        halfFloat = gl.getExtension('OES_texture_half_float');
+        supportLinearFloat = gl.getExtension('OES_texture_half_float_linear');
+      }
+
+      gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+      const halfFloatTexType = isWebGL2 ? gl.HALF_FLOAT : halfFloat.HALF_FLOAT_OES;
+      const internalFormat   = isWebGL2 ? gl.RGBA16F : gl.RGBA;
+      let internalFormatRG   = isWebGL2 ? gl.RG16F : gl.RGBA;
+      let formatRG           = isWebGL2 ? gl.RG : gl.RGBA;
+
+      if (isWebGL2) {
+        if (!supportRenderTextureFormat(gl, internalFormatRG, formatRG, halfFloatTexType)) {
+          internalFormatRG = gl.RGBA16F;
+          formatRG = gl.RGBA;
+        }
+      }
+
+      return {
+        gl,
+        ext: {internalFormat, internalFormatRG, formatRG, halfFloatTexType, supportLinearFloat}
+      };
+    }
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    gl = ctx.gl
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    ext = ctx.ext
+  </script>
+  <script id="39" type="application/vnd.observable.javascript" pinned="">
+    function supportRenderTextureFormat (gl, internalFormat, format, type) {
+      let texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, 4, 4, 0, format, type, null);
+
+      let fbo = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+
+      const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+      return status == gl.FRAMEBUFFER_COMPLETE;
+    }
+  </script>
+  <script id="53" type="application/vnd.observable.javascript" pinned="">
+    class GLProgram {
+      constructor (vertexShader, fragmentShader) {
+        this.uniforms = {};
+        this.program = gl.createProgram();
+
+        gl.attachShader(this.program, vertexShader);
+        gl.attachShader(this.program, fragmentShader);
+        gl.linkProgram(this.program);
+
+        const uniformCount = gl.getProgramParameter(this.program, gl.ACTIVE_UNIFORMS);
+        for (let i = 0; i < uniformCount; i++) {
+          const uniformName = gl.getActiveUniform(this.program, i).name;
+          this.uniforms[uniformName] = gl.getUniformLocation(this.program, uniformName);
+        }
+      }
+
+      bind () {
+        gl.useProgram(this.program);
+      }
+    }
+  </script>
+  <script id="61" type="application/vnd.observable.javascript" pinned="">
+    function compileShader(type, source) {
+      const shader = gl.createShader(type);
+      gl.shaderSource(shader, source);
+      gl.compileShader(shader);
+      return shader;
+    }
+  </script>
+  <script id="64" type="application/vnd.observable.javascript" pinned="">
+    baseVertexShader = compileShader(gl.VERTEX_SHADER, `
+      precision highp float;
+      precision mediump sampler2D;
+      attribute vec2 aPosition;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform vec2 texelSize;
+      void main () {
+        vUv = aPosition * 0.5 + 0.5;
+        vL = vUv - vec2(texelSize.x, 0.0);
+        vR = vUv + vec2(texelSize.x, 0.0);
+        vT = vUv + vec2(0.0, texelSize.y);
+        vB = vUv - vec2(0.0, texelSize.y);
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+      }
+    `)
+  </script>
+  <script id="108" type="application/vnd.observable.javascript" pinned="">
+    function createFBO(texId, w, h, internalFormat, format, type, param) {
+      gl.activeTexture(gl.TEXTURE0 + texId);
+      let texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, param);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, param);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texImage2D(gl.TEXTURE_2D, 0, internalFormat, w, h, 0, format, type, null);
+
+      let fbo = gl.createFramebuffer();
+      gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+      gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+      gl.viewport(0, 0, w, h);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+
+      return [texture, fbo, texId];
+    }
+  </script>
+  <script id="110" type="application/vnd.observable.javascript" pinned="">
+    function createDoubleFBO(texId, w, h, internalFormat, format, type, param) {
+      let fbo1 = createFBO(texId, w, h, internalFormat, format, type, param);
+      let fbo2 = createFBO(texId + 1, w, h, internalFormat, format, type, param);
+
+      return {
+        get first () {
+          return fbo1;
+        },
+        get second () {
+          return fbo2;
+        },
+        swap () {
+          let temp = fbo1;
+          fbo1 = fbo2;
+          fbo2 = temp;
+        }
+      }
+    }
+  </script>
+  <script id="100" type="application/vnd.observable.javascript" pinned="">
+    textureWidth = gl.drawingBufferWidth >> downsample
+  </script>
+  <script id="105" type="application/vnd.observable.javascript" pinned="">
+    textureHeight = gl.drawingBufferHeight >> downsample
+  </script>
+  <script id="649" type="application/vnd.observable.javascript">
+    md`### Density holds color information`
+  </script>
+  <script id="107" type="application/vnd.observable.javascript" pinned="">
+    density = createDoubleFBO(0, textureWidth, textureHeight, ext.internalFormat, gl.RGBA, ext.halfFloatTexType, ext.supportLinearFloat ? gl.LINEAR : gl.NEAREST)
+  </script>
+  <script id="116" type="application/vnd.observable.javascript" pinned="">
+    velocity = createDoubleFBO(2, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, ext.supportLinearFloat ? gl.LINEAR : gl.NEAREST)
+  </script>
+  <script id="118" type="application/vnd.observable.javascript" pinned="">
+    divergence = createFBO(4, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
+  </script>
+  <script id="122" type="application/vnd.observable.javascript" pinned="">
+    curl = createFBO(5, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
+  </script>
+  <script id="126" type="application/vnd.observable.javascript" pinned="">
+    pressure = createDoubleFBO(6, textureWidth, textureHeight, ext.internalFormatRG, ext.formatRG, ext.halfFloatTexType, gl.NEAREST)
+  </script>
+  <script id="128" type="application/vnd.observable.javascript" pinned="">
+    blit = {
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, -1, 1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, gl.createBuffer());
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array([0, 1, 2, 0, 2, 3]), gl.STATIC_DRAW);
+      gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(0);
+
+      return (destination) => {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, destination);
+        gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
+      }
+    }
+  </script>
+  <script id="133" type="application/vnd.observable.javascript" pinned="">
+    clearProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      uniform sampler2D uTexture;
+      uniform float value;
+      void main () {
+        gl_FragColor = value * texture2D(uTexture, vUv);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="137" type="application/vnd.observable.javascript" pinned="">
+    splatProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      uniform sampler2D uTarget;
+      uniform float aspectRatio;
+      uniform vec3 color;
+      uniform vec2 point;
+      uniform float radius;
+      void main () {
+        vec2 p = vUv - point.xy;
+        p.x *= aspectRatio;
+        vec3 splat = exp(-dot(p, p) / radius) * color;
+        vec3 base = texture2D(uTarget, vUv).xyz;
+        gl_FragColor = vec4(base + splat, 1);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="139" type="application/vnd.observable.javascript" pinned="">
+    advectionProgram = new GLProgram(
+      baseVertexShader,
+      ext.supportLinearFloat
+        ? compileShader(
+            gl.FRAGMENT_SHADER,
+            `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      uniform sampler2D uVelocity;
+      uniform sampler2D uSource;
+      uniform vec2 texelSize;
+      uniform float dt;
+      uniform float dissipation;
+      void main () {
+        vec2 coord = vUv - dt * texture2D(uVelocity, vUv).xy * texelSize;
+        gl_FragColor = dissipation * texture2D(uSource, coord);
+      }
+    `
+          )
+        : compileShader(
+            gl.FRAGMENT_SHADER,
+            `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      uniform sampler2D uVelocity;
+      uniform sampler2D uSource;
+      uniform vec2 texelSize;
+      uniform float dt;
+      uniform float dissipation;
+      vec4 bilerp (in sampler2D sam, in vec2 p) {
+        vec4 st;
+        st.xy = floor(p - 0.5) + 0.5;
+        st.zw = st.xy + 1.0;
+        vec4 uv = st * texelSize.xyxy;
+        vec4 a = texture2D(sam, uv.xy);
+        vec4 b = texture2D(sam, uv.zy);
+        vec4 c = texture2D(sam, uv.xw);
+        vec4 d = texture2D(sam, uv.zw);
+        vec2 f = p - st.xy;
+        return mix(mix(a, b, f.x), mix(c, d, f.x), f.y);
+      }
+      void main () {
+        vec2 coord = gl_FragCoord.xy - dt * texture2D(uVelocity, vUv).xy;
+        gl_FragColor = dissipation * bilerp(uSource, coord);
+        gl_FragColor.a = 1.0;
+      }
+    `
+          )
+    )
+  </script>
+  <script id="141" type="application/vnd.observable.javascript" pinned="">
+    divergenceProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform sampler2D uVelocity;
+      vec2 sampleVelocity (in vec2 uv) {
+        vec2 multiplier = vec2(1.0, 1.0);
+        if (uv.x < 0.0) { uv.x = 0.0; multiplier.x = -1.0; }
+        if (uv.x > 1.0) { uv.x = 1.0; multiplier.x = -1.0; }
+        if (uv.y < 0.0) { uv.y = 0.0; multiplier.y = -1.0; }
+        if (uv.y > 1.0) { uv.y = 1.0; multiplier.y = -1.0; }
+        return multiplier * texture2D(uVelocity, uv).xy;
+      }
+      void main () {
+        float L = sampleVelocity(vL).x;
+        float R = sampleVelocity(vR).x;
+        float T = sampleVelocity(vT).y;
+        float B = sampleVelocity(vB).y;
+        float div = 0.5 * (R - L + T - B);
+        gl_FragColor = vec4(div, 0.0, 0.0, 1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="143" type="application/vnd.observable.javascript" pinned="">
+    curlProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform sampler2D uVelocity;
+      void main () {
+        float L = texture2D(uVelocity, vL).y;
+        float R = texture2D(uVelocity, vR).y;
+        float T = texture2D(uVelocity, vT).x;
+        float B = texture2D(uVelocity, vB).x;
+        float vorticity = R - L - T + B;
+        gl_FragColor = vec4(vorticity, 0.0, 0.0, 1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="146" type="application/vnd.observable.javascript" pinned="">
+    vorticityProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform sampler2D uVelocity;
+      uniform sampler2D uCurl;
+      uniform float curl;
+      uniform float dt;
+      void main () {
+        float L = texture2D(uCurl, vL).y;
+        float R = texture2D(uCurl, vR).y;
+        float T = texture2D(uCurl, vT).x;
+        float B = texture2D(uCurl, vB).x;
+        float C = texture2D(uCurl, vUv).x;
+        vec2 force = vec2(abs(T) - abs(B), abs(R) - abs(L));
+        force *= 1.0 / length(force + 0.00001) * curl * C;
+        vec2 vel = texture2D(uVelocity, vUv).xy;
+        gl_FragColor = vec4(vel + force * dt, 0.0, 1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="149" type="application/vnd.observable.javascript" pinned="">
+    pressureProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform sampler2D uPressure;
+      uniform sampler2D uDivergence;
+      vec2 boundary (in vec2 uv) {
+        uv = min(max(uv, 0.0), 1.0);
+        return uv;
+      }
+      void main () {
+        float L = texture2D(uPressure, boundary(vL)).x;
+        float R = texture2D(uPressure, boundary(vR)).x;
+        float T = texture2D(uPressure, boundary(vT)).x;
+        float B = texture2D(uPressure, boundary(vB)).x;
+        float C = texture2D(uPressure, vUv).x;
+        float divergence = texture2D(uDivergence, vUv).x;
+        float pressure = (L + R + B + T - divergence) * 0.25;
+        gl_FragColor = vec4(pressure, 0.0, 0.0, 1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="151" type="application/vnd.observable.javascript" pinned="">
+    gradienSubtractProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      varying vec2 vL;
+      varying vec2 vR;
+      varying vec2 vT;
+      varying vec2 vB;
+      uniform sampler2D uPressure;
+      uniform sampler2D uVelocity;
+      vec2 boundary (in vec2 uv) {
+        uv = min(max(uv, 0.0), 1.0);
+        return uv;
+      }
+      void main () {
+        float L = texture2D(uPressure, boundary(vL)).x;
+        float R = texture2D(uPressure, boundary(vR)).x;
+        float T = texture2D(uPressure, boundary(vT)).x;
+        float B = texture2D(uPressure, boundary(vB)).x;
+        vec2 velocity = texture2D(uVelocity, vUv).xy;
+        velocity.xy -= vec2(R - L, T - B);
+        gl_FragColor = vec4(velocity, 0.0, 1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="135" type="application/vnd.observable.javascript" pinned="">
+    displayProgram = new GLProgram(
+      baseVertexShader,
+      compileShader(
+        gl.FRAGMENT_SHADER,
+        `
+      precision highp float;
+      precision mediump sampler2D;
+      varying vec2 vUv;
+      uniform sampler2D uTexture;
+      void main () {
+        vec4 textureColor = texture2D(uTexture, vUv);
+        gl_FragColor = vec4(1.0 - textureColor.r, 1.0 - textureColor.g,1.0 - textureColor.b,1.0);
+      }
+    `
+      )
+    )
+  </script>
+  <script id="130" type="application/vnd.observable.javascript" pinned="">
+    function splat(x, y, dx, dy, color, p) {
+      splatProgram.bind();
+      gl.uniform1i(splatProgram.uniforms.uTarget, velocity.first[2]);
+      gl.uniform1f(splatProgram.uniforms.aspectRatio, canvas.width / canvas.height);
+      gl.uniform2f(
+        splatProgram.uniforms.point,
+        x / canvas.width,
+        1.0 - y / canvas.height
+      );
+      gl.uniform3f(splatProgram.uniforms.color, dx, -dy, 1.0);
+      gl.uniform1f(splatProgram.uniforms.radius, 0.0001);
+      blit(velocity.second[1]);
+      velocity.swap();
+
+      gl.uniform1i(splatProgram.uniforms.uTarget, density.first[2]);
+      gl.uniform3f(
+        splatProgram.uniforms.color,
+        0.3 * (256 - color[0]),
+        0.3 * (256 - color[1]),
+        0.3 * (256 - color[2])
+      );
+      blit(density.second[1]);
+      density.swap();
+
+      gl.uniform1i(splatProgram.uniforms.uTarget, pressure.first[2]);
+      gl.uniform3f(splatProgram.uniforms.color, p, p, p);
+      blit(pressure.second[1]);
+      pressure.swap();
+    }
+  </script>
+  <script id="157" type="application/vnd.observable.javascript" pinned="">
+    mainLoop = {
+      let i = 0;
+      while (true) {
+        gl.viewport(0, 0, textureWidth, textureHeight);
+
+        if (mutable mouse) mouseSplat(mutable mouse);
+
+        advectionProgram.bind();
+        gl.uniform2f(
+          advectionProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(advectionProgram.uniforms.uVelocity, velocity.first[2]);
+        gl.uniform1i(advectionProgram.uniforms.uSource, velocity.first[2]);
+        gl.uniform1f(advectionProgram.uniforms.dt, dt);
+        gl.uniform1f(advectionProgram.uniforms.dissipation, velocityDissipation);
+        blit(velocity.second[1]);
+        velocity.swap();
+
+        gl.uniform1i(advectionProgram.uniforms.uVelocity, velocity.first[2]);
+        gl.uniform1i(advectionProgram.uniforms.uSource, density.first[2]);
+        gl.uniform1f(advectionProgram.uniforms.dissipation, densityDissipation);
+        blit(density.second[1]);
+        density.swap();
+
+        curlProgram.bind();
+        gl.uniform2f(
+          curlProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(curlProgram.uniforms.uVelocity, velocity.first[2]);
+        blit(curl[1]);
+
+        vorticityProgram.bind();
+        gl.uniform2f(
+          vorticityProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(vorticityProgram.uniforms.uVelocity, velocity.first[2]);
+        gl.uniform1i(vorticityProgram.uniforms.uCurl, curl[2]);
+        gl.uniform1f(vorticityProgram.uniforms.curl, curlDegree);
+        gl.uniform1f(vorticityProgram.uniforms.dt, dt);
+        blit(velocity.second[1]);
+        velocity.swap();
+
+        divergenceProgram.bind();
+        gl.uniform2f(
+          divergenceProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(divergenceProgram.uniforms.uVelocity, velocity.first[2]);
+        blit(divergence[1]);
+
+        clearProgram.bind();
+
+        let pressureTexId = pressure.first[2];
+        gl.activeTexture(gl.TEXTURE0 + pressureTexId);
+        gl.bindTexture(gl.TEXTURE_2D, pressure.first[0]);
+        gl.uniform1i(clearProgram.uniforms.uTexture, pressureTexId);
+        gl.uniform1f(clearProgram.uniforms.value, 0.8);
+        blit(pressure.second[1]);
+        pressure.swap();
+
+        pressureProgram.bind();
+        gl.uniform2f(
+          pressureProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(pressureProgram.uniforms.uDivergence, divergence[2]);
+        pressureTexId = pressure.first[2];
+        gl.uniform1i(pressureProgram.uniforms.uPressure, pressureTexId);
+        gl.activeTexture(gl.TEXTURE0 + pressureTexId);
+        for (let i = 0; i < 25; i++) {
+          gl.bindTexture(gl.TEXTURE_2D, pressure.first[0]);
+          blit(pressure.second[1]);
+          pressure.swap();
+        }
+
+        gradienSubtractProgram.bind();
+        gl.uniform2f(
+          gradienSubtractProgram.uniforms.texelSize,
+          1.0 / textureWidth,
+          1.0 / textureHeight
+        );
+        gl.uniform1i(gradienSubtractProgram.uniforms.uPressure, pressure.first[2]);
+        gl.uniform1i(gradienSubtractProgram.uniforms.uVelocity, velocity.first[2]);
+        blit(velocity.second[1]);
+        velocity.swap();
+
+        gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+        displayProgram.bind();
+        gl.uniform1i(displayProgram.uniforms.uTexture, density.first[2]);
+        blit(null);
+
+        yield ++i;
+      }
+    }
+  </script>
+  <script id="910" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="913" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

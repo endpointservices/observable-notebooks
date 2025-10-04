@@ -1,0 +1,27 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Link previews</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Link previews
+
+    Does https://www.linkpreview.net/ work with Observable?
+    `
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    API_KEY = '2f5e33cefc5ea9032fe1e9e0947b2cc1' // Free plan, might run out, use https://observablehq.com/@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook if you want to secure this
+  </script>
+  <script id="11" type="application/vnd.observable.javascript" pinned="">
+    preview = async url =>
+      (await fetch(`https://api.linkpreview.net/?key=${API_KEY}&q=${url}`)).json()
+  </script>
+  <script id="18" type="application/vnd.observable.javascript" pinned="">
+    json = preview('https://observablehq.com/@visnup/slides')
+  </script>
+  <script id="27" type="application/vnd.observable.javascript" pinned="">
+    htl.html`<a href=${json.url}>
+      <h3>${json.title}</h3>
+      <img src=${json.image}></img>
+      <p><i>${json.description}</i></p>
+    </a>`
+  </script>
+</notebook>

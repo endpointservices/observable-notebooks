@@ -1,0 +1,34 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Animating D3 charts with juice</title>
+  <script id="0" type="text/markdown">
+    # Animating D3 charts with juice
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    import { juice } from "@tomlarkworthy/juice"
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    import { Scatterplot } from "@d3/scatterplot"
+  </script>
+  <script id="35" type="application/vnd.observable.javascript" pinned="">
+    animation = {
+      const s = Math.sin(now / 1000);
+      const c = Math.cos(now / 1000);
+      const data = [];
+      for (var i = -5; i <= 5; i++) {
+        for (var j = -5; j <= 5; j++) {
+          data.push([(i * s + j * c) * 0.1, (i * c - j * s) * 0.1]);
+        }
+      }
+      viewof world.coords.value = data; // push the data into the view
+    }
+  </script>
+  <script id="14" type="application/vnd.observable.javascript" pinned="">
+    viewof world = juice(Scatterplot, {
+      coords: "[0]"
+    })([], {
+      xDomain: [-1, 1],
+      yDomain: [-1, 1]
+    })
+  </script>
+</notebook>

@@ -1,0 +1,306 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Top Dataviz of April 2022 - Visualizing Air Raid Sirens in Ukraine</title>
+  <script id="367" type="text/markdown">
+    # Top Dataviz of ${month} 2022 - Visualizing Air Raid Sirens in Ukraine
+  </script>
+  <script id="351" type="application/vnd.observable.javascript">
+    {
+      const notebooks = data
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+      return htl.html`<table width="100%">${Array.from({
+        length: 5
+      }).map(
+        (__, j) =>
+          htl.html.fragment`<tr style="border-bottom: none;">${Array.from({
+            length: 4
+          }).map((__, i) => {
+            const notebook = data[i + j * 4];
+            if (notebook === undefined) return;
+            return htl.html.fragment`<td style="padding: 0px">
+                <a href=${notebook.url} target="_blank" >
+                  <img width="100%" src=${notebook.thumbnail}>`;
+          })}</tr>`
+      )}</table>`;
+    }
+  </script>
+  <script id="0" type="text/markdown">
+    This month, our [Trending Notebook Bot](https://twitter.com/trendingnotebo2) saw huge engagement with [Volodymyr Agafonkin
+    's](https://observablehq.com/@mourner) notebook [Visualizing Air Raid Sirens in Ukraine](https://observablehq.com/@mourner/sirens). It's the biggest hit of the year so far.
+
+  </script>
+  <script id="15" type="text/markdown">
+    ### Engagement, Impressions, Likes and Retweets
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    Plot.plot({
+      x: {
+        domain: [0, d3.max(data, (d) => d.impressions * 1.2)]
+      },
+      y: {
+        domain: [0, d3.max(data, (d) => d.engagements * 1.3)]
+      },
+      marks: [
+        Plot.image(
+          [...data].sort((x) => x.impressions),
+          {
+            x: "impressions",
+            y: "engagements",
+            width: "importance",
+            title: "title",
+            src: "thumbnail"
+          }
+        ),
+        Plot.text(data, {
+          text: (d) =>
+            Array.from({ length: d.likes })
+              .map((_) => "❤️")
+              .join("") +
+            Array.from({ length: d.retweets })
+              .map((_) => "🔁")
+              .join(""),
+          x: "impressions",
+          y: "engagements"
+        })
+      ]
+    })
+  </script>
+  <script id="168" type="application/vnd.observable.javascript">
+    viewof scaling = Inputs.range([0, 1], { value: 0.21 })
+  </script>
+  <script id="172" type="application/vnd.observable.javascript">
+    viewof offset = Inputs.range([0, 100], { value: 39 })
+  </script>
+  <script id="304" type="application/vnd.observable.javascript">
+    viewof cutoff = Inputs.range([0, data.length], {
+      value: 2,
+      step: 1,
+      label: "cutoff"
+    })
+  </script>
+  <script id="534" type="text/markdown">
+    The notebook went viral on Twitter from Volodymyr's own [tweet](https://twitter.com/mourner/status/1512061703227248651). This went viral because it's provides a unique angle to a story people are interested in. Volodymyr collected the data with a bot scraping for regional Telegram air raid alerts. The dataviz makes an emotional connection to the viewer - seeing those alerts visualized gives makes the reader anxious and empathetic to the suffering of those who a receiving those alerts for real. In a sense, the data provides insights into the anxiety level of Ukrainian citizens as this terrible war unfolds.
+
+    As with everything on [Observable](https://observablehq.com/), you have permission to remix the visualization, the data is embedded in the notebook and you can [fork it](https://observablehq.com/@observablehq/fork-suggest-merge). Perhaps you think the data could be visualized in another way, maybe you could create the next viral hit?
+
+
+    See you next month! Here are all the [trending](https://twitter.com/trendingnotebo2) notebooks of ${month} in their own words.
+
+  </script>
+  <script id="278" type="application/vnd.observable.javascript">
+    md`${content}`
+  </script>
+  <script id="275" type="application/vnd.observable.javascript">
+    content = {
+      debugger;
+      let markdown = "";
+      for (let i = 0; i < cutoff; i++) {
+        const notebook = data[i];
+        const author = /(@[^)]+)/.exec(notebook.author)[1];
+        markdown += `### [${notebook.title}](${notebook.url}) by [${author}](https://observablehq.com/${author}) \n`;
+        markdown += `<i>\n`;
+        markdown += `\n[![](${notebook.thumbnail})](${notebook.url})\n`;
+        markdown += `\n${notebook?.description || "No description provided"}\n`;
+        markdown += `</i>\n`;
+        markdown += "\n---\n";
+      }
+
+      markdown += `</i>\n`;
+
+      markdown += `These other notebooks also trended in ${month}\n`;
+      for (let i = cutoff; i < data.length; i++) {
+        const notebook = data[i];
+        const author_match = /(@[^)]+)/.exec(notebook.author);
+        if (!author_match) {
+          debugger;
+          throw new Error(JSON.stringify(notebook));
+        }
+        const author = author_match[1];
+        markdown += `#### [${notebook.title}](${notebook.url}) by [${author}](https://observablehq.com/${author}) \n`;
+      }
+
+      return markdown;
+    }
+  </script>
+  <script id="422" type="application/vnd.observable.javascript">
+    month = "April"
+  </script>
+  <script id="138" type="application/vnd.observable.javascript">
+    data = tweets
+      .map((tweet, i) => ({
+        ...tweet,
+        ...meta[i],
+        ...metadata[i],
+        ...tags[i],
+        thumbnail: thumbnailURL(i),
+        importance: tweet.impressions * scaling + offset
+      }))
+      .sort((a, b) => b.impressions - a.impressions)
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    tweets = (
+      await FileAttachment(
+        "tweet_activity_metrics_trendingnotebo2_20220401_20220501_en.csv"
+      ).csv()
+    ).map((x) => ({
+      ...x,
+      engagements: parseFloat(x.engagements),
+      impressions: parseFloat(x.impressions),
+      likes: parseFloat(x.likes),
+      retweets: parseFloat(x.retweets)
+    }))
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    viewof fetchNotebookURL = Inputs.toggle({
+      label: "fetch notebook URL? (network, slow)"
+    })
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    expandTwitterURL = async (shortURL) => {
+      const response = await fetch(shortURL);
+      if (response.status !== 200)
+        throw new Error(`fetch to ${shortURL} resulted in ${response.status}`);
+      const body = await response.text();
+      return /URL=([^"]*)"/.exec(body)[1];
+    }
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    fetchedNotebookURL = {
+      if (!fetchNotebookURL) return invalidation;
+      const notebooks = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        const shortcode = /(https:\/\/t.co\/[0-9a-zA-Z]*) https:\/\/t.co\/[0-9a-zA-Z]*$/.exec(
+          tweets[i]["Tweet text"]
+        );
+        if (!shortcode) {
+          console.error(tweets[i]);
+          throw Error(JSON.stringify(tweets[i]));
+        }
+        notebooks[i] = expandTwitterURL(shortcode[1]);
+      }
+      return Promise.all(notebooks);
+    }
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    notebookURL = FileAttachment("fetchedNotebookURL (4).json").json()
+  </script>
+  <script id="65" type="application/vnd.observable.javascript">
+    viewof fetchMetdata = Inputs.toggle({
+      label: "fetch metadata? (network, slow)"
+    })
+  </script>
+  <script id="67" type="application/vnd.observable.javascript">
+    fetchedMetadata = {
+      if (!fetchMetdata) return invalidation;
+
+      const metadata = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        metadata[i] = await getMetadata(
+          notebookURL[i].replace("https://observablehq.com/", "")
+        );
+      }
+      return metadata;
+    }
+  </script>
+  <script id="123" type="application/vnd.observable.javascript">
+    metadata = FileAttachment("fetchedMetadata (5).json").json()
+  </script>
+  <script id="515" type="application/vnd.observable.javascript" pinned="">
+    tags[14]
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    viewof fetchMeta = Inputs.toggle({
+      label: "fetch doc meta? (network, slow)"
+    })
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    fetchedMeta = {
+      if (!fetchMeta) return invalidation;
+      const meta = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          meta[i] = (
+            await fetchp(
+              `https://api.observablehq.com/document/${metadata[i].id}/meta`
+            )
+          ).json();
+        }
+      }
+      return Promise.all(meta);
+    }
+  </script>
+  <script id="131" type="application/vnd.observable.javascript">
+    meta = FileAttachment("fetchedMeta (6).json").json()
+  </script>
+  <script id="55" type="application/vnd.observable.javascript">
+    thumbnailURL = (index) =>
+      meta[index]
+        ? `https://static.observableusercontent.com/thumbnail/${
+            meta[index].custom_thumbnail || meta[index].thumbnail
+          }.jpg`
+        : undefined
+  </script>
+  <script id="283" type="application/vnd.observable.javascript">
+    viewof fetchTags = Inputs.toggle({
+      label: "fetch page meta tags? (network, slow)"
+    })
+  </script>
+  <script id="286" type="application/vnd.observable.javascript">
+    fetchedTags = {
+      if (!fetchTags) return invalidation;
+      var el = document.createElement("tmp");
+      const tags = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          el.innerHTML = await (await fetchp(metadata[i].url)).text();
+
+          try {
+            tags[i] = {
+              title: el.querySelector("meta[property='og:title']").content,
+              description: el.querySelector("meta[name=description]").content
+            };
+          } catch (err) {
+            console.error("Problem with tags for " + i);
+          }
+        }
+      }
+      return tags;
+    }
+  </script>
+  <script id="519" type="application/vnd.observable.javascript" pinned="">
+    tags[14]
+  </script>
+  <script id="289" type="application/vnd.observable.javascript">
+    tags = (await FileAttachment("fetchedTags (6).json").json()).map((t) => {
+      let description = undefined;
+      if (t?.description) {
+        description = t.description;
+
+        if (description.lastIndexOf(".") !== -1)
+          description = description.substring(0, description.lastIndexOf(".") + 1);
+      }
+
+      return {
+        ...t,
+        description
+      };
+    })
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    import { Plot } from "@mkfreeman/plot-tooltip"
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    import { getMetadata } from "@mootari/notebook-data"
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="344" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="347" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

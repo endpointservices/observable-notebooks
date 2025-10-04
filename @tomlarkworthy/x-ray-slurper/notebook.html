@@ -1,0 +1,816 @@
+<!doctype html>
+<notebook theme="air">
+  <title>AWS Cloudwatch X-Ray Exploratory Analytics</title>
+  <script id="0" type="text/markdown">
+    # AWS [Cloudwatch X-Ray](https://aws.amazon.com/xray/) Exploratory Analytics 
+    ## Get more value out of the data already in your AWS account. 
+
+    This batch downloads an x-ray query result set in DuckDB in the browser, so you can explore system behaviour with full text search over metadata, reactive data visualisation, flamegraphs and SQL queries. Save/load traces to CSV or Parquet. Fork this notebook to extend programatically
+
+  </script>
+  <script id="954" type="text/markdown">
+
+    <details>
+      <summary>
+        Contributing
+      </summary>
+    Feel free to fork this notebook and send back change requests. A goal of this notebook is that it is domain independent and a generic interface to x-ray. If you need to do domain specific analysis, use a different notebook that consumes the exportable trace archives.
+    </details>
+  </script>
+  <script id="1515" type="text/markdown">
+    # Data loading
+  </script>
+  <script id="1517" type="text/markdown">
+    ## Slurp from AWS account over a time range
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    viewof start_time = Inputs.datetime({
+      label: "start time (local)",
+      max: new Date(),
+      value: new Date() - 3600 * 1000
+    })
+  </script>
+  <script id="35" type="application/vnd.observable.javascript">
+    viewof end_time = Inputs.datetime({
+      label: "end time (local)",
+      max: new Date(),
+      value: new Date()
+    })
+  </script>
+  <script id="759" type="text/markdown">
+    UTC ${start_time.toISOString()} to ${end_time.toISOString()}
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    viewof region = Inputs.bind(
+      Inputs.select(
+        [
+          "us-east-1", // N. Virginia
+          "us-east-2", // Ohio
+          "us-west-1", // N. California
+          "us-west-2", // Oregon
+          "af-south-1", // Cape Town
+          "ap-east-1", // Hong Kong
+          "ap-south-1", // Mumbai
+          "ap-northeast-1", // Tokyo
+          "ap-northeast-2", // Seoul
+          "ap-northeast-3", // Osaka
+          "ap-southeast-1", // Singapore
+          "ap-southeast-2", // Sydney
+          "ca-central-1", // Canada (Central)
+          "eu-central-1", // Frankfurt
+          "eu-west-1", // Ireland
+          "eu-west-2", // London
+          "eu-west-3", // Paris
+          "eu-south-1", // Milan
+          "eu-north-1", // Stockholm
+          "me-south-1", // Bahrain
+          "sa-east-1" // São Paulo
+        ],
+        {
+          label: "region"
+        }
+      ),
+      localStorageView("region")
+    )
+  </script>
+  <script id="597" type="application/vnd.observable.javascript">
+    viewof filter = Inputs.bind(
+      Inputs.textarea({ label: "query (syntax is same as AWS console)" }),
+      localStorageView("FilterExpression")
+    )
+  </script>
+  <script id="2515" type="application/vnd.observable.javascript">
+    viewof downsample = Inputs.bind(
+      Inputs.range([1, 1000], { label: "downsample", step: 1, value: 1 }),
+      localStorageView("downsample")
+    )
+  </script>
+  <script id="385" type="application/vnd.observable.javascript">
+    viewof fetch_traces = {
+      dropTables;
+      return Inputs.button(
+        `Append ${trace_summaries.TraceSummaries.length}${
+          trace_summaries.NextToken !== null ? "+" : ""
+        } traces into local DuckDB`
+      );
+    }
+  </script>
+  <script id="796" type="application/vnd.observable.javascript">
+    viewof dropTables = Inputs.button("Reset state", {
+      reduce: async () => {
+        await db.query("DROP TABLE segments");
+        await db.query("DROP TABLE traces");
+        mutable refresh_db++;
+      }
+    })
+  </script>
+  <script id="2433" type="application/vnd.observable.javascript">
+    viewof run = Inputs.toggle({ label: "run", value: true })
+  </script>
+  <script id="634" type="application/vnd.observable.javascript">
+    mutable batches_fetched = 0
+  </script>
+  <script id="2442" type="text/markdown">
+    ## Slurp newline deliminated list of trace-ids
+  </script>
+  <script id="2450" type="application/vnd.observable.javascript">
+    viewof trace_ids_list = Inputs.bind(
+      Inputs.textarea(),
+      localStorageView("trace_list")
+    )
+  </script>
+  <script id="2454" type="application/vnd.observable.javascript">
+    Inputs.button("load", {
+      label: "load list",
+      reduce: () => {
+        viewof batch.send({
+          TraceSummaries: trace_ids_list.split("\n").map((t) => ({
+            Id: t
+          }))
+        });
+      }
+    })
+  </script>
+  <script id="90" type="text/markdown">
+    ## AWS Auth
+
+  </script>
+  <script id="69" type="application/vnd.observable.javascript">
+    viewof access_key = Inputs.bind(
+      Inputs.password({
+        label: "AWS access key"
+      }),
+      localStorageView("aws_access_key")
+    )
+  </script>
+  <script id="74" type="application/vnd.observable.javascript">
+    viewof access_secret_key = Inputs.bind(
+      Inputs.password({
+        label: "AWS secret key"
+      }),
+      localStorageView("aws_secret_key")
+    )
+  </script>
+  <script id="641" type="application/vnd.observable.javascript">
+    {
+      if (document.location.hash.length > 10) {
+        const creds = JSON.parse(atob(document.location.hash.substring(1)));
+        viewof access_key.value = creds.ACCESS_KEY;
+        viewof access_secret_key.value = creds.SECRET;
+        viewof access_key.dispatchEvent(new Event("input"));
+        viewof access_secret_key.dispatchEvent(new Event("input"));
+      }
+      return "You can also encode URL hash as base64 JSON to load AWS creds for deep linking. Grant creds AWSXRayReadOnlyAccess";
+    }
+  </script>
+  <script id="2395" type="application/vnd.observable.javascript">
+    query_params_loader = {
+      if (search_params.filter) {
+        viewof filter.value = search_params.filter;
+        viewof filter.dispatchEvent(new Event("input"));
+      }
+      if (search_params.region) {
+        viewof region.value = search_params.region;
+        viewof region.dispatchEvent(new Event("input"));
+      }
+    }
+  </script>
+  <script id="168" type="text/markdown">
+    ## Save/Load Trace Dataset from File
+  </script>
+  <script id="128" type="text/html">
+    <button onclick=${() => exportDuckDB(db, {
+      format: "csv",
+      filename,
+      download: true
+    })}>Download an archive locally
+  </script>
+  <script id="402" type="application/vnd.observable.javascript">
+    viewof archive = Inputs.file({ label: "Load a trace archive" })
+  </script>
+  <script id="363" type="application/vnd.observable.javascript">
+    loader_code = {
+      if (!archive) return;
+      console.log("loading archive", archive);
+      await db.sql`DROP TABLE IF EXISTS segments`;
+      await db.sql`DROP TABLE IF EXISTS traces`;
+      await importDuckDB(archive, {
+        client: db
+      });
+      mutable refresh_db++;
+    }
+  </script>
+  <script id="2602" type="application/sql" pinned="" database="var:db">
+    SELECT distinct(TraceId) FROM segments
+  </script>
+  <script id="373" type="application/vnd.observable.javascript">
+    filename = `traces_${region}_${start_time.toISOString()}_${end_time.toISOString()}_${encodeURIComponent(
+      filter
+    )}`
+  </script>
+  <script id="2599" type="application/vnd.observable.javascript" pinned="">
+    selected_traces
+  </script>
+  <script id="1166" type="text/markdown">
+    ## Trace Selection Tool
+
+    Using the filtering features will sub-select traces for the visualisations
+  </script>
+  <script id="849" type="module" pinned="">
+
+  </script>
+  <script id="1101" type="application/vnd.observable.javascript">
+    uuid_regex = /[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}/gi
+  </script>
+  <script id="1115" type="application/vnd.observable.javascript">
+    date_regex = /[0-9]{4}-[0-9]{2}-[0-9]{2}/g
+  </script>
+  <script id="730" type="application/vnd.observable.javascript">
+    root_segments = selected_traces
+      .map((d) => {
+        const path = d.url ? new URL(d.url || d.pageId).pathname : d.pageId;
+        return {
+          ...d,
+          duration: Math.max(0, d.end_time - d.start_time),
+          grouped_url: path
+            ? path.replaceAll(uuid_regex, "<UUID>").replaceAll(date_regex, "<NUM>")
+            : undefined
+        };
+      })
+      .filter((d) => d.duration < max_duration)
+  </script>
+  <script id="534" type="application/vnd.observable.javascript">
+    segment_tree = db_refresh.query(`
+    WITH RECURSIVE cte AS (
+       SELECT 1 AS depth, *
+       FROM segments
+       WHERE parent IS NULL
+       UNION ALL
+       SELECT depth + 1, segments.*
+       FROM segments
+       JOIN cte
+         ON segments.parent = cte.Id
+    )
+    SELECT * FROM cte;
+    `)
+  </script>
+  <script id="479" type="text/markdown">
+    ## Visualizations
+  </script>
+  <script id="1206" type="text/markdown">
+    ### trace latency by *name*
+  </script>
+  <script id="1212" type="module">
+
+  </script>
+  <script id="1151" type="text/markdown">
+    ### trace latency by grouped URL or pathId
+
+    CloudWatch RUM add a URL, API Gateway adds a pathId. The visualisation attempts to rollup stats by detecting date and UUID formats
+  </script>
+  <script id="1132" type="application/vnd.observable.javascript">
+    viewof max_duration = Inputs.range([0, 60 * 60 * 1000], {
+      label: "max duration ms",
+      value: 60000
+    })
+  </script>
+  <script id="985" type="module">
+
+  </script>
+  <script id="1155" type="text/markdown">
+    ### Trace latency over time ( interactive and 👇 clickable)
+  </script>
+  <script id="2622" type="application/vnd.observable.javascript">
+    viewof segment_slice = Inputs.select(
+      new Set(["all", ...root_segments.map((s) => s.name)]),
+      { label: "slice by name" }
+    )
+  </script>
+  <script id="747" type="application/vnd.observable.javascript">
+    viewof selected = Plot.plot({
+      width,
+      color: { legend: true },
+      marks: [
+        Plot.dot(
+          root_segments.filter(
+            (r) => r.name == segment_slice || segment_slice == "all"
+          ),
+          {
+            x: "start_time",
+            y: "duration",
+            fill: "name",
+            channels: {
+              name: (d) => d.name,
+              host: (d) => (d.url ? new URL(d.url).host : undefined),
+              url: (d) => (d.url ? new URL(d.url).pathname : undefined)
+            },
+            tip: true
+          }
+        )
+      ]
+    })
+  </script>
+  <script id="1986" type="application/vnd.observable.javascript" pinned="">
+    root_segments
+  </script>
+  <script id="1157" type="text/markdown">
+    #### Selected root trace details
+  </script>
+  <script id="754" type="application/vnd.observable.javascript">
+    selected_trace = segment_tree.filter((r) => r.TraceId == selected.TraceId)
+  </script>
+  <script id="826" type="module" pinned="">
+
+  </script>
+  <script id="1906" type="text/markdown">
+    #### Selected trace flamegraph
+  </script>
+  <script id="1840" type="application/vnd.observable.javascript">
+    viewof single_height = Inputs.bind(
+      Inputs.range([0, 2000], { value: 400, step: 1, label: "height" }),
+      localStorageView("single_height", { defaultValue: 400 })
+    )
+  </script>
+  <script id="1831" type="application/vnd.observable.javascript">
+    {
+      const svg = d3.select(DOM.svg(width, single_height));
+      svg
+        .datum(single_trace)
+        .call(
+          d3FlameGraph()
+            .width(width)
+            .sort(false)
+            .transitionDuration(0)
+            .cellHeight(18)
+            .transitionEase(d3.easeCubic)
+            .title("")
+            .inverted(true)
+        );
+      return svg.node();
+    }
+  </script>
+  <script id="1837" type="application/vnd.observable.javascript">
+    single_trace = to_tree(
+      selected_trace.map((d) => ({
+        name: d.name,
+        value: d.end_time - d.start_time,
+        start_time: d.start_time,
+        end_time: d.end_time
+        // TraceId: d.TraceId // Don't need as its single trace so groups into one anyway
+      }))
+    )
+  </script>
+  <script id="1660" type="application/vnd.observable.javascript">
+    to_tree = (flamegraph_data) => {
+      function createTree(data) {
+        // Sort the array by start_time
+        data.sort((a, b) => {
+          const diff = a.start_time - b.start_time;
+          if (diff != 0) return diff;
+          else return b.end_time - a.end_time;
+        });
+
+        const stack = [];
+
+        data.forEach((row) => {
+          let node = { ...row, children: [] };
+          let currentTime = row.start_time;
+
+          while (
+            stack.length > 1 &&
+            stack[stack.length - 1].end_time <= currentTime
+          ) {
+            stack.pop();
+          }
+
+          if (stack.length > 0) stack[stack.length - 1].children.push(node);
+          stack.push(node);
+        });
+
+        return stack[0];
+      }
+      if (!flamegraph_data[0].TraceId) return createTree(flamegraph_data);
+
+      return [...d3.group(flamegraph_data, (d) => d.TraceId).values()].flatMap(
+        (tree) => createTree(tree)
+      );
+    }
+  </script>
+  <script id="1181" type="text/markdown">
+    ### Trace latency
+  </script>
+  <script id="1172" type="module">
+
+  </script>
+  <script id="2336" type="text/markdown">
+    median: ${d3.median(root_segments, (d) => d.duration)} mean ${d3.mean(root_segments, (d) => d.duration)} p90: ${d3.quantile(root_segments, 0.9, (d) => d.duration)}
+  </script>
+  <script id="2021" type="text/markdown">
+    ### Selected Segment Latency
+  </script>
+  <script id="2026" type="application/vnd.observable.javascript">
+    perf = selected_traces.map((d) => ({
+      ...d,
+      duration: Math.max(d.end_time - d.start_time, 0)
+    }))
+  </script>
+  <script id="2534" type="text/markdown">
+    #### Total segment duration
+  </script>
+  <script id="2024" type="module">
+
+  </script>
+  <script id="2544" type="text/markdown">
+    #### Mean Segment Duration
+  </script>
+  <script id="2543" type="module">
+
+  </script>
+  <script id="2585" type="text/markdown">
+    #### Individual data points
+  </script>
+  <script id="2565" type="application/vnd.observable.javascript" pinned="">
+    Plot.plot({
+      width,
+      marginLeft: 500,
+      marks: [
+        Plot.tickX(perf, { x: "duration", y: "name", tip: true, stroke: "#0003" }),
+        Plot.ruleX([0])
+      ]
+    })
+  </script>
+  <script id="1504" type="text/markdown">
+    ## Flamegraph including descendants
+  </script>
+  <script id="1788" type="application/vnd.observable.javascript">
+    viewof height = Inputs.bind(
+      Inputs.range([0, 2000], { value: 400, step: 1, label: "height" }),
+      localStorageView("height", { defaultValue: 400 })
+    )
+  </script>
+  <script id="1549" type="application/vnd.observable.javascript">
+    {
+      const svg = d3.select(DOM.svg(width, height));
+      svg
+        .datum(flamegraph_chart_data)
+        .call(
+          d3FlameGraph()
+            .width(width)
+            .sort(true)
+            .transitionDuration(0)
+            .cellHeight(18)
+            .transitionEase(d3.easeCubic)
+            .title("")
+            .inverted(true)
+        );
+      return svg.node();
+    }
+  </script>
+  <script id="1817" type="application/vnd.observable.javascript">
+    flamegraph_data = selected_traces.length < 10000
+      ? db_refresh.query(`
+    WITH RECURSIVE cte AS (
+       SELECT 1 AS depth, *
+       FROM segments
+       WHERE /*Id in (${selected_traces.map((d) => `'${d.Id}'`).join(",")})*/
+            TraceId in (${selected_traces
+              .map((d) => `'${d.TraceId}'`)
+              .join(",")}) AND parent is NULL
+       UNION ALL
+       SELECT depth + 1, segments.*
+       FROM segments
+       JOIN cte
+         ON segments.parent = cte.Id
+    )
+    SELECT
+      cte.name,
+      cte.start_time,
+      cte.end_time,
+      cte.traceId,
+      /* Work around for old duckdb client, no epoch_ms function */
+      epoch(cte.end_time) * 1000 + (EXTRACT('milliseconds' FROM cte.end_time) % 1000)
+      - epoch(cte.start_time) * 1000 - EXTRACT('milliseconds' FROM cte.start_time)  % 1000 AS value
+    FROM cte
+    `)
+      : []
+  </script>
+  <script id="1949" type="text/markdown">
+    ### Trace and decendant's latency by name
+  </script>
+  <script id="1922" type="module">
+
+  </script>
+  <script id="2286" type="module">
+
+  </script>
+  <script id="1701" type="application/vnd.observable.javascript">
+    flamegraph_chart_data = {
+      const merge = (base, tree) => {
+        const indexChildren = (array) =>
+          array.reduce((obj, el) => {
+            obj[el.name] = el;
+            return obj;
+          }, {});
+
+        const name_to_child_base = indexChildren(base.children);
+        const name_to_child_tree = indexChildren(tree.children);
+
+        // Merge children from base and tree
+        const children = Object.values({
+          ...name_to_child_base,
+          ...name_to_child_tree
+        }).map((child) => {
+          if (name_to_child_base[child.name] && name_to_child_tree[child.name]) {
+            // Child exists in both, merge them
+            return merge(
+              name_to_child_base[child.name],
+              name_to_child_tree[child.name]
+            );
+          } else {
+            // Child exists in only one, return it
+            return {
+              name: child.name,
+              value: child.value,
+              children: child.children
+            };
+          }
+        });
+        debugger;
+        return {
+          name: base.name,
+          value: base.value + tree.value,
+          children
+        };
+      };
+
+      return to_tree(flamegraph_data).reduce(
+        (base, tree) =>
+          merge(base, {
+            name: "root",
+            value: tree.value,
+            children: [tree]
+          }),
+        {
+          name: "root",
+          value: 0,
+          children: []
+        }
+      );
+    }
+  </script>
+  <script id="404" type="text/markdown">
+    ## DuckDB Database Explorer
+  </script>
+  <script id="300" type="application/vnd.observable.javascript">
+    db_refresh = refresh_db && db
+  </script>
+  <script id="264" type="text/markdown">
+    ### traces
+  </script>
+  <script id="261" type="module" pinned="">
+
+  </script>
+  <script id="275" type="text/markdown">
+    ### Segments
+  </script>
+  <script id="278" type="module" pinned="">
+
+  </script>
+  <script id="1511" type="text/markdown">
+    ---
+    # Implementation
+  </script>
+  <script id="249" type="text/markdown">
+    ## Database Setup
+  </script>
+  <script id="173" type="application/vnd.observable.javascript">
+    db = DuckDBClient.of({})
+  </script>
+  <script id="176" type="application/sql" database="var:db">
+    SELECT table_name, column_name, data_type FROM temp.information_schema.columns
+  </script>
+  <script id="397" type="application/vnd.observable.javascript" pinned="">
+    mutable refresh_db = 0
+  </script>
+  <script id="222" type="application/vnd.observable.javascript" pinned="">
+    traces_table = {
+      dropTables
+      return db.sql`CREATE OR REPLACE TABLE traces (
+          Id string,
+          Duration float,
+          PRIMARY KEY (Id)
+      )`;
+    }
+  </script>
+  <script id="312" type="application/vnd.observable.javascript" pinned="">
+    new Date(JSON.parse(traces.Traces[0].Segments[0].Document).start_time * 1000)
+  </script>
+  <script id="192" type="application/vnd.observable.javascript" pinned="">
+    traces
+  </script>
+  <script id="1189" type="application/vnd.observable.javascript" pinned="">
+    JSON.parse(traces.Traces[0].Segments[2].Document)
+  </script>
+  <script id="213" type="application/vnd.observable.javascript" pinned="">
+    segments_table = traces_table &&
+      db.sql`CREATE OR REPLACE TABLE segments (
+        Id string,
+        name string,
+        start_time TIMESTAMP,
+        end_time TIMESTAMP,
+        parent string,
+        TraceId string,
+        pageId string,
+        method string,
+        url string,
+        status integer,
+        PRIMARY KEY (Id),
+        FOREIGN KEY (TraceId) REFERENCES traces(Id)
+    )`.then(() => mutable refresh_db++)
+  </script>
+  <script id="335" type="text/markdown">
+    ### https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html
+  </script>
+  <script id="769" type="application/vnd.observable.javascript" pinned="">
+    // The cell queries the first element of the last inserted batch, this is useful for iterating on the schema and ensuring data can do in and out without having to do a whole patch
+    insert_traces &&
+      db.query(`SELECT * FROM segments WHERE TraceId = '${traces.Traces[0].Id}'`)
+  </script>
+  <script id="155" type="application/vnd.observable.javascript" pinned="">
+    insert_traces = {
+      debugger;
+      segments_table;
+      return Promise.all(
+        traces.Traces.map(async (trace) =>
+          db.sql`INSERT INTO traces VALUES (${trace.Id}, ${trace.Duration})`
+            .then(() =>
+              Promise.all(
+                trace.Segments.map((segment) => {
+                  const doc = JSON.parse(segment.Document);
+                  const insert_doc = (doc, parent_id) => {
+                    const parent_insert = db.sql`INSERT INTO segments VALUES (
+                      ${doc.id},
+                      ${doc.name},
+                      ${new Date(doc.start_time * 1000)},
+                      ${new Date(doc.end_time * 1000)},
+                      ${doc.parent_id || parent_id},
+                      ${trace.Id},
+                      ${doc?.metadata?.rum?.pageId},
+                      ${doc?.http?.request?.method?.toUpperCase()},
+                      ${doc?.http?.request?.url},
+                      ${doc?.http?.response?.status},
+                    )`.catch((err) => {
+                      //debugger;
+                      console.error(err);
+                    });
+
+                    return parent_insert.then(
+                      Promise.all(
+                        (doc.subsegments || []).map((subsegment) =>
+                          insert_doc(subsegment, segment.Id)
+                        )
+                      )
+                    );
+                  };
+                  return insert_doc(doc);
+                })
+              )
+            )
+            .catch((err) => {
+              //debugger;
+              console.error(err);
+            })
+        )
+      );
+    }
+  </script>
+  <script id="186" type="application/vnd.observable.javascript" pinned="">
+    insert_traces && mutable refresh_db++
+  </script>
+  <script id="171" type="text/markdown">
+    ## Slurper
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    xray = {
+      AWS.config.credentials = {
+        accessKeyId: access_key,
+        secretAccessKey: access_secret_key
+      };
+      return new AWS.XRay({
+        region: region
+      });
+    }
+  </script>
+  <script id="52" type="application/vnd.observable.javascript" pinned="">
+    trace_summaries = xray
+      .getTraceSummaries({
+        FilterExpression: filter.trim() !== "" ? filter.trim() : undefined,
+        StartTime: start_time.toISOString(),
+        EndTime: end_time.toISOString()
+      })
+      .promise()
+  </script>
+  <script id="903" type="application/vnd.observable.javascript" pinned="">
+    enqueue_batches = {
+      if (fetch_traces == 0) return "Press fetch traces to commence slurping";
+      let batch = trace_summaries;
+      while (batch && run) {
+        viewof batch.send(batch);
+        if (batch.NextToken) {
+          batch = await xray
+            .getTraceSummaries({
+              FilterExpression: filter.trim() !== "" ? filter.trim() : undefined,
+              StartTime: start_time.toISOString(),
+              EndTime: end_time.toISOString(),
+              NextToken: batch.NextToken
+            })
+            .promise();
+        } else {
+          batch = null;
+        }
+      }
+    }
+  </script>
+  <script id="896" type="application/vnd.observable.javascript" pinned="">
+    viewof batch = {
+      dropTables;
+      return flowQueue({ timeout_ms: 60000 });
+    }
+  </script>
+  <script id="2519" type="application/vnd.observable.javascript" pinned="">
+    mutable counter = 0
+  </script>
+  <script id="2588" type="application/vnd.observable.javascript" pinned="">
+    minibatch = []
+  </script>
+  <script id="899" type="application/vnd.observable.javascript">
+    loadTracesInBatch = {
+      const ids = batch.TraceSummaries.map((summary) => summary.Id);
+      for (let i = 0; i < ids.length; i++) {
+        if (mutable counter % viewof downsample.value == 0) {
+          minibatch.push(ids[i]);
+          if (minibatch.length == 5) {
+            debugger;
+            viewof trace_ids.send([...minibatch]);
+            minibatch.length = 0;
+          }
+        }
+        mutable counter = mutable counter + 1;
+      }
+      viewof batch.resolve(ids);
+      return ids;
+    }
+  </script>
+  <script id="149" type="application/vnd.observable.javascript" pinned="">
+    viewof trace_ids = {
+      dropTables;
+      return flowQueue({ timeout_ms: 60000 });
+    }
+  </script>
+  <script id="97" type="application/vnd.observable.javascript">
+    traces = {
+      debugger;
+      return xray
+        .batchGetTraces({
+          TraceIds: trace_ids
+        })
+        .promise();
+    }
+  </script>
+  <script id="637" type="application/vnd.observable.javascript" pinned="">
+    traces && mutable batches_fetched++
+  </script>
+  <script id="355" type="application/vnd.observable.javascript" pinned="">
+    viewof trace_ids.resolve(insert_traces)
+  </script>
+  <script id="2397" type="application/vnd.observable.javascript">
+    search_params = Object.fromEntries(
+      new URLSearchParams(location.search).entries()
+    )
+  </script>
+  <script id="42" type="application/vnd.observable.javascript">
+    AWS = require(await FileAttachment("aws-sdk-2.1429.0.min.js").url()).then(
+      (_) => window["AWS"]
+    )
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    aws = import("https://cdn.skypack.dev/@aws-sdk/client-location")
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="124" type="application/vnd.observable.javascript">
+    import {
+      exportDuckDB,
+      importDuckDB,
+      download,
+      includeFiles
+    } with { db as db } from "@mootari/export-duckdb"
+  </script>
+  <script id="147" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="1271" type="application/vnd.observable.javascript">
+    d3FlameGraph = require("d3-flame-graph@4.0.6/dist/d3-flamegraph.min.js")
+  </script>
+</notebook>

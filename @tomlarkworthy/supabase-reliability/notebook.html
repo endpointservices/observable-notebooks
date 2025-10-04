@@ -1,0 +1,92 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Supabase Reliability</title>
+  <script id="0" type="text/markdown">
+    # Supabase Reliability
+
+    https://supabase.com/blog/supabase-realtime-multiplayer-general-availability
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1cGNmdW91dHRxcW9mZndidGNtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA5NDc0MjgsImV4cCI6MTk3NjUyMzQyOH0.KcVh9mC8U7mKpSSoOoCR8CXp251C0Sr4-QM0vuipeQ8"
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    import { createClient } from "@tomlarkworthy/supabase"
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    supabase = createClient("https://hupcfuouttqqoffwbtcm.supabase.co", API_KEY)
+  </script>
+  <script id="52" type="application/vnd.observable.javascript" pinned="">
+    viewof insertButton = Inputs.button("Insert", {
+      reduce: async () => {
+        const id = window.crypto.getRandomValues(new Uint32Array(1))[0];
+        viewof maybeSent.value[id] = Date.now();
+        viewof maybeSent.dispatchEvent(new Event("input"));
+        const { data, error } = await supabase.from("Messages").insert([{ id }]);
+      }
+    })
+  </script>
+  <script id="157" type="application/vnd.observable.javascript">
+    viewof clear = Inputs.button("clear")
+  </script>
+  <script id="205" type="application/vnd.observable.javascript" pinned="">
+    viewof maybeSent = (clear, new Inputs.input({}))
+  </script>
+  <script id="237" type="application/vnd.observable.javascript" pinned="">
+    Inputs.text({ value: JSON.stringify(maybeSent), disabled: true })
+  </script>
+  <script id="215" type="application/vnd.observable.javascript">
+    new Date(now)
+  </script>
+  <script id="40" type="application/vnd.observable.javascript" pinned="">
+    change = Generators.observe((notify) => {
+      const subscription = supabase
+        .from("Messages")
+        .on("*", (event) => {
+          viewof received.value[event.new.id] = Date.now();
+          viewof received.dispatchEvent(new Event("input"));
+          notify(event);
+        })
+        .subscribe();
+      invalidation.then(() => subscription.unsubscribe());
+    })
+  </script>
+  <script id="111" type="application/vnd.observable.javascript" pinned="">
+    viewof received = (clear, new Inputs.input({}))
+  </script>
+  <script id="125" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("run 120", {
+      reduce: async () => {
+        for (let i = 0; i < 120; i++) {
+          viewof insertButton.querySelector("button").click();
+          await Promises.delay(1000); // 1 per second
+        }
+      }
+    })
+  </script>
+  <script id="138" type="application/vnd.observable.javascript">
+    viewof refresh = Inputs.button("update graph")
+  </script>
+  <script id="199" type="application/vnd.observable.javascript" pinned="">
+    confirmedSent = (refresh,
+    await supabase
+      .from("Messages")
+      .select("*")
+      .filter("id", "in", `(${Object.keys(maybeSent).join(",")})`)).data.map(
+      (d) => `${d.id}`
+    )
+  </script>
+  <script id="170" type="application/vnd.observable.javascript">
+    allReceived = (refresh, new Set(Object.keys(received)))
+  </script>
+  <script id="175" type="application/vnd.observable.javascript">
+    missed = (refresh, confirmedSent.filter((k) => !allReceived.has(k)))
+  </script>
+  <script id="140" type="text/markdown" pinned="">
+    ```
+    maybeSent ${(refresh, Object.keys(maybeSent).length)}
+
+    received ${(refresh, Object.keys(received).length)}
+    ```
+
+  </script>
+</notebook>

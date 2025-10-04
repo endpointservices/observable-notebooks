@@ -1,0 +1,36 @@
+<!doctype html>
+<notebook theme="air">
+  <title>aws4fetch</title>
+  <script id="0" type="text/markdown">
+    # [aws4fetch](https://github.com/mhart/aws4fetch)
+    ```js
+        import {AwsClient, AwsV4Signer} from '@tomlarkworthy/aws4fetch'
+    ```
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    aws4fetch = {
+      const response = await new Response(
+        (
+          await FileAttachment("aws4fetch.esm.js.gz").stream()
+        ).pipeThrough(new DecompressionStream("gzip"))
+      );
+
+      const blob = await response.blob();
+      const objectURL = URL.createObjectURL(
+        new Blob([blob], { type: "application/javascript" })
+      );
+
+      try {
+        return await import(objectURL);
+      } finally {
+        URL.revokeObjectURL(objectURL); // Ensure URL is revoked after import
+      }
+    }
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    AwsClient = aws4fetch.AwsClient
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    AwsV4Signer = aws4fetch.AwsV4Signer
+  </script>
+</notebook>

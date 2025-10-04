@@ -1,0 +1,35 @@
+<!doctype html>
+<notebook theme="air">
+  <title>DOM view</title>
+  <script id="0" type="text/markdown">
+    # DOM view
+
+    A view whose value is a DOM node, and whose view is a container of that value. 
+
+    ```js
+    import {domView} from '@tomlarkworthy/dom-view'
+    ```
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    domView = ({ className = "" } = {}) => {
+      const dom = document.createElement("div");
+      dom.className = className;
+      dom.value = undefined;
+      invalidation.then(dom.addEventListener("input", () => {}));
+      Object.defineProperty(dom, "value", {
+        set: (value) => {
+          if (dom.firstChild) dom.textContent = "";
+          if (value) dom.appendChild(value);
+        },
+        get: () => dom.firstChild
+      });
+      return dom;
+    }
+  </script>
+  <script id="16" type="application/vnd.observable.javascript" pinned="">
+    viewof example = domView()
+  </script>
+  <script id="19" type="application/vnd.observable.javascript" pinned="">
+    (viewof example.value = html`<button>❤️</button>`)
+  </script>
+</notebook>

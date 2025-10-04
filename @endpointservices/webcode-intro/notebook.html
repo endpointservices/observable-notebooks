@@ -1,0 +1,49 @@
+<!doctype html>
+<notebook theme="air">
+  <title>My First Webcode Endpoint</title>
+  <script id="0" type="text/markdown">
+    # My First Webcode Endpoint
+  </script>
+  <script id="14" type="text/markdown">
+    ### Step 1, import dependencies
+    (note, these are clickable hyperlinks to the source!)
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    import { deploy, getContext } from "@endpointservices/webcode"
+  </script>
+  <script id="22" type="text/markdown">
+    ### Step 2, deploy a handler
+  </script>
+  <script id="26" type="application/vnd.observable.javascript" pinned="">
+    endpoint = deploy("info", async (request, response) => {
+      console.log("Request received", request);
+      // debugger;
+      response.send(
+        `<pre>${JSON.stringify(
+          {
+            request,
+            response,
+            context: await getContext()
+          },
+          null,
+          2
+        )}</pre>`
+      );
+    })
+  </script>
+  <script id="39" type="text/html">
+    <p>You can call your endpoint by clicking its <a target="_blank" href="${endpoint.href}">link</a> in a browser, or with <i>curl</i></p>
+    <div style="background-color: black; color: lightgrey; padding: 10px"><code>
+        curl '${endpoint.href}'
+    <code></div>
+  </script>
+  <script id="74" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="71" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,395 @@
+<!doctype html>
+<notebook theme="air">
+  <title>IndieWeb Login Wizard</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# IndieWeb Login Wizard
+
+    ![](${await FileAttachment("IdentityWizard.png").url()})
+
+    With IndieWeb you can decide how a 3rd party website can identify you, simply by adding some metadata to your homepage.
+
+    Your homepage URL becomes your Identity URL for weblogin forms, and your homepage describes your relation to other websites on the internet, including which 3rd party Oauth providers (like Github) are valid authenticators.
+
+    Endpoint Services uses IndieWeb login to manage resources like file [storage](https://observablehq.com/@endpointservices/storage). If you don't have a homepage we can create an itentity using just Observable notebookes.
+
+    `
+  </script>
+  <script id="106" type="application/vnd.observable.javascript">
+    md`### Authentication
+
+    While you might use your homepage as a identifier, you can still use a familiar identity provider to perform the actual identity check.
+
+    `
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    viewof providers = Checkbox(new Map([
+      ['Github', 'github'],
+      ['password', 'password'],
+      ['Google', 'google'],
+      ['Twitter', 'twitter'],
+      ['IndieAuth (bring your own)', 'indieauth']
+    ]), {
+      label: "I would like to login using "
+    })
+  </script>
+  <script id="180" type="application/vnd.observable.javascript">
+    {
+      const messages = [];
+      providers.forEach(provider => {
+        const support = providerSupport[provider];
+        if (support.error) messages.push("⚠️ " + provider + " " + support.error);
+        else messages.push("✅ " + provider + " is possible");
+      });
+      if (providers.length == 0) return md`⚠️ You need to select at least one authentication method otherwise you can't login!`
+      return html`${messages.join("<p>")}`
+    }
+  </script>
+  <script id="238" type="application/vnd.observable.javascript">
+    md`### ${wantsGithub? md`Github identity delegation`: `~~Github~~`}`
+  </script>
+  <script id="241" type="application/vnd.observable.javascript">
+    viewof githubProfile = Text({
+      width: 500,
+      label: "My Github profile is",
+      disabled: !wantsGithub
+    })
+  </script>
+  <script id="252" type="application/vnd.observable.javascript">
+    !wantsGithub ? md`N/A` : !isValidGithub ? md`⚠️ Not a valid Github profile (is lower case?)` : md`✅ is a valid Github profile`
+  </script>
+  <script id="527" type="application/vnd.observable.javascript">
+    wantsPassword ? 
+      md`### Password
+
+
+    You can encypt a password and host on Observable for a quick solution. This is IndieAuth where we use a password challange hosted in an Observable notebook as the *authorization_endpoint*.
+
+
+    `: md`### ~~Password~~`
+  </script>
+  <script id="545" type="application/vnd.observable.javascript">
+    {
+      if (!wantsPassword) return md`N/A`
+      return viewof pass
+    }
+  </script>
+  <script id="548" type="application/vnd.observable.javascript">
+    md`Now paste the following block in a notebook and publish to create an *authorization_endpoint*.
+    `
+  </script>
+  <script id="596" type="application/vnd.observable.javascript">
+    !isValidIdentity ? md`⚠️ Setup identity URL first in the section below` : pass ? Textarea({
+      rows: 10,
+      value: `authorization_endpoint = password_authorization_endpoint(${JSON.stringify({
+        me: 'IDENTITY_URL',
+        secret: encryptedSecret
+      }, null, 2)});`,
+      disabled: true
+    }) : "waiting for a password first..."
+  </script>
+  <script id="740" type="application/vnd.observable.javascript">
+    md`You will need to import its dependancy too
+
+    ~~~js
+       import {password_authorization_endpoint} from '@endpointservices/identity'
+    ~~~
+    `
+  </script>
+  <script id="600" type="application/vnd.observable.javascript">
+    md`That code will generate a link. Double check it works by clicking it (expect a password webform). Copy the generated link to be used as the *href* in a *rel='authorization_endpoint'* link on your Identity webpage.
+
+    Fill in the *authorization_endpoint* URL form after you have generated in the IndieAuth section next.
+    `
+  </script>
+  <script id="454" type="application/vnd.observable.javascript">
+    md`### ${(wantsIndieauth || wantsPassword) ? md`Indie Auth (Bring your own)`: `~~IndieAuth~~`}`
+  </script>
+  <script id="461" type="application/vnd.observable.javascript">
+    viewof authorization_endpoint = Text({
+      width: 500,
+      label: "My authorization endpoint URL is",
+      disabled: !(wantsIndieauth || wantsPassword)
+    })
+  </script>
+  <script id="677" type="application/vnd.observable.javascript">
+    !(wantsIndieauth || wantsPassword) ? md`N/A` : !isValidAuthorizationEndpoint ? md`⚠️ Not a valid authorization_endpoint URL` : md`✅ is a valid *authorization_endpoint*`
+  </script>
+  <script id="91" type="application/vnd.observable.javascript">
+    md`
+    ### Observable profile
+    If you would like to use your login to manage resources, then it needs to be linked to your Observable profile(s). It looks like:-
+
+    ~~~
+        https://observablehq.com/@<username>
+    ~~~
+    `
+  </script>
+  <script id="331" type="application/vnd.observable.javascript">
+    viewof wantsObservable = Toggle({
+      value: true,
+      label: "I would like to manage resources associated with my Observable profile"
+    })
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    viewof observableProfile = Text({
+      width: 500,
+      label: "My observable profile is",
+      disabled: !wantsObservable
+    })
+  </script>
+  <script id="231" type="application/vnd.observable.javascript">
+    !wantsObservable ? md`N/A` : !isValidObservable ? md`⚠️ Not a valid Observablehq profile` : md`✅ is a valid Observablehq profile`
+  </script>
+  <script id="99" type="application/vnd.observable.javascript">
+    md`
+    ### Identity URL
+    IndieWeb login works best if you use a personal homepage. If you don't have one that's ok too.
+    `
+  </script>
+  <script id="622" type="application/vnd.observable.javascript">
+    md`Your Identity URL is ${identityURL}`
+  </script>
+  <script id="686" type="application/vnd.observable.javascript">
+    !isValidIdentity ? md`⚠️ No identity URL selected` : md`✅ valid Identity URL`
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof homepage = Text({
+      width: 500,
+      label: "I have a personal homepage at:"
+
+    })
+  </script>
+  <script id="615" type="application/vnd.observable.javascript">
+    viewof useObservableProfileAsIdentity = Toggle({
+      label: "I want something quick! I will use my observable profile as my Identity URL"
+    })
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    !hasHomepage ? md`N/A` : !isIdentityHttps ? md`⚠️ Homepage URL must support https` : md`✅ *https://*`
+  </script>
+  <script id="219" type="application/vnd.observable.javascript">
+    !hasHomepage ? md`N/A` : !isIdentityURL ? md`⚠️ Homepage URL must be a URL` : md`✅ homepage is a URL`
+  </script>
+  <script id="403" type="application/vnd.observable.javascript">
+    !hasHomepage ? md`N/A` : !isIdentityNormalized ? md`⚠️ Homepage URL must be normalized` : md`✅ homepage is normalized`
+  </script>
+  <script id="148" type="application/vnd.observable.javascript">
+    md`## Required Steps to get a working IdentityURL using Relmeauth/Indieauth
+
+    Ideally you would use a homepage on a domain you own. This is the first option. However, there is a quicker way by using your Observable profile URL as your idenity URL which is the 2nd option.
+    `
+  </script>
+  <script id="292" type="application/vnd.observable.javascript">
+    md`### Using a homepage to login
+
+    ${homepagePlan.map(step => "  1. " + step).join("\n")}
+
+    ${homepagePlan.length == 0 ? `You are done, congrats!
+
+    ![](${await FileAttachment("done.gif").url()})`: ''}
+    `
+  </script>
+  <script id="646" type="application/vnd.observable.javascript">
+    md`### Using a Observablehq profile to login
+
+    ${observablePlan.map(step => "  1. " + step).join("\n")}
+
+    ${observablePlan.length == 0 ? `You are done, congrats!
+
+    ![](${await FileAttachment("done.gif").url()})`: ''}
+    `
+  </script>
+  <script id="719" type="application/vnd.observable.javascript">
+    md`## Test it works`
+  </script>
+  <script id="722" type="application/vnd.observable.javascript" pinned="">
+    weblogin
+  </script>
+  <script id="300" type="application/vnd.observable.javascript">
+    homepagePlan = [
+      ...(!isValidIdentity ? [`Create a homepage`] : []),
+      ...(providers.length == 0 ? [`Pick a method for authenticating`]: []),
+      ...(!isIdentityURL ? [`Ensure homepage is served over https://`]: []),
+
+      ...((wantsIndieauth || wantsPassword) && !hasAuthorizationEndpointOnHomepage ? [`Add \`<link rel="authorization_endpoint" href=${displayAuthorizationEndpoint}></link>\` to your homepage.`]: []),
+
+
+      ...(wantsGithub && !hasGithubOnHomepage ? [`Add \`<a rel="me" href=${displayGithubProfile}>My Github profile</a>\` to your homepage.`]: []),
+      //...(wantsGithub && !hasHomepageOnGithub ? [`Set your homepage on <a href="${displayGithubProfile}">\`${displayGithubProfile}\`</a> to ${displayHomepage}`]: []),
+
+      ...(wantsObservable && !hasObservableOnHomepage ? [`Add \`<a rel="me" href=${displayObservableProfile}>My Observable profile</a>\` to your homepage.`]: []),
+      ...(wantsObservable && !hasHomepageOnObservable ? [`Add \`${displayHomepage}\` to the website list on ${displayObservableProfile}`]: [])
+
+    ]
+  </script>
+  <script id="641" type="application/vnd.observable.javascript">
+    observablePlan = [
+      ...(providers.length == 0 ? [`Pick a method for authenticating`]: []),
+
+      ...((wantsIndieauth || wantsPassword) && !isValidAuthorizationEndpoint ? [`Key in a valid *authorization_endpoint*`]: []),
+
+      ...((wantsIndieauth || wantsPassword) && !hasAuthorizationEndpointOnHomepage ? [`Add ${displayAuthorizationEndpoint} to your list of webpages on ${observableProfile}.`]: []),
+
+
+      ...(wantsGithub && !hasGithubOnHomepage ? [`Add ${displayGithubProfile} to your list of webpages on ${observableProfile}.`]: []),
+        //...(wantsGithub && !hasHomepageOnGithub ? [`Set your homepage on <a href="${displayGithubProfile}">\`${displayGithubProfile}\`</a> to ${identityURL}`]: []),
+
+    ]
+  </script>
+  <script id="425" type="application/vnd.observable.javascript">
+    md`##### Github`
+  </script>
+  <script id="235" type="application/vnd.observable.javascript">
+    wantsGithub = providers.includes('github')
+  </script>
+  <script id="321" type="application/vnd.observable.javascript">
+    displayGithubProfile = githubProfile || "GITHUB_PROFILE_URL"
+  </script>
+  <script id="249" type="application/vnd.observable.javascript">
+    isValidGithub = wantsGithub && /^https:\/\/github.com\/([a-z]*)$/.exec(githubProfile) !== null
+  </script>
+  <script id="257" type="application/vnd.observable.javascript">
+    githubProfileLinks = isValidGithub ? rel_links(githubProfile) : []
+  </script>
+  <script id="314" type="application/vnd.observable.javascript">
+    hasGithubOnHomepage = homepageLinks.map(p => p.href).includes(githubProfile)
+  </script>
+  <script id="327" type="application/vnd.observable.javascript">
+    hasHomepageOnGithub = githubProfileLinks.map(p => p.href).includes(homepage)
+  </script>
+  <script id="467" type="application/vnd.observable.javascript">
+    md`##### Indieauth`
+  </script>
+  <script id="470" type="application/vnd.observable.javascript">
+    wantsIndieauth = providers.includes('indieauth')
+  </script>
+  <script id="488" type="application/vnd.observable.javascript">
+    displayAuthorizationEndpoint = (isValidAuthorizationEndpoint && authorization_endpoint) || "AUTHORIZATION_ENDPOINT_URL"
+  </script>
+  <script id="474" type="application/vnd.observable.javascript">
+    isValidAuthorizationEndpoint = {
+      if (!(wantsIndieauth || wantsPassword)) return false;
+      try {
+        new URL(authorization_endpoint);
+        return true;
+      } catch (err) {
+        return false;
+      }
+
+    } 
+  </script>
+  <script id="483" type="application/vnd.observable.javascript">
+    hasAuthorizationEndpointOnHomepage = homepageLinks.filter(p => p.rel === 'authorization_endpoint').map(p => p.href).includes(authorization_endpoint)
+  </script>
+  <script id="516" type="application/vnd.observable.javascript">
+    md`##### Password`
+  </script>
+  <script id="519" type="application/vnd.observable.javascript">
+    wantsPassword = providers.includes('password')
+  </script>
+  <script id="552" type="application/vnd.observable.javascript">
+    import {viewof pass, encryptedSecret} from '@endpointservices/notebook-secret'
+  </script>
+  <script id="422" type="application/vnd.observable.javascript">
+    md`##### Observable`
+  </script>
+  <script id="80" type="application/vnd.observable.javascript">
+    hasObservable = observableProfile.length > 0
+  </script>
+  <script id="380" type="application/vnd.observable.javascript">
+    displayObservableProfile = (isValidObservable && observableProfile) || "OBSERVABLE_PROFILE_URL"
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    isValidObservable = hasObservable && /^https:\/\/observablehq.com\/@([^/]*)$/.exec(observableProfile) !== null
+  </script>
+  <script id="282" type="application/vnd.observable.javascript">
+    observableProfileLinks = isValidObservable ? rel_links(observableProfile) : []
+  </script>
+  <script id="366" type="application/vnd.observable.javascript">
+    hasObservableOnHomepage = homepageLinks.map(p => p.href).includes(observableProfile)
+  </script>
+  <script id="389" type="application/vnd.observable.javascript">
+    hasHomepageOnObservable = observableProfileLinks.map(p => p.href).includes(homepage)
+  </script>
+  <script id="437" type="application/vnd.observable.javascript">
+    md`##### Homepage`
+  </script>
+  <script id="72" type="application/vnd.observable.javascript">
+    hasHomepage = homepage.length > 0
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    displayHomepage = homepage || `HOMEPAGE_URL`
+  </script>
+  <script id="316" type="application/vnd.observable.javascript">
+    homepageLinks = isValidIdentity ? rel_links(identityURL) : []
+  </script>
+  <script id="623" type="application/vnd.observable.javascript">
+    identityURL = useObservableProfileAsIdentity ? observableProfile : homepage || 'IDENTITY_URL'
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    isIdentityHttps = identityURL.startsWith("https://")
+  </script>
+  <script id="209" type="application/vnd.observable.javascript">
+    isIdentityURL = {
+      try {
+        new URL(identityURL)
+        return true
+      } catch (e) {
+        return false;
+      }
+    }
+  </script>
+  <script id="400" type="application/vnd.observable.javascript">
+    isIdentityNormalized = isIdentityURL ? new URL(identityURL).toString() === identityURL : false
+  </script>
+  <script id="418" type="application/vnd.observable.javascript">
+    isValidIdentity = isIdentityNormalized && isIdentityHttps
+  </script>
+  <script id="446" type="application/vnd.observable.javascript">
+    md`## Config`
+  </script>
+  <script id="156" type="application/vnd.observable.javascript">
+    providerSupport = ({
+      "github": {  
+
+      }, 
+      "facebook": {  
+        error: "not supported"
+      }, 
+      "google": { 
+        error: "not supported" 
+      }, 
+      "twitter": {  
+        error: "not supported"
+      },
+      "email": {  
+        error: "possible but not implemented yet"
+      }, 
+      "password": {  
+
+      },
+      "indieauth": {  
+
+      }, 
+
+    })
+  </script>
+  <script id="440" type="application/vnd.observable.javascript">
+    md`### Imports`
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    import {Text, Textarea, Checkbox, Toggle} from '@observablehq/inputs'
+  </script>
+  <script id="273" type="application/vnd.observable.javascript">
+    import {rel_links} from '@endpointservices/auth'
+  </script>
+  <script id="585" type="application/vnd.observable.javascript">
+    import {password_authorization_endpoint, weblogin} from '@endpointservices/identity'
+  </script>
+  <script id="747" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="751" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

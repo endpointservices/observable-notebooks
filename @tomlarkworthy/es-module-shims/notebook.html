@@ -1,0 +1,35 @@
+<!doctype html>
+<notebook theme="air">
+  <title>es-module-shims@2.6.0</title>
+  <script id="0" type="text/markdown">
+    # [es-module-shims@2.6.0](https://github.com/guybedford/es-module-shims)
+
+    With esModuleShims you need to setup the options in the window before loading, so this distribution is a function you call with the options.
+
+    ```js
+    import {esModuleShims} from "@tomlarkworthy/es-module-shims"
+    ```
+  </script>
+  <script id="80" type="application/vnd.observable.javascript" pinned="">
+    esModuleShims = async (esmsInitOptions = {}) => {
+      window.esmsInitOptions = esmsInitOptions;
+
+      const blob = await unzip(FileAttachment("es-module-shims-2@1.6.0.js.gz"));
+
+      const objectURL = URL.createObjectURL(
+        new Blob([blob], { type: "application/javascript" })
+      );
+      try {
+        return await import(objectURL);
+      } finally {
+        URL.revokeObjectURL(objectURL);
+      }
+    }
+  </script>
+  <script id="78" type="application/vnd.observable.javascript" pinned="">
+    unzip = async (attachment) =>
+      await new Response(
+        (await attachment.stream()).pipeThrough(new DecompressionStream("gzip"))
+      ).blob()
+  </script>
+</notebook>

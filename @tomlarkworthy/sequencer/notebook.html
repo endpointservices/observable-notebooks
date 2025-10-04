@@ -1,0 +1,659 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Sequencer</title>
+  <script id="0" type="text/markdown">
+    # Sequencer
+
+    The sequence connects to the drum pads which connect to the samples.
+
+    You can mess with the speed of samples, hit the drum pads manually and play the sequencer program in real time! When your done, click download to capture your work in a single-file 
+
+  </script>
+  <script id="956" type="application/vnd.observable.javascript">
+    viewof play = {
+      let hasPlayed = false;
+      const ui = Inputs.button("start/stop (spacebar)", {
+        reduce: (play) => {
+          if (!hasPlayed) {
+            hasPlayed = true;
+            viewof silence.value.playing = true;
+          }
+          return !play;
+        }
+      });
+      const keyboardListener = (e) => {
+        if (e.keyCode == 32) {
+          ui.value = !ui.value;
+          ui.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      };
+      document.addEventListener("keyup", keyboardListener);
+      invalidation.then(() =>
+        document.removeEventListener("keyup", keyboardListener)
+      );
+      return ui;
+    }
+  </script>
+  <script id="839" type="application/vnd.observable.javascript">
+    viewof bpm = Inputs.range([80, 240], { label: "BPM", value: 175, step: 1 })
+  </script>
+  <script id="684" type="application/vnd.observable.javascript">
+    viewof selectedSample = juice(Inputs.select, {
+      label: "[1].label",
+      options: "[0]", // "options" is first arg (index 0) of Inputs.select
+      result: "[1].value" // "result" can be set in the options.value, options being the 2nd arg (index 0)
+    })([], {
+      label: "select sample (DPM coords)"
+    })
+  </script>
+  <script id="97" type="application/vnd.observable.javascript">
+    viewof buttons64 = {
+      const btns = [];
+      for (let j = 0; j < 8; j++) {
+        for (let i = 0; i < 8; i++) {
+          const button = fastBtn();
+          button.i = i;
+          button.j = j;
+          btns.push(button);
+        }
+      }
+
+      return grid({
+        elements: Object.fromEntries(
+          btns.map((btn, i) => [
+            `${i}`,
+            {
+              x: btn.i,
+              y: btn.j,
+              element: btn
+            }
+          ])
+        )
+      });
+    }
+  </script>
+  <script id="283" type="application/vnd.observable.javascript">
+    viewof buttons4x4 = {
+      const btns = [];
+      for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+          const button = fastBtn({ label: [i, j], size: "large" });
+          button.i = i;
+          button.j = j;
+          btns.push(button);
+        }
+      }
+
+      return grid({
+        elements: {
+          ...Object.fromEntries(
+            btns.map((btn) => [
+              `${btn.i} ${btn.j}`,
+              {
+                x: btn.i * 3,
+                y: btn.j * 3,
+                h: 3,
+                w: 3,
+                element: btn
+              }
+            ])
+          )
+        }
+      });
+    }
+  </script>
+  <script id="1443" type="text/markdown">
+    #### kick01
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    viewof kick01 = sample({
+      gain: 0.1,
+      speed: 1.5,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Kick01.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1445" type="text/markdown">
+    #### clap01
+  </script>
+  <script id="11" type="application/vnd.observable.javascript">
+    viewof clap01 = sample({
+      gain: 0.4,
+      speed: 0.9,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Clap01.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1448" type="text/markdown">
+    #### snap02
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    viewof snap02 = sample({
+      speed: 1.6,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Snap02.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1450" type="text/markdown">
+    #### ohh02
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    viewof ohh02 = sample({
+      speed: 1.5,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("OHH02.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1452" type="text/markdown">
+    #### chh05
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    viewof chh05 = sample({
+      gain: 0.7,
+      speed: 0.7,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("CHH05.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1454" type="text/markdown">
+    #### c
+  </script>
+  <script id="1306" type="application/vnd.observable.javascript">
+    viewof c = sample({
+      gain: 0.3,
+      speed: 16.35 / 24.5,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Chord01_G.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1456" type="text/markdown">
+    #### f
+  </script>
+  <script id="1309" type="application/vnd.observable.javascript">
+    viewof f = sample({
+      gain: 0.3,
+      speed: 21.83 / 24.5,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Chord01_G.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1459" type="text/markdown">
+    #### g
+  </script>
+  <script id="1301" type="application/vnd.observable.javascript">
+    viewof g = sample({
+      gain: 0.3,
+      speed: 1,
+      loop: false,
+      audioContext,
+      arrayBuffer: await FileAttachment("Chord01_G.mp3").arrayBuffer()
+    })
+  </script>
+  <script id="1389" type="application/vnd.observable.javascript">
+    exporter()
+  </script>
+  <script id="446" type="application/vnd.observable.javascript">
+    viewof initialProgram = {
+      const program = await FileAttachment("program01.json").text();
+      const decoded = JSON.parse(program, (key, value) => {
+        if (typeof value === "string") {
+          try {
+            return JSON.parse(value);
+          } catch (err) {}
+        }
+        return value;
+      });
+
+      const programView = Inputs.input(decoded);
+      return programView;
+    }
+  </script>
+  <script id="726" type="application/vnd.observable.javascript">
+    html`<h3>Current Program</h3><pre>${JSON.stringify(
+      program,
+      (k, v) => (v instanceof Array ? JSON.stringify(v) : v),
+      2
+    )}</pre>`
+  </script>
+  <script id="1707" type="text/markdown">
+    ## Persistence
+  </script>
+  <script id="1766" type="application/vnd.observable.javascript">
+    viewof module = thisModule()
+  </script>
+  <script id="1717" type="application/vnd.observable.javascript" pinned="">
+    save_program = {
+      setFileAttachment(jsonFileAttachment("program01.json", program), module);
+    }
+  </script>
+  <script id="1758" type="application/vnd.observable.javascript">
+    attachments = getFileAttachments(module)
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Wiring
+  </script>
+  <script id="300" type="application/vnd.observable.javascript">
+    wiring = {
+      connect(
+        viewof kick01,
+        viewof buttons4x4,
+        {
+          label: "kick01",
+          color: "#FFEE65",
+          coord: [0, 0]
+        },
+        invalidation
+      );
+      connect(
+        viewof clap01,
+        viewof buttons4x4,
+        {
+          label: "clap01",
+          color: "#FFEE65",
+          coord: [1, 0]
+        },
+        invalidation
+      );
+      connect(
+        viewof snap02,
+        viewof buttons4x4,
+        {
+          label: "snap02",
+          color: "#46FF72",
+          coord: [2, 0]
+        },
+        invalidation
+      );
+      connect(
+        viewof ohh02,
+        viewof buttons4x4,
+        {
+          label: "ohh02",
+          color: "#46FF72",
+          coord: [3, 0]
+        },
+        invalidation
+      );
+      connect(
+        viewof chh05,
+        viewof buttons4x4,
+        {
+          label: "chh05",
+          color: "#46FF72",
+          coord: [3, 1]
+        },
+        invalidation
+      );
+      connect(
+        viewof c,
+        viewof buttons4x4,
+        {
+          label: "c",
+          color: "red",
+          coord: [1, 2]
+        },
+        invalidation
+      );
+      connect(
+        viewof f,
+        viewof buttons4x4,
+        {
+          label: "f",
+          color: "red",
+          coord: [2, 2]
+        },
+        invalidation
+      );
+      connect(
+        viewof g,
+        viewof buttons4x4,
+        {
+          label: "g",
+          color: "red",
+          coord: [3, 2]
+        },
+        invalidation
+      );
+    }
+  </script>
+  <script id="774" type="application/vnd.observable.javascript">
+    viewof program = Inputs.input(initialProgram)
+  </script>
+  <script id="701" type="application/vnd.observable.javascript">
+    syncSampleOptions = {
+      wiring;
+      bindOneWay(viewof selectedSample.options, viewof samples, {
+        transform: (s) => Object.keys(s)
+      });
+    }
+  </script>
+  <script id="655" type="application/vnd.observable.javascript">
+    syncSequencerToProgram = {
+      console.log("syncSequencerToProgram");
+      if (!selectedSample.result) return;
+      const triggers = [];
+      for (let t = 0; t < 64; t++) {
+        if (buttons64[t].element.down ^ (buttons64[t].element.color == downColor)) {
+          triggers.push(t);
+          buttons64[t].element.color = downColor;
+        } else {
+          buttons64[t].element.color = offColor;
+        }
+      }
+      // Output is derived from button states
+      viewof program.value.triggers[selectedSample.result] = triggers;
+      viewof program.dispatchEvent(new Event("input", { bubbles: true }));
+      return triggers;
+    }
+  </script>
+  <script id="1646" type="application/vnd.observable.javascript">
+    syncSamplesToProgram = {
+      t;
+      let dirty = false;
+      Object.entries(samples).forEach(([name, sampler]) => {
+        Object.entries(sampler.value).forEach(([key, value]) => {
+          if (key == "playing") {
+          } else if (key == "arrayBuffer") {
+          } else if (viewof program.value.samples[name][key] !== value) {
+            debugger;
+            viewof program.value.samples[name][key] = value;
+            dirty = true;
+          }
+        });
+      });
+      if (dirty) {
+        viewof program.dispatchEvent(new Event("input"));
+      }
+      return program.samples;
+    }
+  </script>
+  <script id="767" type="application/vnd.observable.javascript">
+    syncInitialProgramToSequencer = {
+      syncSampleOptions;
+      if (!viewof selectedSample.value.result) return;
+      console.log("syncInitialProgramToSequencer");
+      // Clear all
+      for (let t = 0; t < 64; t++) {
+        viewof buttons64.value[t].element.down = false;
+        viewof buttons64.value[t].element.color = offColor;
+      }
+      // Load selected program onto display
+      initialProgram.triggers[selectedSample.result].forEach((t) => {
+        viewof buttons64.value[t].element.color = downColor;
+      });
+      return initialProgram.triggers;
+    }
+  </script>
+  <script id="1423" type="application/vnd.observable.javascript">
+    syncInitialProgramToSamples = {
+      console.log("syncInitialProgramToSamples");
+
+      Object.entries(initialProgram.samples).forEach(([name, config]) => {
+        Object.entries(config).forEach(([key, value]) => {
+          if (key == "file") {
+            attachments
+              .get(value)
+              .arrayBuffer()
+              .then((buffer) => {
+                samples[name].value["arrayBuffer"] = buffer;
+              });
+          } else {
+            samples[name].value[key] = value;
+          }
+        });
+      });
+
+      return initialProgram.samples;
+    }
+  </script>
+  <script id="613" type="application/vnd.observable.javascript">
+    syncTimeToSequencer = {
+      if (!t) return;
+      viewof buttons64.value[(t - 1) % 64].element.border = borderColor;
+      viewof buttons64.value[t % 64].element.border = nowBorderColor;
+    }
+  </script>
+  <script id="1705" type="text/markdown">
+    ## Timing
+  </script>
+  <script id="1153" type="application/vnd.observable.javascript">
+    LOOKAHEAD = 4 // Prefetch slices and enque the buffer in advance
+  </script>
+  <script id="411" type="application/vnd.observable.javascript">
+    next = (sequence, { t = 0, lookahead = 1, steps = 64 } = {}) => {
+      const result = [];
+      for (let i = 0; i < sequence.length; i++) {
+        if (sequence[i] < t % steps) {
+        } else if (sequence[i] >= (t + lookahead) % steps) {
+          return result;
+        } else {
+          result.push(sequence[i] + Math.floor(t / steps) * steps);
+        }
+      }
+      return result;
+    }
+  </script>
+  <script id="470" type="application/vnd.observable.javascript">
+    t = {
+      let t = this || 0;
+      const t_start = Date.now() - (t * (60 * 1000)) / (bpm * 8);
+      mutable audioStart = audioContext.currentTime - (t * 60) / (bpm * 8);
+      while (play) {
+        yield t;
+        let next_t = t;
+        do {
+          next_t = next_t + 1;
+          var next_millis = t_start + (next_t * (60 * 1000)) / (bpm * 8);
+        } while (next_millis < Date.now());
+        await Promises.delay(next_millis - Date.now());
+        t = next_t;
+      }
+      return yield t;
+    }
+  </script>
+  <script id="490" type="application/vnd.observable.javascript">
+    slice = {
+      if (!play) {
+        // This block resets the slice state when play is toggled
+        return {
+          t_start: t,
+          t_end: t,
+          frame: {}
+        };
+      }
+      const t_start = this?.t_end || t;
+      const t_end = Math.min(t + LOOKAHEAD, t_start + LOOKAHEAD); // TODO wrapping bug here
+      return {
+        t_start,
+        t_end,
+        frame: Object.fromEntries(
+          Object.keys(viewof program.value.triggers).map((sample) => [
+            sample,
+            next(viewof program.value.triggers[sample], {
+              t: t_start,
+              lookahead: t_end - t_start
+            })
+          ])
+        )
+      };
+    }
+  </script>
+  <script id="1049" type="application/vnd.observable.javascript">
+    mutable audioStart = audioContext.currentTime
+  </script>
+  <script id="1100" type="application/vnd.observable.javascript">
+    stepToAudio = (step) => {
+      return mutable audioStart + (step * 60) / (bpm * 8);
+    }
+  </script>
+  <script id="504" type="application/vnd.observable.javascript">
+    syncSliceToDPM = {
+      Object.keys(slice.frame).map((sample) => {
+        if (!samples[sample]) return;
+
+        slice.frame[sample].forEach((step) => {
+          samples[sample].value.playing = stepToAudio(step);
+        });
+        const dpmCord = samples[sample].dpmCord;
+        if (!buttons4x4[dpmCord]) return;
+        viewof buttons4x4[dpmCord].value.element.border =
+          slice.frame[sample].length > 0 ? nowBorderColor : borderColor;
+      });
+    }
+  </script>
+  <script id="397" type="application/vnd.observable.javascript">
+    md`#### Connect a sample to a pad`
+  </script>
+  <script id="1026" type="application/vnd.observable.javascript">
+    viewof samples = Inputs.input({})
+  </script>
+  <script id="1173" type="application/vnd.observable.javascript">
+    viewof buttons4x4.value
+  </script>
+  <script id="301" type="application/vnd.observable.javascript">
+    connect = (sample, dpm, { label, coord, color } = {}, invalidation) => {
+      const dpmCord = `${coord[0]} ${coord[1]}`;
+      const btn = dpm[dpmCord].element;
+      btn.value.color = color || offColor;
+      sample.dpmCord = dpmCord;
+      viewof samples.value = { ...viewof samples.value, [label]: sample };
+      viewof samples.dispatchEvent(new Event("input", { bubbles: true }));
+
+      const trigger = () => {
+        const down = btn.down.value;
+        btn.value.color = down ? downColor : color || offColor;
+        if (down) sample.value.playing = true;
+      };
+      btn.addEventListener("input", trigger);
+      invalidation.then(() => btn.removeEventListener("input", trigger));
+    }
+  </script>
+  <script id="648" type="application/vnd.observable.javascript">
+    md`### FastBtn
+
+    - Multi-touch, event raised *on touch down* for lowest latency
+    - Reactive border color and main color
+    `
+  </script>
+  <script id="86" type="application/vnd.observable.javascript" pinned="">
+    html`<style>
+      .small {
+          width: var(--gridSize);
+          height: var(--gridSize);
+      }
+      .large {
+          width: calc(var(--gridSize) * 3);
+          height: calc(var(--gridSize) * 3);
+      }
+      .sequencer-btn {
+          border-radius: 10px;
+      }
+    </style>`
+  </script>
+  <script id="68" type="application/vnd.observable.javascript" pinned="">
+    viewof fastBtnExample = fastBtn()
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    fastBtn = ({ label = undefined, size = "small" } = {}) => {
+      const labelVar = variable(label, { name: "label" });
+      const colorVar = variable(offColor, { name: "color" });
+      const borderVar = variable(borderColor, { name: "color" });
+      const downVar = variable(false, { name: "down" });
+      const down = (e) => {
+        e.preventDefault();
+        downVar.value = true;
+        downVar.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+      const up = (e) => {
+        e.preventDefault();
+        downVar.value = false;
+        downVar.dispatchEvent(new Event("input", { bubbles: true }));
+      };
+
+      const ui = view`<div><button
+                              onmousedown=${down} ontouchstart=${down}
+                              onmouseup=${up} ontouchend=${up}
+                              onclick=${(e) => {
+                                e.stopPropagation();
+                                e.preventDefault();
+                              }}
+                              class="sequencer-btn ${size}">
+        ${["label", labelVar]}
+        ${["down", downVar]}
+        ${["color", colorVar]}
+        ${["border", borderVar]}
+      `;
+      const btn = ui.querySelector(".sequencer-btn");
+      const updateColor = () => {
+        btn.style.backgroundColor = colorVar.value;
+      };
+      const updateBorder = () => {
+        btn.style.borderColor = borderVar.value;
+      };
+      colorVar.addEventListener("assign", updateColor);
+      updateColor();
+      borderVar.addEventListener("assign", updateBorder);
+      updateBorder();
+      return ui;
+    }
+  </script>
+  <script id="893" type="application/vnd.observable.javascript" pinned="">
+    md`### Colors`
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    viewof offColor = Inputs.color({ label: "off", value: "#FFFFFF" })
+  </script>
+  <script id="353" type="application/vnd.observable.javascript">
+    viewof downColor = Inputs.color({ label: "down", value: "#c78fff" })
+  </script>
+  <script id="609" type="application/vnd.observable.javascript">
+    viewof nowBorderColor = Inputs.color({ label: "now border", value: "#ff7575" })
+  </script>
+  <script id="603" type="application/vnd.observable.javascript">
+    viewof borderColor = Inputs.color({ label: "border", value: "#fff0f0" })
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    audioContext = (webaudioPolyfill, new AudioContext())
+  </script>
+  <script id="1198" type="application/vnd.observable.javascript">
+    // Silence can be played syncronously oon a butotn click to gain privalidge to play sound.
+    viewof silence = sample({
+      gain: 0,
+      audioContext,
+      arrayBuffer: await FileAttachment("silence.wav").arrayBuffer()
+    })
+  </script>
+  <script id="1496" type="application/vnd.observable.javascript" pinned="">
+    import {
+      main,
+      getFileAttachments,
+      setFileAttachment,
+      jsonFileAttachment
+    } from "@tomlarkworthy/fileattachments"
+  </script>
+  <script id="1761" type="application/vnd.observable.javascript">
+    import { thisModule } from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    import { sample, webaudioPolyfill } from "@tomlarkworthy/audio-inputs"
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    import { view, variable, bindOneWay } from "@tomlarkworthy/view"
+  </script>
+  <script id="94" type="application/vnd.observable.javascript">
+    import { grid } from "@tomlarkworthy/grid@1105"
+  </script>
+  <script id="689" type="application/vnd.observable.javascript">
+    import { juice } from "@tomlarkworthy/juice"
+  </script>
+  <script id="1383" type="application/vnd.observable.javascript">
+    import { exporter } from "@tomlarkworthy/exporter"
+  </script>
+</notebook>

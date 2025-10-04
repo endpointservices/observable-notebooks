@@ -1,0 +1,239 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Notebook Backup Tool</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Notebook Backup Tool
+    `
+  </script>
+  <script id="91" type="application/vnd.observable.javascript">
+    md`## Provision storage`
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    storageLogin
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    viewof files = bucket({
+      name: "toms",
+      rules: rules
+    })
+  </script>
+  <script id="288" type="application/vnd.observable.javascript">
+    rules = `rules_version = '2';
+    service firebase.storage {
+      match /b/{bucket}/o {
+        match /{allPaths=**} {
+          allow read, write: if 'tomlarkworthy' in request.auth.token['observablehq.com'];
+        }
+        match /backups/{allPaths=**} {
+          allow read;
+        }
+        match /public/{allPaths=**} {
+          allow get;
+        }
+      }
+    }
+    `
+  </script>
+  <script id="309" type="application/vnd.observable.javascript" pinned="">
+    files.link
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    storage = storageClient(files.link)
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    import { storageClient, storageLogin, bucket } from '@endpointservices/storage'
+  </script>
+  <script id="77" type="application/vnd.observable.javascript">
+    md`## Use [mootari](https://observablehq.com/@mootari)'s notebook list to find recently published notebook`
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    username = getContext().serverless ? new Promise(() => {}) : "tomlarkworthy"
+  </script>
+  <script id="71" type="application/vnd.observable.javascript">
+    sort = "updated"
+  </script>
+  <script id="88" type="application/vnd.observable.javascript">
+    Inputs.table(notebooks)
+  </script>
+  <script id="60" type="application/vnd.observable.javascript">
+    import { selection as notebooks } with {
+      username,
+      sort
+    } from '@mootari/sortable-notebook-list@899'
+  </script>
+  <script id="79" type="application/vnd.observable.javascript">
+    import { getContext } from '@endpointservices/serverless-cells'
+  </script>
+  <script id="94" type="application/vnd.observable.javascript">
+    md`## Backup: Iterate through list starting at most recent
+
+    Save the version in file metadata, so we skip backing up the same file everyday
+    `
+  </script>
+  <script id="100" type="application/vnd.observable.javascript">
+    mutable backupState = ({
+      index: 0,
+      status: "waiting"
+    })
+  </script>
+  <script id="276" type="application/vnd.observable.javascript">
+    fullscan = true
+  </script>
+  <script id="209" type="application/vnd.observable.javascript">
+    {
+      const reset = html`<button>Reset</button>`;
+      reset.onclick = evt => {
+        mutable backupState = { index: 0, status: "waiting" };
+      };
+      const run = html`<button>Backup</button>`;
+      run.onclick = evt => {
+        mutable backupState = { index: 0, status: "unchecked" };
+      };
+      const retry = html`<button>Retry current</button>`;
+      retry.onclick = evt => {
+        delete cache[codeURL];
+        mutable backupState = { ...backupState, status: "unchecked" };
+      };
+      const skip = html`<button>Skip current</button>`;
+      skip.onclick = evt => {
+        delete cache[codeURL];
+        mutable backupState = {
+          ...backupState,
+          index: backupState.index + 1,
+          status: "unchecked"
+        };
+      };
+      const permSkip = html`<button>Perm skip</button>`;
+      permSkip.onclick = evt => {
+        delete cache[codeURL];
+        mutable backupState = {
+          ...backupState,
+          index: backupState.index,
+          status: "permskip"
+        };
+      };
+      return html`${reset}${run}${retry}${skip}${permSkip}`;
+    }
+  </script>
+  <script id="30" type="application/vnd.observable.javascript">
+    PREFIX = "backups/notebooks/"
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    currentNotebook = notebooks[backupState.index]
+  </script>
+  <script id="115" type="application/vnd.observable.javascript">
+    storageRef = storage.ref(
+      `${PREFIX}/@${currentNotebook.owner.login}/${currentNotebook.slug}.tgz`
+    )
+  </script>
+  <script id="131" type="application/vnd.observable.javascript">
+    storageMetadata = {
+      try {
+        return await storageRef.getMetadata();
+      } catch (e) {
+        if (e.message.includes("does not exist")) return undefined;
+        else throw e;
+      }
+    }
+  </script>
+  <script id="118" type="application/vnd.observable.javascript">
+    codeURL = `https://api.observablehq.com/@${currentNotebook.owner.login}/${currentNotebook.slug}.tgz?v=3`
+  </script>
+  <script id="108" type="application/vnd.observable.javascript">
+    triageUnchecked = {
+      if (backupState.status === "unchecked") {
+        if (!storageMetadata) {
+          mutable backupState = { ...backupState, status: "requiresBackup" };
+        }
+
+        if (Number.parseInt(storageMetadata?.customMetadata?.version) !== currentNotebook.version) {
+          console.log(Number.parseInt(storageMetadata?.customMetadata?.version), currentNotebook.version)
+          mutable backupState = { ...backupState, status: "requiresBackup" };
+        }
+
+        if (Number.parseInt(storageMetadata?.customMetadata?.version) === currentNotebook.version) {
+          mutable backupState = { ...backupState, status: "finished" };
+        }
+      }
+    }
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    cache = ({})
+  </script>
+  <script id="223" type="application/vnd.observable.javascript">
+    retreive = {
+      return async function retreive(url) {
+        if (!cache[url]) {
+          cache[url] = fetchp(codeURL);
+        }
+        return cache[url];
+      };
+    }
+  </script>
+  <script id="147" type="application/vnd.observable.javascript">
+    doBackup = {
+      if (backupState.status === "requiresBackup") {
+        const response = await retreive(codeURL);
+        if (response.status !== 200) {
+          mutable backupState = {
+            ...backupState,
+            status: "error",
+            message: await response.text()
+          };
+        }
+        const upload = await storageRef.put(await response.arrayBuffer());
+        mutable backupState = { ...backupState, status: "backedUp" };
+      }
+
+      if (backupState.status === "backedUp") {
+        await storageRef.updateMetadata({
+          customMetadata: {
+            version: currentNotebook.version,
+            id: currentNotebook.id
+          }
+        });
+        mutable backupState = { ...backupState, status: "ready" };
+      }
+    }
+  </script>
+  <script id="244" type="application/vnd.observable.javascript">
+    doSkip = {
+      if (backupState.status === "permskip") {
+        const upload = await storageRef.put("");
+        await storageRef.updateMetadata({
+          customMetadata: {
+            version: currentNotebook.version,
+            id: currentNotebook.id
+          }
+        });
+        mutable backupState = { ...backupState, status: "ready" };
+      }
+    }
+  </script>
+  <script id="204" type="application/vnd.observable.javascript">
+    iterate = {
+      if (
+        backupState.status === "ready" &&
+        backupState.index !== notebooks.length - 1
+      ) {
+        delete cache[codeURL];
+        mutable backupState = {
+          status: "unchecked",
+          index: backupState.index + 1
+        };
+      }
+      if (
+        !fullscan &&
+        backupState.status === "ready" &&
+        backupState.index === notebooks.length - 1
+      ) {
+        mutable backupState = {
+          status: "finished"
+        };
+      }
+    }
+  </script>
+  <script id="39" type="application/vnd.observable.javascript">
+    import { fetchp } from '@tomlarkworthy/fetchp'
+  </script>
+</notebook>

@@ -1,0 +1,544 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Dash Robot SDK for Observable</title>
+  <script id="39" type="application/vnd.observable.javascript">
+    md`# Dash Robot SDK for Observable
+
+    Dot and Dash robots were one of the best edutainment toys I got for my kids. We have had them for 3 years now, since my kids were 2, and we have played with them on-and-off throughout. Whats amazing is there is so many layers to them. At first they were just RC toys. Later they taught the basics of programming. Like all good general purpose modular things, Dash can be integrated into many different play activities.
+
+    ![](${resize(await FileAttachment("image@4.png").url())})
+
+    To take my 5 year olds to the next level, we need to programming them and add our own sensors using the [LEGO adapters](https://store.makewonder.com/products/building-brick-connectors).
+
+    ![](${resize(await FileAttachment("image@2.png").url())})
+
+    We added a camera phone for teleoperation. Next step add a cameraphone for Simultaneous Localization and Mapping ([SLAM](https://de.wikipedia.org/wiki/Simultaneous_Localization_and_Mapping)) and we will be nearing undergraduate level. 
+
+    ![](${resize(await FileAttachment("image@5.png").url())})
+
+    Note the robot has IR distance sensors, wheel encoders, gyros, a 2DOF actuated head, buttons and LEDs. Its expensive but powerful, and now, thanks to this notebook, custom programming can be done right within a browser without installing anything! Works on a phone!!!!
+
+    _(sidenote: This is the 2nd time I have integrated Dash, I did it [once](https://www.youtube.com/watch?v=4H1N0gbyup0) with a Raspberry PI and the [morseapi](https://github.com/IlyaSukhanov/morseapi) in Python but the comms kept [dropping out](https://github.com/IlyaSukhanov/morseapi/issues/3) and required too many reboots. This setup is much more robust, more extensible and less fiddly)_
+
+    ## Demo (1:30)
+
+    <iframe width="640" height="315" src="https://www.youtube-nocookie.com/embed/J8h40juXyM4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+    ## Keyboard controls
+
+    Arrow keys moves dash around, my kids find this much easier than the phone touch controls. 
+
+    You can also programatically script it using the SDK. 
+    ~~~js
+      sdk.drive(forward, turn)
+    ~~~
+
+    To get the Bluetooth connection working, click ${
+      bluetoothLink.outerHTML
+    } to open a top level page proxy to this notebook (this gets around the iframe sandbox security restrictions).
+
+    ## WIP
+
+    I am am translating mostly from https://github.com/IlyaSukhanov/morseapi as I needed. Feel free to leave a comment to prioritize a feature, or suggestions welcome. 
+
+    `
+  </script>
+  <script id="399" type="application/vnd.observable.javascript">
+    startupscript = {
+      // Will resend when link reestablishes
+      sdk.playSound("SYSTAIRPORTJET");
+    }
+  </script>
+  <script id="415" type="application/vnd.observable.javascript">
+    viewof brightness = Range([0, 255], {
+      label: "eye",
+      step: 1
+    })
+  </script>
+  <script id="440" type="application/vnd.observable.javascript">
+    viewof earLeftR = Range([0, 255], {
+      label: "ear left R",
+      step: 1
+    })
+  </script>
+  <script id="437" type="application/vnd.observable.javascript">
+    viewof earLeftG = Range([0, 255], {
+      label: "ear left G",
+      step: 1
+    })
+  </script>
+  <script id="441" type="application/vnd.observable.javascript">
+    viewof earLeftB = Range([0, 255], {
+      label: "ear left B",
+      step: 1
+    })
+  </script>
+  <script id="599" type="application/vnd.observable.javascript">
+    viewof earRightR = Range([0, 255], {
+      label: "ear right R",
+      step: 1
+    })
+  </script>
+  <script id="602" type="application/vnd.observable.javascript">
+    viewof earRightB = Range([0, 255], {
+      label: "ear right B",
+      step: 1
+    })
+  </script>
+  <script id="601" type="application/vnd.observable.javascript">
+    viewof earRightG = Range([0, 255], {
+      label: "ear right G",
+      step: 1
+    })
+  </script>
+  <script id="487" type="application/vnd.observable.javascript">
+    viewof forward = Range([-1023, 1023], {
+      label: "forward",
+      step: 1
+    })
+  </script>
+  <script id="1005" type="application/vnd.observable.javascript">
+    pitch = to_int((dotData[4] & 0xf0) << 4 | dotData[2], 12)
+  </script>
+  <script id="489" type="application/vnd.observable.javascript">
+    viewof turn = Range([-1023, 1023], {
+      label: "turn",
+      step: 1
+    })
+  </script>
+  <script id="1039" type="application/vnd.observable.javascript">
+    pitchDelta = to_int(
+                (dashData[4] & 0x30) << 4 | dashData[3],
+                10
+            )
+  </script>
+  <script id="1013" type="application/vnd.observable.javascript">
+    roll = to_int((dotData[4] & 0xf) << 8 | dotData[3], 12)
+  </script>
+  <script id="1044" type="application/vnd.observable.javascript">
+    roll_delta = to_int(
+                (dashData[4] & 0x3) << 8 | dashData[5],
+                10
+            )
+  </script>
+  <script id="1054" type="application/vnd.observable.javascript">
+    yaw = to_int((dashData[13]  << 8) | dashData[12], 12)
+  </script>
+  <script id="1017" type="application/vnd.observable.javascript">
+    buttons = [
+        (dotData[8] & 0x10) > 0,
+        (dotData[8] & 0x20) > 0,
+        (dotData[8] & 0x40) > 0,
+        (dotData[8] & 0x80) > 0
+      ]
+
+  </script>
+  <script id="1049" type="application/vnd.observable.javascript">
+    proximity = [
+      dashData[6],
+      dashData[7],
+      dashData[8], // rear
+    ]
+  </script>
+  <script id="1058" type="application/vnd.observable.javascript">
+    wheels = [
+      (dashData[15] << 8) | dashData[14], // left
+      (dashData[17] << 8) | dashData[16]
+    ]
+  </script>
+  <script id="1062" type="application/vnd.observable.javascript">
+    wheelDistance = to_int(
+      (dashData[9] & 0xf) << 12 | dashData[11] << 8 | dashData[10],
+      16
+    )
+  </script>
+  <script id="565" type="application/vnd.observable.javascript">
+    mutable jogTurn = 0
+  </script>
+  <script id="568" type="application/vnd.observable.javascript">
+    mutable jogForward = 0
+  </script>
+  <script id="546" type="application/vnd.observable.javascript">
+    keyboard = {
+      const keyup = e => {
+        switch (e.keyCode) {
+          case 38: // UP
+          case 40: // DOWN
+          case 87: // W
+          case 83: // S
+            mutable jogForward = 0;
+            break;
+          case 37: // LEFT
+          case 39: // RIGHT
+          case 65: // A
+          case 68: // D
+            mutable jogTurn = 0;
+            break;
+        }
+      };
+      const keydown = e => {
+        switch (e.keyCode) {
+          case 38: // UP
+          case 87: // W
+            mutable jogForward = 1;
+            break;
+          case 40: // DOWN
+          case 83: // S
+            mutable jogForward = -1;
+            break;
+          case 37: // LEFT
+          case 65: // A
+            mutable jogTurn = -1;
+            break;
+          case 39: // RIGHT
+          case 68: // D
+            mutable jogTurn = 1;
+            break;
+        }
+      };
+      window.addEventListener('keyup', keyup);
+      window.addEventListener('keydown', keydown);
+
+      invalidation.then(() => {
+        window.removeEventListener('keyup', keyup);
+        window.removeEventListener('keydown', keydown);
+      });
+    }
+  </script>
+  <script id="649" type="application/vnd.observable.javascript">
+    md`### Actions`
+  </script>
+  <script id="420" type="application/vnd.observable.javascript">
+    eyeBrightness = {
+      var data = new Uint8Array(2);
+      data[0] = 8;
+      data[1] = brightness;
+      controller.proxy.writeValue(data);
+    }
+  </script>
+  <script id="449" type="application/vnd.observable.javascript">
+    leftEar = {
+      var data = new Uint8Array(4);
+      data[0] = 11;
+      data[1] = earLeftR;
+      data[2] = earLeftG;
+      data[3] = earLeftB;
+      controller.proxy.writeValue(data);
+    }
+  </script>
+  <script id="610" type="application/vnd.observable.javascript">
+    RightEar = {
+      var data = new Uint8Array(4);
+      data[0] = 12;
+      data[1] = earRightR;
+      data[2] = earRightG;
+      data[3] = earRightB;
+      controller.proxy.writeValue(data);
+    }
+  </script>
+  <script id="485" type="application/vnd.observable.javascript">
+    drive = {
+      // If negative value, shift sign bit into correct position
+      var forwardSpeed =
+        forward < 0 ? parseInt(forward) + 0x800 : parseInt(forward);
+      var turnSpeed = turn < 0 ? parseInt(turn) + 0x800 : parseInt(turn);
+
+      if (jogTurn != 0) turnSpeed = -jogTurn * 300;
+      if (jogForward != 0) forwardSpeed = jogForward * 200;
+
+      var data = new Uint8Array(4);
+      data[0] = 0x02;
+      data[1] = 0xff & forwardSpeed;
+      data[2] = 0xff & turnSpeed;
+      data[3] = ((0x700 & forwardSpeed) >> 8) | ((0x700 & turnSpeed) >> 5);
+      controller.proxy.writeValue(data);
+    }
+  </script>
+  <script id="831" type="application/vnd.observable.javascript">
+    md`### Sensors
+
+    I was unable to use comlink transfer or proxy to efficiently get sensor data here, in the end I JSONified it but thats ok.
+
+    See https://github.com/IlyaSukhanov/morseapi/blob/master/morseapi/sensors.py#L61
+    `
+  </script>
+  <script id="1024" type="application/vnd.observable.javascript">
+    (dotData[8]& 0x20) > 0
+  </script>
+  <script id="927" type="application/vnd.observable.javascript">
+    dashData = {
+      while (true) {
+        try {
+          yield await controller.proxy.fetchDashData()
+        } catch (err) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
+    }
+  </script>
+  <script id="985" type="application/vnd.observable.javascript">
+    dotData = {
+      while (true) {
+        try {
+          yield await controller.proxy.fetchDotData()
+        } catch (err) {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }
+      }
+    }
+  </script>
+  <script id="1008" type="application/vnd.observable.javascript" pinned="">
+    to_int = (value, bits) => {
+      if (value > ((1<<(bits-1))-1))
+        return  value - (1<<bits)
+      else
+        return value
+    }
+
+  </script>
+  <script id="727" type="application/vnd.observable.javascript">
+    md`### SDK`
+  </script>
+  <script id="730" type="application/vnd.observable.javascript">
+    sdk = ({
+      drive: (forward, turn) => {
+        viewof forward.value = forward;
+        viewof turn.value = turn;
+        viewof forward.dispatchEvent(new Event('input'));
+        viewof turn.dispatchEvent(new Event('input'));
+      },
+      playSound: sound => {
+        var data = new Uint8Array(1 + sound.length);
+        data[0] = 24;
+        for (var i = 0; i < sound.length; i++) {
+          data[i + 1] = sound.charCodeAt(i);
+        }
+        controller.proxy.writeValue(data);
+      }
+    })
+  </script>
+  <script id="718" type="application/vnd.observable.javascript">
+    md`## Communication`
+  </script>
+  <script id="368" type="application/vnd.observable.javascript">
+    controller = {
+      refresh; // reset
+      await new Promise(resolve => (ifr.onload = resolve));
+      const controller = comlink.wrap(
+        comlink.windowEndpoint(
+          ifr.contentWindow,
+          self,
+          "https://endpointservice.web.app"
+        )
+      );
+
+      return {
+        proxy: controller
+      };
+    }
+  </script>
+  <script id="714" type="application/vnd.observable.javascript">
+    md`### Communication Watchdog
+
+    Regularly checks the bluetooth page can be reached. If it cannot, it restarts the cross-origin bridge with a refresh.
+    `
+  </script>
+  <script id="579" type="application/vnd.observable.javascript">
+    html`<button onclick=${() => mutable refresh++}>reset comms</button>`
+  </script>
+  <script id="428" type="application/vnd.observable.javascript">
+    mutable refresh = 0
+  </script>
+  <script id="589" type="application/vnd.observable.javascript">
+    mutable lastPing = new Date()
+  </script>
+  <script id="684" type="application/vnd.observable.javascript">
+    mutable lastReset = new Date()
+  </script>
+  <script id="211" type="application/vnd.observable.javascript">
+    pinger = {
+      // Send a message to the top level page
+      controller;
+      while (true) {
+        const val = Math.random();
+
+        console.log(`${await controller.proxy.ping()}`);
+        mutable lastPing = new Date();
+        yield Promises.delay(1000);
+      }
+    }
+  </script>
+  <script id="615" type="application/vnd.observable.javascript">
+    watchDog = {
+      now; // often check
+      // auto restart comms if pings are 5 seconds behind
+      if (new Date() - lastPing > 5000 && new Date() - lastReset > 5000) {
+        mutable lastReset = new Date();
+        mutable refresh++;
+      }
+    }
+  </script>
+  <script id="43" type="application/vnd.observable.javascript">
+    md`### Cross-origin bridge to child iframe
+
+    The bridge is a child iframe of the observable notebook. As such it cannot open a bluetooth session. However, even though it is cross-origin it can communicate with the parent bidirectionally using postMessage. So we use this to create a converter to https://endpointservice.web.app domain.
+    `
+  </script>
+  <script id="200" type="application/vnd.observable.javascript">
+    comlink = require("comlink")
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    ifr = html`<iframe height="50px" id="bridge" src=${`${
+      iframeHtml.href
+    }?session=${session}&origin=${encodeURIComponent(window.origin)}`}></iframe>` ||
+      refresh
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    iframeHtml = deploy("bridge", (req, res) => {
+      res.send(`<!DOCTYPE html>
+    <title>Iframe bridge</title>
+    <h2> Iframe bridge </h2>
+    <script type="module">
+    var bc = new BroadcastChannel('${req.query.session}');
+    // Tab to parent
+    bc.onmessage = function (e) {
+      window.parent.postMessage(e.data, '${req.query.origin}')
+    } 
+
+    // Parent to tab
+    window.onmessage = (e) => {
+      bc.postMessage(e.data);
+    }
+    <\/script>`);
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    md`### Bluetooth Page
+
+    The Bluetooth page has to be its own top level page so it can call bluetooth API. It is on https://endpointservice.web.app domain, so it can can also communicate using Broadcast channel with the bridge iframe who is on same-origin, just click the link below to open it!
+    `
+  </script>
+  <script id="115" type="application/vnd.observable.javascript">
+    bluetoothLink = {
+      const baseLink = deploy("bluetooth", (req, res) => {
+        res.send(`<!DOCTYPE html>
+    <title> Bluetooth link </title>
+    <p>Turn your robot on, click connect below and pair over Bluetooth. Once connected you can return to <a href="https://observablehq.com/@tomlarkworthy/wonder" target="_blank">@tomlarkworthy/wonder</a></p>
+    <button id="connectBtn">Connect</button>
+    <script type="module">
+      import * as Comlink from "https://unpkg.com/comlink@alpha/dist/esm/comlink.mjs";
+      var bc = new BroadcastChannel('${req.query.session}');
+
+      const SERVICE_UUID = 'af237777-879d-6186-1f49-deca0e85d9c1';
+      const COMMAND_UUID = 'af230002-879d-6186-1f49-deca0e85d9c1';
+
+      var device;
+      var gatt;
+      var service;
+      var command;
+      var dash_sensor;
+      var dot_sensor;
+      var fetchDashData = undefined; // I could not get comlink callbacks working with BroadcastChannel, so we poll
+      var fetchDotData = undefined;
+
+      async function connect() {
+        gatt = await device.gatt.connect()
+        service = await device.gatt.getPrimaryService(SERVICE_UUID)
+        command = await service.getCharacteristic(COMMAND_UUID);
+        // dash_sensor
+        dash_sensor = await service.getCharacteristic('af230006-879d-6186-1f49-deca0e85d9c1');
+        dash_sensor.startNotifications();
+        dash_sensor.oncharacteristicvaluechanged = (evt) => {
+          if (fetchDashData) {
+            fetchDashData([...new Uint8Array(evt.currentTarget.value.buffer)]);
+            fetchDashData = undefined;
+          }
+        }
+        dot_sensor = await service.getCharacteristic('af230003-879d-6186-1f49-deca0e85d9c1');
+        dot_sensor.startNotifications();
+        dot_sensor.oncharacteristicvaluechanged = (evt) => {
+          if(fetchDotData) {
+            fetchDotData([...new Uint8Array(evt.currentTarget.value.buffer)]);
+            fetchDotData = undefined;
+          }
+        }
+
+        window.device = device;
+        window.gatt = gatt;
+        window.service = service;
+        window.command = command;
+        window.dash_sensor = dash_sensor;
+        window.dot_sensor = dot_sensor;
+      }
+
+      document.getElementById("connectBtn").onclick = async () => {
+        device = await navigator.bluetooth.requestDevice({
+          filters: [{ services: [SERVICE_UUID] }]
+        });
+        connect();
+      }
+
+
+      Comlink.expose({
+        isConnected: () => gatt && gatt.connected,
+        disconnect: () => gatt.disconnect(),
+        connect: async () => {
+          connect();
+        },
+        writeValue: (data) => command.writeValue(data),
+        fetchDashData: () => new Promise(resolve => fetchDashData = resolve),
+        fetchDotData: () => new Promise(resolve => fetchDotData = resolve),
+        ping: () => "pong"
+      }, bc);
+    <\/script>`);
+      });
+      return html`<a target="_blank" href="${baseLink.href}?session=${session}">bluetooth</a>`;
+    }
+  </script>
+  <script id="722" type="application/vnd.observable.javascript">
+    md`
+    ### References
+    This page would not be possible without the help of
+    - https://www.maissan.net/articles/dash-and-dot
+    - https://github.com/IlyaSukhanov/morseapi
+    - https://github.com/playi/WonderPy
+    - https://github.com/GoogleChromeLabs/comlink
+    `
+  </script>
+  <script id="411" type="application/vnd.observable.javascript">
+    import { Range } from '@observablehq/inputs'
+  </script>
+  <script id="183" type="application/vnd.observable.javascript">
+    session = {
+      // We try to keep the session ID stable but generate one first time so BroadcastChannels are impossible to guess.
+      const KEY = "bluetoothsession";
+      var session;
+      if (!(session = localStorage.getItem(KEY))) {
+        session = randomId(30);
+        localStorage.setItem(KEY, session);
+      }
+      return session;
+    }
+  </script>
+  <script id="177" type="application/vnd.observable.javascript">
+    import { randomId } from '@tomlarkworthy/randomid'
+  </script>
+  <script id="596" type="application/vnd.observable.javascript">
+    import { html } from '@observablehq/htl'
+  </script>
+  <script id="3" type="application/vnd.observable.javascript">
+    import { deploy } from '@endpointservices/serverless-cells'
+  </script>
+  <script id="695" type="application/vnd.observable.javascript">
+    import { localStorage } from "@mbostock/safe-local-storage"
+  </script>
+  <script id="775" type="application/vnd.observable.javascript">
+    import { resize } from '@endpointservices/resize'
+  </script>
+  <script id="1091" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="1093" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

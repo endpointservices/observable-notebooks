@@ -1,0 +1,168 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Tweetstorm helper</title>
+  <script id="174" type="application/vnd.observable.javascript">
+    html`<div class="content"><h1>Tweetstorm helper</h1>
+
+    <figure class="image is-128x128">
+    <img width=200 height="200" src=${await FileAttachment("Twitter_Social_Icon_Square_Color.png").url()}><img></figure>
+    <p>
+    Tweetstorms are linked tweets to create longer, blog-like content. 
+    <p>
+    For why you want to write like this, and good guide to wiring tweetstorms, checkout <a href="https://www.animalz.co/blog/how-to-write-a-tweetstorm/">animalz blog post</a> on the subject.
+    <p>
+    An exemplary Tweetstormer is <a href="https://twitter.com/Suhail">@Suhail</a>. He syndicates his tweetstorms to Medium! 👀
+
+
+    `
+  </script>
+  <script id="224" type="application/vnd.observable.javascript">
+    tweet("998660806005768192")
+  </script>
+  <script id="232" type="application/vnd.observable.javascript">
+    html`<div class="content">
+    <p><------ Add Comment for feature requests.
+    <h2> Helper</h2>
+    This tool will help you stay within the limits and do the numbering for you.
+
+    <p>Send me a comment if you need something else, or fork it yourself as it's a permissive ISC license.
+
+
+    `
+  </script>
+  <script id="0" type="application/vnd.observable.javascript">
+    {
+      const content = reconcile(this, html`<div class='content'>
+        ${tweetstorm.segments.map((segment, index) => {
+          // TODO: Lots of B.S. due to https://github.com/observablehq/htl/issues/18
+          const prefix = `${index + 1}/${tweetstorm.segments.length}`; 
+          const length = prefix.length + 1 + segment.text.length;
+          const calc = () => `${prefix.length + 1 + segment.text.length}/${constants.max_chars}`
+          const recalc = () => `${document.getElementById(`s${index}`).value.length}/${constants.max_chars}`
+          return html.fragment`
+            <textarea id="s${index}"
+            class="textarea"
+            onkeyup=${() => document.getElementById(`c${index}`).innerHTML = recalc()}
+            onchange=${() => {
+                    const textarea = document.getElementById(`s${index}`);
+                    console.log(textarea)                 
+                    segment.text = textarea.value.startsWith(prefix + ' ')
+                      ? textarea.value.substring(prefix.length + 1)
+                    : textarea.value;
+                    mutable tweetstorm = tweetstorm
+                  }}
+            >${prefix} ${segment.text}</textarea>
+            <span class="tags are-medium">
+              <span id="c${index}"
+                    class="tag"
+                    style="align: right; color: ${length > constants.max_chars ? 'red': null};"
+              >
+                ${calc()}
+              </span>
+              <span class="tag"
+                    onclick=${async () => {
+                      copy(document.getElementById(`s${index}`).value)
+                      const message = document.getElementById(`m${index}`);
+                      message.innerHTML = "Copied!"
+                      await sleep(1);
+                      message.innerHTML = ""
+                    }}
+              >
+                <i class="fas fa-copy"></i>
+              </span>
+              <span id="m${index}"
+                    class="tag">
+              </span>
+            </span>
+            `
+        })}
+        <button onclick=${() => {
+          tweetstorm.segments.push({text:""})
+          mutable tweetstorm = tweetstorm
+        }}
+        >
+          Another tweet please
+        </button>
+      `);
+      return content;
+    }
+  </script>
+  <script id="314" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2>As Plain text`
+  </script>
+  <script id="301" type="application/vnd.observable.javascript">
+    fulltext = {
+      function loadFulltext(text) {
+        mutable tweetstorm = ({
+          segments: text.split("\n\n").map(text => ({
+            text
+          }))
+        });
+      }
+
+      return html`<textarea id="fulltext"
+                            onchange=${(evt) => loadFulltext(evt.target.value)}
+                            class="textarea">
+          ${tweetstorm.segments.map(segment => {
+            return segment.text
+          }).join("\n\n")}
+        </textarea>
+        <span class="tags are-medium">
+          <span class="tag"
+          onclick=${async () => {
+            copy(document.getElementById('fulltext').value)
+            const message = document.getElementById('message');
+            message.innerHTML = "Copied!"
+            await sleep(1);
+            message.innerHTML = ""
+          }}
+          >
+          <i class="fas fa-copy"></i>
+          </span>
+          <span id="message"
+          class="tag">
+          </span>
+        </span>
+      `
+    }
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    bulmaWithIcons
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    mutable tweetstorm = ({
+      segments: [{
+        text: ""
+      }]
+    })
+  </script>
+  <script id="161" type="application/vnd.observable.javascript">
+    constants = ({
+      max_chars: 280
+
+    })
+  </script>
+  <script id="273" type="application/vnd.observable.javascript">
+    async function sleep(secs) {
+      function timeout(ms) {
+          return new Promise(resolve => setTimeout(resolve, ms));
+      }
+      return timeout(secs * 1000);
+    }
+  </script>
+  <script id="11" type="application/vnd.observable.javascript">
+    import {html} from '@observablehq/htl'
+  </script>
+  <script id="20" type="application/vnd.observable.javascript">
+    import {bulmaWithIcons} from "@tomlarkworthy/bulma"
+  </script>
+  <script id="86" type="application/vnd.observable.javascript">
+    import {reconcile} from '@tomlarkworthy/reconcile-nanomorph'
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    import {tweet} from "@mbostock/tweet"
+  </script>
+  <script id="265" type="application/vnd.observable.javascript">
+    import {copy} from '@mbostock/copy-to-clipboard'
+  </script>
+</notebook>

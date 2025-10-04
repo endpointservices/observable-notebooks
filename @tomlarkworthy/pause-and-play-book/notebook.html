@@ -1,0 +1,149 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Pause and Play book</title>
+  <script id="297" type="application/vnd.observable.javascript">
+    html`<h1>Pause and Play book`
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    {
+      if (location.search == "?success") {
+        return html`<div class="content"><h1>Thank you!!!`
+      } else return html` `
+    }
+  </script>
+  <script id="275" type="application/vnd.observable.javascript">
+    html`<center><img width="600" src=${await FileAttachment("pauseandplay.jpg").url()}>`
+  </script>
+  <script id="291" type="application/vnd.observable.javascript">
+    md`## Ensure you have talked to the author to arrange delivery before purchasing`
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    html`<center>${location.search != "?success" ? html`
+      <button class="button is-primary"
+              onclick=${() => { 
+      stripe.redirectToCheckout({
+        lineItems: [{
+          price: 'price_1Hzps5HGNosi6Ft0NRhFBcVZ', // ID of your price
+          quantity: 1,
+        }],
+        mode: 'payment',
+        successUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?success',
+        cancelUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?cancel',
+      });
+    }}>Buy Pause and Play activites book 13 EUR</button></center>`: null}`
+  </script>
+  <script id="276" type="application/vnd.observable.javascript">
+    html`<div class="content"><h3> Get a discount if you buy one for a freind.</h3>`
+  </script>
+  <script id="271" type="application/vnd.observable.javascript">
+    html`<center>${location.search != "?success" ? html`
+      <button class="button is-primary"
+              onclick=${() => { 
+      stripe.redirectToCheckout({
+        lineItems: [{
+          price: 'price_1IA0TNHGNosi6Ft0HtAb2qOz', // ID of your price
+          quantity: 1,
+        }],
+        mode: 'payment',
+        successUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?success',
+        cancelUrl: 'https://observablehq.com/@tomlarkworthy/pause-and-play-book?cancel',
+      });
+    }}>Buy Two Pause and Play activites books 20 EUR</button></center>`: null}`
+  </script>
+  <script id="243" type="application/vnd.observable.javascript">
+    md`
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+    .
+
+
+    `
+  </script>
+  <script id="310" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2>Ignore everything below `
+  </script>
+  <script id="153" type="application/vnd.observable.javascript">
+    Stripe = require('https://js.stripe.com/v3/').then(() => window["Stripe"]).catch(() => window["Stripe"])
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    STRIPE_API_KEY = "pk_live_51HbQzcHGNosi6Ft0JM18AKCtG3cIs707E1ft1B5ePvpptHb5yoLnXHXLWkyBbDjHgtlPMOT0233jrcfvWAGj6AYp00RxIZdaky"
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    stripe = Stripe(STRIPE_API_KEY)
+  </script>
+  <script id="53" type="application/vnd.observable.javascript">
+    bulma
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    import {bulma} from '@tomlarkworthy/bulma'
+  </script>
+  <script id="70" type="application/vnd.observable.javascript">
+    import {html} from "@observablehq/htl"
+  </script>
+  <script id="316" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="334" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,67 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Get CORS tgz link (v=3)</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Get CORS tgz link (v=3)
+
+    The "download code' link on observablehq does not have CORS headers so its difficult to link Observable notebooks directly as dependancies to things like CodeSandbox ([forum](https://talk.observablehq.com/t/cors-header-for-download-code-urls/5391)), or create links to [offline notebooks](https://observablehq.com/@tomlarkworthy/offline).
+
+    `
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    viewof notebook = Inputs.text({
+      label: "Which notebook?",
+      value: "@tomlarkworthy/animated-kirigami"
+    })
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    cleanedNotebook = notebook.replaceAll(/(https:\/\/)?observablehq.com\//g, "").replaceAll(".tgz", "")
+  </script>
+  <script id="25" type="text/html">
+    <a href=${`https://webcode.run/notebooks/@endpointservices/tzg/${cleanedNotebook}.tgz`}>${notebook}.tgz</a>
+  </script>
+  <script id="11" type="application/vnd.observable.javascript" pinned="">
+    backend = deploy("default", async (req, res) => {
+      const api = `https://api.observablehq.com${req.url}?v=3`
+      const response = await fetch(api)
+
+      if (response.status !== 200) return res.status(response.status).send(await res.text())
+
+      const responseHeaders = Object.fromEntries(
+            Array.from(response.headers.entries()).map(([k, v]) => [k.toLowerCase(), v]))
+      delete responseHeaders['content-encoding']; // Ensure we are not claiming to be gzipped
+      delete responseHeaders['content-length'];   // We switch to chunked
+      delete responseHeaders['access-control-allow-origin']; // Remove any CORS
+      delete responseHeaders['x-frame-options'];
+
+      const headers = {
+        ...responseHeaders,
+        'transfer-encoding': 'chunked'
+      };
+      Object.keys(headers).map(key => {
+        if (headers[key]) res.header(key, headers[key])
+      });
+
+      res.status(response.status)
+
+      const body = await response.body;
+      const reader = body.getReader();
+
+      let { done, value } = await reader.read();
+      while (!done) {
+        res.write(value); 
+        ({ done, value } = await reader.read());
+      }
+      res.end()
+    })
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    import {deploy} from '@endpointservices/serverless-cells'
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="68" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

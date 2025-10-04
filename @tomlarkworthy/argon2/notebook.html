@@ -1,0 +1,94 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Argon2 password hasher</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Argon2 password hasher
+
+    Argon2 is the current best practice for password hashing.
+
+    ~~~js
+    import {argon2} from '@tomlarkworthy/argon2'
+    ~~~
+
+    There are a lot of cool options, check out https://github.com/antelle/argon2-browser
+    ~~~js
+    argon2.hash({
+        // required
+        pass: 'password',
+        salt: 'salt',
+        // optional
+        time: 1, // the number of iterations
+        mem: 1024, // used memory, in KiB
+        hashLen: 24, // desired hash length
+        parallelism: 1, // desired parallelism (will be computed in parallel only for PNaCl)
+        secret: new Uint8Array([...]), // optional secret data
+        ad: new Uint8Array([...]), // optional associated data
+        type: argon2.ArgonType.Argon2d, // or argon2.ArgonType.Argon2i
+    })
+    ~~~
+
+    I had problems with CORS and importing it. So I figured out a way in this notebook
+
+    downloaded from https://github.com/antelle/argon2-browser
+
+    version was: 1.15.2
+    `
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    md`## Generate a hash with sane defaults
+    If you are not sure, these settings are better than the defaults (for password hashing)
+    `
+  </script>
+  <script id="172" type="application/vnd.observable.javascript">
+    viewof password = html`<input placeholder="password">`
+  </script>
+  <script id="178" type="application/vnd.observable.javascript">
+    viewof salt = html`<input placeholder="salt (8 char min)" value="testsalt">`
+  </script>
+  <script id="184" type="application/vnd.observable.javascript" pinned="">
+    argon2.hash({
+      pass: password, 
+      salt: salt,
+      time: 10,  // rounds
+      mem: 1024, // used memory, in KiB
+      type: argon2.ArgonType.Argon2i // OWASP recommendation
+    });
+  </script>
+  <script id="74" type="application/vnd.observable.javascript">
+    argon2 = {
+      configureGlobals
+      return require(await FileAttachment("argon2lib.js").url())
+    }
+  </script>
+  <script id="82" type="application/vnd.observable.javascript" pinned="">
+    configureGlobals = {
+      // This was the main gotcha with importing that module
+      window['argon2WasmPath'] = await FileAttachment("argon2.wasm").url()
+      window['loadArgon2WasmModule'] = async () => import(await FileAttachment("argon2.js").url())
+    }
+  </script>
+  <script id="207" type="application/vnd.observable.javascript">
+    md`## Example`
+  </script>
+  <script id="155" type="application/vnd.observable.javascript" pinned="">
+    encrypted = argon2.hash({
+      pass: 'password',
+      salt: 'somesalt',
+      time: 10, // rounds
+      mem: 1024, // used memory, in KiB
+      type: argon2.ArgonType.Argon2i
+    });
+  </script>
+  <script id="130" type="application/vnd.observable.javascript" pinned="">
+    valid = argon2.verify({ pass: 'password', encoded: encrypted.encoded });
+  </script>
+  <script id="163" type="application/vnd.observable.javascript" pinned="">
+    invalid = argon2.verify({ pass: 'password2', encoded: encrypted.encoded }).catch(err => err);
+  </script>
+  <script id="242" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="260" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,93 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Vendored CodeMirror 6 + Javascript</title>
+  <script id="0" type="text/markdown">
+    # Vendored CodeMirror 6 + Javascript 
+  </script>
+  <script id="7" type="text/markdown">
+    CodeMirror is sensitive to how it is imported, this is a single dependancy.
+
+
+    build script
+    ```bash
+    npm install --save codemirror
+    npm install --save @codemirror/lang-javascript
+    npm install --save @codemirror/autocomplete
+    npm install --save @codemirror/language
+    npm install --save @codemirror/lint
+    echo 'export * from "./node_modules/codemirror/dist/index.js";
+          export * from "./node_modules/@codemirror/lang-javascript/dist/index.js";
+          export * from "./node_modules/@codemirror/autocomplete/dist/index.js";
+          export * from "./node_modules/@codemirror/language/dist/index.js";
+          export * from "./node_modules/@codemirror/lint/dist/index.js";
+          export {indentWithTab} from "@codemirror/commands";
+          export * from "./node_modules/@codemirror/view/dist/index.js";
+          export * from "./node_modules/@codemirror/state/dist/index.js";' \
+        | npx esbuild --bundle --minify --format=esm > codemirror_javascript.js
+    gzip --force -9 codemirror_javascript.js  
+    ```
+  </script>
+  <script id="880" type="application/vnd.observable.javascript">
+    new EditorView({
+      doc: `function() {
+      // nice!
+      return ""
+    }`,
+      extensions: [
+        codemirror.EditorView.lineWrapping,
+        codemirror.javascript(),
+        codemirror.basicSetup,
+        myDefaultTheme
+      ]
+    }).dom
+  </script>
+  <script id="282" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="35" type="application/vnd.observable.javascript">
+    EditorView = codemirror.EditorView
+  </script>
+  <script id="958" type="application/vnd.observable.javascript">
+    EditorState = codemirror.EditorState
+  </script>
+  <script id="198" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="60" type="application/vnd.observable.javascript">
+    myDefaultTheme = codemirror.EditorView.theme({
+      "&": {
+        fontFamily: 'Consolas, "Roboto Mono", monospace',
+        fontSize: "14px",
+        height: "200px",
+        border: "1px solid #ddd"
+      }
+    })
+  </script>
+  <script id="28" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="496" type="application/vnd.observable.javascript">
+    codemirror = {
+      const blob = await unzip(FileAttachment("codemirror_javascript@5.js.gz"));
+
+      const objectURL = URL.createObjectURL(
+        new Blob([blob], { type: "application/javascript" })
+      );
+      try {
+        console.log("Loading codemirror from", objectURL);
+        return await import(objectURL);
+      } finally {
+        URL.revokeObjectURL(objectURL); // Ensure URL is revoked after import
+      }
+    }
+  </script>
+  <script id="921" type="application/vnd.observable.javascript">
+    unzip = async (attachment) => {
+      const response = await new Response(
+        (await attachment.stream()).pipeThrough(new DecompressionStream("gzip"))
+      );
+
+      return response.blob();
+    }
+  </script>
+</notebook>

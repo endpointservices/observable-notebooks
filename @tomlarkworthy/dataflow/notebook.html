@@ -1,0 +1,146 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Dataflow</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Dataflow
+
+    This is an experimental tool for working with [Observable dataflow](/@observablehq/how-observable-runs). I may add more tools in the future. Please leave a comment to share your thoughts.`
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    md`## importCell
+
+    This function imports the given cell from the given notebook (the *specifier* is at-login slash slug for public notebooks, a hex identifier for shared notebooks, or a URL to an ES module). It returns a generator that yields the cell’s value. If you like, you can also pass an object of named *injections* to override the imported notebook’s other cell values; this is useful, for example, to inject data into a reusable chart template.`
+  </script>
+  <script id="161" type="application/vnd.observable.javascript" pinned="">
+    async function importCell(
+      cell, // e.g., "chart"
+      notebook, // e.g., "@d3/bar-chart" or "8d5ef3030dfd3bad"
+      injections = {} // e.g., {data: [{name, value}, …]}
+    ) {
+      return (await importCells([cell], notebook, injections))[0];
+    }
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    async function importCells(
+      cells = [], // e.g., ["chart"]
+      notebook, // e.g., "@d3/bar-chart" or "8d5ef3030dfd3bad"
+      injections = {} // e.g., {data: [{name, value}, …]}
+    ) {
+      // Instantiate a new runtime, but reuse the existing runtime’s require.
+      // (This is ensures that any requires in imports still work.)
+      const library = Object.assign(new Library(), { require: () => require });
+      const runtime = new Runtime(library);
+
+      // Create the main module, including any injected values.
+      const main = runtime.module();
+      for (const name in injections) {
+        main.define(name, [], () => injections[name]);
+      }
+
+      // Load the requested notebook’s definition as an ES module.
+      const origin = `https://api.observablehq.com`;
+      const {
+        default: define
+      } = await import(/^@[0-9a-z_-]+\/[0-9a-z_-]+(\/\d+)?([@~]|$)/.test(
+        (notebook += "")
+      )
+        ? `${origin}/${notebook}.js?v=3`
+        : /^[0-9a-f]{16}([@~]|$)/.test(notebook)
+        ? `${origin}/d/${notebook}.js?v=3`
+        : notebook);
+
+      // Create the imported notebook’s module, and then derive a module
+      // from it to inject the desired values. (If there are none, then
+      // this is basically a noop.)
+      const imported = runtime.module(define);
+      const derived = imported.derive([...Object.keys(injections)], main);
+      let disposed = 0;
+      return cells.map(cell =>
+        // In many cases the imported cell will only have a single value, but
+        // we must use the most generic representation (an async generator) as
+        // the imported cell may be an async generator, or may reference one.
+        Generators.observe(notify => {
+          // Create the primary variable with an observer that will report the
+          // desired cell’s fulfilled or rejected values.
+          main
+            .variable({
+              fulfilled(value) {
+                notify(value);
+              },
+              rejected(value) {
+                notify(Promise.reject(value));
+              }
+            })
+            .import(cell, derived);
+          return () => {
+            disposed++;
+            // Lastly, when all generators are disposed, dispose the runtime to
+            // ensure that any imported generators terminate.
+            if (disposed === cells.length) runtime.dispose();
+          };
+        })
+      );
+    }
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    md`Let’s look at a few examples.
+
+    Here’s importing a [D3 bar chart](/@d3/bar-chart) as-is. This is equivalent to Observable’s standard import-syntax, except you don’t need an additional cell to render the chart (assuming you’ve already imported *importCell*).`
+  </script>
+  <script id="10" type="application/vnd.observable.javascript" pinned="">
+    importCell("chart", "@d3/bar-chart")
+  </script>
+  <script id="68" type="application/vnd.observable.javascript">
+    md`Now let’s inject some values, substituting our own definitions of *height* and *color*. To know what values can be injected, refer to the notebook.`
+  </script>
+  <script id="33" type="application/vnd.observable.javascript" pinned="">
+    importCell("chart", "@d3/bar-chart", {height: 200, color: "brown"})
+  </script>
+  <script id="74" type="application/vnd.observable.javascript">
+    md`The values we inject can be promises (or even generators)! Observable takes care of the dataflow. Here I’m replacing the data in a horizontal bar chart with data from an attached CSV file. I rename the columns (*years* and *population*) to match the expected shape of the imported chart (*name* and *value*) using [d3.csvParse](https://github.com/d3/d3-dsv/blob/master/README.md#dsv_parse)’s row accessor.`
+  </script>
+  <script id="36" type="application/vnd.observable.javascript" pinned="">
+    importCell(
+      "chart", 
+      "@d3/horizontal-bar-chart",
+      {
+        margin: {
+          top: 20, 
+          right: 20, 
+          bottom: 0, 
+          left: 40
+        },
+        data: d3.csvParse(
+          await FileAttachment("us-population-by-age.csv").text(), 
+          (({years, population}) => ({name: years, value: +population}))
+        )
+      }
+    )
+  </script>
+  <script id="112" type="application/vnd.observable.javascript">
+    md`In the next cell we create a *histogram* helper function, wrapping an import of the [D3 histogram example](/@d3/histogram) and passing in the specified *data* and any optional *options*. This allows us to quickly generate as many histograms as we like.`
+  </script>
+  <script id="105" type="application/vnd.observable.javascript" pinned="">
+    histogram = (data, options) => importCell("chart", "@d3/histogram", {...options, data})
+  </script>
+  <script id="106" type="application/vnd.observable.javascript" pinned="">
+    histogram(Array.from({length: 1000}, Math.random))
+  </script>
+  <script id="116" type="application/vnd.observable.javascript">
+    md`---
+
+    ## Appendix`
+  </script>
+  <script id="13" type="application/vnd.observable.javascript" pinned="">
+    observablehq = require("@observablehq/runtime@4")
+  </script>
+  <script id="138" type="application/vnd.observable.javascript" pinned="">
+    Runtime = observablehq.Runtime
+  </script>
+  <script id="140" type="application/vnd.observable.javascript" pinned="">
+    Library = observablehq.Library
+  </script>
+  <script id="79" type="application/vnd.observable.javascript" pinned="">
+    d3 = require("d3@6")
+  </script>
+</notebook>

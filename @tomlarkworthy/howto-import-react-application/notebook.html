@@ -1,0 +1,144 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Howto Import a React Application (Chonky Example)</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Howto Import a React Application (Chonky Example)
+
+    I wanted to use a cool UI I saw in the React ecosystem in Observable. It was not obvious how to get it working so here are my notes. [Chonky](https://chonky.io/) does not have an ES6 module build or anything so you have to pack it from a consuming app. This is not so complicated once you know how.
+
+    An issue with the react ecosystem is dependancies (e.g. [material-ui/issue](https://github.com/mui-org/material-ui/issues/1486#issuecomment-141821034)) often use _nodejs_-isms which cannot be handled in the browser. Developers are expected to webpack as the last step to turn a fully assembled application into something that can be read by the browser. Unfortunately this means we cannot directly read various _react_ components within Observable. Here is how you perform the bundling steps locally though, which you can then import into a notebook.
+
+    #### This imports a whole application, to import just a component for assembly clientside see https://observablehq.com/@tomlarkworthy/howto-import-react-component
+
+
+    #### Create client react project
+    ~~~
+    npx create-react-app filebrowser
+    ~~~
+
+    #### Downgrade React in package.json
+
+    This was necessary because Chonky only worked with react 16 at the time.
+    ~~~
+        "react": "^16.13",
+        "react-dom": "^16.13",
+    ~~~
+
+    Re-init packages
+    ~~~
+        rm -fR node_modules
+    ~~~
+
+    #### Depend on Chonky
+    ~~~
+    npm install --save chonky-icon-fontawesome, chonky
+    ~~~
+
+    #### Update App.js
+    ~~~js
+    import { FullFileBrowser } from 'chonky';
+    function App() {
+      const files = [
+        { id: 'lht', name: 'Projects', isDir: true },
+        {
+          id: 'mcd',
+          name: 'chonky-sphere-v2.png',
+          thumbnailUrl: 'https://chonky.io/chonky-sphere-v2.png',
+        },
+      ]
+      const folderChain = [{ id: 'xcv', name: 'Demo', isDir: true }]
+      return (
+        <div style={{ height: 300 }}>
+          <FullFileBrowser files={files} folderChain={folderChain} />
+        </div>
+      )
+
+    }
+    export default App;
+    ~~~
+
+
+    #### Update index.js
+
+    ~~~js
+    import React from 'react';
+    import ReactDOM from 'react-dom';
+    import './index.css';
+    import { setChonkyDefaults } from 'chonky';
+    import { ChonkyIconFA } from 'chonky-icon-fontawesome';
+    import App from './App';
+
+    setChonkyDefaults({ iconComponent: ChonkyIconFA });
+
+    ReactDOM.render(
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>,
+      document.getElementById('root')
+    );
+    ~~~
+
+    #### Test it works locally
+    ~~~
+    npm run start
+    ~~~
+
+    #### Bundle for upload to Observablehq
+    ~~~
+    npm run build
+    ~~~
+
+    This will create some interesting files:-
+    - build/index.html
+    - build/static/js/...
+
+    Note the _runtime-main_ is inlined into the index.html
+
+    If you study this we just need a 
+    ~~~html
+      <div id="root"\>
+    ~~~
+
+    plus the js code to boot the application. So in observable create a DIV with id:-
+    `
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    root = html`<div id="root"></div>`
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    md`Then for loading the scripts we can inject script tags into the head. Of course we have to upload the js files into FileAttachments first`
+  </script>
+  <script id="4" type="application/vnd.observable.javascript" pinned="">
+    {
+      root; // Ensure our DIV is materialized before loading scripts
+      var loader = document.createElement("script");
+      loader.src = await FileAttachment("runtime-main.b53eba1f.js").url();
+      document.head.appendChild(loader);
+
+      var chunk = document.createElement("script");
+      chunk.src = await FileAttachment("2.d04965b1.chunk.js").url();
+      document.head.appendChild(chunk);
+
+      var main = document.createElement("script");
+      main.src = await FileAttachment("main.cf9a6b73.chunk.js").url();
+      document.head.appendChild(main);
+    }
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    md`## Boom!
+
+    #### Next steps
+
+    We can compress the 3 scripts to one using https://www.labnol.org/code/bundle-react-app-single-file-200514 which makes it slightly easier iterating. Or even smoother map your local filesystem to a [cloud bucket](https://observablehq.com/@endpointservices/storage) for zero clicks.
+    `
+  </script>
+  <script id="94" type="application/vnd.observable.javascript" pinned="">
+    window.ReactDOM
+  </script>
+  <script id="102" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="120" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

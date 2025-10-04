@@ -1,0 +1,196 @@
+<!doctype html>
+<notebook theme="air">
+  <title>AWS Serverless Notebooks Simplified</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# AWS Serverless Notebooks Simplified
+
+    ![AWS footguns](${await FileAttachment("AWS.jpg").url()})
+
+    Leaving the glorious comfort of an _Observable_ notebook in order to write a _lambda_ is not very fun. Here we cut out the _API Gateway_ and _Lambda_ wrapper boilerplate in Mike's [Serverless Notebook](https://observablehq.com/@observablehq/introduction-to-serverless-notebooks) and replace with _Observable_ hosted code instead.
+
+    [Secret](https://observablehq.com/@tomlarkworthy/secret-manager) AWS credentials can be injected into [serverside cells](https://observablehq.com/@tomlarkworthy/serverside-cells) enabling us to access the AWS universe in native Observable code, without credentials being exposed to end users. If you are ok with the credentails being exposed to a password holder, there is an even [simpler way](https://observablehq.com/@endpointservices/notebook-secret).
+
+    In this tutorial I will demonstrate accessing a private s3 bucket, but of course, it could be any AWS service. 
+
+    There is different way of getting AWS connected explored here as well https://observablehq.com/@tomlarkworthy/aws-serverless-password
+    `
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    md`
+    ## Create AWS Resource
+    ![create AWS bucket](${await FileAttachment("image.png").url()})`
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    md`
+    ## Create IAM user
+    ![create AWS bucket](${await FileAttachment("image@1.png").url()})
+
+    Make note of user credentials 
+
+    ![create AWS bucket](${await FileAttachment("image@2.png").url()})
+    `
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    md`
+    ## Create IAM Policy
+
+    ~~~
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Action": [
+                    "s3:PutObject",
+                    "s3:GetObject"
+                ],
+                "Effect": "Allow",
+                "Resource": [
+                    "arn:aws:s3:::tomlarkworthy-access-aws/*"
+                ]
+            }
+        ]
+    }
+    ~~~
+    `
+  </script>
+  <script id="30" type="application/vnd.observable.javascript">
+    md`### Attach policy to IAM user
+
+    ![Attach policy](${await FileAttachment("image@3.png").url()})
+
+    `
+  </script>
+  <script id="36" type="application/vnd.observable.javascript">
+    md`# Create Application in Observable
+    AWS SDK is very easy to import to Observable
+    `
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    AWS = require('https://sdk.amazonaws.com/js/aws-sdk-2.799.0.min.js').then(_ => window['AWS'])
+  </script>
+  <script id="268" type="application/vnd.observable.javascript">
+    md`Write the application like an express controller, for more advanced route handling use https://observablehq.com/@tomlarkworthy/api-hosting-with-express`
+  </script>
+  <script id="44" type="application/vnd.observable.javascript" pinned="">
+    handler = async (req, res, context) => {
+      res.header("Access-Control-Allow-Origin", "*"); 
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      res.header("Access-Control-Allow-Methods", "PUT, GET, OPTIONS");
+      if (req.method === 'OPTIONS') res.status(200).end(); // Get CORS preflights ACKed ASAP
+
+      // Fetch secrets from context
+      const aws_creds = context.secrets['tomlarkworthy_aws'];
+      AWS.config.credentials = new AWS.ChainableTemporaryCredentials({
+        masterCredentials: parseCreds(aws_creds)
+      });
+
+      // A very simple API, GET returns a bucket file, PUT sets one.
+      const key = req.url.substring(1); // URL has "/" prefix which AWS Bucket keyspace does not
+      if (req.method == "GET") {
+        const s3res = await new AWS.S3().getObject({
+          Bucket: 'tomlarkworthy-access-aws',
+          Key: key
+        }).promise().catch((err) => res.status(404).send(err.message))
+        res.send(s3res.Body.toString('utf-8'))
+      } else if (req.method == "PUT") {
+        const s3res = await new AWS.S3().putObject({
+          Bucket: 'tomlarkworthy-access-aws',
+          Key: key,
+          Body: req.body
+        }).promise()
+        res.end()
+      } 
+    }
+  </script>
+  <script id="117" type="application/vnd.observable.javascript">
+    function parseCreds(csv) {
+      if (!csv) return undefined;
+      const credsCSV = csv.split(",")
+      return {
+        accessKeyId: credsCSV[0],
+        secretAccessKey: credsCSV[1]
+      }
+    }
+  </script>
+  <script id="259" type="application/vnd.observable.javascript">
+    md`# Deploy Serverside Cell with Secret Injection
+
+    This create an encoded URL pointing to the notebook and cell. We declare which secrets are needed, in our case, AWS credentials. AWS credentials are written into the secret store using [Secret Manager](https://observablehq.com/@tomlarkworthy/secret-manager).
+    `
+  </script>
+  <script id="41" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverside-cells'
+  </script>
+  <script id="143" type="application/vnd.observable.javascript" pinned="">
+    endpoint = deploy("access-aws", handler, {
+      secrets: ['tomlarkworthy_aws']
+    })
+  </script>
+  <script id="154" type="application/vnd.observable.javascript">
+    md `## Tests
+    Lets check it works and explain how to use the library using a reactive testing library.
+    `
+  </script>
+  <script id="146" type="application/vnd.observable.javascript">
+    import {viewof suite, expect} from '@tomlarkworthy/testing'
+  </script>
+  <script id="150" type="application/vnd.observable.javascript">
+    viewof suite
+  </script>
+  <script id="158" type="application/vnd.observable.javascript" pinned="">
+    suite.test("01: GET <random> 404s", async () => {
+      const response = await fetch(endpoint.href + "/fdsfdfs"); 
+      expect(response.status).toBe(404);
+    })
+  </script>
+  <script id="204" type="application/vnd.observable.javascript" pinned="">
+    suite.test("02: GET /access-aws/example.txt 200 and 'foo'", async () => {
+      const response = await fetch(endpoint.href + "/access-aws/example.txt"); 
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe("foo");
+    })
+  </script>
+  <script id="231" type="application/vnd.observable.javascript" pinned="">
+    suite.test("03: PUT /test.txt 200", async () => {
+      const response = await fetch(endpoint.href + "/access-aws/put.txt", {
+        method: "PUT",
+        body: "foo"
+      }); 
+      expect(response.status).toBe(200);
+    })
+  </script>
+  <script id="242" type="application/vnd.observable.javascript" pinned="">
+    suite.test("04: Read your writes", async () => {
+      const data = Math.random() + "";
+
+      await fetch(endpoint.href + "/access-aws/getput.txt", {
+        method: "PUT",
+        body: data
+      });
+
+      const response = await fetch(endpoint.href + "/access-aws/getput.txt"); 
+      expect(response.status).toBe(200);
+      expect(await response.text()).toBe(data);
+    })
+  </script>
+  <script id="292" type="application/vnd.observable.javascript">
+    md`# Securing user data (Firebase)
+
+    The endpoint is not really secure, anybody can read and write into it. 
+
+    To add a login and user based security have a look at the implementation of https://observablehq.com/@tomlarkworthy/secret-manager
+
+    - A login can be provided with [firebaseui](https://observablehq.com/@tomlarkworthy/firebase)
+    - The user token is extracted with user.getIdToken()
+    - Serverside verification of firebase login: [verifyIdToken](https://observablehq.com/@tomlarkworthy/verifyidtoken)
+    `
+  </script>
+  <script id="315" type="application/vnd.observable.javascript">
+    md`# Securing Access (Password) 
+
+    You can use Argon2 to encypt a password and store inside the notebook. For an example see 
+
+    https://observablehq.com/@tomlarkworthy/aws-serverless-password
+    `
+  </script>
+</notebook>

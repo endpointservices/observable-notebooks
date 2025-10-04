@@ -1,0 +1,623 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Editor: Reactive Userspace Cell Mutator (v2)</title>
+  <script id="0" type="text/markdown">
+    # Editor: Reactive Userspace Cell Mutator (v2)
+
+    [YouTube explainer](https://www.youtube.com/shorts/6FjeJRBC2iw)
+
+    A cell that edits the source of other cells. It is implemented in userspace as a normal cell, so it follows exported notebooks, so exported notebooks become editable! It pairs particularly well with the [single file export](https://observablehq.com/@tomlarkworthy/exporter), because edits are also exported, so you can permanently save your works in a format that continues to be editable and exportable indefinitely. It works offline too!
+
+
+    The editor is able to edit _any_ cell in the runtime, including those in dependancies. Import it into a notebook and then evaluate `viewof editor`
+
+    ```js
+    import {viewof editor} from '@tomlarkworthy/cell-editor'
+    ```
+
+    There is a minimal example of the exporter + editor setup [here](https://observablehq.com/@tomlarkworthy/editable-exports)
+
+    #### Use cases
+    - Edit notebooks offline
+    - Try things out without committing to them
+    - Improved debugging workflow, as you can insert `debugger` expressions to dependancies on-demand.
+
+  </script>
+  <script id="2337" type="text/markdown">
+    ## TODO
+    - Rename cell
+      - UI variable name does not update
+    - doesn't transfer properly between visualizers when editor is open
+    - Load cell from hash, will need the main module named properly in moduleMap
+    - click outside to unselect, or close
+    - tagged templates
+    - better syntax highlighter -- highlight syntax errors -- quite a lot of work, started, but see https://observablehq.com/@tomlarkworthy/observablehq-lezer)
+    - Import node support (maybe this is a different concern)
+  </script>
+  <script id="2639" type="text/markdown">
+    ## Select Cell
+  </script>
+  <script id="2354" type="application/vnd.observable.javascript">
+    selectedCell
+  </script>
+  <script id="2339" type="application/vnd.observable.javascript">
+    async function selectVariable(variable, dom = undefined) {
+      let cell = undefined;
+      if (variable) {
+        const cells = await cellMap(variable._module);
+        const [name, variables] = [...cells.entries()].find(
+          ([name, vars]) => vars[0] == variable
+        );
+
+        cell = {
+          dom,
+          name,
+          module: {
+            cells,
+            ...modules.get(variable._module)
+          },
+          variables
+        };
+      }
+      if (!_.isEqual(viewof selectedCell.value, cell)) {
+        viewof selectedCell.value = cell;
+        viewof selectedCell.dispatchEvent(new Event("input"));
+      }
+    }
+  </script>
+  <script id="2319" type="application/vnd.observable.javascript">
+    hashCell = function () {
+      const hash = location.hash;
+      if (hash.length > 0)
+        return extractNotebookAndCell(
+          new URLSearchParams(hash.substring(1)).get("cell")
+        );
+    }
+  </script>
+  <script id="2264" type="application/vnd.observable.javascript">
+    cellClickListener = Generators.observe((notify) => {
+      hash;
+      notify();
+
+      const clickHandler = (evt) => {
+        if (evt.detail !== 1) return; // only on single click
+        selectVariable(undefined);
+        notify(undefined);
+      };
+
+      const dblClickHandler = async (evt) => {
+        if (!document.body.classList.contains("picking") || !evt.isTrusted) return;
+        const div = evt.target.closest(".observablehq");
+        const variable = divToVar(runtime, div);
+        if (viewof selectedCell.value?.variables[0] === variable) {
+          selectVariable(undefined);
+          notify(undefined);
+        } else {
+          selectVariable(variable, div);
+          notify(variable);
+        }
+      };
+
+      document.body.addEventListener("click", clickHandler);
+      document.body.addEventListener("dblclick", dblClickHandler);
+
+      invalidation.then(() => {
+        document.body.removeEventListener("click", clickHandler);
+        document.body.removeEventListener("dblclick", dblClickHandler);
+      });
+    })
+  </script>
+  <script id="2342" type="application/vnd.observable.javascript">
+    viewof selectedCell = Inputs.input()
+  </script>
+  <script id="2276" type="application/vnd.observable.javascript">
+    function divToVar(runtime, div) {
+      if (!div) return undefined;
+      if (div.variable) {
+        return div.variable;
+      } else {
+        return [...runtime._variables].find((v) => v._observer._node === div);
+      }
+    }
+  </script>
+  <script id="2243" type="application/vnd.observable.javascript">
+    hash_selected_cell = {
+      hash;
+      return hashCell();
+    }
+  </script>
+  <script id="2239" type="application/vnd.observable.javascript">
+    import { hash } from "@jashkenas/url-querystrings-and-hash-parameters"
+  </script>
+  <script id="2259" type="application/vnd.observable.javascript">
+    import { extractNotebookAndCell } from "@tomlarkworthy/lopepage-urls"
+  </script>
+  <script id="2369" type="text/markdown">
+    ## Context Menu
+  </script>
+  <script id="2452" type="application/vnd.observable.javascript">
+    context_menu = {
+      const menu = htl.html`<div style="
+          position: absolute;
+          z-index: 999;
+          background: white;
+          border: 1px gray solid;
+          padding: 1rem;
+          margin: 1rem;
+          box-shadow: 1px 2px 2px gray;
+        "
+        onclick=${(e) => e.stopPropagation()}>
+          ${viewof editor}
+    </div>`;
+      invalidation.then(() => menu.remove());
+
+      function positionMenu(target, menu) {
+        const frame = menu.parentElement.getBoundingClientRect();
+        const rect = target.getBoundingClientRect();
+        menu.style.top = `${rect.bottom - frame.top}px`;
+        menu.style.left = `${rect.left - frame.left}px`;
+      }
+
+      if (selectedCell.dom) {
+        const visualizer = selectedCell.dom.closest(".lopecode-visualizer");
+        if (visualizer) {
+          visualizer.appendChild(menu);
+        } else {
+          document.body.appendChild(menu);
+        }
+        positionMenu(selectedCell.dom, menu);
+        window.addEventListener("resize", () =>
+          positionMenu(selectedCell.dom, menu)
+        );
+        if (window.ResizeObserver) {
+          new ResizeObserver(() => positionMenu(selectedCell.dom, menu)).observe(
+            selectedCell.dom
+          );
+        }
+      }
+      return menu;
+    }
+  </script>
+  <script id="1783" type="application/vnd.observable.javascript">
+    viewof editor = {
+      console.log("rebuilding editor");
+      pull_jobs;
+      const combined = view`<div class="cell-editor" 
+        style="display: flex;
+               flex-direction: column;">
+      <style>
+        .picking .observablehq:hover {
+          background: #ddd2;
+        }
+        .picked {
+          outline: 1px dashed #999;
+        }
+        .cell-editor form {
+          width: auto
+        }
+        .cm-editor {
+          height: fit-content
+        }
+      </style>
+      <div style="display: flex;">
+        ${["module", reversibleAttach(combine, viewof moduleSelection)]}
+        <span style="flex-grow: 1;"></span>
+      </div>
+      <div style="display: flex;">
+        ${["cell", reversibleAttach(combine, viewof cellSelection)]}
+        <span style="flex-grow: 1;"></span>
+        ${["remove_variables", reversibleAttach(combine, viewof remove)]}
+        ${["add", reversibleAttach(combine, viewof addCells)]}
+        ${["apply", reversibleAttach(combine, viewof apply)]}
+      </div>
+      <div style="flex-grow: 1;">
+        ${["editor", reversibleAttach(combine, viewof code_editor)]}
+      </div>
+      ${["log", reversibleAttach(combine, viewof log)]}
+
+    </div>`;
+
+      combined.addEventListener("mouseup", (event) => {});
+      combined.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+      });
+      return combined;
+    }
+  </script>
+  <script id="800" type="text/markdown">
+    Save edits by exporting to a single file
+  </script>
+  <script id="635" type="application/vnd.observable.javascript">
+    exporter()
+  </script>
+  <script id="895" type="text/markdown">
+    ### Known Issues
+    - If you create a new cell, it is invisible, it will appear after exporting.
+  </script>
+  <script id="517" type="text/markdown">
+    ### Editor UI Components
+  </script>
+  <script id="2413" type="application/vnd.observable.javascript">
+    viewof moduleSelection = selectedCell &&
+      Inputs.select(modules, {
+        format: ([name, info]) => info.name,
+        disabled: true,
+        value: modules.get(selectedCell.module.module)
+      })
+  </script>
+  <script id="2416" type="application/vnd.observable.javascript">
+    viewof cellSelection = selectedCell &&
+      Inputs.select(selectedCell.module.cells, {
+        disabled: true,
+        value: selectedCell.module.cells.get(selectedCell.name)
+      })
+  </script>
+  <script id="523" type="application/vnd.observable.javascript">
+    viewof combine = Inputs.toggle({
+      label: "untick to destructure",
+      value: true
+    })
+  </script>
+  <script id="75" type="application/vnd.observable.javascript">
+    viewof addCells = Inputs.button("➕", {
+      reduce: async () => {
+        const vars = await createCell();
+        let max = 10;
+        const pollForObserver = () => {
+          if (max-- == 0) {
+            console.warn("Can't find dom node for new cell");
+            selectVariable(vars[0]);
+          } else if (vars[0]._observer._node) {
+            selectVariable(vars[0], vars[0]._observer._node);
+          } else {
+            requestAnimationFrame(pollForObserver);
+          }
+        };
+
+        pollForObserver();
+      }
+    })
+  </script>
+  <script id="1946" type="application/vnd.observable.javascript">
+    viewof remove = Inputs.button("🗑️", {
+      reduce: deleteCell
+    })
+  </script>
+  <script id="215" type="application/vnd.observable.javascript">
+    viewof apply = {
+      const button = Inputs.button("▶️", {
+        reduce: () => {
+          debugger;
+          compile_and_update(viewof code_editor.value, selectedCell.variables);
+        }
+      });
+      // supress gaining focus
+      // doesn't work on observable iframe
+      // https://issues.chromium.org/issues/40654608
+      button.tabIndex = "-1";
+      button.onmousedown = (e) => e.preventDefault();
+      return button;
+    }
+  </script>
+  <script id="904" type="application/vnd.observable.javascript">
+    module = selectedCell.module.module
+  </script>
+  <script id="2382" type="text/markdown">
+    ## Test
+  </script>
+  <script id="262" type="application/vnd.observable.javascript">
+    viewof code_editor = {
+      const editor = CodeMirror("initial text", {
+        extensions: [
+          codemirror.keymap.of([
+            {
+              key: "Shift-Enter",
+              run: (...args) => editor.apply(...args)
+            }
+          ]),
+          codemirror.EditorView.lineWrapping,
+          javascriptPlugin.javascript(),
+          codemirror.basicSetup,
+          myDefaultTheme
+        ]
+      });
+
+      editor.addEventListener("click", (evt) => {
+        evt.stopPropagation();
+      });
+      return editor;
+    }
+  </script>
+  <script id="416" type="application/vnd.observable.javascript">
+    viewof log = Inputs.textarea({
+      label: "log",
+      rows: 2,
+      resize: false
+    })
+  </script>
+  <script id="2045" type="text/markdown">
+    ## API
+  </script>
+  <script id="2047" type="application/vnd.observable.javascript">
+    createCell = async ({ source = "{}" } = {}) =>
+      viewof command.send({
+        command: "createCell",
+        args: {
+          source
+        }
+      })
+  </script>
+  <script id="2180" type="application/vnd.observable.javascript" pinned="">
+    deleteCell = async () =>
+      viewof command.send({
+        command: "deleteCell"
+      })
+  </script>
+  <script id="2165" type="application/vnd.observable.javascript" pinned="">
+    focusEditor = async ({} = {}) =>
+      viewof command.send({
+        command: "focusEditor"
+      })
+  </script>
+  <script id="2393" type="text/markdown">
+    ## API handler
+  </script>
+  <script id="2089" type="application/vnd.observable.javascript">
+    viewof command = flowQueue() // need to isolate from all the refreshes
+  </script>
+  <script id="2108" type="application/vnd.observable.javascript" pinned="">
+    command
+  </script>
+  <script id="2098" type="application/vnd.observable.javascript" pinned="">
+    command_processor = {
+      if (command.processed) return;
+
+      let result = undefined;
+      if (command.command == "createCell") {
+        result = compile_and_update("{}");
+      } else if (command.command == "focusEditor") {
+        viewof code_editor.querySelector("[contenteditable]").focus();
+        result = true;
+      } else if (command.command == "deleteCell") {
+        remove_variables(selectedCell.variables);
+        result = true;
+      }
+      if (result) {
+        command.processed = true;
+        viewof command.resolve(result);
+      }
+    }
+  </script>
+  <script id="1525" type="text/markdown">
+    ### UI Action
+  </script>
+  <script id="1705" type="application/vnd.observable.javascript">
+    pull_jobs = {
+      const jobs = [...runtime._variables].find((v) => v._name == "editor_jobs");
+      invalidation.then(observe(jobs._module, jobs._name, {}));
+    }
+  </script>
+  <script id="184" type="application/vnd.observable.javascript" pinned="">
+    editor_manager = {
+      viewof code_editor.apply = (view) => {
+        const doc = view.state.doc.toString();
+        compile_and_update(doc, selectedCell.variables);
+        return true;
+      };
+      console.log("updating editor", decompiled);
+      viewof code_editor.value = decompiled;
+      viewof code_editor.dispatchEvent(new Event("input"));
+    }
+  </script>
+  <script id="1345" type="application/vnd.observable.javascript">
+    enable_picking = {
+      document.body.classList.add("picking");
+      invalidation.then(() => document.body.classList.remove("picking"));
+    }
+  </script>
+  <script id="1434" type="application/vnd.observable.javascript">
+    highlight_picked = {
+      if (!selectedCell) return;
+      const dom = isnode(selectedCell.variables[0]._value)
+        ? selectedCell.variables[0]._value
+        : selectedCell.variables[0]._observer._node;
+      if (!dom) return;
+      dom.classList.add("picked");
+      invalidation.then(() => {
+        dom.classList.remove("picked");
+      });
+    }
+  </script>
+  <script id="1352" type="application/vnd.observable.javascript">
+    divToCell = (entries, div) => {
+      if (!div) return undefined;
+      if (div.variable) {
+        return (
+          entries.find(
+            ([name, cell]) => cell[0] && cell.find((v) => v == div.variable)
+          ) || div.variable
+        );
+      } else {
+        return entries.find(
+          ([name, cell]) => cell[0] && cell[0]._observer._node === div
+        );
+      }
+    }
+  </script>
+  <script id="615" type="text/markdown">
+    ### Decompiler
+  </script>
+  <script id="1281" type="application/vnd.observable.javascript">
+    modules = {
+      forcePeek([...runtime._variables].find((v) => v._name == "submit_summary"));
+      const modules = await moduleMap(runtime);
+      modules.set(main, { name: "main", module: main });
+      return modules;
+    }
+  </script>
+  <script id="619" type="application/vnd.observable.javascript">
+    decompiled = {
+      if (selectedCell.variables.length == 0) return "";
+      return decompile(selectedCell.variables);
+    }
+  </script>
+  <script id="1285" type="application/vnd.observable.javascript" pinned="">
+    editor_jobs = {
+      // auto subscribe with forcePeek
+      cellClickListener;
+      command_processor;
+      enable_picking;
+      highlight_picked;
+      editor_manager;
+      submit_summary;
+      return "editor_jobs";
+    }
+  </script>
+  <script id="402" type="text/markdown">
+    ### Apply Update
+  </script>
+  <script id="364" type="application/vnd.observable.javascript" pinned="">
+    compile_and_update = (source, variables = []) => {
+      viewof log.value = "";
+      try {
+        let reposition = false,
+          insertionIndex = -1;
+        const newVariables = compile(source);
+        if (!variables || variables.length !== newVariables.length) {
+          reposition = true;
+          variables.forEach((v) => v.delete());
+          for (let i = 0; i < newVariables.length; i++) {
+            const newVariable = selectedCell.module.module.variable({});
+            variables.push(newVariable);
+          }
+        }
+        if (reposition) {
+          insertionIndex =
+            [...runtime._variables].findIndex(
+              (v) => v == viewof selectedCell.value.variables.at(-1)
+            ) + 1;
+        }
+        newVariables.forEach((v, i) => {
+          const variable = variables[i];
+          let _fn;
+          eval("_fn = " + v._definition);
+          if (v._name) {
+            variable.define(v._name, v._inputs, _fn);
+          } else {
+            variable.define(v._inputs, _fn);
+          }
+          if (reposition)
+            repositionSetElement(runtime._variables, variable, insertionIndex + i);
+        });
+
+        //viewof refresh.dispatchEvent(new Event("input"));
+        return variables;
+      } catch (e) {
+        viewof log.value = e.toString();
+        debugger;
+      }
+    }
+  </script>
+  <script id="1960" type="text/markdown">
+    ### Remove Cells
+  </script>
+  <script id="1952" type="application/vnd.observable.javascript" pinned="">
+    remove_variables = (variables) => {
+      variables.forEach((v) => v.delete());
+    }
+  </script>
+  <script id="405" type="text/markdown">
+    ### Runtime Representation
+  </script>
+  <script id="434" type="application/vnd.observable.javascript">
+    viewof variable = Inputs.radio(selectedCell.variables, {
+      label: "variable in cell group",
+      format: (v) => v._name,
+      value: selectedCell.variables[0]
+    })
+  </script>
+  <script id="432" type="application/vnd.observable.javascript">
+    name = variable._name
+  </script>
+  <script id="118" type="application/vnd.observable.javascript">
+    inputs = variable._inputs.map((v) => v._name)
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    viewof definition = Inputs.textarea({
+      label: "variable._definition",
+      value: variable._definition.toString(),
+      rows: 10
+    })
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    Inputs.button("update variable", {
+      disabled: definition === variable._definition.toString(),
+      reduce: () => {
+        let _fn;
+        eval("_fn = " + definition);
+        variable.define(variable._name, inputs, _fn);
+      }
+    })
+  </script>
+  <script id="394" type="text/markdown">
+    ### Editor Libraries
+  </script>
+  <script id="977" type="application/vnd.observable.javascript">
+    import { toObject, isnode, repositionSetElement} from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    import { runtime, main } from "@mootari/access-runtime"
+  </script>
+  <script id="260" type="application/vnd.observable.javascript">
+    import {
+      CodeMirror,
+      codemirror,
+      myDefaultTheme
+    } from "@tomlarkworthy/codemirror-6-22-2-view"
+  </script>
+  <script id="154" type="application/vnd.observable.javascript">
+    import {
+      decompile,
+      compile,
+      cellMap,
+      sourceModule,
+      findModuleName,
+      parser
+    } from "@tomlarkworthy/observablejs-toolchain"
+  </script>
+  <script id="316" type="application/vnd.observable.javascript">
+    javascriptPlugin = codemirror
+  </script>
+  <script id="496" type="text/markdown">
+    ### Libraries
+  </script>
+  <script id="1531" type="application/vnd.observable.javascript">
+    unzip = async (attachment) => {
+      const response = await new Response(
+        (await attachment.stream()).pipeThrough(new DecompressionStream("gzip"))
+      );
+
+      return response.blob();
+    }
+  </script>
+  <script id="511" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view"
+  </script>
+  <script id="514" type="application/vnd.observable.javascript">
+    import { reversibleAttach } from "@tomlarkworthy/reversible-attachment"
+  </script>
+  <script id="632" type="application/vnd.observable.javascript">
+    import { exporter } from "@tomlarkworthy/exporter"
+  </script>
+  <script id="1275" type="application/vnd.observable.javascript">
+    import {
+      moduleMap,
+      submit_summary,
+      forcePeek,
+      observe
+    } from "@tomlarkworthy/module-map"
+  </script>
+  <script id="2086" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+</notebook>

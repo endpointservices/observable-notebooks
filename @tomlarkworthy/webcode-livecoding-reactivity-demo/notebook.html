@@ -1,0 +1,59 @@
+<!doctype html>
+<notebook theme="air">
+  <title>How fast is Webcode's live coding?</title>
+  <script id="0" type="text/markdown">
+    # How fast is [Webcode](https://observablehq.com/@tomlarkworthy/webcode)'s live coding?
+
+    This demo proves that endpoint live coding works at the speed of Observablehq's Dataflow recomputation, with real network request involved.
+
+    For this to work you need to fork into your own namespace so you can attach the live coding workflow. 
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    md`### Create some state`
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    mutable nonce = Math.random()
+  </script>
+  <script id="22" type="application/vnd.observable.javascript">
+    md`### Deploy an endpoint that serves that state`
+  </script>
+  <script id="2" type="application/vnd.observable.javascript">
+    import { deploy } from '@tomlarkworthy/webcode'
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    endpoint = deploy("default", (req, res) => {
+      debugger;
+      res.json(nonce);
+    })
+  </script>
+  <script id="62" type="text/markdown">
+    Note, there is a reactive dependency between the nonce and the endpoint cell. If the nonce changes the deployment cell will reevaluate, and thus it should logically serve the latest value of the nonce.
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    md`### Do a network request to the endpoint`
+  </script>
+  <script id="30" type="application/vnd.observable.javascript" pinned="">
+    remoteNonce = (await fetch(endpoint.href)).text() // Will do a network fetch if the endpoint changes
+  </script>
+  <script id="69" type="text/markdown">
+    Note, this fetch is a real network request, you can see it in the DevTools. Because it's reactively dependent on the endpoint cell value, it will fetch the instant the endpoint cell reevaluates.
+  </script>
+  <script id="37" type="application/vnd.observable.javascript">
+    md`### Now permute the nonce, triggering an endpoint update, triggering a network fetch`
+  </script>
+  <script id="43" type="application/vnd.observable.javascript">
+    Inputs.button("Recompute nonce", {
+      reduce: () => (mutable nonce = Math.random())
+    })
+  </script>
+  <script id="48" type="text/markdown">
+    ## Conclusion
+
+    When live coding is enabled the remote nonce matches the latest value of the local nonce. This means the live debugging session has updated between the endpoint cell reevaluation and the remoteNonce fetch evaluation. So live coding truly is zero latency!
+
+    If live coding is disabled (or you are not logged in) then the nonces will not match as the nonce will have been generate on the remote machine.
+
+    This shows use that ultimately, when using live coding, the production requests are being served by the local development machine.
+
+  </script>
+</notebook>

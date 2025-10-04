@@ -1,0 +1,312 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Bring your own Identity with IndieAuth</title>
+  <script id="375" type="application/vnd.observable.javascript">
+    bannerImage(await FileAttachment("Identity.png").url(), "Bring your own Identity with IndieAuth")
+  </script>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Bring your own Identity with IndieAuth
+
+    This Notebook provides _identity_, a function that generates an RelMeAuth/IndieAuth identity URL. It is recommended you host your own permanent identity on your homepage on a domain that *you* own, but this notebook is useful for programatically creating temporary, experimental, throw away or test identities, and for explaining how it works.
+
+    ~~~
+      import {identity} from '@endpointservices/identity'
+    ~~~
+
+    ~~~js
+      identity({
+        title: "Tom Larkworthy", // Optional link name
+        // For RelMeAuth you can delegate signin to a third party like Github
+        // Those profile have to backlink to this identity URL for the link to be usable for login
+        me: [
+          "https://observablehq.com/@tomlarkworthy",
+          "https://tomlarkworthy.endpointservices.net/",
+          "https://github.com/tomlarkworthy",
+        ],
+        // For IndieAuth you can bring your own endpoints, but it's not necessary
+        authorization_endpoint: "https://endpointservice.web.app/notebooks/@endpointservices/auth/deploys/authorization_endpoint/mods/X/secrets/endpointservices_secretadmin_service_account_key",
+        token_endpoint: "https://endpointservice.web.app/notebooks/@endpointservices/auth/deploys/token_endpoint/mods/X/secrets/endpointservices_secretadmin_service_account_key"
+      })
+    ~~~
+
+
+    ### Testing the identities
+
+    You can use these identities with services that accept IndieAuth login like the IndieWeb [wiki](https://indieweb.org/) or the one below
+
+    `
+  </script>
+  <script id="460" type="application/vnd.observable.javascript">
+    weblogin
+  </script>
+  <script id="448" type="application/vnd.observable.javascript">
+    md`
+    ### How [RelMeAuth](http://microformats.org/wiki/relmeauth) works
+
+    RelMeAuth allows a person to express which 3rd party profiles are theirs across different social sites. This is achieved by linking to their 3rd party profiles from their homepage AND backlinking their homepage from their 3rd party profiles with *rel="me"* hyperlinks.
+
+    ~~~html
+    <-- A visible rel="me" link -->
+    <a href="http://github.com/tomlarkworthy" rel="me">My Github profile</a>
+
+    <-- An invisible rel="me" link -->
+    <link rel="me" href="http://github.com/tomlarkworthy">
+    ~~~
+
+    Once the person has identified themselves across different social sites, the "login with Github/Facebook/Google" can be used to identify that person using their public homepage URL as the identity key (not email).
+
+    So if an authorization has the right Oauth client configured, it may use the 3rd party identity infrastructure to authenticate that person but use their custom identity URL as the *user_id*.
+
+    By using a homepage URL you give your users the ability to switch social providers and give them control on what information they share. This is all you need to build stateful applications.
+
+    To summarize, RelMeAuth is the technology that allows a homepage URL to be used as a user identifier, and describes how to link that identifier to existing Oauth 2.0 identity providers.
+
+    ### How [IndieAuth](https://indieweb.org/IndieAuth) works
+
+    IndieAuth allow a person to bring their own *authorization_endpoint* (and *token_endpoint*). It scans the identity URL looking for links with *rel="authorization_endpoint"*. Here is an example that uses [micro.blog](https://micro.blog/account/menus/40423) as an identity provider.
+
+    ~~~html
+    <link rel="authorization_endpoint" href="https://micro.blog/indieauth/auth" />
+    <link rel="token_endpoint" href="https://micro.blog/indieauth/token" />
+    ~~~
+
+    But users are free to use whatever for the *authorization_endpoint* as long as it follows the [IndieAuth spec](https://indieauth.spec.indieweb.org/). Some people have *brought their own SMS verification*.
+
+    In this notebook we supply an authorization_endpoint that authenticates anybody (like a public identity).
+
+    `
+  </script>
+  <script id="210" type="application/vnd.observable.javascript">
+    md`## Implementation`
+  </script>
+  <script id="58" type="application/vnd.observable.javascript">
+    function identity({
+      title,
+      authorization_endpoint,
+      token_endpoint,
+      me = [] // Array of {href:..., label:...} for transforming into rel="me" links.
+    } = {}) {
+      const content = `<!doctype html>
+    <html>${authorization_endpoint || token_endpoint ?
+    `\n  <head>${authorization_endpoint ?
+                 `\n    <link rel="authorization_endpoint" href="${authorization_endpoint}">`
+         : ''}${token_endpoint ?
+                 `\n    <link rel="token_endpoint" href="${token_endpoint}">`
+         : ''}
+      </head>`:``}
+      <body>
+    ${me.map(me => `    <p><a href="${me}" rel="me">${me}</a>`).join('\n')}
+      </body>
+    </html>
+    ` 
+      const link = deploy(title || "identity", (req, res) => {
+        res.send(content);
+      }, {
+        modifiers: ['terminal']
+      });
+
+      return html`<div>
+        <p>Identity URL: <a href="${link.href}">${title || link.href}</a>
+        <p>HTML:
+        <pre>
+    ${escapeHtml(content)}
+        </pre>
+
+
+      </div>`
+    }
+  </script>
+  <script id="103" type="application/vnd.observable.javascript">
+    md`## Basic RelMeAuth Example:`
+  </script>
+  <script id="106" type="application/vnd.observable.javascript">
+    identity({
+        // For RelMeAuth you can delegate signin to a third party like Github
+        // Those profile have to backlink to this identity URL for the link to be usable for login
+        me: [
+          "https://observablehq.com/@tomlarkworthy",
+          "https://tomlarkworthy.endpointservices.net/",
+          "https://github.com/tomlarkworthy",
+        ],
+      })
+  </script>
+  <script id="312" type="application/vnd.observable.javascript">
+    md`## Public IndieAuth Identity Example
+
+    You can create an identity anybody can use by setting an autentication_endpoint that always says 'yes'.
+
+    This works with the Indielogin.com [login](https://indielogin.com/?url=https%3A%2F%2Findieweb.org%2FMain_Page), copy the public link address and try it!
+    `
+  </script>
+  <script id="319" type="application/vnd.observable.javascript">
+    publicIdentity = identity({
+      title: "demo",
+      authorization_endpoint: yes_authorization_endpoint.href,
+    })
+  </script>
+  <script id="323" type="application/vnd.observable.javascript">
+    yes_authorization_endpoint = deploy("yes_authorization_endpoint", async (req, res) => {
+      if (req.method === 'GET') {
+        res.send(`
+          <h3><a href="https://observablehq.com/@endpointservices/identity">@endpointservices/identity</a></h3>
+          <p><a href="${req.query.redirect_uri + `?code=qwerty&state=${req.query.state}`}">log in</a>
+        `)
+      } else if (req.method === 'POST') {
+        res.json({
+          "me": "https://webcode.run/notebooks/@endpointservices/identity/deploys/demo/mods/T"
+        });
+      } else {
+        res.status(400).send(`Unknown request method ${req.method}`).end()
+      }
+    }, {
+      modifiers: ['terminal']
+    })
+  </script>
+  <script id="394" type="application/vnd.observable.javascript">
+    md`## Password protected IndieAuth Identity
+
+    This is useful for getting started, you can link your Observable profile website to this identity URL and have the identity URL provide an encrypted password check.
+
+    Generate the encrypted payload at [@endpointservices/notebook-secret](https://observablehq.com/@endpointservices/notebook-secret)
+
+    ~~~js
+        import {passwordIdentity} from '@endpointservices/identity'
+    ~~~
+
+    ~~~
+        passwordIdentity({
+          // Set to your profile
+          observableProfile: "https://observablehq.com/@<YOURPROFILE>"
+          // Generate secret containing password in https://observablehq.com/@endpointservices/notebook-secret
+          secret: { 
+            "name": "AES-GCM",
+            "salt": "...",
+            "iv": "...",
+            "ciphertext": "..."
+          }
+        })
+        // Afterwards, copy the full identity URL and put as a website on your observable profile settings.
+    ~~~
+    `
+  </script>
+  <script id="417" type="application/vnd.observable.javascript">
+    examplePasswordIdentity = passwordIdentity({
+      observableProfile: 'https://observablehq.com/@tdlgkjfhdljovtttqrzu',
+      // Generate secret containing password in https://observablehq.com/@endpointservices/notebook-secret
+      secret: {
+        "name": "AES-GCM",
+        "salt": "feFj6binNuEdRw==",
+        "iv": "r13pwmES52PcUuQx",
+        "ciphertext": "73u0IiXvo5Wt6uPCDDaB9w=="
+      }
+    })
+  </script>
+  <script id="578" type="application/vnd.observable.javascript">
+    md`## Password protected authorization_endpoint
+
+    A password protected *authorization_endpoint* can be used as an IndieAuth authentication method. You can, for instance, add it to your Observable profile as a website and then login with your Observable profile as your Identity URL.
+    `
+  </script>
+  <script id="520" type="application/vnd.observable.javascript" pinned="">
+    function password_authorization_endpoint({
+        me,     // function that returns a string or a string
+        secret  // Encrypted empty payload protected by password generated in @endpointservices/notebook-secret
+      }) {
+      return deploy("password_authorization_endpoint", async (req, res) => {
+        const params = decodeJsonOrForm(req.body);
+          if (req.method === 'GET') {
+            res.send(`
+              <form action="" method="post">
+              <label for="fcode">Password</label>
+              <input type="password" id="fcode" name="password"><br><br>
+              <input type="hidden" name="state" value="${req.query.state}">
+              <input type="hidden" name="redirect_uri" value="${req.query.redirect_uri}">
+              <input type="submit" value="Submit">
+              </form>
+            `)
+          } else if (req.method === 'POST' && params.password) {
+            try {
+              await decode(params.password, secret);
+              const code = randomId(16);
+              await firebase.database().ref(
+                `@endpointservices/password_authorization_endpoint/${code}`
+              ).set({
+                me: typeof me === 'function' ? me() : me,
+                timestamp: {".sv": "timestamp"}
+              })
+              res.redirect(`${req.query.redirect_uri}?code=${code}&state=${req.query.state}`)
+            } catch (err) {
+              res.status(403).send(`Incorrect password: ` + err.message)
+            }
+          } else if (req.method === 'POST' && params.code) {
+            const payload = (await firebase.database().ref(
+              `@endpointservices/password_authorization_endpoint/${params.code}`
+            ).once('value')).val()
+            res.json({
+              "me": payload.me
+            });
+          } else {
+            res.status(400).send(`Unknown request method ${req.method}`)
+          }
+        }, {
+          modifiers: ['terminal']
+        });
+    } 
+  </script>
+  <script id="478" type="application/vnd.observable.javascript">
+    function passwordIdentity({
+      observableProfile,
+      secret
+    } = {}) {
+      let identityURL = undefined;
+      const my_authorization_endpoint = password_authorization_endpoint({
+        me: () => identityURL,
+        secret
+      })
+      const indentityPage =  identity({
+        title: `${observableProfile.match(/@([^/]*)/)[1]}`,
+        authorization_endpoint: my_authorization_endpoint.href,
+        me: [observableProfile]
+      })
+
+      identityURL = indentityPage.querySelector('a').href;
+      return indentityPage;
+    }
+  </script>
+  <script id="400" type="application/vnd.observable.javascript">
+    import {decode} from '@endpointservices/notebook-secret'
+  </script>
+  <script id="432" type="application/vnd.observable.javascript">
+    function decodeJsonOrForm(text) {
+      try {
+        return JSON.parse(text)
+      } catch(err) {
+        return Object.fromEntries(new URLSearchParams(text))
+      }
+    } 
+  </script>
+  <script id="54" type="application/vnd.observable.javascript">
+    import {deploy} from '@endpointservices/serverless-cells'
+  </script>
+  <script id="194" type="application/vnd.observable.javascript">
+    import {escapeHtml} from '@mbostock/escaping-html'
+  </script>
+  <script id="371" type="application/vnd.observable.javascript">
+    import {bannerImage} from '@observablehq/banner@463'
+  </script>
+  <script id="452" type="application/vnd.observable.javascript">
+    import {weblogin, user} from '@endpointservices/weblogin-for-firebase'
+  </script>
+  <script id="574" type="application/vnd.observable.javascript">
+    import {randomId} from '@tomlarkworthy/randomid'
+  </script>
+  <script id="573" type="application/vnd.observable.javascript">
+    import {firebase} from '@endpointservices/utils'
+  </script>
+  <script id="597" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="601" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

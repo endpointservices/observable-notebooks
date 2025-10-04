@@ -1,0 +1,624 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Hackable Firebase Realtime Database Server Prototype #1</title>
+  <script id="0" type="text/html">
+    <h1 style="display: none;">Hackable Firebase Realtime Database Server Prototype #1<h1>
+    ${gfx}
+    <h2 style="font-size:42px">Prototype #1</h2>
+    <h3>Focus areas: Firebase Client compatibility, Redis Persistence, GET/PUT/LISTEN</h3>
+  </script>
+  <script id="992" type="text/markdown">
+    *Let's build a 3rd party wire compatible Firebase Database Server.*
+  </script>
+  <script id="866" type="application/vnd.observable.javascript">
+    toc("h2,h3,h4,h5,h6")
+  </script>
+  <script id="674" type="text/markdown">
+    ## Introduction
+  </script>
+  <script id="378" type="text/markdown">
+    This is a prototype **Firebase wire compatible** Realtime Database Server. Vanilla Firebase web clients are able to connect and sync data with it. The server is written in [Observable](https://observablehq.com/) to simplify programmable customizability, you can one-click fork to host your own ([*really*](https://observablehq.com/@observablehq/fork-suggest-merge)).
+
+    I think an end user programmable database server has much potential, for example, you could use ordinary code to authorize requests, you could even call out to external APIs, checking signatures *etc.* You could create synthetic data views to federated data sources *on-demand*, or fanout writes to additional storage engines. You can collocate the database near to users for incredibly low latency. 
+
+    This is just a prototype though, and **not ready for production use**. However, it is a step in the right direction. The code layout has been optimized for observability, readability and developer ergonomics. Through use of [webcode.run](https://webcode.run) live coding, live traffic can be execution in the developers browser. You can attach the Chrome DevTools debugger and REPL traffic live. Furthermore, through the use of [flowQueue](/@tomlarkworthy/flow-queue)s, tunnelled requests leave their live execution trace in the variables of the notebook, so you can see the processing steps without special tooling. See the accompanying [Youtube video](https://observablehq.com/@tomlarkworthy/firebase-server-prototype-1) about some of the innovative development features.
+
+    <iframe width="${Math.min(720, width)}" height="315" src="https://www.youtube.com/embed/P6zuvlcAKag" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </script>
+  <script id="475" type="text/markdown">
+    ### What this prototype does
+
+    - Works with vanilla Firebase clients over public internet.
+    - Key based Listen/Get/Put
+    - Persist data to Redis
+    - HTTP long poll transport
+
+    ### What this prototype doesn't do
+
+    - JSON interpolation
+    - OrderBy/limit
+    - onDisconnect semantics
+    - websocket transport
+    - REST API
+    - Redis security
+    - horizontal scalability
+    - long poll big payload segment assembly
+    - query indexes
+    - server values
+
+  </script>
+  <script id="477" type="text/markdown">
+    ## Background
+    In a previous work we developed a tool for [reverse engineering the Firebase Realtime Database wire protocol](https://observablehq.com/@tomlarkworthy/rtdb-protocol), which included a very primitive Firebase Server Fake. Since then, we have created a [Redis driver](https://observablehq.com/@tomlarkworthy/redis) so notebooks can persist data to Redis directly, and so now we are in a position to put it all together. 
+
+  </script>
+  <script id="999" type="text/markdown">
+    ## Follow along
+    [twitter](https://twitter.com/tomlarkworthy) or 
+    <iframe src="https://webcode.substack.com/embed" width="640" height="200px" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>
+  </script>
+  <script id="900" type="text/markdown">
+    ## Database URL
+  </script>
+  <script id="566" type="text/markdown">
+    With a specially formatted database URL we can send a vanilla Firebase client to a 3rd party server implementation.
+  </script>
+  <script id="560" type="application/vnd.observable.javascript">
+    databaseURL = `https://webcode.run?ns=${thisNotebooksNamespace}|${thisNotebooksSlug};server`
+  </script>
+  <script id="748" type="text/markdown">
+    ## Live Tests
+
+    The tests are meant to be read. They illustrate what features are working and furthermore, they are executed in **your** browser so you know it works because you have seen it work. Pop open DevTools and take a look when the clients are reset.
+
+    In this early stage the tests are a bit flakey and you might need to restart the clients, refresh the page, and try a few times until everything is warmed up 😳.
+  </script>
+  <script id="100" type="application/vnd.observable.javascript" pinned="">
+    clientConfig = ({
+      firebaseServer: {
+        url: databaseURL
+      }
+    })
+  </script>
+  <script id="342" type="text/markdown">
+    ### Firebase Test Clients
+  </script>
+  <script id="502" type="application/vnd.observable.javascript">
+    import {
+      viewof restartClient,
+      rtdb,
+      rootA,
+      rootB
+    } with { clientConfig as config } from "@tomlarkworthy/firebase-server-test-clients"
+  </script>
+  <script id="882" type="text/markdown">
+    ### Test Results
+  </script>
+  <script id="114" type="application/vnd.observable.javascript">
+    viewof suite = (server,
+    redis,
+    flowQueue,
+    createSuite({
+      name: null
+    }))
+  </script>
+  <script id="878" type="text/markdown">
+    ### Restart Test Clients & Tests
+  </script>
+  <script id="578" type="application/vnd.observable.javascript">
+    viewof restartClient
+  </script>
+  <script id="914" type="text/markdown">
+    ### Smoke Tests
+  </script>
+  <script id="920" type="text/markdown">
+    #### Read your write
+  </script>
+  <script id="124" type="application/vnd.observable.javascript" pinned="">
+    readYourWriteTest = suite.test("Read your own write - String", async () => {
+      const payload = randomString();
+      const location = rtdb.child(rootA, "collection/readyourownwrite");
+      await rtdb.set(location, payload);
+      const response = (await rtdb.get(location)).val();
+      expect(response).toEqual(payload);
+    })
+  </script>
+  <script id="919" type="text/markdown">
+    #### Read other's write
+  </script>
+  <script id="174" type="application/vnd.observable.javascript" pinned="">
+    readTheirWriteTest = suite.test("Read their write - String", async () => {
+      const payload = randomString();
+      const locationA = rtdb.child(rootA, "collection/readtheirwrite");
+      const locationB = rtdb.child(rootB, "collection/readtheirwrite");
+      await rtdb.set(locationA, payload);
+      const response = await rtdb.get(locationB);
+      expect(response.val()).toEqual(payload);
+    })
+  </script>
+  <script id="931" type="text/markdown">
+    #### Listen notified of other's write
+  </script>
+  <script id="535" type="application/vnd.observable.javascript" pinned="">
+    listenNotifiedOfWrite = suite.test(
+      "onValue is notified of other's write",
+      async (done) => {
+        const payload = randomString();
+        const locationA = rtdb.child(rootA, "collection/subscribetheirwrite");
+        const locationB = rtdb.child(rootB, "collection/subscribetheirwrite");
+        rtdb.onValue(locationB, (snap) => {
+          const val = snap.val();
+          console.log(val);
+          if (_.isEqual(val, payload)) {
+            done();
+          }
+        });
+
+        await rtdb.set(locationA, payload);
+      }
+    )
+  </script>
+  <script id="510" type="text/markdown">
+    ## Custom Firebase Realtime Server
+  </script>
+  <script id="385" type="text/markdown">
+    ### Storage Engine: Redis
+
+    Redis the the storage engine for this prototype. We are using a custom [redis-web](https://observablehq.com/@tomlarkworthy/redis) client.
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    redis = createClient({
+      socket: redisConfig
+    })
+  </script>
+  <script id="572" type="application/vnd.observable.javascript">
+    redisConfig = ({
+      host: "redis.webcode.run",
+      port: 443,
+      tls: true
+    })
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    import { createClient } from "@tomlarkworthy/redis"
+  </script>
+  <script id="941" type="text/markdown">
+    ### Long Poll Endpoint
+
+    Firebase clients make long lived connection to this endpoint
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    server = endpoint("server", async (req, res) => {
+      redis, flowQueue; // make sure these are setup first
+      try {
+        await viewof incomingLongpollRequest.send({ req, res }); // handle in to poll pipeline (unfold across Dataflow)
+      } catch (err) {
+        res.status(err.code || 500).send(err.message);
+      }
+    })
+  </script>
+  <script id="359" type="text/markdown">
+    ### Long Poll Request Pipeline
+
+    If you are live tunnelling the server endpoint, these cells will evaluate in response to production traffic (and will handle production traffic).
+  </script>
+  <script id="365" type="application/vnd.observable.javascript" pinned="">
+    viewof incomingLongpollRequest = flowQueue({
+      timeout_ms: 10000
+    })
+  </script>
+  <script id="372" type="application/vnd.observable.javascript" pinned="">
+    incomingLongpollRequest
+  </script>
+  <script id="183" type="application/vnd.observable.javascript">
+    sessions = ({})
+  </script>
+  <script id="452" type="application/vnd.observable.javascript">
+    newSessionResponse = (callbackId, session) => `
+      function pLPCommand(c, a1, a2, a3, a4) {
+      parent.window["pLPCommand${callbackId}"] && parent.window["pLPCommand${callbackId}"](c, a1, a2, a3, a4);
+      }
+      function pRTLPCB(pN, data) {
+      parent.window["pRTLPCB${callbackId}"] && parent.window["pRTLPCB${callbackId}"](pN, data);
+      }
+      pLPCommand('start','${session.id}','${session.password}')
+      pRTLPCB(${session.responseId++},${JSON.stringify([
+      {
+        t: "c",
+        d: {
+          t: "h",
+          d: {
+            ts: Date.now(),
+            v: "5",
+            h: "webcode.run",
+            s: session.sessionId
+          }
+        }
+      }
+    ])})`
+  </script>
+  <script id="460" type="application/vnd.observable.javascript">
+    disconnectFrame = (session) => `<html><body><script>
+      function EnvSendPing(destURL) {
+      try{
+      var xhr=new XMLHttpRequest();
+      xhr.open("GET", destURL, false);
+      xhr.send(null);
+      } catch (e) { }
+      }
+      function EnvDisconnect() {
+      EnvSendPing("/.lp?disconn=t&id=${session.id}&pw=${session.pw}");
+      }
+      if(window.addEventListener)
+      window.addEventListener('unload',EnvDisconnect,false);
+      else if(window.attachEvent)
+      window.attachEvent('onunload',EnvDisconnect);
+      <\/script></body></html>`
+  </script>
+  <script id="369" type="application/vnd.observable.javascript" pinned="">
+    incomingLongpollRequestAction = {
+      const req = incomingLongpollRequest.req;
+      const res = incomingLongpollRequest.res;
+
+      const callbackId = req.query.cb;
+      if (req.query.start) {
+        // New session initialized
+        const cid = Math.random().toString(16).substring(3);
+
+        sessions[cid] = {
+          id: cid,
+          responseId: 0,
+          sessionId: Math.random().toString(16).substring(3),
+          password: Math.random().toString(16).substring(3),
+          hanginingRequest: null,
+          serverToClientQueue: []
+        };
+
+        res.header("content-type", "application/javascript");
+        res.send(newSessionResponse(callbackId, sessions[cid]));
+      } else if (req.query.dframe) {
+        res.header("content-type", "text/html");
+        res.send(disconnectFrame(sessions[req.query.id]));
+      } else {
+        const session = sessions[req.query.id];
+        if (!session) {
+          return viewof incomingLongpollRequest.reject(
+            new Error("Unrecognized connection id for " + req.query.id)
+          );
+        }
+        // If there is an existing long poll close the previous
+        if (session.hangingRequest) {
+          session.hangingRequest.send(`pRTLPCB(${session.responseId++},[])`);
+          session.hangingRequest = null;
+        }
+
+        res.header("content-type", "application/javascript");
+        var commandIndex = 0;
+        while (req.query[`d${commandIndex}`]) {
+          const data = JSON.parse(
+            atob(req.query[`d${commandIndex}`].replaceAll(".", "="))
+          );
+          commandIndex++;
+          console.log("Incoming request", data);
+          try {
+            const response = await viewof incomingRequest.send({
+              session,
+              request: data
+            });
+            session.serverToClientQueue.push({
+              t: "d",
+              d: { r: data.d.r, b: response }
+            });
+          } catch (err) {
+            console.error(err);
+            session.serverToClientQueue.push({
+              t: "d",
+              d: { s: "fail", d: err.message }
+            });
+          }
+        }
+
+        if (session.serverToClientQueue.length > 0) {
+          res.send(
+            `pRTLPCB(${session.responseId++},${JSON.stringify([
+              session.serverToClientQueue.shift()
+            ])});`
+          );
+        } else {
+          session.hangingRequest = res;
+        }
+      }
+
+      viewof incomingLongpollRequest.respond();
+    }
+  </script>
+  <script id="355" type="text/markdown">
+    ### Data Request Pipeline
+  </script>
+  <script id="186" type="application/vnd.observable.javascript" pinned="">
+    viewof incomingRequest = flowQueue({
+      timeout_ms: 10000
+    })
+  </script>
+  <script id="219" type="application/vnd.observable.javascript">
+    incomingRequest
+  </script>
+  <script id="224" type="application/vnd.observable.javascript" pinned="">
+    requestRouter = {
+      const session = incomingRequest.session;
+      const request = incomingRequest.request;
+      const commandHandler = {
+        s: viewof incomingStats,
+        p: viewof incomingPut,
+        q: viewof incomingQuery,
+        g: viewof incomingGet
+      }[request.d.a];
+
+      if (!commandHandler) {
+        return viewof incomingRequest.reject(
+          new Error("Unrecognised server action " + request.d.a)
+        );
+      }
+
+      commandHandler
+        .send({
+          session,
+          command: request.d.b
+        })
+        .then((handlerResponse) => {
+          viewof incomingRequest.respond(handlerResponse);
+        })
+        .catch(viewof incomingRequest.reject);
+    }
+  </script>
+  <script id="310" type="text/markdown">
+    #### STATS
+  </script>
+  <script id="318" type="application/vnd.observable.javascript" pinned="">
+    viewof incomingStats = flowQueue({
+      timeout_ms: 5000
+    })
+  </script>
+  <script id="320" type="application/vnd.observable.javascript" pinned="">
+    incomingStats
+  </script>
+  <script id="322" type="application/vnd.observable.javascript" pinned="">
+    incomingStatsAction = {
+      incomingStats; // Trigger
+      const response = { s: "ok", d: "" };
+      viewof incomingStats.respond(response);
+      return response;
+    }
+  </script>
+  <script id="235" type="text/markdown">
+    #### PUT
+  </script>
+  <script id="230" type="application/vnd.observable.javascript" pinned="">
+    viewof incomingPut = flowQueue({
+      timeout_ms: 5000
+    })
+  </script>
+  <script id="232" type="application/vnd.observable.javascript" pinned="">
+    incomingPut
+  </script>
+  <script id="242" type="application/vnd.observable.javascript" pinned="">
+    incomingPutAction = {
+      const path = incomingPut.command.p;
+      const data = incomingPut.command.d;
+      try {
+        await redis.sendCommand([
+          "SET",
+          "firebase-server-prototype-1" + path,
+          JSON.stringify(data)
+        ]);
+
+        // We also need to tell all interested parties
+        const listeners = pathToListeners[path] || [];
+        listeners.forEach((session) => {
+          session.serverToClientQueue.push({
+            t: "d",
+            d: {
+              a: "d",
+              b: {
+                p: path,
+                d: data
+              }
+            }
+          });
+
+          // TODO, we should not be doing long poll specific stuff here
+          if (session.hangingRequest) {
+            const res = session.hangingRequest;
+            session.hangingRequest = null;
+            res.send(
+              `pRTLPCB(${session.responseId++},${JSON.stringify([
+                session.serverToClientQueue.shift()
+              ])});`
+            );
+          }
+        });
+
+        const response = { s: "ok", d: "" };
+        viewof incomingPut.respond(response);
+        return response;
+      } catch (err) {
+        viewof incomingPut.reject(err);
+        return err;
+      }
+    }
+  </script>
+  <script id="269" type="text/markdown">
+    #### GET
+  </script>
+  <script id="273" type="application/vnd.observable.javascript" pinned="">
+    viewof incomingGet = flowQueue({
+      timeout_ms: 5000
+    })
+  </script>
+  <script id="728" type="application/vnd.observable.javascript" pinned="">
+    incomingGet
+  </script>
+  <script id="280" type="application/vnd.observable.javascript" pinned="">
+    incomingGetAction = {
+      const path = incomingGet.command.p;
+      const query = incomingGet.command.q;
+
+      // TODO permissions check
+      // { s: "permission_denied", d: "Permission denied" };
+      try {
+        const value = await redis.sendCommand([
+          "GET",
+          "firebase-server-prototype-1" + path
+        ]);
+        const response = { s: "ok", d: JSON.parse(value) };
+        viewof incomingGet.respond(response);
+        return response;
+      } catch (err) {
+        viewof incomingGet.reject(err);
+        return err;
+      }
+    }
+  </script>
+  <script id="522" type="text/markdown">
+    #### QUERY
+  </script>
+  <script id="712" type="application/vnd.observable.javascript">
+    pathToListeners = ({})
+  </script>
+  <script id="531" type="application/vnd.observable.javascript">
+    viewof incomingQuery = flowQueue({
+      timeout_ms: 5000
+    })
+  </script>
+  <script id="529" type="application/vnd.observable.javascript">
+    incomingQuery
+  </script>
+  <script id="527" type="application/vnd.observable.javascript" pinned="">
+    incomingQueryAction = {
+      // Actions: Listen/Query
+      const session = incomingQuery.session;
+      const command = incomingQuery.command;
+
+      try {
+        const initial = await redis.sendCommand([
+          "GET",
+          "firebase-server-prototype-1" + command.p
+        ]);
+
+        // Initial data update sent immediately
+        session.serverToClientQueue.push({
+          t: "d",
+          d: {
+            a: "d",
+            b: {
+              p: command.p,
+              d: JSON.parse(initial)
+            }
+          }
+        });
+
+        // Now register as a listener
+        pathToListeners[command.p] ||= [];
+        pathToListeners[command.p].push(session);
+
+        // Follow up with a OK to the query
+        const response = { s: "ok", d: "" };
+        viewof incomingQuery.respond(response);
+        return response;
+      } catch (err) {
+        viewof incomingQuery.reject(err);
+        return err;
+      }
+    }
+  </script>
+  <script id="439" type="text/markdown">
+    ### Utils
+  </script>
+  <script id="134" type="application/vnd.observable.javascript">
+    randomString = () => Math.random().toString(16).substring(3)
+  </script>
+  <script id="546" type="application/vnd.observable.javascript">
+    thisNotebooksNamespace = {
+      if (thisNotebooksSlug === HEALTH_CHECK_FALLBACK_SLUG)
+        return HEALTH_CHECK_FALLBACK_NAMESPACE;
+      else return /@([^/]*)\//.exec(html`<a href="?">`.href)[1];
+    }
+  </script>
+  <script id="551" type="application/vnd.observable.javascript">
+    thisNotebooksSlug = {
+      const thisSlug = /\/([^/]*)\?/.exec(html`<a href="?">`.href)[1];
+      if (thisSlug === "healthcheck") return HEALTH_CHECK_FALLBACK_SLUG;
+      else return thisSlug;
+    }
+  </script>
+  <script id="824" type="text/markdown">
+    ### Remote notebook state
+
+    We expose an endpoint for reading the remote notebooks state, which can be useful for debugging remote errors.
+  </script>
+  <script id="813" type="application/vnd.observable.javascript">
+    import { notebookSnapshot } from "@tomlarkworthy/notebook-snapshot"
+  </script>
+  <script id="811" type="application/vnd.observable.javascript">
+    trackingVariable_e3366d24de62 = true
+  </script>
+  <script id="809" type="application/vnd.observable.javascript">
+    endpoint("variables", async (req, res) => {
+      res.json(
+        (await notebookSnapshot("trackingVariable_e3366d24de62")).map(
+          (variable) => ({
+            state: variable.state,
+            name: variable.name,
+            // Note these cells might contain personal information, so we only allow errors values to leave the environment
+            ...(variable.state === "rejected" && {})
+          })
+        )
+      );
+    })
+  </script>
+  <script id="843" type="text/markdown">
+    ### [Health check](https://observablehq.com/@endpointservices/healthcheck)
+
+    The healthcheck is actively monitored and includes the smoke tests.
+
+    | Region      | URL |
+    | ----------- | ----------- |
+    | us-central1      | https://webcode.run/regions/us-central1/observablehq.com/@endpointservices/healthcheck?target=%40tomlarkworthy%2Ffirebase-server-prototype-1&wait=50      |
+    | europe-west4   | https://webcode.run/regions/europe-west4/observablehq.com/@endpointservices/healthcheck?target=%40tomlarkworthy%2Ffirebase-server-prototype-1&wait=50        |
+  </script>
+  <script id="954" type="text/markdown">
+    When running inside the healthcheck notebook, the slug is detected incorrectly as "healthcheck" which means the clients connect to the wrong place. So we have manual fix.
+  </script>
+  <script id="949" type="application/vnd.observable.javascript">
+    HEALTH_CHECK_FALLBACK_SLUG = "firebase-server-prototype-1"
+  </script>
+  <script id="961" type="application/vnd.observable.javascript">
+    HEALTH_CHECK_FALLBACK_NAMESPACE = "tomlarkworthy"
+  </script>
+  <script id="447" type="text/markdown">
+    ### Notebook Error Monitoring, Analytics and Backups
+  </script>
+  <script id="587" type="application/vnd.observable.javascript">
+    footer
+  </script>
+  <script id="443" type="text/markdown">
+    ### Dependancies
+  </script>
+  <script id="654" type="application/vnd.observable.javascript">
+    import { gfx } from "@tomlarkworthy/hackable-realtime-database-title-graphic"
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    import { expect, createSuite } from "@tomlarkworthy/testing"
+  </script>
+  <script id="156" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="212" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="861" type="application/vnd.observable.javascript">
+    import { toc } from "@bryangingechen/toc"
+  </script>
+</notebook>

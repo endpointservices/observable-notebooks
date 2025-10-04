@@ -1,0 +1,109 @@
+<!doctype html>
+<notebook theme="air">
+  <title>SVG Twist</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# SVG Twist`
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    import {html, svg} from '@observablehq/htl'
+  </script>
+  <script id="326" type="application/vnd.observable.javascript">
+    {
+      while (true) {
+        yield timeseries(Date.now() / 1000);
+      }
+    }
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    timeseries = frame => {
+      const params = {
+        segments: 200.0
+      };
+
+      return svg`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-1.5 -1.5 3 3" width="100%">
+        <style>
+          .edge {
+            stroke: black;
+            stroke-width:0.01;
+          }
+          .ladder0 {
+            stroke: red;
+            stroke-width:0.01;
+          }
+          .ladder1 {
+            stroke: green;
+            stroke-width:0.01;
+          }
+          .ladder2 {
+            stroke: blue;
+            stroke-width:0.01;
+          }
+        </style>
+        ${range(params.segments).map(t100 => {
+          const t = (2 * Math.PI * t100) / params.segments;
+          const t_step = (2 * Math.PI) / params.segments;
+
+          const f = 3;
+          const scale = 0.3;
+          const tx3 = t * f;
+          const tx3_step = t_step * f;
+          return svg.fragment`
+            ${range(f).map(tedge => {
+              const edge = tedge + frame;
+              const offset = (2.0 * Math.PI * edge) / f;
+              const offset_step = (2.0 * Math.PI) / f;
+
+              return svg`${
+                (tx3 + offset + Math.PI / 3) % (2 * Math.PI) < Math.PI
+                  ? svg`<line x1=${Math.cos(t) *
+                      (1 - Math.cos(tx3 + offset) * scale)}
+                    y1=${Math.sin(t) * (1 - Math.cos(tx3 + offset) * scale)}
+                    x2=${Math.cos(t) *
+                      (1 - Math.cos(tx3 + offset + offset_step) * scale)}
+                    y2=${Math.sin(t) *
+                      (1 -
+                        Math.cos(tx3 + offset + offset_step) *
+                          scale)} class="ladder${tedge}"/>`
+                  : null
+              }
+                ${
+                  (tx3 + offset + Math.PI / 3) % (2 * Math.PI) < Math.PI
+                    ? svg`<line x1=${Math.cos(t) *
+                        (1 - Math.cos(tx3 + offset) * scale)}
+                    y1=${Math.sin(t) * (1 - Math.cos(tx3 + offset) * scale)}
+                    x2=${Math.cos(t + t_step) *
+                      (1 - Math.cos(tx3 + offset) * scale)}
+                    y2=${Math.sin(t + t_step) *
+                      (1 -
+                        Math.cos(tx3 + offset) * scale)} class="ladder${tedge}"/>`
+                    : null
+                }
+                ${
+                  (tx3 + offset + Math.PI / 3) % (2 * Math.PI) < Math.PI
+                    ? svg`
+              <line x1=${Math.cos(t) *
+                (1 - Math.cos(tx3 + offset + offset_step) * scale)}
+                    y1=${Math.sin(t) *
+                      (1 - Math.cos(tx3 + offset + offset_step) * scale)}
+                    x2=${Math.cos(t + t_step) *
+                      (1 - Math.cos(tx3 + offset + offset_step) * scale)}
+                    y2=${Math.sin(t + t_step) *
+                      (1 -
+                        Math.cos(tx3 + offset + offset_step) *
+                          scale)} class="ladder${tedge}"/>`
+                    : null
+                }`;
+            })}`;
+        })}</svg>`;
+    }
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    range = (n) => [...Array(n).keys()];
+  </script>
+  <script id="447" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="465" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,153 @@
+<!doctype html>
+<notebook theme="air">
+  <title>First Post: Static site generation in Observable</title>
+  <script id="414" type="application/vnd.observable.javascript">
+    title = html`<div class=content>${
+    md`# First Post: Static site generation in Observable
+    `}`
+  </script>
+  <script id="459" type="application/vnd.observable.javascript">
+    html`<a href="http://tomlarkworthy.endpointservices.net/blogs/firstpost.html">prod`
+  </script>
+  <script id="408" type="application/vnd.observable.javascript">
+    // Find on prod at https://tomlarkworthy.endpointservices.net/
+    deployStaticFile({
+      title: "Static site generation in Observable",
+      content: content.outerHTML,
+      app_id: 'b6a918d2-9cda-4fde-b2ec-add91b22ea02',
+      source: preview.href,
+      target: "/blogs/firstpost.html",
+      tags: ["article"]
+    })
+  </script>
+  <script id="0" type="application/vnd.observable.javascript" pinned="">
+    content = 
+    html`<div class=content>${
+    md`
+
+    This post was authored in [_Observable_](https://observablehq.com/) at [_@tomlarkworthy/blog-first-post_](https://observablehq.com/@tomlarkworthy/blog-first-post). I love programming in _Observable_. I have always felt limited by the expressivity of CRMs like WordPress and Contentful. I want to blog using code. I want to use Observable as an interface to a static site.
+
+    ## Write with Code 
+
+    With _Observable_ I can generate static prose programatically:
+
+    ${rule30n(20).map(row => `    ${row.map(d => d == 0 ? ' ': '#').join('')}\n`)} 
+
+
+    And this is generated and embedded into a pure HTML site.
+
+    ## Animate with Code
+
+    I can also embed Observable cells for dynamic content (kudos [Lionel Radisson](https://observablehq.com/@makio135)). Find more of his [great code here](https://observablehq.com/@makio135/creative-coding)
+
+    <iframe width="100%" height="600" frameborder="0"
+      src="https://observablehq.com/embed/@makio135/svg-template?cell=render"></iframe>
+
+    So now I have a kick-ass static site that's super easy to update! I don't need to run a CLI command or do a PR to update it. All features can be done in the browser, including the build chain. The whole thing is entirely in _Observable_. Furthermore, it's all backed by CDN and is super fast, there are no compromises on the output, exactly because it's self authored. 
+
+    ## Tech Used
+
+    I used a [serverside cell](https://observablehq.com/@tomlarkworthy/serverside-cells) called [preview](https://observablehq.com/@tomlarkworthy/blog-first-post#preview) to dynamically serve the page. You can see that preview at the following link:
+
+    [https://endpointservice.web.app/notebooks/@tomlarkworthy/blog-first-post/deployments/preview](https://endpointservice.web.app/notebooks/@tomlarkworthy/blog-first-post/deployments/preview)
+
+    By default, the preview page renders every visit. This is somewhat slow, taking around 2-3 seconds, but it means published changes are reflected quickly. However, it is a horrible URL and too slow for production.
+
+    I give the page a nice URL using Netlify. To make the production page fast, I max the shared cache settings in the [serverside cell](https://observablehq.com/@tomlarkworthy/serverside-cells) when a production _X-Version_ header is present. Thus, so we lean heavily on the integrated CDN.
+
+    On the Netlify end, I set up the page to redirect to the serverside cell URL and add a custom _X-Version_ header. When the production page is updated, the version header is bumped, so the upstream cache is invalidated.
+
+    ## Stay tuned
+
+    The personal webpage is a work in progress. Meta tags are missing, the RSS feed doesn't work and it doesn't support more than one page yet! But I will add to this over the next few weeks and hopefully get it to a state where anybody can create a page easily. For now, follow along on Observable${icon()} or [Twitter](https://twitter.com/tomlarkworthy).
+
+    Check
+
+    `
+    }`
+  </script>
+  <script id="303" type="application/vnd.observable.javascript">
+    initial = {
+      const arr = Array(61).fill(0);
+      arr[30] = 1;
+      return arr
+    }
+  </script>
+  <script id="323" type="application/vnd.observable.javascript">
+    html`<img src=${await FileAttachment("image.png").url()}>`
+  </script>
+  <script id="307" type="application/vnd.observable.javascript" pinned="">
+    rule30 = (input) => input.map((_, idx) => {
+      const context = [input[idx-1] || 0, input[idx] || 0, input[idx+1] || 0];
+      const id = JSON.stringify
+      switch (id(context)) {
+        case id([1,1,1]): return 0
+        case id([1,1,0]): return 0
+        case id([1,0,1]): return 0
+        case id([1,0,0]): return 1
+        case id([0,1,1]): return 1
+        case id([0,1,0]): return 1
+        case id([0,0,1]): return 1
+        case id([0,0,0]): return 0
+        default: throw Error(`Unexpected ${context}`)
+      }
+    })
+  </script>
+  <script id="349" type="application/vnd.observable.javascript">
+    rule30n = (n) => new Array(n).fill(0).reduce(
+      (acc) => {
+        console.log(acc)
+        return acc.concat([rule30(acc[acc.length - 1])])
+      },
+      [initial]
+    )
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    preview = deploy("preview", (req, res) => {
+      res.header("Access-Control-Allow-Origin", "*"); 
+      return res.send(`<html class="has-navbar-fixed-top">
+        <head>
+        ${header.outerHTML}
+        </head>
+        <body>
+        ${topbar.outerHTML}
+        <div class="columns">
+          ${sidebar.outerHTML}
+        <div class="column is-half">
+          ${title.outerHTML}
+          ${content.outerHTML}
+        </div>
+        </body>
+        </html>`)
+    })
+  </script>
+  <script id="435" type="application/vnd.observable.javascript" pinned="">
+    md`
+
+
+    Netlify redirect:
+    -H 'cache-control: max-age=0' // Does not affect FH?
+
+    -H 'if-none-match: <etag>'  if etag is right we can cache a cache hit
+    -H 'Authorization: <>' We can can cause a refetch regardless
+
+    -X 'X-Version' We can cause a refetch
+
+    `
+  </script>
+  <script id="242" type="application/vnd.observable.javascript">
+    import {sidebar, topbar, header, deploy, html} from '@tomlarkworthy/blog-navigation'
+  </script>
+  <script id="384" type="application/vnd.observable.javascript">
+    import {icon} from "@chitacan/rss"
+  </script>
+  <script id="451" type="application/vnd.observable.javascript" pinned="">
+    import {deployStaticFile} from '@tomlarkworthy/netlify-deploy'
+  </script>
+  <script id="473" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="491" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

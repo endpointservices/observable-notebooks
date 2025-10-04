@@ -1,0 +1,579 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Serverless Cell Tests</title>
+  <script id="224" type="application/vnd.observable.javascript">
+    md`
+    # Serverless Cell Tests
+
+    <img width=640 src=${await FileAttachment(
+      "PreviewServerlessCells@1.png"
+    ).url()}></img>
+
+    Test suite for [Serverless Cells](https://observablehq.com/@endpointservices/serverless-cells). Documents examples of working behaviour.
+    `
+  </script>
+  <script id="1402" type="application/vnd.observable.javascript">
+    md`## Automated Tests`
+  </script>
+  <script id="1604" type="application/vnd.observable.javascript" pinned="">
+    viewof region = Inputs.radio(["europe-west4", "europe-west1", "us-central1"], {
+      value: "europe-west1"
+    })
+  </script>
+  <script id="1681" type="application/vnd.observable.javascript" pinned="">
+    html`${["europe-west4", "europe-west1", "us-central1"].map(
+      (region) =>
+        html`<a target="_blank" href="https://webcode.run/regions/${region}/.stats">Diagnostics from ${region}</a><br>`
+    )}`
+  </script>
+  <script id="1419" type="application/vnd.observable.javascript">
+    import { deploy, getContext, Response } from "@endpointservices/webcode"
+  </script>
+  <script id="677" type="application/vnd.observable.javascript">
+    viewof ci = createSuite({
+      name: "Serverless cell tests",
+      timeout_ms: 20000
+    })
+  </script>
+  <script id="401" type="application/vnd.observable.javascript">
+    md `
+    ## Example - referencing cell values
+
+    Here is some data we wish to serve an a random cell.
+    `
+  </script>
+  <script id="0" type="application/vnd.observable.javascript">
+    localValue = "hello dsadasda is from another cell yo yo"
+  </script>
+  <script id="408" type="application/vnd.observable.javascript">
+    md`
+    ### Creating a handler
+
+    Our handler serves our value as JSON using _res.json(localValue)_. Handlers can reference other cells just like normal.
+
+    `
+  </script>
+  <script id="471" type="application/vnd.observable.javascript">
+    md`### Deploy the handler
+    We create a named cell "remote_cell_link" and also hint the deploymentFunction the name of the cell. The function responds with a link you can click on, call with curl _etc_!
+
+    NOTE: THE BACKEND READS THE CURRENT **PUBLISHED** (or linked shared) NOTEBOOK. So if you make changes remember to republish the notebook otherwise the notebook will be hitting a previous version.
+
+    `
+
+  </script>
+  <script id="1627" type="application/vnd.observable.javascript" pinned="">
+    region
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    remote_cell_link = {
+      return deploy(
+        "remote_cell",
+        (req, res) => {
+          res.json(localValue);
+        },
+        {
+          region: region,
+          host: "webcode.run"
+        }
+      );
+    }
+  </script>
+  <script id="481" type="application/vnd.observable.javascript">
+    md` ### Test it
+    To prove it works we issue a fetch command. Look! That url is serving the value we set at the beginning!
+    `
+  </script>
+  <script id="167" type="application/vnd.observable.javascript" pinned="">
+    example1_response = (await fetch(remote_cell_link.href)).json()
+  </script>
+  <script id="681" type="application/vnd.observable.javascript">
+    ci.test("Example 1 reponse matches localValue", () => {
+      expect(example1_response).toBe(localValue);
+    })
+  </script>
+  <script id="1089" type="application/vnd.observable.javascript">
+    md`## Example - the *default* deployment for small URLs
+
+    Sometimes a notebook has a single serverless cell with multiple API routes. We can minimize the size of the URL by calling the deployed function _"default"_
+    `
+  </script>
+  <script id="1099" type="application/vnd.observable.javascript" pinned="">
+    default_url_example = {
+      const link = deploy(
+        "default",
+        async (req, res) => {
+          res.send("You can make small URLs with the default handler");
+        },
+        {
+          reusable: true,
+          region: region
+        }
+      );
+      return html`<a href=${link.href} target="_blank">${link.href}</a>`;
+    }
+  </script>
+  <script id="486" type="application/vnd.observable.javascript">
+    md`## Example - error propagation
+
+    If you throw an error the URL will serve status 500 and the message (of course if you don't like this you can catch your own errors and do your own thing)
+    `
+  </script>
+  <script id="219" type="application/vnd.observable.javascript" pinned="">
+    buggy_remote_cell_link = deploy(
+      "buggy_remote_cell",
+      async (req, res) => {
+        throw Error("Ooops");
+      },
+      {
+        reusable: true,
+        region: region
+      }
+    )
+  </script>
+  <script id="497" type="application/vnd.observable.javascript">
+    md`Calling this buggy URL:`
+  </script>
+  <script id="222" type="application/vnd.observable.javascript">
+    example2_response = {
+      const result = await fetch(buggy_remote_cell_link.href);
+      return {
+        status: result.status,
+        text: await result.text()
+      };
+    }
+  </script>
+  <script id="692" type="application/vnd.observable.javascript">
+    ci.test("Example 2 reponse status is 500", () => {
+      expect(example2_response.status).toBe(500);
+    })
+  </script>
+  <script id="699" type="application/vnd.observable.javascript">
+    ci.test("Example 2 reponse includes error message", () => {
+      expect(example2_response.text).toEqual(expect.stringContaining("Ooops"))
+    })
+  </script>
+  <script id="513" type="application/vnd.observable.javascript">
+    md`## Example - serving a webpage
+
+    Serverside rendering with the wonderful hypertext literal anyone?
+
+    ![Serverside rendering](${await FileAttachment("ServersideCells.png").url()})
+
+    With control over the meta payload we can make a much better social sharing preview, and control all the redirection behaviour.
+    `
+  </script>
+  <script id="515" type="application/vnd.observable.javascript">
+    import {html} from "@observablehq/htl"
+  </script>
+  <script id="522" type="application/vnd.observable.javascript">
+    webpage = deploy(
+      "social_link",
+      async (req, res) => {
+        res.header("Content-Type", "text/html");
+        const title = "Serverless cells";
+        const description = "Observable cells as serverless hosts.";
+        const image = await FileAttachment("PreviewServerlessCells.png").url();
+        const link = "https://observablehq.com/@tomlarkworthy/serverside-cells";
+        // Hypertext literal does not support html, head and body tags.
+        // So we render the head and body content using the html template but
+        // interpolate into a vanilla HTML string.
+        res.send(
+          `<html>
+        <head>
+        ${
+          html`
+          <title>
+            ${title}
+          </title>
+          <meta property="og:title" content=${title}>
+          <meta property="og:description" content=${description}>
+          <meta property="og:image" content=${image}>
+          <meta property="og:url" content=${link}>
+          <meta http-equiv="refresh" content="3;URL='${link}'">
+
+          <meta name="twitter:title" content=${title}>
+          <meta name="twitter:description" content=${description}>
+          <meta name="twitter:image" content=${image}>
+          <meta name="twitter:card" content="summary_large_image">
+          `.innerHTML
+        }
+        </head>
+        <body>
+        ${
+          html`
+            <center>
+            <a href=${link}>
+            <h1>${title}</h1>
+            <img width="640px" src=${image}></img>
+            <p>${description}</p>
+            </a>
+            </center>
+          `.innerHTML
+        }
+        </body>
+        `
+        );
+      },
+      {
+        reusable: true,
+        region: region
+      }
+    )
+  </script>
+  <script id="727" type="application/vnd.observable.javascript">
+    example_injecting_secrets = md`## Example - Injecting Secrets 
+
+    Integrating with 3rd party APIs often require storing an OAuth client secret. We are able to inject secrets into the handler. Note, secrets are owned by the author and cannot be accessed by other notebooks. So if you fork this page, this example will fail for you. Note the prefix matches the usercontent subdomain.
+
+    You can set secrets with [secret-manager](https://observablehq.com/@tomlarkworthy/secret-manager)
+    `
+  </script>
+  <script id="731" type="application/vnd.observable.javascript" pinned="">
+    example_secrets = deploy(
+      "example_secrets",
+      (req, res, context) => {
+        res.send(context.secrets["endpointservices_example_secret"]);
+      },
+      {
+        secrets: ["endpointservices_example_secret"],
+        region: region
+      }
+    )
+  </script>
+  <script id="739" type="application/vnd.observable.javascript">
+    ci.test(
+      "Example 4 example secret is 'correct horse battery staple'",
+      async () => {
+        const response = await fetch(example_secrets.href);
+        expect(response.status).toBe(200);
+        expect(await response.text()).toBe("correct horse battery staple");
+      }
+    )
+  </script>
+  <script id="1251" type="application/vnd.observable.javascript">
+    md`## Example - Testing execution context
+
+    You can tell if you are running serverless or not by checking the context, you can also find out the notebook when availible.
+    `
+  </script>
+  <script id="1249" type="application/vnd.observable.javascript" pinned="">
+    example_getContext = deploy(
+      "example_getContext",
+      (req, res) => {
+        res.send(getContext()); // Use of global getContext() function
+      },
+      {
+        region: region
+      }
+    )
+  </script>
+  <script id="1255" type="application/vnd.observable.javascript">
+    ci.test("Example 5 getContext()", async () => {
+      expect(await (await fetch(example_getContext.href)).json()).toEqual({
+        namespace: "endpointservices",
+        secrets: {},
+        serverless: true,
+        notebook: "serverless-cell-tests"
+      });
+    })
+  </script>
+  <script id="1063" type="application/vnd.observable.javascript">
+    md`## Example of CDN`
+  </script>
+  <script id="981" type="application/vnd.observable.javascript" pinned="">
+    endpoint_with_CDN = deploy(
+      "endpoint_with_CDN",
+      (req, res, context) => {
+        res.header("Cache-Control", "public, max-age=0, s-maxage=99999"); // Cache in shared cache (CDN)
+        res.send(new Date());
+      },
+      {
+        region: region
+      }
+    )
+  </script>
+  <script id="979" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Example 6 Enable cache for insane performance", async () => {
+      const response = await fetch(endpoint_with_CDN.href);
+      return expect(response.status).toBe(200);
+    })
+  </script>
+  <script id="910" type="application/vnd.observable.javascript">
+    test_end = ci.test("Reference: res.status('204').end() responds", async () => {
+      const link = await deploy(
+        "test_end",
+        (req, res) => {
+          res.status(204).end();
+        },
+        {
+          cell: "test_end",
+          region: region
+        }
+      );
+      return expect(await (await fetch(link.href)).status).toBe(204);
+    })
+  </script>
+  <script id="1376" type="application/vnd.observable.javascript">
+    md`## Regions 
+
+    You can elect to run the code in us-central1 (Iowa), europe-west4 (Netherlands), or asia-east1 (Taiwan). The default is "europe-west4". Fastest seems to be "us-central1" (see the [latency monitor](https://observablehq.com/@tomlarkworthy/serverless-cell-latency-monitor))
+    `
+  </script>
+  <script id="1380" type="application/vnd.observable.javascript" pinned="">
+    europe_west1 = deploy(
+      "europe-west1",
+      async (req, res) => {
+        res.send("Howdy!");
+      },
+      {
+        region: "europe-west1"
+      }
+    )
+  </script>
+  <script id="1386" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Example 6.1: Regions", async () => {
+      await expect((await fetch(europe_west1.href)).status).toBe(200);
+    })
+  </script>
+  <script id="1314" type="application/vnd.observable.javascript">
+    md`## Signed Cookie Support`
+  </script>
+  <script id="1167" type="application/vnd.observable.javascript">
+    ci.test("Example 7: Cookie signing same as nodejs Express (disabled)", () => {
+      return;
+      /* Test program to be run with node.js
+      const app = require('express')();
+      app.use(require('cookie-parser')("secret"))
+      app.get('/', (req, res) => {
+          res.cookie("value", "value", {signed: true, maxAge:1000, httpOnly: true})
+          res.end();
+      })
+      app.listen(8080, () => {})
+      */
+      // Curling the nodejs server (curl localhost:8080 -v) contains line:-
+      // Set-Cookie: value=s%3Avalue.UOA%2BvmW%2BmLuL8RuiyJLVTAeayisNOwFidpxtdXolQ08; Max-Age=1; Path=/; Expires=Sun, 31 Jan 2021 09:04:51 GMT; HttpOnly
+      const headerValue = new Response({
+        secret: "secret"
+      }).cookie("value", "value", { signed: true, maxAge: 1000, httpOnly: true })
+        ._headers["Set-Cookie"];
+      // Test the encryption is the same
+      expect(headerValue).toMatch(
+        "value=s%3Avalue.UOA%2BvmW%2BmLuL8RuiyJLVTAeayisNOwFidpxtdXolQ08; Max-Age=1; Path=/; Expires="
+      );
+      // Test the feature switches work
+      expect(headerValue).toMatch("; HttpOnly");
+    })
+  </script>
+  <script id="1318" type="application/vnd.observable.javascript">
+    binary = md`## Serving Binary data (e.g. images)
+
+    the _res.send(<arg>)_ supports using an arrayBuffer as the arg.
+    `
+  </script>
+  <script id="1322" type="application/vnd.observable.javascript" pinned="">
+    pngLink = deploy(
+      "png",
+      async (req, res) => {
+        res.header("content-type", "image/png");
+        const blob = await FileAttachment("logo.png").blob();
+        const arrayBuffer = await blob.arrayBuffer();
+        res.send(arrayBuffer);
+      },
+      {
+        region: region
+      }
+    )
+  </script>
+  <script id="1326" type="application/vnd.observable.javascript" pinned="">
+    pngElement = new Promise((resolve) => {
+      let img = html`<img src=${pngLink.href} onerror=${() => {
+        img.err = true;
+        resolve(img);
+      }} onload=${() => resolve(img)} />`;
+    })
+  </script>
+  <script id="1332" type="application/vnd.observable.javascript" pinned="">
+    ci.test(
+      "Example 8: Images can be served as binary data",
+      async () => {
+        expect(pngElement.err).toBeUndefined();
+      },
+      {
+        region: region
+      }
+    )
+  </script>
+  <script id="1431" type="application/vnd.observable.javascript">
+    md`### Cell Modifiers and chaining calls
+
+    Only "terminal" cells can be called by other cells
+    `
+  </script>
+  <script id="1444" type="application/vnd.observable.javascript">
+    external_to_terminal = deploy("external", async (req, res) => {
+      try {
+        res.send(await (await fetch("https://endpointservice.web.app/notebooks/@endpointservices/serverless-cell-user-agents/deploys/terminal-ua/mods/T")).text());
+      } catch (err) {
+        res.send(err.message)
+      }
+    }, {
+      region: region,
+      modifiers: ["external"]
+    })
+  </script>
+  <script id="1450" type="application/vnd.observable.javascript">
+    ci.test(
+      "Example 9: An external can call a cell with modifier terminal",
+      async () => {
+        expect(await (await fetch(external_to_terminal.href)).text()).toBe(
+          "observablehq.com/@endpointservices/serverless-cells"
+        );
+      }
+    )
+  </script>
+  <script id="1466" type="application/vnd.observable.javascript">
+    orchestrator_to_external = deploy(
+      "orchestrator",
+      async (req, res) => {
+        try {
+          res.send(
+            await (
+              await fetch(
+                "https://endpointservice.web.app/notebooks/@endpointservices/serverless-cell-user-agents/deploys/external-ua/mods/T"
+              )
+            ).text()
+          );
+        } catch (err) {
+          res.send(err.message);
+        }
+      },
+      {
+        region: region,
+        modifiers: ["orchestrator"]
+      }
+    )
+  </script>
+  <script id="1471" type="application/vnd.observable.javascript" pinned="">
+    ci.test(
+      "Example 10: An orchestrator can call a cell with modifier external",
+      async () => {
+        expect(await (await fetch(orchestrator_to_external.href)).text()).toBe(
+          "observablehq.com/@endpointservices/serverless-cells O"
+        );
+      }
+    )
+  </script>
+  <script id="1501" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Conformance: name is URI encoded: foo/bar", async () => {
+      throw new Error("Somehow this causes loops!");
+      expect(
+        await (
+          await fetch(deploy("foo/bar", (req, res) => res.send("OK: foo/bar")).href)
+        ).text()
+      ).toBe("OK: foo/bar");
+    })
+  </script>
+  <script id="1521" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Conformance: name is URI encoded: foo", async () => {
+      expect(
+        await (
+          await fetch(
+            deploy("foo", (req, res) => res.send("OK: foo"), { region }).href
+          )
+        ).text()
+      ).toBe("OK: foo");
+    })
+  </script>
+  <script id="1551" type="application/vnd.observable.javascript" pinned="">
+    metadata_token = deploy("metadata_token", async (req, res) => {
+      try {
+        const response = await fetch("http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token", {
+          headers: {
+            "Metadata-Flavor": "Google"
+          }
+        })
+        res.status(response.status).send(await response.text())
+      } catch (err) {
+        res.status(500).send(err.message)
+      }
+    }, {region})
+  </script>
+  <script id="1557" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Security: Cannot get to metadata server", async () => {
+      expect(await (await fetch(metadata_token.href)).text()).toBe(
+        "Failed to fetch"
+      );
+    })
+  </script>
+  <script id="1567" type="application/vnd.observable.javascript">
+    md`#### Streaming`
+  </script>
+  <script id="1573" type="application/vnd.observable.javascript" pinned="">
+    streamingResponse = deploy(
+      "streamingResponse",
+      async (req, res) => {
+        res.write("w");
+        res.write("r");
+        res.write("i");
+        res.write("t");
+        res.write("e");
+        res.end();
+      },
+      {
+        region: region
+      }
+    )
+  </script>
+  <script id="1571" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Streaming: write works", async () => {
+      expect(await (await fetch(streamingResponse.href)).text()).toBe("write");
+    })
+  </script>
+  <script id="1601" type="application/vnd.observable.javascript" pinned="">
+    deploy(
+      "redirect",
+      (req, res) => {
+        res.redirect(302, pngLink.href);
+      },
+      {
+        region
+      }
+    )
+  </script>
+  <script id="1600" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Example 11: Redirects", async () => {
+      expect(await (await fetch(orchestrator_to_external.href)).text()).toBe(
+        "observablehq.com/@endpointservices/serverless-cells O"
+      );
+    })
+  </script>
+  <script id="1637" type="application/vnd.observable.javascript" pinned="">
+    ci.test("Context fields are populated", async () => {
+      const payload = await (
+        await fetch(
+          deploy("contextFields", (req, res) => res.json(req), {
+            reusable: true,
+            region
+          }).href
+        )
+      ).json();
+
+      expect(payload).toHaveProperty("headers");
+      expect(payload).toHaveProperty("ip");
+      expect(payload).toHaveProperty("url");
+      expect(payload).toHaveProperty("method");
+      expect(payload).toHaveProperty("query");
+      expect(payload).toHaveProperty("baseUrl");
+    })
+  </script>
+  <script id="671" type="application/vnd.observable.javascript">
+    import { createSuite, expect } from '@tomlarkworthy/testing'
+  </script>
+  <script id="1695" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="1699" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

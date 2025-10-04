@@ -1,0 +1,565 @@
+<!doctype html>
+<notebook theme="air">
+  <title>View Composition Examples</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# View Composition Examples
+
+
+    Here we play _view_ template literal and related techniques. The _view_ literal lets you build components heirarchically. Its _closed_. Each construction is also a _view_ and can be placed inside another _view_ literal.
+
+    Because each view is a multi-level views, the system plays very well with _Inputs.bind_. You can _bind_ to not jus tthe root view, but also individual fields in the composite. This allows interesting and programatic cross-wiring across sibling cells. I think of _bind_ as dimension reduction. What was once two free parameters becomes one after binding.
+
+    Well written _views_ are back-writable (and _view_ template literal does this for you). Using back-writability, we can acheive business-presentation logic seperation. Simply have the business logic in a different cell manipulating the presentation parameters view writes.
+
+    Because data updates propogate in a different logical channel to the presentation code channel, we can acheive good performance by targetted manipulation of DOM nodes on data changes. In this notebook we use _reconcile_ which probably is not as effecient as possible, but fairly trivial to implement.
+
+
+
+    `
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    import { view, viewSvg } from '@tomlarkworthy/view'
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    import { reconcile } from '@tomlarkworthy/reconcile-nanomorph'
+  </script>
+  <script id="975" type="application/vnd.observable.javascript">
+    md`## Heirarchical Composition`
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    md`### Isosceles
+
+    Create a parameterized shape in 3D.
+    `
+  </script>
+  <script id="16" type="application/vnd.observable.javascript" pinned="">
+    isosceles = ({ w = 100, l = 100, color = "#0000FF" } = {}) => {
+      // TODO: Pass in variable
+      const id = DOM.uid().id; // A uid helps reconcile's matcher.
+      const wVar = variable(w).onWrite(() => reconcile(me, render()));
+      const lVar = variable(l).onWrite(() => reconcile(me, render()));
+      const colorVar = variable(color, () => reconcile(me, render()));
+      const render = () =>
+        viewSvg`<polygon id=${id} fill=${colorVar} points=
+          "${wVar.value / 2} 0, 0 ${lVar.value}, ${-wVar.value / 2} 0"
+        ><!-- ${["w", wVar]} ${["l", lVar]} ${["color", colorVar]} -->`; // TODO, better way to bind dummies
+      const me = render();
+      return me;
+    }
+  </script>
+  <script id="1371" type="application/vnd.observable.javascript" pinned="">
+    isoscelesFabian = ({
+      w = 100 /* TODO Could we pass in a variable here and bind to it automgically*/,
+      l = 100,
+      color = "#0000FF"
+    } = {}) => {
+      const id = DOM.uid().id; // A uid helps reconcile's matcher.
+      const vars = propsToVars({ w, l, color }, () => reconcile(me, render(vars)));
+      const render = ({ color, w, l }) =>
+        htl.svg`<polygon id=${id} fill=${color} points=
+          "${w / 2} 0, 0 ${l}, ${-w / 2} 0"
+        ></polygon>`;
+      const me = render(vars);
+      console.log("me", me.w);
+      me.value = {};
+      Object.entries(vars).forEach(([name, variable]) => {
+        Object.defineProperty(me, name, {
+          get: () => variable,
+          set: (v) => (variable = v),
+          enumerable: true,
+          configurable: true
+        });
+        Object.defineProperty(me.value, name, {
+          get: () => variable.value,
+          set: (v) => (variable.value = v),
+          enumerable: true,
+          configurable: true
+        });
+      });
+      return me;
+    }
+  </script>
+  <script id="1344" type="application/vnd.observable.javascript" pinned="">
+    propsToVars = (obj, onWrite) => Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, variable(v).onWrite(onWrite)]))
+  </script>
+  <script id="342" type="application/vnd.observable.javascript" pinned="">
+    viewof testIsosceles = isosceles()
+  </script>
+  <script id="1453" type="application/vnd.observable.javascript" pinned="">
+    viewof testIsosceles.values
+  </script>
+  <script id="394" type="application/vnd.observable.javascript">
+    md`The _viewof_ is an SVG element`
+  </script>
+  <script id="329" type="application/vnd.observable.javascript" pinned="">
+    viewof testIsosceles.outerHTML
+  </script>
+  <script id="397" type="application/vnd.observable.javascript">
+    md`The data is the parameters, which are individually backwritable`
+  </script>
+  <script id="347" type="application/vnd.observable.javascript" pinned="">
+    testIsosceles.w
+  </script>
+  <script id="414" type="application/vnd.observable.javascript">
+    md`#### View nesting`
+  </script>
+  <script id="400" type="application/vnd.observable.javascript">
+    md`We can embed views inside other views with the view literal`
+  </script>
+  <script id="321" type="application/vnd.observable.javascript">
+    htl.svg`<svg width="100px" viewBox="-200 -200 400 400">
+      ${viewof testIsosceles}
+    `
+  </script>
+  <script id="403" type="application/vnd.observable.javascript">
+    md`We can add a UI to a view by binding to sibling views`
+  </script>
+  <script id="355" type="application/vnd.observable.javascript">
+    md`#### Bind a single control to a single field of the component`
+  </script>
+  <script id="349" type="application/vnd.observable.javascript">
+    viewof sigleWidth = Inputs.bind(
+      Inputs.range([0, 1000], { label: "width", value: 10 }),
+      viewof testIsosceles.w
+    )
+  </script>
+  <script id="1439" type="application/vnd.observable.javascript" pinned="">
+    testIsosceles.w
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    md`#### Bind a composite control to the whole component`
+  </script>
+  <script id="363" type="application/vnd.observable.javascript">
+    viewof dartLook = Inputs.bind(
+      view`<div style="height: 100px">
+      ${["w", Inputs.range([0, 1000], { label: "width" })]}
+      ${["l", Inputs.range([0, 1000], { label: "length" })]}
+      ${
+        [
+          "color",
+          colorPicker(viewof testIsosceles.color.value)
+        ] /* Manual fix for non backwritability */
+      }
+    `,
+      viewof testIsosceles
+    )
+  </script>
+  <script id="578" type="application/vnd.observable.javascript">
+    testIsosceles
+  </script>
+  <script id="377" type="application/vnd.observable.javascript">
+    md`#### Programatically manipulate parameters
+
+    The parameters are backwritable too
+    `
+  </script>
+  <script id="381" type="application/vnd.observable.javascript">
+    {
+      viewof testIsosceles.w.value = 20;
+      viewof testIsosceles.l.value = 50;
+      viewof testIsosceles.w.dispatchEvent(new Event('input', { bubbles: true })); // TODO bubbling broke?
+      viewof testIsosceles.dispatchEvent(new Event('input', { bubbles: true }));
+    }
+  </script>
+  <script id="161" type="application/vnd.observable.javascript">
+    md`### Transform
+
+    Create a parameterized transform. The useful thing is that we can minimize recomputation of the DOM stable for changes in transform parameters.
+    `
+  </script>
+  <script id="163" type="application/vnd.observable.javascript" pinned="">
+    transform = ({ tx = 0, ty = 0, sx = 1, sy = 1, angle = 0, inner } = {}) => {
+      const id = DOM.uid().id;
+      const txVar = variable(tx).onWrite(() => reconcile(me, render()));
+      const tyVar = variable(ty).onWrite(() => reconcile(me, render()));
+      const sxVar = variable(sx).onWrite(() => reconcile(me, render()));
+      const syVar = variable(sy).onWrite(() => reconcile(me, render()));
+      const aVar = variable(angle).onWrite(() => reconcile(me, render()));
+      const render = () =>
+        viewSvg`<g id=${id} transform="
+            translate(${["tx", txVar]} ${["ty", tyVar]})
+            scale(${["sx", sxVar]} ${["sy", syVar]})
+            rotate(${["angle", aVar]})">
+          ${["inner", inner]}
+        </g>`;
+      const me = render();
+      return me;
+    }
+  </script>
+  <script id="78" type="application/vnd.observable.javascript" pinned="">
+    viewof testTransform = transform({ inner: isosceles(), tx: 100 })
+  </script>
+  <script id="150" type="application/vnd.observable.javascript" pinned="">
+    testTransform
+  </script>
+  <script id="427" type="application/vnd.observable.javascript" pinned="">
+    viewof testTransform
+  </script>
+  <script id="438" type="application/vnd.observable.javascript" pinned="">
+    viewof testTransform.outerHTML
+  </script>
+  <script id="22" type="application/vnd.observable.javascript" pinned="">
+    htl.svg`<svg width="100" viewBox="-100 -100 200 200">
+      ${viewof testTransform}
+    `
+  </script>
+  <script id="476" type="application/vnd.observable.javascript">
+    md`#### Bind to Controls`
+  </script>
+  <script id="454" type="application/vnd.observable.javascript">
+    view`<div style="height: 250px">
+      ${Inputs.bind(
+        Inputs.range([0, 200], { label: "tx" }),
+        viewof testTransform.tx
+      )}
+      ${Inputs.bind(
+        Inputs.range([-100, 200], { label: "ty" }),
+        viewof testTransform.ty
+      )}
+      ${Inputs.bind(
+        Inputs.range([0, 5], { label: "scale x" }),
+        viewof testTransform.sx
+      )}
+      ${Inputs.bind(
+        Inputs.range([0, 5], { label: "scale y" }),
+        viewof testTransform.sy
+      )}
+      ${Inputs.bind(
+        Inputs.range([-360, 360], { label: "angle" }),
+        viewof testTransform.angle
+      )}
+      ${Inputs.bind(
+        Inputs.range([-100, 200], { label: "width" }),
+        viewof testTransform.inner.w
+      )}
+      ${Inputs.bind(
+        Inputs.range([-100, 200], { label: "length" }),
+        viewof testTransform.inner.l
+      )}
+      ${Inputs.bind(
+        colorPicker(viewof testTransform.inner.color.value),
+        viewof testTransform.inner.color
+      )}
+    `
+  </script>
+  <script id="594" type="application/vnd.observable.javascript">
+    md`## Arrays
+
+    `
+  </script>
+  <script id="945" type="application/vnd.observable.javascript">
+    arrayOfSlider = md`#### Array of sliders`
+  </script>
+  <script id="949" type="application/vnd.observable.javascript" pinned="">
+    viewof arrayControl = view`<div style="display: flex">
+      <table>
+      ${[
+        "r",
+        // Its slightly annoying we have to bind the inner control to a property
+        new Array(10).fill(null).map((r, i) => {
+          return view`<tr>
+            <td>${[
+              "v",
+              Inputs.range([0, 10], { label: `r[${i}].v`, value: i })
+            ]}</td>
+          </tr>`;
+        })
+      ]}
+      </table>
+    </div>`
+  </script>
+  <script id="959" type="application/vnd.observable.javascript">
+    arrayControl
+  </script>
+  <script id="967" type="application/vnd.observable.javascript">
+    viewof arrayControl
+  </script>
+  <script id="1022" type="application/vnd.observable.javascript">
+    md`### Coordinating arrays`
+  </script>
+  <script id="611" type="application/vnd.observable.javascript">
+    viewof dartParams = view`
+      ${[
+        "n",
+        Inputs.range([0, 1000], {
+          label: "number of darts",
+          value: 50,
+          step: 1
+        })
+      ]}
+
+      ${[
+        "v",
+        Inputs.range([0, 100], {
+          label: "velocity of darts",
+          value: 5
+        })
+      ]}
+    `
+  </script>
+  <script id="883" type="application/vnd.observable.javascript">
+    md`## Fullsize world`
+  </script>
+  <script id="601" type="application/vnd.observable.javascript" pinned="">
+    viewof world = viewSvg`<svg style="position: fixed; top: 0px; botom:0px;" width="${width}" height=${documentHeight} viewBox="0 0 ${width} ${documentHeight}" pointer-events="none">
+      ${[
+        "darts",
+        new Array(dartParams.n).fill(null).map((_, i) => {
+          const dart = isosceles({
+            color: `hsla(${(i * 360) / dartParams.n},100%, 50%, 20%)`
+          });
+          Inputs.bind(dart.w, viewof dartLook.w, invalidation);
+          Inputs.bind(dart.l, viewof dartLook.l, invalidation);
+          return transform({
+            inner: dart,
+            angle: -(i * 360) / dartParams.n,
+            tx: 100 * Math.sin((2 * i * Math.PI) / dartParams.n) + width / 2,
+            ty: 100 * Math.cos((2 * i * Math.PI) / dartParams.n) + width / 2
+          });
+        })
+      ]}
+    `
+  </script>
+  <script id="703" type="application/vnd.observable.javascript" pinned="">
+    world
+  </script>
+  <script id="728" type="application/vnd.observable.javascript" pinned="">
+    viewof world
+  </script>
+  <script id="692" type="application/vnd.observable.javascript">
+    md`By puppeteering view data by backwriting from sibling cells, we can seperate logic from presentation`
+  </script>
+  <script id="680" type="application/vnd.observable.javascript" pinned="">
+    dartControl = {
+      now;
+      world.darts.forEach(dart => {
+        dart.tx -= dartParams.v * Math.sin((2 * Math.PI * dart.angle) / 360);
+        dart.ty += dartParams.v * Math.cos((2 * Math.PI * dart.angle) / 360);
+        const target =
+          (Math.atan2(dart.tx - mousePos[0], -dart.ty + mousePos[1]) * 180) /
+          Math.PI;
+        let error = target - dart.angle;
+        while (error > 180) error -= 360;
+        while (error < -180) error += 360;
+
+        if (error > 180) error = 360 - error;
+        dart.angle += 0.01 * error;
+      });
+    }
+  </script>
+  <script id="973" type="application/vnd.observable.javascript">
+    md`## Temporal Composition
+
+    Composing UI across time is a technique used in the games industry under the term of coroutines. Its very useful for creating animation sequences. 
+    `
+  </script>
+  <script id="980" type="application/vnd.observable.javascript">
+    md`### Basic coroutine with a generator`
+  </script>
+  <script id="983" type="application/vnd.observable.javascript">
+    viewof coroutineExample = {
+      let t = 0;
+      while (true) {
+        yield html`<span style="display:inline-block; width:50px;height:50px; background-color: hsl(${(t =
+          (t + 5) % 360)}, 50%, 50%);"></span>`;
+        await Promises.delay(50);
+      }
+    }
+  </script>
+  <script id="1001" type="application/vnd.observable.javascript" pinned="">
+    viewof coroutineExample
+  </script>
+  <script id="990" type="application/vnd.observable.javascript" pinned="">
+    coroutineExample
+  </script>
+  <script id="1017" type="application/vnd.observable.javascript">
+    md`### Coroutines are an async function*
+
+    (as are cells)
+    `
+  </script>
+  <script id="1004" type="application/vnd.observable.javascript" pinned="">
+    async function* flashSquare() {
+      for (let index = 0; index < 360; index += 5) {
+        yield Object.defineProperty(
+          html`<span style="display:inline-block; width:50px;height:50px; background-color: hsl(${index}, 50%, 50%);"></span>`,
+          'value',
+          {
+            value: "square"
+          }
+        );
+        if (index === 0) yield new Event("input", { bubbles: true });
+        await Promises.delay(10);
+      }
+      return null; // End coroutine
+    }
+  </script>
+  <script id="1075" type="application/vnd.observable.javascript" pinned="">
+    function toView(generator) {
+      let current;
+      const holder = Object.defineProperty(document.createElement('span'), 'value', {
+        get : () => current?.value,
+        set : (v) => current ? current.value = v : null,
+        enumerable: true
+      });
+
+      new Promise(async () => {
+        const iterator = generator();
+        let { done, value } = await iterator.next();
+        while (!done) {
+          if (value instanceof Event) { 
+            holder.dispatchEvent(value);
+          } else {
+            current = value
+            if (value) {
+              const span = document.createElement('span');
+              span.appendChild(value);
+              reconcile(holder, span);
+            }
+          }
+          ({ done, value } = await iterator.next());
+        }
+        holder.remove();
+      });
+      return holder;
+    }
+  </script>
+  <script id="1117" type="application/vnd.observable.javascript">
+    md`A noticable difference to Observable cells is the DOM removes itself when the coroutine finishes`
+  </script>
+  <script id="1097" type="application/vnd.observable.javascript" pinned="">
+    toView(flashSquare)
+  </script>
+  <script id="1113" type="application/vnd.observable.javascript" pinned="">
+    flashSquare()
+  </script>
+  <script id="1078" type="application/vnd.observable.javascript" pinned="">
+    viewof square = view`<span>${['sqaure', await toView(flashSquare)]}`
+  </script>
+  <script id="1307" type="application/vnd.observable.javascript" pinned="">
+    square.square
+  </script>
+  <script id="1124" type="application/vnd.observable.javascript">
+    md`#### Combining coroutines
+
+    The power of coroutines is the ability to hold state in the closure, and that they can be sequences together
+    `
+  </script>
+  <script id="1135" type="application/vnd.observable.javascript" pinned="">
+    async function* flashStar() {
+      for (let index = 0; index < 360; index += 5) {
+        yield Object.defineProperty(
+          htl.svg`<svg height="50" width="50" viewbox="0 0 200 200">
+            <polygon points="100,10 40,198 190,78 10,78 160,198"
+                     style="fill:hsl(${index}, 50%, 50%);" /></svg>`,
+          'value',
+          {
+            value: "star"
+          }
+        );
+        if (index === 0) yield new Event("input", { bubbles: true });
+        await Promises.delay(10);
+      }
+    }
+  </script>
+  <script id="1140" type="application/vnd.observable.javascript" pinned="">
+    flashStar()
+  </script>
+  <script id="1182" type="application/vnd.observable.javascript" pinned="">
+    async function* choose() {
+      let resolve;
+      yield Object.defineProperty(
+        htl.html`<button onclick=${() =>
+          resolve('star')}>click to play star</button>
+                 <button onclick=${() =>
+                   resolve('square')}>click to play square</button>`,
+        'value',
+        {
+          value: 'undecided'
+        }
+      );
+      yield new Event("input", { bubbles: true });
+      return await new Promise(function(_resolve) {
+        resolve = _resolve;
+      });
+    }
+  </script>
+  <script id="1173" type="application/vnd.observable.javascript">
+    viewof animatedUI = view`<span>${[
+      'choice',
+      await toView(async function*() {
+        while (true) {
+          const choice = yield* choose();
+          if (choice == 'square') yield* flashSquare();
+          if (choice == 'star') yield* flashStar();
+        }
+      })
+    ]}`
+  </script>
+  <script id="1288" type="application/vnd.observable.javascript">
+    animatedUI
+  </script>
+  <script id="1290" type="application/vnd.observable.javascript" pinned="">
+    viewof animatedUI
+  </script>
+  <script id="1196" type="application/vnd.observable.javascript">
+    import { cautious } from '@tomlarkworthy/view'
+  </script>
+  <script id="511" type="application/vnd.observable.javascript">
+    import { colorPicker } from "@tomlarkworthy/colorpicker"
+  </script>
+  <script id="708" type="application/vnd.observable.javascript" pinned="">
+    function variable(value) {
+      let onWrites = [];
+      const self = new EventTarget();
+      return Object.defineProperties(self, {
+        value: {
+          get: () => value,
+          set: newValue => {
+            value = newValue;
+            onWrites.forEach(onWrite => onWrite(value)); // TODO: use CustomEvent
+          },
+          enumerable: true
+        },
+        toString: {
+          // Should this be a Text node?
+          value: () => `${value}`
+        },
+        onWrite: {
+          value: cb => {
+            onWrites.push(cb);
+            return self;
+          }
+        }
+      });
+    }
+  </script>
+  <script id="804" type="application/vnd.observable.javascript">
+    documentBody = Generators.observe((notify) => {
+      const resizeObserver = new ResizeObserver((entries) =>
+        notify(entries[0].target)
+      );
+      resizeObserver.observe(document.body);
+    })
+  </script>
+  <script id="815" type="application/vnd.observable.javascript">
+    documentHeight = documentBody.clientHeight
+  </script>
+  <script id="832" type="application/vnd.observable.javascript">
+    mousePos = Generators.observe(notify => {
+      const pointermoved = e => {
+        notify([e.clientX, e.clientY]);
+      };
+      document.addEventListener("pointermove", pointermoved);
+      invalidation.then(() => {
+        document.removeEventListener("pointermove", pointermoved);
+      });
+    })
+  </script>
+  <script id="1487" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="1505" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

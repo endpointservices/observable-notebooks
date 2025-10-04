@@ -1,0 +1,364 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Building a SMART FARM EP03: Dashboards over WhatsApp</title>
+  <script id="0" type="text/markdown">
+    # Building a SMART FARM EP03: Dashboards over WhatsApp
+
+  </script>
+  <script id="365" type="text/markdown">
+    So far our SMART FARM has data storage provided by Firebase ([EP01](https://observablehq.com/@tomlarkworthy/livecoding-2022-06-07)), and it is actively ingesting data from real farms in Colombia using Blues Wireless cellular connection ([EP02](https://observablehq.com/@tomlarkworthy/blueswireless-2022-06-14)). In this episode we enable workers to request for Dataviz to be beamed to their phones via WhatsApp. 
+
+    We use [Observable's amazing inbuilt Plot](https://observablehq.com/@observablehq/plot) to generate realtime dashboards. We use [Twilio](https://www.twilio.com/)'s [WhatsApp API](https://www.twilio.com/docs/whatsapp/quickstart/curl) to send charts encoded as images, and implemented the webhooks in real time using [webcode.run](https://webcode.run) (teaser below)
+
+    <video controls="controls" width="${Math.min(width, 640)}" height="400" loop name="Video Name">
+      <source src="https://storage.googleapis.com/publicartifacts/blogimages/notebookwebhook.mov">
+    </video>
+
+
+    There were lots of challenges along the way! We had to whip up an inline server to serve SVG and PNG images, so that we could pass the image data to Twilio as a publicly addressable URL. We also used WEBCode as a webhook to receive chat notifications. Our SMART FARM is becoming useful!!!
+  </script>
+  <script id="1092" type="text/markdown">
+    ## Full episode
+  </script>
+  <script id="343" type="text/html">
+    <iframe width="${Math.min(width, 640)}" height="350" src="https://www.youtube.com/embed/F3dzaYnA7E4?start=${videoStartAt}&autoplay=${videoStartAt > 10 ? 1 : 0}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+  </script>
+  <script id="643" type="application/vnd.observable.javascript">
+    viewof videoStartAt = Inputs.select(
+      new Map([
+        ["recap", 0],
+        ["about the data and collection", 45],
+        ["send a message to WhatsApp", 1440],
+        ["send a Plot chart", 2165],
+        [
+          "Q&A: Why choose Realtime Database over Firestore (for IoT workloads)?",
+          3096
+        ],
+        ["Respond to incoming messages", 3252]
+      ]),
+      {
+        label: "Jump to video location"
+      }
+    )
+  </script>
+  <script id="246" type="text/markdown">
+    ## Tarot of the Day
+    *What will happen to the price of Bitcoin in the next week?*
+
+    <a target="_blank" href="https://thetarot.online/-N563Dk450XXX2VlC_vc"><img 
+    width=${Math.min(width, 640)}                                                                         src="https://storage.googleapis.com/download/storage/v1/b/larkworthy-dfb11.appspot.com/o/@tomlarkworthy%2Ftarot-backend%2Fimages%2F-N563Dk450XXX2VlC_vc?generation=1655828444337017&alt=media">
+    </img></a>
+
+
+  </script>
+  <script id="85" type="text/markdown">
+    ## Database (EP01)
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    import {
+      firebase,
+      viewof user,
+      listen
+    } with { firebaseConfig as firebaseConfig } from "@tomlarkworthy/firebase"
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+      apiKey: "AIzaSyA9OQ--0Sn8Gm6C1B4M-SbnxRMtKHgnHzs",
+      authDomain: "agropatterns-iot.firebaseapp.com",
+      databaseURL: "https://agropatterns-iot-default-rtdb.firebaseio.com",
+      projectId: "agropatterns-iot",
+      appId: "1:650132950601:web:115b1ba65750d2b0aaf998",
+      uiConfig: {
+        // https://github.com/firebase/firebaseui-web#configuration
+        signInOptions: ["anonymous"]
+      }
+    })
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    db = firebase.database()
+  </script>
+  <script id="176" type="text/markdown">
+    ## Realtime Temperature Dashboard (EP02)
+  </script>
+  <script id="140" type="application/vnd.observable.javascript">
+    viewof querySensorName = Inputs.select(Object.keys(latest), {
+      label: "Choose sensor to chart",
+      value: "dev:864475046458393"
+    })
+  </script>
+  <script id="164" type="application/vnd.observable.javascript">
+    dashboard = Plot.plot({
+      x: { type: "time" },
+      y: { domain: [0, 40], label: "Temperature" },
+      color: {
+        domain: [0, 40],
+        scheme: "turbo"
+      },
+      marks: [
+        Plot.rect([{}], { fill: "#F4BFA6", y1: 25, y2: 40 }),
+        Plot.rect([{}], { fill: "#A7D3A6", y1: 5, y2: 25 }),
+        Plot.rect([{}], { fill: "#A4B5E3", y1: 0, y2: 5 }),
+        Plot.ruleY([20], { stroke: "#0003", strokeDasharray: [5] }),
+        Plot.lineY(
+          liveView.filter((d) => d.body.temperature), // Fix for unfiltering data serverside
+          {
+            stroke: "#0003",
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature
+          }
+        ),
+        Plot.dot(
+          liveView.filter((d) => d.body.temperature), // Fix for unfiltering data serverside
+          {
+            r: 5,
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature,
+            fill: (d) => d.body.temperature
+          }
+        )
+      ]
+    })
+  </script>
+  <script id="157" type="text/markdown">
+    ### streaming query (realtime updates)
+  </script>
+  <script id="159" type="application/vnd.observable.javascript">
+    liveViewRaw = Generators.observe((notify) => {
+      db.ref(`history/sensors/${querySensorName}`)
+        .orderByKey()
+        .startAt(Math.floor(Date.now() / 1000 - 60 * 60 * 24) + "") // reduce data returned
+        .on("value", (snapshot) => {
+          const data = snapshot.val();
+          notify(data);
+        });
+    })
+  </script>
+  <script id="166" type="application/vnd.observable.javascript">
+    liveView = Object.entries(liveViewRaw).map(([k, v]) => v)
+  </script>
+  <script id="372" type="application/vnd.observable.javascript">
+    latest = Generators.observe((notify) => {
+      db.ref(`current/sensors`).on("value", (snapshot) => {
+        const data = snapshot.val();
+        // clear synthetic data from EP01 testings
+        delete data["sensor2"];
+        delete data["defaultSensorName"];
+        notify(data);
+      });
+    })
+  </script>
+  <script id="251" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="677" type="text/markdown">
+    ## Aims for this Week (Bidirectional WhapsApp integration)
+
+    - Send dashboards over whatsapp
+    - Respond to inbound request for data
+
+    We followed the quickstart of [The WhatsApp Business API with Twilio](https://www.twilio.com/docs/whatsapp)
+  </script>
+  <script id="995" type="text/markdown">
+    ### Twilio Integration
+  </script>
+  <script id="686" type="application/vnd.observable.javascript">
+    TWILIO_ACCOUNT_SID = "AC10f48e9a0e14f3ea9f27edad5a72929c"
+  </script>
+  <script id="689" type="application/vnd.observable.javascript" pinned="">
+    viewof TWILIO_AUTH_TOKEN = Inputs.password()
+  </script>
+  <script id="1048" type="text/markdown">
+    ### Test call
+
+    We used the following cell to test we can send a message
+  </script>
+  <script id="1000" type="application/vnd.observable.javascript">
+    viewof sendMessage = Inputs.button("sendMessage to Twilio API")
+  </script>
+  <script id="695" type="application/vnd.observable.javascript" pinned="">
+    sendMessageResponse = sendMessage !== 0
+      ? fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+          {
+            method: "POST",
+            body: new URLSearchParams(
+              Object.entries({
+                From: "whatsapp:+14155238886",
+                To: "whatsapp:+4915114338654",
+                Body: "new image",
+                MediaUrl: pngLink.href //"https://webcode.run/observablehq.com/d/4e796c3f3029f09e;svg"
+              })
+            ).toString(),
+            headers: {
+              "content-type": "application/x-www-form-urlencoded",
+              authorization: `Basic ${btoa(
+                TWILIO_ACCOUNT_SID + ":" + TWILIO_AUTH_TOKEN
+              )}`
+            }
+          }
+        )
+      : invalidation
+  </script>
+  <script id="707" type="application/vnd.observable.javascript">
+    sendMessageResponse.json()
+  </script>
+  <script id="1051" type="text/markdown">
+    Next we tried to send an image as well using the tutorial [How to Send a Picture on WhatsApp Using Twilio and JavaScript](https://www.twilio.com/blog/how-to-send-picture-whatsapp-using-twilio-and-javascript)
+  </script>
+  <script id="740" type="application/vnd.observable.javascript" pinned="">
+    dashboardEndpoint = endpoint("svg", async (req, res) => {
+      res.header("content-type", "image/svg+xml");
+      const arrayBuffer = await serialize(dashboard).arrayBuffer();
+      res.send(arrayBuffer);
+    })
+  </script>
+  <script id="1053" type="text/markdown">
+    We needed to serialize the SVG, we used Mike Bostock's excellent notebook to help. In the stream I copy and pasted it but since I have replaced it with an import.
+  </script>
+  <script id="793" type="application/vnd.observable.javascript">
+    import { rasterize, serialize } from "@mbostock/saving-svg"
+  </script>
+  <script id="1056" type="text/markdown">
+    To test we are serving the SVG properly, we put it in a HTML `<img>` element
+  </script>
+  <script id="758" type="text/html" pinned="">
+    <img src="${dashboardEndpoint.href}">
+  </script>
+  <script id="1061" type="text/markdown">
+    As it turned out SVG was not supported so we rasterized it and used PNG instead. That worked!
+  </script>
+  <script id="789" type="application/vnd.observable.javascript" pinned="">
+    pngLink = endpoint("png", async (req, res) => {
+      res.header("content-type", "image/png");
+      const blob = await rasterize(dashboard);
+      const arrayBuffer = await blob.arrayBuffer();
+      res.send(arrayBuffer);
+    })
+
+  </script>
+  <script id="1065" type="text/markdown">
+    ## Webhook
+
+    Next we built our very basic bot that would respond to requests over WhatsApp. First we needed a webhook to receive events from Twilio's WhatsApp service.
+  </script>
+  <script id="810" type="application/vnd.observable.javascript" pinned="">
+    whatsapp_webhook = endpoint("whatsapp_webhook", async (req, res, ctx) => {
+      try {
+        const response = await viewof whatsappEvent.send({
+          req,
+          res,
+          ctx
+        });
+        res.send(response);
+      } catch (err) {
+        res.status(500).send(err.message);
+      }
+    })
+  </script>
+  <script id="1069" type="text/markdown">
+    Like in EP02, we spread a complex server over several Observable dataflow cells using a [flowQueue](https://observablehq.com/@tomlarkworthy/flow-queue)
+  </script>
+  <script id="261" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="815" type="application/vnd.observable.javascript" pinned="">
+    viewof whatsappEvent = flowQueue()
+  </script>
+  <script id="817" type="application/vnd.observable.javascript" pinned="">
+    whatsappEvent
+  </script>
+  <script id="826" type="application/vnd.observable.javascript" pinned="">
+    // Incoming requests are URL form encoded, so we have to decode them
+    whatsappIncoming = Object.fromEntries(
+      new URLSearchParams(whatsappEvent.req.body).entries()
+    )
+  </script>
+  <script id="833" type="application/vnd.observable.javascript" pinned="">
+    msg = whatsappIncoming.Body // The body contains the chat message
+  </script>
+  <script id="835" type="application/vnd.observable.javascript" pinned="">
+    /* based on the incoming message we make a decision what to send */
+    chatResponse = {
+      const token = // Get the token from secrets if not in the notebook
+        TWILIO_AUTH_TOKEN || whatsappEvent.ctx.secrets["TWILIO_AUTH_TOKEN"];
+
+      if (msg === "chart") {
+        fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+          {
+            method: "POST",
+            body: new URLSearchParams(
+              Object.entries({
+                From: "whatsapp:+14155238886",
+                To: whatsappIncoming.From,
+                Body: "Your chart:",
+                MediaUrl: pngLink.href
+              })
+            ).toString(),
+            headers: {
+              "content-type": "application/x-www-form-urlencoded",
+              authorization: `Basic ${btoa(TWILIO_ACCOUNT_SID + ":" + token)}`
+            }
+          }
+        );
+        return "Sending chart";
+      } else {
+        fetch(
+          `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`,
+          {
+            method: "POST",
+            body: new URLSearchParams(
+              Object.entries({
+                From: "whatsapp:+14155238886",
+                To: whatsappIncoming.From,
+                Body: `The sensor's last payload is ${JSON.stringify(
+                  latest["dev:864475046457429"].body
+                )}`
+              })
+            ).toString(),
+            headers: {
+              "content-type": "application/x-www-form-urlencoded",
+              authorization: `Basic ${btoa(TWILIO_ACCOUNT_SID + ":" + token)}`
+            }
+          }
+        );
+        return "Sending latest payload";
+      }
+    }
+  </script>
+  <script id="819" type="application/vnd.observable.javascript" pinned="">
+    whatsappEventResolver = {
+      chatResponse;
+      viewof whatsappEvent.resolve("OK");
+    }
+  </script>
+  <script id="1076" type="text/markdown">
+    ## Conclusion
+
+    We can 
+
+    - Serve Plot Dashboards over a URL
+    - Send and receive WhatsApp chat messages!
+    - Send live Dashboard data over WhatsApp!
+
+    ${await FileAttachment("image@2.png").image({style: `max-width: ${Math.min(width, 640)}px`})}
+  </script>
+  <script id="585" type="text/markdown">
+    ## Next week
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+    import { upcoming } from "@endpointservices/meetups";
+  </script>
+  <script id="616" type="application/vnd.observable.javascript">
+    upcoming
+  </script>
+  <script id="453" type="text/markdown">
+    ## Dependancies
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer"
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

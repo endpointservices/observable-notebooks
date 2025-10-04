@@ -1,0 +1,103 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Twitch Webhook</title>
+  <script id="0" type="text/markdown">
+    # Twitch Webhook
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    import {endpoint} from '@tomlarkworthy/webcode'
+  </script>
+  <script id="118" type="text/markdown">
+    ## Webhook to Twitch Events
+  </script>
+  <script id="36" type="application/vnd.observable.javascript" pinned="">
+    events = endpoint("twitch", (req, res) => {
+      viewof req_res.value = { req, res };
+      viewof req_res.dispatchEvent(new Event("input"));
+    })
+  </script>
+  <script id="113" type="application/vnd.observable.javascript" pinned="">
+    viewof req_res = Inputs.input()
+  </script>
+  <script id="116" type="application/vnd.observable.javascript" pinned="">
+    body = JSON.parse(req_res.req.body)
+  </script>
+  <script id="124" type="application/vnd.observable.javascript" pinned="">
+    challenge_responser = {
+      if (body.challenge) {
+        return req_res.res.send(body.challenge);
+      }
+    }
+  </script>
+  <script id="40" type="application/vnd.observable.javascript" pinned="">
+    endpoint("oauth", (req, res) => {
+      debugger;
+      res.send("hello");
+    })
+  </script>
+  <script id="50" type="application/vnd.observable.javascript" pinned="">
+    viewof token = Inputs.text({
+      label: "token"
+    })
+  </script>
+  <script id="109" type="application/vnd.observable.javascript" pinned="">
+    webhook_secret = "lkhfsdkjfhsdklfahdfas"
+  </script>
+  <script id="42" type="application/vnd.observable.javascript" pinned="">
+    subscription = (
+      await fetch("https://api.twitch.tv/helix/eventsub/subscriptions", {
+        method: "post",
+        headers: {
+          Authorization: `Bearer ${app_token}`,
+          "Content-Type": "application/json",
+          "Client-Id": `${client_id}`
+        },
+        body: JSON.stringify({
+          type: "user.update",
+          version: "1",
+          condition: {
+            user_id: "1234"
+          },
+          transport: {
+            method: "webhook",
+            callback: events.href,
+            secret: webhook_secret
+          }
+        })
+      })
+    ).json()
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="97" type="text/markdown">
+    ## Generate an App token
+  </script>
+  <script id="78" type="application/vnd.observable.javascript">
+    client_id = "c4lcospy8fxkqmu27vw2hkwzqov44t"
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    viewof client_secret = Inputs.bind(
+      Inputs.password({
+        label: "client secret"
+      }),
+      localStorageView("twitch_Secret")
+    )
+  </script>
+  <script id="71" type="application/vnd.observable.javascript">
+    viewof app_token = Inputs.password({
+      label: "app_token",
+      value: (
+        await (
+          await fetch("https://id.twitch.tv/oauth2/token", {
+            method: "post",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: `client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials`
+          })
+        ).json()
+      ).access_token
+    })
+  </script>
+</notebook>

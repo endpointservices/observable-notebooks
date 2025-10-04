@@ -1,0 +1,882 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Observable Notebook Compressed RAG Index + Vector Search</title>
+  <script id="0" type="text/markdown">
+    # Observable Notebook Compressed RAG Index + Vector Search
+
+    Using embeddings of notebook cells so we can do semantic similarity search on the cell level. This notebook has a toy vector search engine using a pre-prepared index, but the main point is that it builds the index.
+
+    The uncompressed index is 14Mb for 2600 cells. Using PCA we achieve 3.7Mb including cell source code, vectors, and the PCA projection. matrix.
+
+    Used to generate Roboco-op's [RAG index](https://observablehq.com/@tomlarkworthy/rag-extension?collection=@tomlarkworthy/robocoop)
+
+    note this requires an OpenAI API key to fetch the embeddings for a search term.
+  </script>
+  <script id="3444" type="text/markdown">
+    ### Vector search
+  </script>
+  <script id="3489" type="application/vnd.observable.javascript">
+    viewof query = Inputs.text({
+      value: "plot the top 3 athletes",
+      width: "100%",
+      label: "query",
+      submit: true
+    })
+  </script>
+  <script id="4033" type="application/vnd.observable.javascript">
+    md`${matches.map(
+      (row) => md`
+    <details>
+    <summary>
+    <a href="https://observablehq.com/d/${extractHexcode(
+        row.cell_path
+      )}" target="_blank">
+    https://observablehq.com/d/${extractHexcode(row.cell_path)}
+    </a>
+    </summary>
+    ${md`~~~js
+    ${row.code}
+    ~~~`}
+    </details>`
+    )}`
+  </script>
+  <script id="4046" type="application/vnd.observable.javascript">
+    extractHexcode = ({
+      prompt:
+        "extract the last segment hexcode before the @ in `@tomlarkworthy/adapting-dataviz/32eeadb67cb4cbcb@1472.js`",
+      time: 1727977760396
+    } &&
+      function extractHexcode(filename) {
+        const match = filename.match(/\/([^/@]+)@/);
+        return match ? match[1] : null;
+      })
+  </script>
+  <script id="3480" type="application/vnd.observable.javascript">
+    matches = vector_search(query, { n: 10 })
+  </script>
+  <script id="4418" type="application/vnd.observable.javascript">
+    get_code = async ({ cell_id, cell_path }) => {
+      const result = await embedding_db.query(
+        `SELECT code FROM cells WHERE id = ? AND notebook_path = ?`,
+        [cell_id, cell_path]
+      );
+      return result.length > 0
+        ? {
+            cell_id,
+            cell_path,
+            code: result[0].code
+          }
+        : null;
+    }
+  </script>
+  <script id="3460" type="application/vnd.observable.javascript" pinned="">
+    vector_search = ({
+      prompt:
+        "similarity search needs to return the cell_id, cell_path of the top matches",
+      time: 1727050000000
+    } &&
+      async function vector_search(query, options = {}) {
+        const n = options.n || 5;
+        const embedding_full = await get_vector_embedding(query);
+        const embedding = embedding_to_pca(embedding_full, means, proj);
+        const rows = await embedding_db.query(
+          `SELECT cell_id, cell_path, pca FROM compressed_embeddings`
+        );
+
+        function cosine_similarity(a, b) {
+          const dot = a.reduce((acc, val, i) => acc + val * b[i], 0);
+          const normA = Math.sqrt(a.reduce((acc, val) => acc + val * val, 0));
+          const normB = Math.sqrt(b.reduce((acc, val) => acc + val * val, 0));
+          return dot / (normA * normB);
+        }
+
+        const similarities = rows.map((row) => {
+          const sim = cosine_similarity(embedding, [...row.pca]);
+          return {
+            cell_id: row.cell_id,
+            cell_path: row.cell_path,
+            similarity: sim
+          };
+        });
+        similarities.sort((a, b) => b.similarity - a.similarity);
+        // Return only cell_id and cell_path
+        return Promise.all(similarities.slice(0, n).map(get_code));
+      })
+  </script>
+  <script id="3453" type="application/vnd.observable.javascript">
+    viewof embedding_db = Inputs.input()
+  </script>
+  <script id="3449" type="application/vnd.observable.javascript">
+    viewof embedding_file = Inputs.file({
+      label: "Upload embedding file",
+      accept: ".zip",
+      required: true
+    })
+  </script>
+  <script id="3451" type="application/vnd.observable.javascript">
+    {
+      viewof embedding_db.value = await importDuckDB(embedding_file);
+      viewof embedding_db.dispatchEvent(new Event("input"));
+    }
+  </script>
+  <script id="3284" type="application/vnd.observable.javascript">
+    db = {
+      const db = await DuckDBClient.of({});
+      db.query("SET memory_limit = '10GB';");
+      return db;
+    }
+  </script>
+  <script id="3948" type="text/markdown">
+    ### Retreve indexes from S3
+  </script>
+  <script id="4332" type="application/vnd.observable.javascript">
+    load_compressed_embeddings = {
+      const embedding_file = await fetch(
+        "https://tomlarkworthy-access-aws.s3.eu-central-1.amazonaws.com/datasets/compressed.zip"
+      );
+      viewof embedding_db.value = await importDuckDB(embedding_file);
+      viewof embedding_db.dispatchEvent(new Event("input"));
+      return viewof embedding_db.value;
+    }
+  </script>
+  <script id="4335" type="application/vnd.observable.javascript">
+    load_pca_proj = (
+      await fetch(
+        "https://tomlarkworthy-access-aws.s3.eu-central-1.amazonaws.com/datasets/pca_projection.json"
+      )
+    ).json()
+  </script>
+  <script id="4413" type="application/vnd.observable.javascript" pinned="">
+    load_indexes = {
+      load_compressed_embeddings;
+      load_pca_proj;
+      return "Loaded";
+    }
+  </script>
+  <script id="3939" type="text/markdown">
+    # Indexing
+
+    To build the index we fetch notebook exports and run them through OpenAI's vector embeddings. Due to RAM constraints of the browser, this had to be done in steps with a fresh DB each step.
+  </script>
+  <script id="3129" type="text/markdown">
+    ## Step 1: Build Corpus
+  </script>
+  <script id="2845" type="application/vnd.observable.javascript">
+    viewof file = Inputs.file({
+      label: "Upload content file",
+      accept: ".zip",
+      required: true
+    })
+  </script>
+  <script id="2871" type="application/vnd.observable.javascript">
+    {
+      const kb = importDuckDB(file, { client: db });
+      viewof kb.value = kb;
+      viewof kb.dispatchEvent(new Event("input"));
+      return kb;
+    }
+  </script>
+  <script id="2829" type="text/markdown">
+    ## Import from notebook Backups: [endpointservices/observable-notebooks](https://github.com/endpointservices/observable-notebooks)
+  </script>
+  <script id="2852" type="application/vnd.observable.javascript">
+    viewof fetchFromGithub = Inputs.button("import from Github", {
+      required: true
+    })
+  </script>
+  <script id="2740" type="application/vnd.observable.javascript" pinned="">
+    sources = {
+      ({
+        prompt:
+          'list all files in "https://github.com/endpointservices/observable-notebooks"',
+        time: 1726857989123
+      });
+      fetchFromGithub; // Only if asked
+      const owner = "endpointservices";
+      const repo = "observable-notebooks";
+      const branch = "main";
+
+      const response = await fetch(
+        `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`
+      );
+      const data = await response.json();
+      const files = data.tree
+        .filter((item) => item.type === "blob")
+        .map((item) => item.path)
+        .filter((item) => item.endsWith(".js"));
+      return files;
+    }
+  </script>
+  <script id="2753" type="application/vnd.observable.javascript">
+    latestSources = {
+      ({
+        prompt: "reduce the source list to just the latest version of a given file",
+        time: 1726858685611
+      });
+      const fileMap = {};
+
+      sources.forEach((path) => {
+        // Example path: "@endpointservices/auth/027541187c96745d@147.js"
+        const parts = path.split("/");
+        const fileNameWithVersion = parts[parts.length - 1];
+        const match = fileNameWithVersion.match(/^(.*)@(\d+)\.js$/);
+
+        if (match) {
+          const baseName = match[1] + ".js";
+          const version = parseInt(match[2], 10);
+
+          if (!fileMap[baseName] || version > fileMap[baseName].version) {
+            fileMap[baseName] = { path, version };
+          }
+        }
+      });
+
+      return Object.values(fileMap).map((entry) => entry.path);
+    }
+  </script>
+  <script id="2759" type="application/vnd.observable.javascript">
+    extendedSources = {
+      ({
+        prompt:
+          "we have the latest versions of some files, but we are missing the module indexes like `@endpointservices/cellstore/index.js` we should also bring them into RAG",
+        time: 1726859116211
+      });
+
+      const moduleSet = new Set();
+
+      // Extract unique module paths from latestSources
+      latestSources.forEach((path) => {
+        const parts = path.split("/");
+        if (parts.length >= 2) {
+          const modulePath = parts.slice(0, 2).join("/");
+          moduleSet.add(`${modulePath}/index.js`);
+        }
+      });
+
+      // Combine latestSources with the module index files
+      const extendedSources = Array.from(new Set([...latestSources, ...moduleSet]));
+
+      return extendedSources;
+    }
+  </script>
+  <script id="2756" type="application/vnd.observable.javascript">
+    highlight(latestSources)
+  </script>
+  <script id="2768" type="application/vnd.observable.javascript">
+    importSources = {
+      ({
+        prompt: "create a duckdb database to index our files ",
+        time: 1726859446011
+      });
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS files (
+          path TEXT PRIMARY KEY,
+          content TEXT
+        )
+      `);
+
+      return await Promise.all(
+        latestSources.map(async (path) => {
+          const response = await fetch(
+            `https://raw.githubusercontent.com/endpointservices/observable-notebooks/main/${path}`
+          );
+          const content = await response.text();
+          await db.query(
+            `INSERT INTO files (path, content) VALUES (?, ?) ON CONFLICT(path) DO UPDATE SET content=excluded.content`,
+            [path, content]
+          );
+        })
+      );
+    }
+  </script>
+  <script id="2831" type="text/markdown">
+    ## Export corpus from file
+  </script>
+  <script id="2816" type="text/html">
+    <button onclick=${() => {
+      debugger;
+      exportDuckDB(kb, {
+      format: "parquet",
+      filename: "corpus",
+      download: true
+    })}}>Export corpus file
+  </script>
+  <script id="2867" type="text/markdown">
+    ## Step 2: Extract Notebook Cells
+  </script>
+  <script id="2900" type="application/vnd.observable.javascript">
+    viewof kb = Inputs.input(db)
+  </script>
+  <script id="2927" type="application/vnd.observable.javascript">
+    acorn = ({ prompt: "import acorn", time: 1726903673948 } &&
+      import("https://esm.sh/acorn@8.12.0"))
+  </script>
+  <script id="2934" type="application/vnd.observable.javascript" pinned="">
+    parsedContent = {
+      const filedata = await kb.query(`SELECT content, path FROM files LIMIT 100;`);
+      await kb.query(`DROP TABLE files;`); // clear memory
+      return filedata.map(({ content, path }) => ({
+        parsed: acorn.parse(content, { ecmaVersion: 2022, sourceType: "module" }),
+        content,
+        path
+      }));
+    }
+  </script>
+  <script id="2947" type="application/vnd.observable.javascript" pinned="">
+    processedContent = ({
+      prompt:
+        "For each element of parsedContent, add a list of top level function declarations, and slice the content to product a string under a key cells.",
+      time: 1726905252540
+    } &&
+      parsedContent.map((item) => ({
+        cells: item.parsed.body
+          .filter((node) => node.type === "FunctionDeclaration")
+          .map((fn, i) => ({
+            id: i,
+            name: fn.id.name,
+            code: item.content.slice(fn.start, fn.end),
+            fn
+          })),
+        export: item.parsed.body
+          .filter((node) => node.type === "ExportDefaultDeclaration")
+          .map((fn, i) => ({
+            code: item.content.slice(fn.start, fn.end),
+            fn
+          }))[0],
+
+        ...item
+      })))
+  </script>
+  <script id="2929" type="application/vnd.observable.javascript">
+    highlight(processedContent[0].cells[0].code)
+  </script>
+  <script id="3004" type="application/vnd.observable.javascript">
+    extract_definitions = ({
+      prompt:
+        'extract_definitions is not quite right. the define function variable number of args. The last arg is the definition,  and the 2nd to last is the dependancies andsometimes a name is defined. Can you rewrite that, lets extract the dependancie string names as well. Rewrite extract_definitions, the matching logic is correct\n\n\n```\nfunction variable_define(name, inputs, definition) {\n  switch (arguments.length) {\n    case 1: {\n      definition = name, name = inputs = null;\n      break;\n    }\n    case 2: {\n      definition = inputs;\n      if (typeof name === "string") inputs = null;\n      else inputs = name, name = null;\n      break;\n    }\n  }\n  return variable_defineImpl.call(this,\n    name == null ? null : String(name),\n    inputs == null ? [] : map.call(inputs, this._resolve, this),\n    typeof definition === "function" ? definition : constant(definition)\n  );\n}\n```',
+      time: 1726922431995
+    } &&
+      function extract_definitions(notebook) {
+        const definitions = {};
+
+        function traverse(node) {
+          if (
+            node.type === "CallExpression" &&
+            node.callee.type === "MemberExpression" &&
+            node.callee.property.type === "Identifier" &&
+            node.callee.property.name === "define"
+          ) {
+            const args = node.arguments;
+            let name = null;
+            let dependencies = [];
+            let definition = null;
+
+            if (args.length === 1) {
+              // define(definition)
+              definition = args[0];
+            } else if (args.length === 2) {
+              if (args[0].type === "ArrayExpression") {
+                // define(dependencies, definition)
+                dependencies = args[0].elements
+                  .filter(
+                    (el) => el.type === "Literal" && typeof el.value === "string"
+                  )
+                  .map((el) => el.value);
+                definition = args[1];
+              } else if (
+                args[0].type === "Literal" &&
+                typeof args[0].value === "string"
+              ) {
+                // define(name, definition)
+                name = args[0].value;
+                definition = args[1];
+              }
+            } else if (args.length >= 3) {
+              // define(name, dependencies, definition)
+              if (args[0].type === "Literal" && typeof args[0].value === "string") {
+                name = args[0].value;
+              }
+              if (args[1].type === "ArrayExpression") {
+                dependencies = args[1].elements
+                  .filter(
+                    (el) => el.type === "Literal" && typeof el.value === "string"
+                  )
+                  .map((el) => el.value);
+              }
+              definition = args[args.length - 1];
+            }
+
+            if (definition) {
+              if (definition.type == "Identifier") {
+                definition = definition.name;
+              }
+              definitions[definition] = {
+                name: name,
+                dependencies: dependencies,
+                definition: definition
+              };
+            }
+          }
+
+          for (const key in node) {
+            const child = node[key];
+            if (Array.isArray(child)) {
+              child.forEach(traverse);
+            } else if (typeof child === "object" && child !== null) {
+              traverse(child);
+            }
+          }
+        }
+
+        traverse(notebook.export.fn);
+        return definitions;
+      })
+  </script>
+  <script id="3008" type="application/vnd.observable.javascript" pinned="">
+    highlight(extract_definitions(processedContent[1]))
+  </script>
+  <script id="3032" type="application/vnd.observable.javascript" pinned="">
+    linkedContent = processedContent.map((content) => {
+      const definitions = extract_definitions(content);
+      content.cells.forEach((cell) => {
+        if (definitions[cell.name]) {
+          cell.cell_name = definitions[cell.name].name;
+          cell.dependencies = definitions[cell.name].dependencies;
+        }
+      });
+      return {
+        definitions,
+        ...content
+      };
+    })
+  </script>
+  <script id="3063" type="application/vnd.observable.javascript">
+    highlight(linkedContent[3])
+  </script>
+  <script id="3058" type="application/vnd.observable.javascript" pinned="">
+    create_tables = {
+      ({
+        prompt:
+          "Now insert into the database a tables called notebooks, and cells which contain the all the information in cells. \n\nNotebooks should contain the path (thats their primary key)\n\nCells should contain a reference to their notebook (foreign key), their id, their cell_name, their code.\n\nCross dependancies between cells should be in a separate table called deps",
+        time: 1726936221270
+      });
+      const kb = await DuckDBClient.of({});
+      kb.query("SET memory_limit = '14GB';");
+      kb.query(`
+      CREATE TABLE IF NOT EXISTS notebooks (
+        path TEXT PRIMARY KEY
+      );`);
+
+      kb.query(`CREATE TABLE IF NOT EXISTS cells (
+        id INTEGER,
+        cell_name TEXT,
+        code TEXT,
+        notebook_path TEXT,
+        FOREIGN KEY (notebook_path) REFERENCES notebooks(path),
+        PRIMARY KEY (id, notebook_path)
+      );`);
+
+      kb.query(`CREATE TABLE IF NOT EXISTS deps (
+        cell_id INTEGER,
+        cell_path TEXT, 
+        depends_on TEXT,
+        PRIMARY KEY (cell_id, cell_path, depends_on),
+        FOREIGN KEY (cell_id, cell_path) REFERENCES cells(id, notebook_path)
+      );`);
+      return kb;
+    }
+  </script>
+  <script id="3066" type="application/vnd.observable.javascript">
+    insertLinks = ({
+      prompt: "Now insert the data from linkedContent",
+      time: 1726936427272
+    } &&
+      Promise.all(
+        linkedContent.map(async (notebook) => {
+          create_tables;
+          await create_tables.query(
+            `INSERT INTO notebooks (path) VALUES (?) ON CONFLICT(path) DO NOTHING`,
+            [notebook.path]
+          );
+          await Promise.all(
+            notebook.cells.map(async (cell) => {
+              await create_tables.query(
+                `INSERT INTO cells (id, cell_name, code, notebook_path) VALUES (?, ?, ?, ?) ON CONFLICT(id, notebook_path) DO UPDATE SET cell_name = excluded.cell_name, code = excluded.code`,
+                [cell.id, cell.cell_name, cell.code, notebook.path]
+              );
+              if (cell.dependencies && cell.dependencies.length > 0) {
+                cell.dependencies.map(async (dep) => {
+                  return await create_tables.query(
+                    `INSERT INTO deps (cell_id, cell_path, depends_on) VALUES (?, ?, ?) ON CONFLICT(cell_id, cell_path, depends_on) DO NOTHING`,
+                    [cell.id, notebook.path, dep]
+                  );
+                });
+              }
+            })
+          );
+        })
+      ))
+  </script>
+  <script id="3261" type="application/vnd.observable.javascript" pinned="">
+    {
+      insertLinks;
+      viewof populated_kb.value = create_tables;
+      viewof populated_kb.dispatchEvent(new Event("input"));
+    }
+  </script>
+  <script id="3068" type="application/sql" database="var:db">
+    SELECT * FROM cells
+  </script>
+  <script id="3081" type="application/vnd.observable.javascript">
+    highlight({
+      ...linkedContent[4].cells[1],
+      fn: undefined
+    })
+  </script>
+  <script id="3401" type="text/html">
+    <button onclick=${() => {
+      debugger;
+      exportDuckDB(populated_kb, {
+      format: "parquet",
+      filename: "cells",
+      download: true,
+      dirname:`/export-${Math.random().toString(36).substring(2)}`
+    })}}>Export cells file
+  </script>
+  <script id="3143" type="application/vnd.observable.javascript">
+    viewof populated_kb = new Inputs.input(undefined)
+  </script>
+  <script id="3150" type="text/markdown">
+    ### Step 3: Index Cells with Vectors
+  </script>
+  <script id="3412" type="application/vnd.observable.javascript" pinned="">
+    viewof cell_file = Inputs.file({
+      label: "Upload cell file",
+      accept: ".zip",
+      required: true
+    })
+  </script>
+  <script id="3415" type="application/vnd.observable.javascript" pinned="">
+    cell_kb = importDuckDB(cell_file)
+  </script>
+  <script id="3152" type="application/vnd.observable.javascript" pinned="">
+    get_vector_embedding = ({
+      prompt:
+        "create a function call get vector embedding that will call OpenAI and retreive the vector embedding for a peice of text",
+      time: 1727006386551
+    } &&
+      async function get_vector_embedding(text) {
+        const response = await fetch("https://api.openai.com/v1/embeddings", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            input: text,
+            model: "text-embedding-3-small"
+          })
+        });
+        if (!response.ok) {
+          throw new Error(`Error fetching embedding: ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data.data[0].embedding;
+      })
+  </script>
+  <script id="3160" type="application/vnd.observable.javascript" pinned="">
+    create_embeddings_table = ({
+      prompt:
+        'create an embeddings table with column "text-embedding-3-small" that is a  vec FLOAT[1536]  and has a foreign key to cells',
+      time: 1727006849001
+    } &&
+      (await cell_kb.query(`
+      CREATE TABLE IF NOT EXISTS cell_embeddings (
+        cell_id INTEGER,
+        cell_path TEXT,
+        "text-embedding-3-small" FLOAT[1536],
+        PRIMARY KEY (cell_id, cell_path),
+        FOREIGN KEY (cell_id, cell_path) REFERENCES cells(id, notebook_path)
+      );
+    `)))
+  </script>
+  <script id="3178" type="application/vnd.observable.javascript" pinned="">
+    cellsWithoutEmbedding = {
+      create_embeddings_table;
+      return await cell_kb.query(`
+        SELECT c.id, c.cell_name, c.code, c.notebook_path
+        FROM cells c
+        LEFT JOIN cell_embeddings ce
+          ON c.id = ce.cell_id AND c.notebook_path = ce.cell_path
+        WHERE ce."text-embedding-3-small" IS NULL
+      `);
+    }
+  </script>
+  <script id="3174" type="application/vnd.observable.javascript" pinned="">
+    insert_embeddings = {
+      ({
+        prompt:
+          'Now insert an embedding for every cell that does not already have an embedding based on its "code"',
+        time: 1727007112473
+      });
+
+      for (const cell of cellsWithoutEmbedding) {
+        const embedding = await get_vector_embedding(cell.code);
+        await cell_kb.query(`
+          INSERT INTO cell_embeddings (cell_id, cell_path, "text-embedding-3-small")
+          VALUES (${cell.id}, '${cell.notebook_path}', [${embedding}])`);
+      }
+    }
+  </script>
+  <script id="3436" type="text/html">
+    <button onclick=${() => {
+      exportDuckDB(embedding_db, {
+      format: "parquet",
+      filename: "embeddings",
+      parquetOptions: { COMPRESSION: "gzip"} ,
+      download: true,
+    })}}>Export embeddings file
+  </script>
+  <script id="2794" type="application/sql" pinned="" database="var:db">
+    SELECT * FROM cells
+  </script>
+  <script id="3996" type="text/markdown">
+    ### PCA Vector compression
+
+    We can save space by using PCA to reduce our vectors
+
+  </script>
+  <script id="3952" type="application/vnd.observable.javascript">
+    Inputs.button("load raw embeddings from s3", {
+      reduce: async () => {
+        const embedding_file = await fetch(
+          "https://tomlarkworthy-access-aws.s3.eu-central-1.amazonaws.com/datasets/embeddings.zip"
+        );
+        viewof embedding_db.value = await importDuckDB(embedding_file);
+        viewof embedding_db.dispatchEvent(new Event("input"));
+        return viewof embedding_db.value;
+      }
+    })
+  </script>
+  <script id="4020" type="application/vnd.observable.javascript">
+    viewof compress = Inputs.toggle({ value: false, label: "compress (slow)" })
+  </script>
+  <script id="3992" type="application/vnd.observable.javascript">
+    PCA = (await require("https://bundle.run/ml-pca@4.0.2")).PCA
+  </script>
+  <script id="4122" type="application/vnd.observable.javascript">
+    embeddings = embedding_db.query(`SELECT * FROM cell_embeddings`)
+  </script>
+  <script id="3999" type="application/vnd.observable.javascript">
+    vectors = compress &&
+      (embeddings)
+        .map((d) => d["text-embedding-3-small"])
+        .map((r) => [...r])
+  </script>
+  <script id="3994" type="application/vnd.observable.javascript">
+    pca = {
+      if (!compress) return;
+      return new PCA(vectors, { center: true });
+    }
+  </script>
+  <script id="4018" type="application/vnd.observable.javascript">
+    variance = pca
+      ? pca.getExplainedVariance().map((v, i) => ({ v, i }))
+      : undefined
+  </script>
+  <script id="4076" type="application/vnd.observable.javascript" pinned="">
+    viewof cutoff = Inputs.range([1, variance?.length], { value: 200, step: 1 })
+  </script>
+  <script id="4080" type="application/vnd.observable.javascript">
+    Plot.plot({
+      title: "PCA explained variance",
+      marks: [
+        Plot.lineY(variance, { x: "i", y: "v", tip: true }),
+        Plot.ruleX([cutoff], { stroke: "red" }),
+        Plot.ruleY([0], { stroke: "black" }),
+        Plot.text([{}], {
+          x: (d) => cutoff + 40,
+          y: (d) => 0.01,
+          text: (d) => "cutoff"
+        })
+      ]
+    })
+  </script>
+  <script id="4218" type="application/vnd.observable.javascript" pinned="">
+    means = pca ? new Float32Array(pca.means) : base64ToFloat32(load_pca_proj.means)
+  </script>
+  <script id="4129" type="application/vnd.observable.javascript">
+    embedding_to_pca = ({
+      prompt:
+        "write a JS native way for embedding_to_pca(vector, components, means, scale, matrix). The libraries implementation is \n\n\n```\npublic predict(dataset: MaybeMatrix, options: PredictOptions = {}): Matrix {\n    const { nComponents = (this.U as Matrix).columns } = options;\n    let datasetmatrix;\n    if (Array.isArray(dataset)) {\n      datasetmatrix = new Matrix(dataset);\n    } else {\n      datasetmatrix = new Matrix(dataset);\n    }\n    if (this.center) {\n      datasetmatrix.subRowVector(this.means as number[]);\n      if (this.scale) {\n        for (let i of this.excludedFeatures) {\n          datasetmatrix.removeColumn(i);\n        }\n        datasetmatrix.divRowVector(this.stdevs as number[]);\n      }\n    }\n    let predictions = datasetmatrix.mmul(this.U as Matrix);\n    return predictions.subMatrix(0, predictions.rows - 1, 0, nComponents - 1);\n  }\n```\n",
+      time: 1727980602225
+    } &&
+      function embedding_to_pca(vector, means, components) {
+        // Center the vector by subtracting the means
+        let n = components.length / means.length;
+        let centered = vector.map((val, i) => val - means[i]);
+        // Perform matrix multiplication: centered vector * components matrix
+        // Assuming components is an array of arrays (each sub-array is a component)
+        const projection = Array.from({ length: cutoff }).map((_, i) => {
+          let sum = 0;
+          for (let j = 0; j < means.length; j++) {
+            sum += components[j * n + i] * centered[j];
+          }
+          return sum;
+        });
+        return projection;
+      })
+  </script>
+  <script id="4197" type="application/vnd.observable.javascript" pinned="">
+    proj = pca
+      ? new Float32Array(pca.U.data.map((row) => [...row.slice(0, cutoff)]).flat())
+      : base64ToFloat32(load_pca_proj.proj)
+  </script>
+  <script id="4224" type="application/vnd.observable.javascript" pinned="">
+    create_compressed_table = Promise.all([
+      embedding_db.query(`
+      CREATE TABLE IF NOT EXISTS compressed_embeddings (
+        cell_id INTEGER,
+        cell_path TEXT,
+        "pca" FLOAT[${cutoff}],
+        PRIMARY KEY (cell_id, cell_path),
+        FOREIGN KEY (cell_id, cell_path) REFERENCES cells(id, notebook_path)
+      );
+    `)
+    ])
+  </script>
+  <script id="4232" type="application/vnd.observable.javascript" pinned="">
+    insert_compressed_embeddings = {
+      ({
+        prompt:
+          'Now insert an embedding for every cell that does not already have an embedding based on its "code"',
+        time: 1727007112473
+      });
+      create_compressed_table;
+      return Promise.all([
+        ...embeddings.map((cell, i) =>
+          embedding_db.query(`
+          INSERT INTO compressed_embeddings (cell_id, cell_path, pca)
+          VALUES (${cell.cell_id}, '${cell.cell_path}', [${embedding_to_pca(
+            [...cell["text-embedding-3-small"]],
+            means,
+            proj
+          )}])`)
+        )
+      ]);
+    }
+  </script>
+  <script id="4243" type="module">
+
+  </script>
+  <script id="4299" type="application/vnd.observable.javascript">
+    float32ArrayToBase64 = ({
+      prompt: "write function to convert float32Array to base64 encoded string",
+      time: 1727985306835
+    } &&
+      function float32ArrayToBase64(floatArray) {
+        let binary = "";
+        const bytes = new Uint8Array(floatArray.buffer);
+        bytes.forEach((b) => (binary += String.fromCharCode(b)));
+        return btoa(binary);
+      })
+  </script>
+  <script id="4347" type="application/vnd.observable.javascript">
+    base64ToFloat32 = ({ prompt: "write Base64ToFloat32", time: 1727989536927 } &&
+      function Base64ToFloat32(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return new Float32Array(bytes.buffer);
+      })
+  </script>
+  <script id="4301" type="application/vnd.observable.javascript">
+    pca_projection = ({
+      proj: float32ArrayToBase64(proj),
+      means: float32ArrayToBase64(means)
+    })
+  </script>
+  <script id="4275" type="text/html">
+    <button onclick=${() => {
+      exportDuckDB(embedding_db, {
+      filter: (filename) => filename !== 'cell_embeddings.parquet',
+      format: "parquet",
+      filename: "compressed",
+      parquetOptions: { COMPRESSION: "gzip"} ,
+      download: true,
+    })}}>Export compressed file
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+    code is automatically added to the context. Use `highlight(<expr>)` to selectively bring runtime values into the context as well
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      variables,
+      api_call_response,
+      background_tasks,
+      ndd,
+      _ndd,
+      instruction,
+      _events,
+      highlight,
+      mutable context,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+  <script id="2813" type="application/vnd.observable.javascript">
+    import {
+      exportDuckDB,
+      importDuckDB,
+      download,
+      fromZip,
+      toZip
+    } from "@mootari/export-duckdb"
+  </script>
+</notebook>

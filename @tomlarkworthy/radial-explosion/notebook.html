@@ -1,0 +1,101 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Radial Explosion</title>
+  <script id="67" type="application/vnd.observable.javascript">
+    md`# Radial Explosion`
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    {
+      let height = width / 1.5;
+      let canvas = DOM.canvas(width, height);
+      let ps = new paper.PaperScope();
+
+      ps.setup(canvas);
+
+      const clear_white = new ps.Color(1, 1, 1, 0);
+      const center = new ps.Point(width / 2, height / 2);
+
+      const background = new ps.Path.Rectangle(
+        new ps.Rectangle(new ps.Point(0, 0), new ps.Point(width, height))
+      );
+
+      background.fillColor = {
+        gradient: {
+          stops: [
+            [color, 0],
+            [color2, 1]
+          ],
+          radial: true
+        },
+        origin: background.bounds.topLeft,
+        destination: background.bounds.bottomRight
+      };
+
+      const dot_size = 2;
+      const radius = 100;
+
+      for (var i = 0; i < 5000; i++) {
+        let angle = Math.random() * Math.PI * 2;
+        // To get points clustered near the center with only a few long ones
+        // we raise a uniform random by a high power, thus reducing the density near 1
+        let length = Math.pow(Math.random(), 5) * width * 0.2;
+
+        let cos_angle = Math.cos(angle);
+        let sin_angle = Math.sin(angle);
+        let outer_line = new ps.Point(
+          center.x + cos_angle * (length + radius - dot_size),
+          center.y + sin_angle * (length + radius - dot_size)
+        );
+        let outer = new ps.Point(
+          center.x + cos_angle * (length + radius),
+          center.y + sin_angle * (length + radius)
+        );
+        let inner = new ps.Point(
+          center.x + cos_angle * radius,
+          center.y + sin_angle * radius
+        );
+
+        let line = new ps.Path();
+        line.strokeColor = {
+          gradient: {
+            stops: [
+              [clear_white, 0],
+              ["white", 1]
+            ]
+          },
+          origin: center,
+          destination: outer
+        };
+        line.strokeWidth = 3;
+        line.opacity = 0.2;
+        line.add(inner);
+        line.add(outer_line);
+
+        let dot = ps.Path.Circle(outer, dot_size);
+        dot.fillColor = "white";
+        dot.opacity = 0.7;
+      }
+
+      return canvas;
+      // comment to test backups
+    }
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    viewof color = colorPicker("#05ECF6")
+  </script>
+  <script id="120" type="application/vnd.observable.javascript">
+    viewof color2 = colorPicker("#2185C3")
+  </script>
+  <script id="3" type="application/vnd.observable.javascript">
+    paper = require('paper').catch(() => window.paper)
+  </script>
+  <script id="123" type="application/vnd.observable.javascript">
+    import {colorPicker} from "@shaunlebron/color-picker"
+  </script>
+  <script id="200" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="218" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

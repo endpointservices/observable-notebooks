@@ -1,0 +1,336 @@
+<!doctype html>
+<notebook theme="air">
+  <title>How to create a public URL with Serverless Cells</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# How to create a public URL with [Serverless Cells](https://observablehq.com/@endpointservices/serverless-cells)`
+  </script>
+  <script id="32" type="application/vnd.observable.javascript">
+    {
+      yield html`<img width="1200" height="675"></img>`
+      yield html`<img src="${URL.createObjectURL(await FileAttachment("fastestAPI.gif").blob(), {type: "image/gif"})}">`
+    }
+  </script>
+  <script id="207" type="application/vnd.observable.javascript">
+    md`## The code`
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    md`Import the deploy function for the [serverless cell](https://observablehq.com/@endpointservices/serverless-cells) notebook.`
+  </script>
+  <script id="182" type="application/vnd.observable.javascript" pinned="">
+    import {deploy} from '@endpointservices/serverless-cells'
+  </script>
+  <script id="189" type="application/vnd.observable.javascript">
+    md`Call _deploy_ with a handler to create an endpoint. _Deploy_ returns a web link.`
+  </script>
+  <script id="196" type="application/vnd.observable.javascript" pinned="">
+    handler = deploy("myhandler", (req, res) => {
+      res.send("Hello World!")
+    })
+  </script>
+  <script id="198" type="application/vnd.observable.javascript">
+    md`Publish your notebook and then try it out! Click the <a href="${handler.href}">myhandler</a> link!
+
+    <mark> 2021-08-10: new notebooks are slow to get to the CDN, so fresh forks seem to take longer to show up </mark> 
+    `
+  </script>
+  <script id="217" type="application/vnd.observable.javascript">
+    md`## Next Steps
+
+    [Serverless Cells](https://observablehq.com/@endpointservices/serverless-cells) only run public source code by design. No more data processing black boxes on the internet please! The runtime cells also supports [secret injection](https://observablehq.com/@endpointservices/secrets),  [logging](https://observablehq.com/@endpointservices/logs), CDN caching and Express-like [URL routing](https://observablehq.com/@tomlarkworthy/api-hosting-with-express). Checkout its [notebook](https://observablehq.com/@endpointservices/serverless-cells) for more info.
+
+
+    The sky is the limit on what you can build, we have have made an Observerable-to-Netlify [static site generator](https://observablehq.com/@endpointservices/netlify), [Zapier](https://observablehq.com/@endpointservices/zapier) integration, [CORS proxy](https://observablehq.com/@tomlarkworthy/fetchp) and [CI reporting framework](https://observablehq.com/@tomlarkworthy/testing) as examples of the possibilities. 
+
+
+    ### Sympathetic with Observable workflows
+
+    [Federated Login](https://observablehq.com/@endpointservices/login) allows you to fork privileged services and still access user data despite the host domain changing. **All [Endpoint services](https://observablehq.com/collection/@endpointservices/services) are publicly implemented on Observable as Serverless cells**, except the Serverless Cell runtime, which is available on [Github](https://github.com/endpointservices/serverlesscells) and hosted on [Cloud Run](https://cloud.google.com/run). You have the power to customize the front end experience of [Endpoint services](https://observablehq.com/collection/@endpointservices/services) using Observable tooling.
+
+    ### Fairer billing
+
+    The host notebook domain is billed for Serverless cell execution (_coming soon_). When a Serverless cell is imported from another notebook, by default, the imported cell is served from the domain of the consuming notebook. Thus, the consuming notebook is billed for the execution of imported functionality. This means service authors are not exposed to operational costs of users. Infrastructure costs are paid by the people getting value out of the service, and it's utterly trivial to distribute.
+
+    ## Endpoint Services is building a Transparent Cloud
+
+    It's early days. Please report issues on [Github](https://github.com/endpointservices/serverlesscells/issues).
+
+
+
+    `
+  </script>
+  <script id="116" type="application/vnd.observable.javascript">
+    viewof smithying = md`
+    ---
+
+    ## GIF Smithing
+
+    This section is used to create the promo GIF. By default it's turned off to save bandwidth and CPU.
+
+    Download assets (10MB) <input type="checkbox" value="true">
+    `
+  </script>
+  <script id="151" type="application/vnd.observable.javascript">
+
+    html`${DOM.download(gif,"fastestAPI.gif", "Download GIF")}`
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    frames = [
+      {
+        smithying: smithying,
+        delay: 3000,
+        scroll: 50,
+        img: await FileAttachment("1.png").image()
+      },
+      {
+        delay: 2000,
+        img: await FileAttachment("2.png").image()
+      },
+      {
+        delay: 2000,
+        scroll: 100,
+        img: await FileAttachment("3.png").image()
+      },
+      {
+        delay: 300,
+        scroll: 200,
+        img: await FileAttachment("101.png").image()
+      },
+      {
+        delay: 300,
+        scroll: 200,
+        img: await FileAttachment("102.png").image()
+      },
+      {
+        delay: 300,
+        scroll: 200,
+        img: await FileAttachment("103.png").image()
+      },
+      {
+        delay: 2000,
+        scroll: 200,
+        img: await FileAttachment("104.png").image()
+      },
+      {
+        delay: 2000,
+        scroll: 100,
+        img: await FileAttachment("4.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("21.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("22.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("23.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("24.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("25.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("26.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("27.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("28.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("29.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("210.png").image()
+      },
+      {
+        delay: 1000,
+        scroll: -400,
+        img: await FileAttachment("211.png").image()
+      },
+      {
+        delay: 2000,
+        img: await FileAttachment("5.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("301.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("302.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("303.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("304.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("305.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("306.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("307.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("308.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("309.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("310.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("311.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("312.png").image()
+      },
+      {
+        delay: 300,
+        scroll: -400,
+        img: await FileAttachment("313.png").image()
+      },
+      {
+        delay: 2000,
+        scroll: -400,
+        img: await FileAttachment("314.png").image()
+      },
+      {
+        delay: 2000,
+        img: await FileAttachment("6@1.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("401.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("402.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("403.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("404.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("405.png").image()
+      },
+      {
+        delay: 300,
+        img: await FileAttachment("406.png").image()
+      },
+      {
+        delay: 2000,
+        img: await FileAttachment("407.png").image()
+      },
+      {
+        delay: 2000,
+        img: await FileAttachment("7@2.png").image()
+      },
+      {
+        delay: 400,
+        scroll: -400,
+        img: await FileAttachment("501.png").image()
+      },
+      {
+        delay: 500,
+        scroll: -400,
+        img: await FileAttachment("502.png").image()
+      },
+      {
+        delay: 2000,
+        scroll: 400,
+        img: await FileAttachment("503.png").image()
+      },
+      {
+        delay: 4000,
+        img: await FileAttachment("8@1.png").image()
+      },
+    ]
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    gif = new Promise(resolve => {
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      canvas.width = 1200; // Ideal for Twitter
+      canvas.height = 675;
+
+      const gif = new GIF({
+        width: canvas.width,
+        height: canvas.height,
+        workers: 8
+      })
+
+      frames.forEach(frame => {
+        ctx.fillStyle = "white"
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(frame.img, 0, (frame.scroll || 0) - 200, canvas.width,  canvas.width * frame.img.height / frame.img.width); 
+        gif.addFrame(canvas, {delay: frame.delay, copy: true})
+      })
+      gif.on("finished", resolve);
+      gif.render()
+    })
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    import {GIF} from '@mbostock/canvas-to-gif'
+  </script>
+  <script id="351" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="356" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

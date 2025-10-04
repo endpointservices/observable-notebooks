@@ -1,0 +1,27 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Unrolling a Deploy command</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Unrolling a Deploy command
+
+    If a deploy containing cell is slow to execute the runtime won't see it fast enough (10 seconds). If you response takes a long time to compute, take the response object outside of the handler so the deploy command can execute and leave dataflow to service the reponse later.
+    `
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    mutable unrolled_res = undefined
+  </script>
+  <script id="3" type="application/vnd.observable.javascript" pinned="">
+    deploy("slow", async (req, res) => {
+      mutable unrolled_res = res;
+    })
+  </script>
+  <script id="16" type="application/vnd.observable.javascript" pinned="">
+    slow = Promises.delay("hi", 10000)
+  </script>
+  <script id="9" type="application/vnd.observable.javascript" pinned="">
+    unrolled_res.send(slow)
+  </script>
+  <script id="11" type="application/vnd.observable.javascript" pinned="">
+    import { deploy } from '@endpointservices/serverless-cells'
+  </script>
+</notebook>

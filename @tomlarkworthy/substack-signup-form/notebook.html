@@ -1,0 +1,24 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Substack signup form is 2.4 MB!!!!!</title>
+  <script id="0" type="text/markdown">
+    # Substack signup form is 2.4 MB!!!!!
+
+    ${tweet("1562845641625071616")}
+
+    Here is an extremely simple [webpage](https://webcode.run/observablehq.com/@tomlarkworthy/substack-signup-form) that does nothing other than host the recommended iframe snippet by Substack.
+  </script>
+  <script id="28" type="application/vnd.observable.javascript" pinned="">
+    endpoint("default", async (req, res) => {
+      res.send(
+        `<iframe src="https://webcode.substack.com/embed" width="480" height="320" style="border:1px solid #EEE; background:white;" frameborder="0" scrolling="no"></iframe>`
+      );
+    })
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="39" type="application/vnd.observable.javascript">
+    import { tweet } from "@mbostock/tweet"
+  </script>
+</notebook>

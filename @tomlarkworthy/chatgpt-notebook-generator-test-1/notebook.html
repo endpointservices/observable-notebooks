@@ -1,0 +1,73 @@
+<!doctype html>
+<notebook theme="air">
+  <title>ChatGPT Notebook Generator Test 1</title>
+  <script id="117" type="text/markdown">
+    # ChatGPT Notebook Generator Test 1
+
+    Holy crap this notebook was made by ChatGPT. I don't know pixi very well. It reacted to errors and fixed them. See the transcript!
+    The keyboard controls work  
+    Chat [transcript](https://chat.openai.com/share/94fcfe1e-0723-401c-8d80-44bd63894765)
+  </script>
+  <script id="63" type="application/vnd.observable.javascript" pinned="">
+    pixi = import("https://cdn.skypack.dev/pixi.js@6.2.0")
+  </script>
+  <script id="70" type="application/vnd.observable.javascript" pinned="">
+    app = new pixi.Application({ width: 800, height: 600 })
+  </script>
+  <script id="110" type="application/vnd.observable.javascript" pinned="">
+    spaceshipSVG = {
+      const svgData = `<svg width="40" height="60" xmlns="http://www.w3.org/2000/svg"> <polygon points="20,5 40,55 20,45 0,55" fill="lime" /> <circle cx="20" cy="30" r="15" fill="blue" /> </svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svgData)}`;
+    }
+  </script>
+  <script id="112" type="application/vnd.observable.javascript" pinned="">
+    spaceshipTexture = {
+      return pixi.Texture.from(spaceshipSVG);
+    }
+  </script>
+  <script id="77" type="application/vnd.observable.javascript" pinned="">
+    spaceship = {
+      const sprite = new pixi.Sprite(spaceshipTexture);
+      sprite.x = 400;
+      sprite.y = 300;
+      app.stage.addChild(sprite);
+      return sprite;
+    }
+  </script>
+  <script id="99" type="application/vnd.observable.javascript" pinned="">
+    keyState = {
+      const state = {};
+      document.addEventListener("keydown", function (event) {
+        state[event.code] = true;
+      });
+      document.addEventListener("keyup", function (event) {
+        state[event.code] = false;
+      });
+      return state;
+    }
+  </script>
+  <script id="101" type="application/vnd.observable.javascript" pinned="">
+    moveSpaceship = {
+      app.ticker.add(() => {
+        if (keyState["ArrowUp"]) spaceship.y -= 5;
+        if (keyState["ArrowDown"]) spaceship.y += 5;
+        if (keyState["ArrowLeft"]) spaceship.x -= 5;
+        if (keyState["ArrowRight"]) spaceship.x += 5;
+      });
+    }
+  </script>
+  <script id="88" type="application/vnd.observable.javascript" pinned="">
+    pixiSprite = import("https://cdn.skypack.dev/@pixi/sprite")
+  </script>
+  <script id="103" type="application/vnd.observable.javascript" pinned="">
+    canvasContainer = {
+      const container = document.createElement("div");
+      app.view.style.border = "1px solid black";
+      container.appendChild(app.view);
+      return container;
+    }
+  </script>
+  <script id="107" type="application/vnd.observable.javascript" pinned="">
+    canvasContainer
+  </script>
+</notebook>

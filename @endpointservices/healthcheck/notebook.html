@@ -1,0 +1,353 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Generic Notebook Health Check</title>
+  <script id="0" type="text/markdown">
+    # Generic Notebook Health Check
+
+
+    You can use this notebook to actively detect errors in any of your notebook quickly. Read more about the process of productionizing notebooks [here](https://observablehq.com/@tomlarkworthy/howto-monitoring).
+
+    This notebook executes other notebooks through an embedded [runtime](https://observablehq.com/@observablehq/downloading-and-embedding-notebooks) and looks for errors thrown by cells. You do not need to modify the original notebook in any way! It exposes its functionality as an endpoint, which can be connected to uptime monitors such as [pingdom](https://www.pingdom.com/) or [uptimerobot](https://uptimerobot.com/?rid=ea2c825277fe40). If an initialized [sentry.io](https://observablehq.com/@endpointservices/sentry-io) SDK is found, it is also used report those errors (Sentry logs include context and source code line numbers). 
+
+
+    To use, first fill in the manual trigger fields to get a feel of the events and errors. Then copy and paste the link your endpoint monitoring service of choice.
+
+    Some notebooks throw errors for reasonable reasons. You can ignore errors from names cells with the comma delimited field "excludes".
+
+
+    This notebook pairs well with the unit testing library: [@tomlarkworthy/testing](https://observablehq.com/@tomlarkworthy/testing), as failed unit tests throw exceptions that are detected by health monitoring.
+
+  </script>
+  <script id="189" type="text/markdown">
+    ## Errors of ${settings.target}
+  </script>
+  <script id="43" type="application/vnd.observable.javascript">
+    viewof errorSelection = Inputs.table(errors)
+  </script>
+  <script id="427" type="application/vnd.observable.javascript" pinned="">
+    errorSelection
+  </script>
+  <script id="293" type="text/markdown">
+    ## Runtime Events of ${settings.target}
+  </script>
+  <script id="288" type="application/vnd.observable.javascript">
+    Inputs.table(events, {
+      width: {
+        status: "10%",
+        ts: "15%"
+      }
+    })
+  </script>
+  <script id="108" type="text/markdown">
+    ### Manual Trigger
+
+    Test a notebook by entering a text input
+  </script>
+  <script id="558" type="application/vnd.observable.javascript">
+    viewof host = Inputs.select(["webcode.run", "http://localhost:8080"], {
+      label: "host"
+    })
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    viewof manualTarget = Inputs.bind(
+      Inputs.text({
+        label: "target",
+        placeholder: "@tomlarkworthy/saas-tutorial",
+        minlength: 1
+      }),
+      localStorageView("healthcheck_notebook")
+    )
+  </script>
+  <script id="316" type="application/vnd.observable.javascript">
+    viewof manualExcludes = Inputs.bind(
+      Inputs.text({
+        label: "cells to exclude (comma seperated)"
+      }),
+      localStorageView("healthcheck_excludes")
+    )
+  </script>
+  <script id="485" type="application/vnd.observable.javascript">
+    viewof wait = Inputs.bind(
+      Inputs.range([1, 100], {
+        step: 1,
+        label: "seconds to wait for a cell to resolve"
+      }),
+      localStorageView("healthcheck_wait")
+    )
+  </script>
+  <script id="85" type="application/vnd.observable.javascript">
+    viewof result = Inputs.button("Go!", {
+      required: true,
+      reduce: () =>
+        run(viewof manualTarget.value, viewof manualExcludes.value, wait)
+    })
+  </script>
+  <script id="664" type="application/vnd.observable.javascript" pinned="">
+    result
+  </script>
+  <script id="429" type="application/vnd.observable.javascript">
+    permLink = {
+      const params = new URLSearchParams(location.search);
+      params.set("target", manualTarget);
+      params.set("excludes", manualExcludes);
+      params.set("wait", wait);
+
+      return `${healthcheckEndpoint.href}?${params.toString()}`;
+    }
+  </script>
+  <script id="175" type="text/html">
+    Your settings as a <a target="_blank"
+      href=${permLink}>http endpoint</a>
+
+    <button onclick=${() => copy(permLink)}>Copy to clipboard</button>
+  </script>
+  <script id="121" type="application/vnd.observable.javascript">
+    healthcheckEndpoint = endpoint(
+      "default", // For a simple URL we use the default name leading to https://webcode.run/observablehq.com/@endpointservices/healthcheck
+      async (req, res) => {
+        const target = req.query.target; // Read the target notebook.
+
+        /* If needed we can block by namespace
+        if (target.startsWith("@unavco"))
+          return res
+            .status(400)
+            .send("@unavco is sending data too fast, blocked short term");
+        */
+        if (!target) return res.status(400);
+        const excludes = req.query.excludes || ""; // Read which cells to ignore errors from
+        window.rEPseDFzXFSPYkNz = // Inject location.search for notebooks using https://observablehq.com/@tomlarkworthy/url-query-field-view
+          "?" +
+          Object.entries(req.query)
+            .map(([k, v]) => encodeURIComponent(k) + "=" + encodeURIComponent(v))
+            .join("");
+
+        try {
+          const response = await run(target, excludes, req.query.wait); // start health checking
+          const status = response.errors.length > 0 ? 503 : 200;
+          const payload = JSON.stringify(
+            {
+              settings: response.settings,
+              errors: response.errors.map((e) => ({
+                cell: e.cell,
+                message: e.error.message
+              }))
+            },
+            null,
+            2
+          );
+          res.status(status).send(payload);
+        } catch (err) {
+          res.status(500).send(err.message);
+        }
+      },
+      {
+        host,
+        livecode: false, // Can affect monitoring if left open by accident
+        reusable: false, // This does not support concurrent operations
+        modifiers: ["orchistrator"] // This endpoint can call other endpoints
+      }
+    )
+  </script>
+  <script id="215" type="text/markdown">
+    ## Notebook Runner
+  </script>
+  <script id="130" type="application/vnd.observable.javascript" pinned="">
+    run = (target, excludes, wait = 10) =>
+      viewof healthcheck.send({
+        wait,
+        target,
+        excludes: excludes.split(",").map((_) => _.trim())
+      })
+  </script>
+  <script id="265" type="text/markdown">
+    ### Runner Runtime
+  </script>
+  <script id="609" type="application/vnd.observable.javascript" pinned="">
+    viewof healthcheck = flowQueue({
+      timeout_ms: 55000
+    })
+  </script>
+  <script id="77" type="application/vnd.observable.javascript">
+    settings = healthcheck
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    viewof errors = (settings, Inputs.input([]))
+  </script>
+  <script id="283" type="application/vnd.observable.javascript">
+    viewof events = (settings, Inputs.input([]))
+  </script>
+  <script id="645" type="application/vnd.observable.javascript">
+    Runtime = {
+      try {
+        const { Runtime } = await import(
+          "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js"
+        );
+
+        return Runtime;
+      } catch (err) {
+        viewof healthcheck.reject(err);
+        return invalidation;
+      }
+    }
+  </script>
+  <script id="640" type="application/vnd.observable.javascript">
+    targetNotebook = {
+      try {
+        window["@endpointservices/healthcheck"] = true;
+        const { default: targetNotebook } = await import(
+          `https://api.observablehq.com/${settings.target}.js?v=3`
+        );
+
+        return targetNotebook;
+      } catch (err) {
+        viewof healthcheck.reject(err);
+        return invalidation;
+      }
+    }
+  </script>
+  <script id="10" type="application/vnd.observable.javascript" pinned="">
+    runner = {
+      console.log("Running", settings);
+      const start = Date.now();
+      return new Runtime().module(targetNotebook, (name) => {
+        return {
+          pending() {
+            viewof events.value = [
+              ...viewof events.value,
+              { status: "pending", ts: Date.now() - start, name: name }
+            ];
+            viewof events.dispatchEvent(new Event("input", { bubbles: true }));
+          },
+          fulfilled(value) {
+            viewof events.value = [
+              ...viewof events.value,
+              {
+                status: "fulfilled",
+                ts: Date.now() - start,
+                name: name,
+                value: value
+              }
+            ];
+            viewof events.dispatchEvent(new Event("input", { bubbles: true }));
+            let sentrySDK = undefined;
+            if (value?.captureException) sentrySDK = value;
+            else if (value?.sentry?.captureException) sentrySDK = value.sentry;
+            else if (value?.value?.sentry?.captureException)
+              sentrySDK = value.value.sentry;
+
+            if (sentrySDK) {
+              viewof sentry.value = sentrySDK;
+              viewof sentry.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+          },
+          rejected(error) {
+            const ignore = settings.excludes.includes(name);
+            debugger;
+            viewof events.value = [
+              ...viewof events.value,
+              {
+                status: ignore ? "ignored" : "rejected",
+                ts: Date.now() - start,
+                name: name,
+                error: error
+              }
+            ];
+            viewof events.dispatchEvent(new Event("input", { bubbles: true }));
+
+            if (!ignore) {
+              // Report error
+              viewof errors.value = [
+                ...viewof errors.value,
+                { error: error, cell: name }
+              ];
+              viewof errors.dispatchEvent(new Event("input", { bubbles: true }));
+            }
+          }
+        };
+      });
+    }
+  </script>
+  <script id="631" type="application/vnd.observable.javascript" pinned="">
+    responder = (runner, // No clear time to finish so we just send everytyhing aftger a timeout
+    setTimeout(() => {
+      const response = {
+        settings: viewof healthcheck.value,
+        errors: viewof errors.value,
+        events: viewof events.value
+      };
+      console.log("responding", response);
+      viewof healthcheck.resolve(response);
+    }, viewof healthcheck.value.wait * 1000))
+  </script>
+  <script id="517" type="text/markdown">
+    ### Production Debugger
+  </script>
+  <script id="507" type="application/vnd.observable.javascript">
+    import { notebookSnapshot, modules } from "@tomlarkworthy/notebook-snapshot"
+  </script>
+  <script id="522" type="application/vnd.observable.javascript">
+    trackingVariable_9uEFkhSF43aPddAA = true
+  </script>
+  <script id="505" type="application/vnd.observable.javascript">
+    endpoint("variables", async (req, res) => {
+      res.json(
+        (await notebookSnapshot("trackingVariable_9uEFkhSF43aPddAA")).map(
+          (variable) => ({
+            state: variable.state,
+            name: variable.name,
+            // Note these cells might contain personal information, so we only allow errors values to leave the environment
+            ...(variable.state === "rejected" && { value: variable.value })
+          })
+        )
+      );
+    })
+  </script>
+  <script id="142" type="text/markdown">
+    ### Sentry.io integration
+
+    Sentry SDK is sniffed from dataflow execution and used report all errors
+  </script>
+  <script id="270" type="text/markdown">
+    ### Discovered Sentry SDK (or null)
+  </script>
+  <script id="34" type="application/vnd.observable.javascript">
+    viewof sentry = Inputs.input(undefined)
+  </script>
+  <script id="276" type="text/markdown">
+    ### Report error log
+
+    We grow the reportedErrors array to same length as the error array by reporting errors to the SDK.
+  </script>
+  <script id="147" type="application/vnd.observable.javascript">
+    viewof reportedErrors = Inputs.input([])
+  </script>
+  <script id="150" type="application/vnd.observable.javascript" pinned="">
+    reportMissingErrors = {
+      if (sentry) {
+        while (reportedErrors.length < errors.length) {
+          const nextError = errors[reportedErrors.length];
+          reportedErrors.push(nextError);
+          sentry.captureException(nextError.error);
+        }
+      }
+    }
+  </script>
+  <script id="530" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="221" type="application/vnd.observable.javascript">
+    import { copy } from "@mbostock/copy-to-clipboard"
+  </script>
+  <script id="118" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="466" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="308" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="311" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

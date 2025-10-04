@@ -1,0 +1,254 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Sign a PDF and Adobe: Go F* Yourself</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Sign a PDF and Adobe: Go F* Yourself
+
+    Allows super-imposing an image of your signature on a PDF. 
+
+    ** Note: you can also do this using Mac Preview, see _Tools > Annotate > Signature_ ([docs](https://support.apple.com/en-gb/guide/preview/prvw35725/mac))** 
+
+    ### Why not use Adobe?
+    I once had a Adobe subscription exactly for this purpose but I was unable to cancel it. So it cost me $200 to sign a document. They are [predatory](https://www.reddit.com/r/Adobe/comments/ad72z0/adobe_fix_your_predatory_billing_practices/), and [its not just me](https://news.ycombinator.com/item?id=25971114).
+
+    ### Why not use the free tools on the internet?
+
+    I want to sign financial documents and privacy is critical. Unfortunately, I cannot audit most free software on the internet. Lack of auditability of digital services is actually why I started [@endpointservices](https://observablehq.com/@endpointservices), a Cloud which *exclusively* runs source available software. But in this case we can sign a document clientside so no data will leave the computer and we don't even need a digital service.
+
+    ### Why on [Observablehq.com](https://observablehq.com/)?
+
+    I love it, it took a day to build this and I do not need to worry about hosting, and anybody can inspect, fork and improve the software right from within their browser. It radically lowers viscosity of software development. I can painlessly upgrade it as I go.
+
+    ### How can I verify data is not leaving my computer?
+
+    To see if a webpage is transmiting your data you should check to see if a network call is made when you upload you pdf. Open the View > Developer > Developer Tools > Network, *then* set your pdf. For this application a network call is made! But it's a blob resource with size 0 that takes 2ms. This is an in-memory representation used to move data around *inside* the current session, it doesn't represent data leaving the computer. In general if there are no network entries generator or only blob entries you can be sure data is not leaving your computer and its safe to use. You would generally expect about the same amount of data would need to leave your computer as the file you just uploaded. Read more about the network tab: https://developer.chrome.com/docs/devtools/network/
+
+    ### Credits
+
+    We salute you Andrew Dillon for [pdf-lib](https://github.com/Hopding/pdf-lib) (PDF writer) and Mozilla for [PDF.js](https://mozilla.github.io/pdf.js/) (PDF viewer). 🖖
+
+    `
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    md`### Select files`
+  </script>
+  <script id="201" type="application/vnd.observable.javascript">
+    viewof top = view`<div>
+      <style>
+        .labelManual {
+          --length1: 3.25px;
+          --length2: 6.5px;
+          --length3: 13px;
+          --label-width: 120px;
+          --input-width: 240px;
+          font: 13px/1.2 var(--sans-serif);
+          flex-shrink: 0;
+          align-self: start;
+          padding: 5px 0 4px 0;
+          width: var(--label-width);
+          margin-right: var(--length2);
+        }
+      </style>
+      <div style="display: flex;">
+        <label class="labelManual">Choose a pdf</label> 
+        ${htl.html`<input name="pdf" type="file" onchange=${evt =>
+          (mutable pdfchange = evt)} accept=".pdf">`}
+      </div>
+      ${[
+        "images",
+        Inputs.range([1, 5], {
+          label: "Number of images to add",
+          value: 1,
+          step: 1
+        })
+      ]}
+    `
+  </script>
+  <script id="284" type="application/vnd.observable.javascript">
+    viewof signatures = view`
+      ${[
+        "sigs",
+        Array(top.images)
+          .fill(null)
+          .map(
+            (_, i) => view`<div style="display: flex;">
+        <label class="labelManual">Choose image ${i + 1}</label> 
+        ${htl.html`<input type="file" onchange=${evt => {
+          sigchange[i] = evt;
+          mutable sigchange = mutable sigchange; //trigger update
+        }} accept="image/jpg">`}
+      </div>`
+          )
+      ]}
+
+    `
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    md`### Controls`
+  </script>
+  <script id="93" type="application/vnd.observable.javascript">
+    {
+      const pdf = await pdfjs.getDocument(url).promise;
+      const page = await pdf.getPage(config.page);
+
+      const canvas = html`<canvas width=${width} height=${config.height} style="border: 1px solid #aaa">`;
+
+      page.render({
+        canvasContext: canvas.getContext('2d'),
+        viewport: page.getViewport({ scale: 1.5 })
+      });
+      return canvas;
+    }
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof config = view`<div>
+      ${[
+        'height',
+        Inputs.range([0, 1200], { label: "preview height", value: 800 })
+      ]}
+      ${[
+        'page',
+        Inputs.range([1, fixedDoc.pageCount], {
+          label: "preview page",
+          value: 1,
+          step: 1
+        })
+      ]}
+      ${[
+        "sigs",
+        signatures.sigs.map(
+          (_, i) => view`<hr>
+          <img height="100px" src=${sigUrls[i]}></img>
+          ${[
+            'page',
+            Inputs.range([1, fixedDoc.pageCount], { label: "page", value: 1 })
+          ]}
+          ${[
+            'sX',
+            Inputs.range([0, fixedDoc.getPage(0).getWidth()], {
+              label: "signature x",
+              value: 0
+            })
+          ]}
+          ${[
+            'sY',
+            Inputs.range([0, fixedDoc.getPage(0).getHeight()], {
+              label: "signature y",
+              value: 0
+            })
+          ]}
+          ${[
+            'sW',
+            Inputs.range([1, fixedDoc.getPage(0).getWidth()], {
+              label: "signature width",
+              value: 300
+            })
+          ]}
+          ${[
+            'sH',
+            Inputs.range([1, fixedDoc.getPage(0).getHeight()], {
+              label: "signature height",
+              value: 300
+            })
+          ]}`
+        )
+      ]}
+
+    `
+  </script>
+  <script id="431" type="application/vnd.observable.javascript">
+    md`## Download the result`
+  </script>
+  <script id="60" type="application/vnd.observable.javascript" pinned="">
+    htl.html`<a href=${url} download="output.pdf">download</a>` // Link to download PDF
+  </script>
+  <script id="24" type="application/vnd.observable.javascript" pinned="">
+    mutable pdfchange = undefined // holds file chooser events (so we can read uploaded files)
+  </script>
+  <script id="394" type="application/vnd.observable.javascript">
+    md`---
+    ## Implementation`
+  </script>
+  <script id="164" type="application/vnd.observable.javascript" pinned="">
+    mutable sigchange = [] // holds file chooser events (so we can read uploaded files)
+  </script>
+  <script id="28" type="application/vnd.observable.javascript" pinned="">
+    pdf = pdfchange.target.files[0] // PDF file
+  </script>
+  <script id="34" type="application/vnd.observable.javascript" pinned="">
+    fixedDoc = await pdfLib.PDFDocument.load(await pdf.arrayBuffer()) // PDF we do not manipulate (so we can read parameters without
+  </script>
+  <script id="267" type="application/vnd.observable.javascript" pinned="">
+    pdfDoc = (config, await pdfLib.PDFDocument.load(await pdf.arrayBuffer())) // PDF we will mutate
+  </script>
+  <script id="199" type="application/vnd.observable.javascript" pinned="">
+    embed = promiseRecursive(
+      // Mutate PDF, overlays images onto pdf
+      sigchange.map(async (sig, i) => {
+        if (!sig.target.files[0]) return "N/A";
+
+        const page = pdfDoc.getPage(config.sigs[i].page - 1);
+        const jpgImage = await pdfDoc.embedJpg(
+          await sig.target.files[0].arrayBuffer()
+        );
+        page.drawImage(jpgImage, {
+          x: config.sigs[i].sX,
+          y: config.sigs[i].sY,
+          width: config.sigs[i].sW,
+          height: config.sigs[i].sH
+        });
+
+        return "OK";
+      })
+    )
+  </script>
+  <script id="69" type="application/vnd.observable.javascript" pinned="">
+    url = {
+      // Generate a blob representing the rendered PDF
+      embed; // make sure image is in it first
+      const file = new Blob([await pdfDoc.save()], {
+        type: "application/pdf"
+      });
+      return URL.createObjectURL(file);
+    }
+  </script>
+  <script id="257" type="application/vnd.observable.javascript" pinned="">
+    sigUrls = promiseRecursive(
+      // Generate a blobs for the signatures
+      sigchange.map(async (sig, i) => {
+        if (!sig.target.files[0]) return undefined;
+        const file = new Blob([await sig.target.files[0].arrayBuffer()], {
+          type: "image/jpg"
+        });
+        return URL.createObjectURL(file);
+      })
+    )
+  </script>
+  <script id="390" type="application/vnd.observable.javascript">
+    md`### Imports`
+  </script>
+  <script id="3" type="application/vnd.observable.javascript">
+    pdfLib = require(await FileAttachment("pdf-lib.min.js").url())
+  </script>
+  <script id="91" type="application/vnd.observable.javascript">
+    pdfjs = {
+      const lib = await require(await FileAttachment("pdf.js").url());
+      lib.GlobalWorkerOptions.workerSrc = await FileAttachment(
+        "pdf.worker.js"
+      ).url();
+      return lib;
+    }
+  </script>
+  <script id="101" type="application/vnd.observable.javascript">
+    import { view } from '@tomlarkworthy/view'
+  </script>
+  <script id="319" type="application/vnd.observable.javascript">
+    import { promiseRecursive } from '@tomlarkworthy/utils'
+  </script>
+  <script id="477" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="480" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

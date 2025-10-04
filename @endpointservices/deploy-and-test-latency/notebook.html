@@ -1,0 +1,94 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Deploy and Test webcode workflow latency measure</title>
+  <script id="0" type="text/markdown">
+    # Deploy and Test webcode workflow latency measure
+
+    Here we test out how fast new endpoint code can be observed on the public internet. Note the insants deploy technology requires a developer to be logged in, so if you want to run this experiment yourself you will need to fork into your own namespace first! In Berlin I get a latency of 130*ms* to deploy and test an endpoint. This is literally an upper bound on how long it takes for a code change to be live-on-prod!
+  </script>
+  <script id="103" type="text/markdown">
+    #### mutable t_start
+
+    *t_start* is a mutable variable at the root of the dataflow dependency graph. If *t_start* changes, everything else underneath is recomputed to use its new value. Because it's marked mutable, we are able to programatically update its value from anywhere else in the notebook.
+  </script>
+  <script id="17" type="application/vnd.observable.javascript" pinned="">
+    mutable t_start = Date.now()
+  </script>
+  <script id="110" type="text/markdown">
+    #### endpoint
+
+    our *endpoint* cell prints the value of *t_start* and therefore depends on it. Thus, when *t_start* changes, *endpoint* redeploys and so subsequent calls to the endpoint will include the new *t_start* value
+  </script>
+  <script id="30" type="application/vnd.observable.javascript" pinned="">
+    endpoint = deploy("latency", (req, res) =>
+      res.json({
+        t_start: t_start, // we depend on the hardcoded value of t_start
+        t_handler: Date.now()
+      })
+    )
+  </script>
+  <script id="125" type="text/markdown">
+    ### Test
+
+    Finally we make a test routine depend on the *endpoint* cell, so that after a redeploy, a call is made to the endpoint immediately. We confirm the value returned from the endpoint matches our session's t_start, and measure the end-to-end latency between t_start and the endpoint response. This will obviously include network latency (check you devtool network log to see the requests). We add that leatency measure to a dataset for visualization.
+  </script>
+  <script id="87" type="application/vnd.observable.javascript" pinned="">
+    test = {
+      // test depends on "endpoint" cell so it auto run after "endpoint" is redeployed
+      const response = await fetch(endpoint.href);
+      if (response.status !== 200) return;
+      const timing = await response.json(); // we call the remote endpoint
+      timing.t_end = Date.now(); // see how fast we get a response
+      if (t_start !== timing.t_start)
+        // Sanity check the endpoint is truely using our shared t_start value
+        throw Error("Remote endpoint is not useing latest deploy");
+      // Update our latency dataset
+      mutable data = [
+        ...mutable data,
+        {
+          browserToFunction: timing.t_handler - timing.t_start,
+          functionToBrowser: timing.t_end - timing.t_handler,
+          roundtrip: timing.t_end - timing.t_start
+        }
+      ];
+      return timing;
+    }
+  </script>
+  <script id="131" type="text/markdown">
+    ## Run an experiment
+
+    By mutating *t_start*, we cause a chain of reevaluations through the dataflow graph
+    - *t_start* is updated
+    - *endpoint* is reployed and starts serving the new value to *t_start*
+    - *test* calls *endpoint* and measures the delta between *t_start* and when it has a response.
+  </script>
+  <script id="3" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("redeploy and test", {
+      // changing t_start invalidates the handler triggering a redploy
+      reduce: () => (mutable t_start = Date.now())
+    })
+  </script>
+  <script id="78" type="text/markdown">
+    ### Roundrip latency to redeploy and call an endpoint
+  </script>
+  <script id="69" type="application/vnd.observable.javascript" pinned="">
+    Plot.plot({
+      y: {
+        label: "Latency (ms)"
+      },
+      marks: [Plot.barY(data, { x: (d, i) => i, y: "roundtrip" })]
+    })
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    mutable data = []
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    import { deploy } from "@endpointservices/webcode"
+  </script>
+  <script id="170" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="178" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

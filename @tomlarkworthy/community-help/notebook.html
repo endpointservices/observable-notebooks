@@ -1,0 +1,631 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Community Help</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Community Help`
+  </script>
+  <script id="523" type="text/markdown">
+    ### Basic code editor
+  </script>
+  <script id="529" type="application/vnd.observable.javascript" pinned="">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="527" type="application/vnd.observable.javascript" pinned="">
+    viewof editor = Inputs.bind(Inputs.text(), localStorageView("code"))
+  </script>
+  <script id="535" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("set code", {
+      reduce: () => {
+        viewof editor.value = "example";
+        viewof editor.dispatchEvent(new Event("input"));
+      }
+    })
+  </script>
+  <script id="540" type="text/markdown">
+    ### [Code mirror editor](https://talk.observablehq.com/t/transitive-synchronized-inputs/8597/13)
+
+  </script>
+  <script id="542" type="application/vnd.observable.javascript" pinned="">
+    import { CodeMirror } from "@tomlarkworthy/codemirror-6"
+  </script>
+  <script id="544" type="application/vnd.observable.javascript">
+    viewof codemirror = Inputs.bind(
+      CodeMirror("initial text", {
+        extensions: [],
+        keymaps: []
+      }),
+      localStorageView("code")
+    )
+  </script>
+  <script id="514" type="text/markdown">
+    ### Autocomplete on arrays
+  </script>
+  <script id="516" type="application/vnd.observable.javascript" pinned="">
+    elements = [{ bar: true }]
+  </script>
+  <script id="518" type="application/vnd.observable.javascript" pinned="">
+    expr = elements[0]
+  </script>
+  <script id="464" type="text/markdown">
+    ## [Reactively update content within the same cell?](https://talk.observablehq.com/t/reactively-update-content-within-the-same-cell/7033)
+
+    you can manually use addEventListener to wire up reactivity as shown below
+
+    @tomlarkworthy/view also has `bindOneWay` with a similar exampkle that acheive the below but with a functional transform 
+    see https://observablehq.com/@tomlarkworthy/view#levels
+  </script>
+  <script id="462" type="application/vnd.observable.javascript" pinned="">
+    viewof reactiveMultiControlUI = {
+      const answer = Inputs.radio(["a", "b"]);
+      const result = Inputs.text({ label: "result", disabled: true });
+
+      const checker = () => {
+        if (answer.value == "b") result.value = "correct!";
+        if (answer.value == "a") result.value = "wrong!";
+      };
+      answer.addEventListener("input", checker);
+      invalidation.then(() => answer.removeEventListener("input", checker)); // For every addXXX their is a removeXXX
+
+      return Inputs.form([answer, result]);
+    }
+  </script>
+  <script id="475" type="application/vnd.observable.javascript" pinned="">
+    viewof submitted = Inputs.button("submit", {
+      required: true,
+      reduce: () => viewof reactiveMultiControlUI.value
+    })
+  </script>
+  <script id="478" type="application/vnd.observable.javascript" pinned="">
+    submitted
+  </script>
+  <script id="484" type="text/markdown">
+    ### v2 submit answer to reveal result
+  </script>
+  <script id="486" type="application/vnd.observable.javascript" pinned="">
+    viewof ui2 = {
+      return view`<div>
+        ${["response", Inputs.radio(["a", "b"])]}
+        ${["submit", Inputs.button("submit")]}
+        ${["result", Inputs.text({ label: "result", disabled: true })]}
+      </div>`;
+    }
+  </script>
+  <script id="503" type="text/markdown">
+    view allows components to be built heirarchically, so the three components become sub-views and can be binded/addEventListener to individually
+  </script>
+  <script id="501" type="application/vnd.observable.javascript" pinned="">
+    viewof ui2
+  </script>
+  <script id="506" type="application/vnd.observable.javascript" pinned="">
+    checker = {
+      // Note you could put all this logic inside the viewof ui2 code block too
+      const checker = () => {
+        if (viewof ui2.value.response === "a") {
+          viewof ui2.value.result = "wrong";
+        } else if (viewof ui2.value.response === "b") {
+          viewof ui2.value.result = "correct";
+        } else {
+          viewof ui2.value.result = "you didn't answer!!!";
+        }
+      };
+
+      viewof ui2.submit.addEventListener("input", checker);
+      invalidation.then(() =>
+        viewof ui2.submit.removeEventListener("input", checker)
+      );
+    }
+  </script>
+  <script id="493" type="application/vnd.observable.javascript" pinned="">
+    viewof ui2
+  </script>
+  <script id="448" type="text/markdown" pinned="">
+    ## Fetchp
+  </script>
+  <script id="451" type="application/vnd.observable.javascript" pinned="">
+    image1 = FileAttachment("image@1.png").image()
+  </script>
+  <script id="453" type="application/vnd.observable.javascript" pinned="">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="367" type="text/markdown">
+    ## [Dynamic radios](https://talk.observablehq.com/t/help-with-data-filters-in-observables-survey-cross-tabulation-template/6902/2[]()
+  </script>
+  <script id="369" type="application/vnd.observable.javascript">
+    import { juice } from "@tomlarkworthy/juice"
+  </script>
+  <script id="426" type="text/markdown">
+    Juice wraps the existing Inputs.radio "view builder" to make a new "view builder" that has two sub-views: options, and result. Result is the normal data output of the radio, the options is mapped to the old 1st arg i.e. the options in the radio control. Now options is its own subview you can read and write to it.
+  </script>
+  <script id="376" type="application/vnd.observable.javascript" pinned="">
+    dynamicRadio = juice(Inputs.radio, {
+      options: "[0]",
+      result: "[1].value"
+    })
+  </script>
+  <script id="380" type="application/vnd.observable.javascript" pinned="">
+    viewof control = dynamicRadio(["a", "b", "c"])
+  </script>
+  <script id="430" type="text/markdown">
+    Note the inner value is now an object unlike a normal radio
+  </script>
+  <script id="432" type="application/vnd.observable.javascript" pinned="">
+    control
+  </script>
+  <script id="386" type="application/vnd.observable.javascript">
+    viewof filter = Inputs.radio(["all", "b,c", "a,c"], { label: "filter" })
+  </script>
+  <script id="438" type="text/markdown">
+    In the logic block, which is downstream of the filter, we can manipulate the dynamic radio without being reactively dependant on the inner value. We can apply logic to remove the selection if an option is no longer available based on the filter.
+  </script>
+  <script id="390" type="application/vnd.observable.javascript" pinned="">
+    logic = {
+      if (filter === "all") {
+        viewof control.options.value = ["a", "b", "c"];
+      } else if (filter === "b,c") {
+        if (viewof control.result.value == "a") viewof control.result.value = null;
+        viewof control.options.value = ["b", "c"];
+      } else if (filter === "a,c") {
+        if (viewof control.result.value == "b") viewof control.result.value = null;
+        viewof control.options.value = ["a", "c"];
+      }
+      viewof control.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  </script>
+  <script id="339" type="text/markdown">
+    ### [How to import Github package](https://talk.observablehq.com/t/how-to-import-github-package/6225)
+
+
+  </script>
+  <script id="346" type="application/vnd.observable.javascript">
+    registry = "https://npm.pkg.github.com"
+  </script>
+  <script id="353" type="application/vnd.observable.javascript">
+    d3Require = require("d3-require")
+  </script>
+  <script id="348" type="application/vnd.observable.javascript" pinned="">
+    myRequire = d3Require.requireFrom(async (name) => {
+      return `${registry}/${name}`;
+    })
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    viewof runImport = Inputs.button("runImport", {
+      required: true
+    })
+  </script>
+  <script id="344" type="application/vnd.observable.javascript" pinned="">
+    (runImport, myRequire("@securityscorecard/design-system@1.0.0-alpha.148"))
+  </script>
+  <script id="271" type="text/markdown">
+    ### Select box with text area submit (https://talk.observablehq.com/t/updating-a-textarea-value-and-submit-button-status/6172)
+  </script>
+  <script id="276" type="application/vnd.observable.javascript" pinned="">
+    viewof selection = Inputs.select(["red", "green", "blue"])
+  </script>
+  <script id="288" type="text/markdown">
+    If text box is created with dataflow the value is already live!
+  </script>
+  <script id="279" type="application/vnd.observable.javascript" pinned="">
+    viewof submit1 = Inputs.textarea({ value: selection, submit: true })
+  </script>
+  <script id="284" type="application/vnd.observable.javascript" pinned="">
+    submit1
+  </script>
+  <script id="303" type="text/markdown">
+    If we link them with bind then the value is auto submitted (is this the issue?)
+  </script>
+  <script id="293" type="application/vnd.observable.javascript" pinned="">
+    viewof submit2 = Inputs.textarea({ submit: true, minlength: 1 })
+  </script>
+  <script id="297" type="application/vnd.observable.javascript" pinned="">
+    submit2
+  </script>
+  <script id="299" type="application/vnd.observable.javascript" pinned="">
+    Inputs.bind(viewof selection, viewof submit2)
+  </script>
+  <script id="334" type="text/markdown">
+    Maybe simpler to refactor the submit button to another cell, then you have more control.
+  </script>
+  <script id="320" type="application/vnd.observable.javascript" pinned="">
+    viewof submit3 = Inputs.button("submit", {
+      required: true,
+      reduce: () => selection
+    })
+  </script>
+  <script id="326" type="application/vnd.observable.javascript" pinned="">
+    submit3
+  </script>
+  <script id="316" type="text/markdown">
+    Extract the submit as its own step
+  </script>
+  <script id="240" type="application/vnd.observable.javascript">
+    md`### Markdown can contain embedded DOM elements`
+  </script>
+  <script id="266" type="application/vnd.observable.javascript" pinned="">
+    import { tweet } from "@mbostock/tweet"
+  </script>
+  <script id="269" type="application/vnd.observable.javascript" pinned="">
+    tweet("1442010098482626563")
+  </script>
+  <script id="243" type="text/markdown" pinned="">
+    *I am a mardown cell but I escape to JS and have some smart casting so that if my JS returns a DOM node I can render that too ${html`<input type="range">`}*
+
+    Look ${function foo() {
+      const el = document.createElement("h1")
+      el.innerHTML = "Programmatic Title in embedded markdown";
+      return el
+    }()}
+  </script>
+  <script id="102" type="application/vnd.observable.javascript">
+    unresolve_view = md`### Cannot return viewof value back to unresolved`
+  </script>
+  <script id="105" type="application/vnd.observable.javascript" pinned="">
+    viewof foo = {
+      // Create a view 'foo' with value 'bar'
+      return Object.defineProperty(md`foo`, "value", {
+        value: "bar",
+        writable: true,
+        enumerable: true
+      });
+    }
+  </script>
+  <script id="124" type="application/vnd.observable.javascript" pinned="">
+    viewof foo.value
+  </script>
+  <script id="117" type="application/vnd.observable.javascript" pinned="">
+    foo
+  </script>
+  <script id="114" type="application/vnd.observable.javascript" pinned="">
+    set_value_to_promise = Inputs.button("set new promise", {
+      reduce: () => {
+        viewof foo.value = invalidation;
+        viewof foo.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    })
+  </script>
+  <script id="138" type="application/vnd.observable.javascript" pinned="">
+    set_value_to_undefined = Inputs.button("set undefined", {
+      reduce: () => {
+        viewof foo.value = undefined;
+        viewof foo.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    })
+  </script>
+  <script id="126" type="application/vnd.observable.javascript" pinned="">
+    md`If you refresh the 'viewof foo.value' cell it will not resolve`
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    updateOnRelease = md`## https://talk.observablehq.com/t/what-is-the-best-way-to-make-range-slider-update-only-on-release/5112/3`
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    viewof x = Object.assign(Inputs.range([0, 10], { label: "yo", step: 2 }), {
+      oninput: event => event.isTrusted && event.stopImmediatePropagation(),
+      onchange: event => event.currentTarget.dispatchEvent(new Event("input"))
+    })
+  </script>
+  <script id="10" type="application/vnd.observable.javascript" pinned="">
+    x
+  </script>
+  <script id="25" type="application/vnd.observable.javascript" pinned="">
+    Promises.delay(Number.NaN)
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    md`Bug textarea, submit evaluated early`
+  </script>
+  <script id="47" type="application/vnd.observable.javascript" pinned="">
+    viewof textAreaWithSubmit = Inputs.textarea({
+      submit: true
+    })
+  </script>
+  <script id="51" type="application/vnd.observable.javascript" pinned="">
+    textAreaWithSubmit
+  </script>
+  <script id="62" type="application/vnd.observable.javascript" pinned="">
+    viewof textWithSubmit = Inputs.text({
+      submit: true
+    })
+  </script>
+  <script id="65" type="application/vnd.observable.javascript" pinned="">
+    textWithSubmit
+  </script>
+  <script id="67" type="application/vnd.observable.javascript">
+    bindChaining = md`### Bind chaining (https://talk.observablehq.com/t/unable-to-dispatch-input-event-on-non-dom-inputs/5281/8)
+
+    Type gibberish into the fist and last text box
+    `
+  </script>
+  <script id="70" type="application/vnd.observable.javascript" pinned="">
+    viewof start = Inputs.text()
+  </script>
+  <script id="72" type="application/vnd.observable.javascript" pinned="">
+    viewof middle = {
+      const middle = Inputs.text();
+      Inputs.bind(viewof start, middle);
+      return middle;
+    }
+  </script>
+  <script id="78" type="application/vnd.observable.javascript" pinned="">
+    viewof end = {
+      const end = Inputs.text();
+      Inputs.bind(viewof middle, end);
+      return end;
+    }
+  </script>
+  <script id="80" type="application/vnd.observable.javascript" pinned="">
+    end
+  </script>
+  <script id="86" type="application/vnd.observable.javascript" pinned="">
+    start
+  </script>
+  <script id="96" type="application/vnd.observable.javascript" pinned="">
+    md`### Repo multi update`
+  </script>
+  <script id="98" type="application/vnd.observable.javascript" pinned="">
+    import { exportString } from "@tomlarkworthy/repo1"
+  </script>
+  <script id="100" type="application/vnd.observable.javascript" pinned="">
+    exportString
+  </script>
+  <script id="143" type="application/vnd.observable.javascript" pinned="">
+    ganja = md`### Ganja.js`
+  </script>
+  <script id="145" type="application/vnd.observable.javascript" pinned="">
+    Algebra = require("ganja.js")
+  </script>
+  <script id="148" type="application/vnd.observable.javascript" pinned="">
+    Algebra(2, 0, 1, () => {
+      // 1e1 is the dimension (Y)
+      // Change to 1e2 to make this a horizontal line
+      return this.graph([1e1]);
+    })
+  </script>
+  <script id="154" type="application/vnd.observable.javascript">
+    ui_dev = md`[Would you be able to provide an example to make this work? For instance, Cell B receiving data from a dropdown box triggered by input events in Cell A?](https://observablehq.com/@tomlarkworthy/ui-development#comment-7ffed281fde99119)
+
+    Here cell_b will update if cell_a changes, but also you can change cell_b directly.
+    `
+  </script>
+  <script id="158" type="application/vnd.observable.javascript" pinned="">
+    viewof cell_a = Inputs.select(["one", "two"])
+  </script>
+  <script id="181" type="application/vnd.observable.javascript" pinned="">
+    cell_a
+  </script>
+  <script id="163" type="application/vnd.observable.javascript" pinned="">
+    viewof cell_b = Inputs.text()
+  </script>
+  <script id="171" type="application/vnd.observable.javascript">
+    md`# Cell_b is ${cell_b}`
+  </script>
+  <script id="167" type="application/vnd.observable.javascript" pinned="">
+    updater_with_event = {
+      // You could declare this updating in cell_b too, but I think its more illastrative taking it into its own cell
+      viewof cell_a.addEventListener("input", (evt) => {
+        viewof cell_b.value = viewof cell_a.value; // Updates visual appearance but does not trigger dataflow from cell_b
+        viewof cell_b.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }
+  </script>
+  <script id="194" type="application/vnd.observable.javascript">
+    md`## I want to mutate the select options dynamically...`
+  </script>
+  <script id="198" type="application/vnd.observable.javascript" pinned="">
+    import { view, variable } from "@tomlarkworthy/view"
+  </script>
+  <script id="201" type="application/vnd.observable.javascript" pinned="">
+    import { viewroutine, ask } from "@tomlarkworthy/viewroutine"
+  </script>
+  <script id="196" type="application/vnd.observable.javascript">
+    mutableSelection = (options) => {
+      const optionsVar = variable(options, { name: "options" });
+      let innerSelection = undefined;
+      let currentValue;
+
+      const selection = viewroutine(async function* () {
+        let selection;
+        while (true) {
+          console.log("recreating view", currentValue);
+          innerSelection = Inputs.select(optionsVar.value, {
+            format: (d) => d.name || d,
+            value: currentValue
+          });
+          currentValue = yield* ask(innerSelection);
+        }
+      });
+      const ui = view`<div>
+        ${["options", optionsVar]}
+        ${["selection", selection]}
+      `;
+
+      optionsVar.addEventListener("input", () => {
+        console.log("got event");
+        innerSelection.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+      return ui;
+    }
+  </script>
+  <script id="205" type="application/vnd.observable.javascript" pinned="">
+    viewof cell_c = mutableSelection(["a", "b"])
+  </script>
+  <script id="210" type="application/vnd.observable.javascript" pinned="">
+    cell_c
+  </script>
+  <script id="229" type="application/vnd.observable.javascript" pinned="">
+    cell_c.selection
+  </script>
+  <script id="214" type="application/vnd.observable.javascript" pinned="">
+    updater_first_option_using_cell_b = {
+      viewof cell_b.addEventListener("input", (evt) => {
+        viewof cell_c.options.value = [viewof cell_b.value, "other"]; // Assign any array of options you like (does nto support in-place mutation like .push)
+        viewof cell_c.options.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+    }
+  </script>
+  <script id="513" type="text/markdown">
+
+  </script>
+  <script id="552" type="text/markdown">
+    ## Grid of Cells
+  </script>
+  <script id="554" type="application/vnd.observable.javascript" pinned="">
+    cells = [
+      {
+        labelX: "row1",
+        labelY: "col1",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row2",
+        labelY: "col1",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row3",
+        labelY: "col1",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row1",
+        labelY: "col2",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row2",
+        labelY: "col2",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row3",
+        labelY: "col2",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row1",
+        labelY: "col3",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row2",
+        labelY: "col3",
+        group: "A",
+        value: 42
+      },
+      {
+        labelX: "row3",
+        labelY: "col3",
+        group: "A",
+        value: 42
+      }
+    ]
+  </script>
+  <script id="563" type="application/vnd.observable.javascript" pinned="">
+    Plot.plot({
+      color: { legend: true },
+      marks: [
+        Plot.cell(cells, {
+          x: "labelX",
+          y: "labelY",
+          fill: "value"
+        }),
+        Plot.tickY(["col2"], { dy: 11 })
+      ]
+    })
+  </script>
+  <script id="590" type="text/markdown">
+    Exporting scales
+  </script>
+  <script id="592" type="application/vnd.observable.javascript" pinned="">
+    plot_grid = Plot.plot({
+      color: { legend: true },
+      marks: [
+        Plot.cell(cells, {
+          x: "labelX",
+          y: "labelY",
+          fill: "value"
+        }),
+        Plot.tickY(["col2"])
+      ]
+    })
+  </script>
+  <script id="594" type="application/vnd.observable.javascript" pinned="">
+    x_scale = plot_grid.scale("x") // d3.scale
+  </script>
+  <script id="601" type="application/vnd.observable.javascript" pinned="">
+    x_scale.apply("row2")
+  </script>
+  <script id="606" type="text/markdown">
+    ## Connect to `BacdiveClient`
+  </script>
+  <script id="608" type="application/vnd.observable.javascript" pinned="">
+    viewof response = Inputs.button("connect", {
+      reduce: async () =>
+        (
+          await fetch(
+            "https://sso.dsmz.de/auth/realms/dsmz/protocol/openid-connect/token",
+            {
+              method: "POST",
+              headers: {
+                "content-type": "application/x-www-form-urlencoded"
+              },
+              body: "username=myUsername&password=myPassword&client_id=api.bacdive.public&grant_type=password&code=&redirect_uri=&scope=openid"
+            }
+          )
+        ).text()
+    })
+  </script>
+  <script id="612" type="application/vnd.observable.javascript" pinned="">
+    response
+  </script>
+  <script id="614" type="text/markdown">
+    ## Getting the position of a hover over
+  </script>
+  <script id="616" type="application/vnd.observable.javascript" pinned="">
+    viewof pos = Plot.plot({
+      marks: [
+        Plot.dot(
+          penguins,
+          Plot.pointer({
+            x: "culmen_length_mm",
+            y: "culmen_depth_mm",
+            fill: "red",
+            r: 8
+          })
+        ),
+        Plot.dot(penguins, { x: "culmen_length_mm", y: "culmen_depth_mm" })
+      ]
+    })
+  </script>
+  <script id="620" type="application/vnd.observable.javascript" pinned="">
+    pos
+  </script>
+  <script id="622" type="application/vnd.observable.javascript" pinned="">
+    d3.csv(
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/pub?gid=2033815436&single=true&output=csv"
+    )
+  </script>
+  <script id="625" type="application/vnd.observable.javascript" pinned="">
+    (
+      await fetch(
+        "https://docs.google.com/spreadsheets/d/e/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/pub?gid=2033815436&single=true&output=csv",
+        {
+          method: "HEAD"
+        }
+      )
+    ).headers.get("content-length")
+  </script>
+  <script id="628" type="application/vnd.observable.javascript" pinned="">
+    faster = {
+      const sheetId = "1Z7Dja43FepxVOJc5_pMdP0etERM6h0BPAWT74zjdbno";
+      const sheetName = "Sheet1"; // Change if your sheet name is different
+      const url = `https://docs.google.com/spreadsheets/d/2PACX-1vStElZLXAh6_Zy1z6HqCc6xf6_xOVBJMOzVvNQGLOf6KmsVY07etajt3_gFplnqoCCOi17bBkib_Xv0/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
+
+      return d3.csv(url);
+    }
+  </script>
+</notebook>

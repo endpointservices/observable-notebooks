@@ -1,0 +1,734 @@
+<!doctype html>
+<notebook theme="air">
+  <title>The Google 'VS' trick</title>
+  <script id="0" type="text/markdown">
+    # The Google 'VS' trick
+
+    Outsource tedious research to the hive mind. This tool implements the [Google Search 'VS' trick](https://medium.com/applied-data-science/the-google-vs-trick-618c8fd5359f) to find common alternatives to things. Starting with a term like 'Poodle', we ask Google for search suggestions of 'Poodle VS' which will find alternatives to poodles that people often consider on the internet. This can be used to perform basic market research (e.g. find me React alternatives), medicine (find me ibuprofen alternatives) and product choices (Peloton alternatives) it will even find you choices for philosophical schools-of-thought!
+  </script>
+  <script id="1481" type="application/vnd.observable.javascript">
+    FileAttachment("egograph.png").image({ style: "max-width: 640px" })
+  </script>
+  <script id="1025" type="text/markdown">
+    ## What this does
+
+    Andriy Burkov noticed that by appending 'vs' to a google query, google will helpfully autosuggest alternatives to the thing ([linkedIn.com](https://www.linkedin.com/posts/andriyburkov_this-simple-hack-will-save-you-a-ton-of-time-activity-6675799581655203840-1XuH/
+    )). 
+
+    ![image@2.png](${await FileAttachment("image@2.png").url()})
+
+
+    David Foster realized that you could take those suggestions and apply to trick again to find more alternatives. When you repeatedly do this you can generate a nice graph which will span a topic area ([medium.com](https://medium.com/applied-data-science/the-google-vs-trick-618c8fd5359f)). David had some nice tricks for pruning the graph based on connectivity to try and keep the algorithm on topic. What was missing was an online tool for doing this.
+
+    So this tool implements David's algorithm but online. It follows the principles of moldable development, it is end user programmable, so if you want to explore your own ideas from expanding google auto-suggestions you can just [fork this notebook](https://observablehq.com/@observablehq/fork-suggest-merge).
+
+
+
+
+  </script>
+  <script id="953" type="text/markdown">
+    ## Login with a comment
+
+    This kind of tool could easily spam Google. I have enacted a login requirement to prevent that from happening. It is part of system to enforce result pooling across users.
+
+    So you need an Observable account and to leave a comment on this notebook to use the tool.
+
+    *also you can disable notifications in the notebook burger menu / settings*
+  </script>
+  <script id="963" type="application/vnd.observable.javascript">
+    viewof user = createLogin()
+  </script>
+  <script id="943" type="text/markdown">
+    ### Save & load
+  </script>
+  <script id="297" type="application/vnd.observable.javascript">
+    htl.html`<div style="display:flex;justify-content: flex-start;">${Inputs.button(
+      "download graph",
+      {
+        reduce: () => {
+          downloadObjectAsJson(
+            {
+              unvisited: [...unvisited],
+              distance: [...distance.entries()],
+              exclude: [...exclude],
+              edges: allEdges,
+              directed: false,
+              links: links.map((l) => ({
+                ...l,
+                source: l.source.id,
+                target: l.target.id
+              })),
+              nodes: [
+                ...links.reduce((n, l) => {
+                  n.add(l.source);
+                  n.add(l.target);
+                  return n;
+                }, new Set())
+              ]
+            },
+            initialTerm
+          );
+        }
+      }
+    )}
+    `
+  </script>
+  <script id="746" type="application/vnd.observable.javascript">
+    viewof upload = fileInput({
+      prompt: "upload graph file to initialize"
+    })
+  </script>
+  <script id="568" type="text/markdown">
+    ## Controls
+
+    <details>
+      <summary>control help</summary>${md`
+      The UI controls below let you control the expansion of a topic. 
+
+    *reinitialize* - resets all state
+
+    *starting term* - the thing are we looking alternatives for. Put whatever you want to research in here!
+
+    *single term results only* - whether to ignore suggestions that have more than one word (*e.g.* redis pro). Normally not very useful but sometimes it can help prune the results set.
+
+    *max term fanout* - How many suggestions should we feedback each iteration? If you use a high number, the graph will find lots of very weakly related concepts. If you use a low number it with be very focussed on the target term and only on close alternatives. David Foster defaults to 5, I have needed high numbers to dial up the sensitivity.
+
+    *max distance* - How far from the starting term should we explore?
+
+    *min connectedness* - the number of disjoint pathways that must be present to a vertex to be included in the ego graph. This often has the effect of pruning topic confusions caused by synonyms. Note you can also manually prune vertices too if needed.
+
+    *auto run* - controls whether the algorithm is run a single step at a time or fully automatic. ⚠️ If you think your search has gone off the rails, untick this to halt the search!`}
+    </details>
+
+  </script>
+  <script id="1291" type="application/vnd.observable.javascript">
+    Inputs.button("reset", {
+      label: "reinitialize",
+      reduce: reset
+    })
+  </script>
+  <script id="212" type="application/vnd.observable.javascript">
+    viewof initialTermRaw = Inputs.bind(
+      Inputs.text({
+        minlength: 3,
+        label: "Starting term",
+        placeholder: "term, e.g. redis"
+      }),
+      localStorageView("topic_search_term")
+    )
+  </script>
+  <script id="189" type="application/vnd.observable.javascript">
+    viewof SINGLE_RESULTS_ONLY = Inputs.bind(
+      Inputs.toggle({
+        label: "Single term results only"
+      }),
+      localStorageView("topic_search_singles", { json: true })
+    )
+  </script>
+  <script id="180" type="application/vnd.observable.javascript">
+    viewof MAX_RESULTS = Inputs.bind(
+      Inputs.range([1, 10], {
+        label: "max term fanout",
+        step: 1,
+        value: 5
+      }),
+      localStorageView("topic_search_fanout", { defaultValue: 5, json: true})
+    )
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    viewof maxDistance = Inputs.bind(
+      Inputs.range([1, 200], { label: "max distance", step: 1, value: 5 }),
+      localStorageView("topic_search_radius", {defaultValue: 5, json: true})
+    )
+  </script>
+  <script id="564" type="application/vnd.observable.javascript">
+    viewof k = Inputs.bind(
+      Inputs.range([1, 2], {
+        label: "min connectedness",
+        step: 1,
+        value: 2
+      }),
+      localStorageView("topic_search_connectedness", {
+        defaultValue: 2
+      })
+    )
+  </script>
+  <script id="319" type="application/vnd.observable.javascript">
+    viewof autoRun = (user,
+    Inputs.bind(
+      Inputs.toggle({ label: "auto run", value: false }),
+      localStorageView("topic_search_autorun", {
+        json: true
+      })
+    ))
+  </script>
+  <script id="240" type="application/vnd.observable.javascript">
+    (user,
+    Inputs.button(autoRun ? "run" : "step", {
+      label: "run algorithm",
+      reduce: step
+    }))
+  </script>
+  <script id="1385" type="application/vnd.observable.javascript">
+    new Promise((resolve) =>
+      setTimeout(
+        () =>
+          resolve(
+            viewof user?.value?.uid
+              ? md``
+              : md`⚠️ you need to login to use this tool`
+          ),
+        1000
+      )
+    )
+  </script>
+  <script id="668" type="text/markdown">
+    ### last edge expansion
+  </script>
+  <script id="626" type="application/vnd.observable.javascript">
+    Inputs.table(filteredSuggestions)
+  </script>
+  <script id="368" type="text/markdown">
+    ## Ego Graph for ${initialTerm}
+  </script>
+  <script id="437" type="application/vnd.observable.javascript">
+    viewof visualization
+  </script>
+  <script id="1419" type="application/vnd.observable.javascript">
+    {
+      if (visualization.selected)
+        return Inputs.button("exclude selected vertex", {
+          reduce: () => deleteVertex(visualization.selected.id)
+        });
+    }
+  </script>
+  <script id="1044" type="text/markdown">
+    ### Nodes
+  </script>
+  <script id="1278" type="application/vnd.observable.javascript">
+    viewof results = Inputs.search(nodes)
+  </script>
+  <script id="478" type="application/vnd.observable.javascript">
+    viewof toDelete = (epoch, Inputs.table(results, { sort: "depth" }))
+  </script>
+  <script id="1054" type="application/vnd.observable.javascript">
+    toDelete.length == nodes.length
+      ? md`*delete nodes by first selecting their hidden checkbox on the left*`
+      : Inputs.button("exclude selected nodes", {
+          reduce: () => {
+            toDelete.forEach((del) => {
+              deleteVertex(del.id);
+            });
+          }
+        })
+  </script>
+  <script id="1309" type="application/vnd.observable.javascript">
+    allEdges = (epoch,
+    [...edges.values()].reduce((acc, map) => acc.concat([...map.values()]), []))
+  </script>
+  <script id="383" type="application/vnd.observable.javascript">
+    nodes = (epoch,
+    [
+      ...allEdges.reduce((set, edge) => {
+        set.add(edge.source);
+        set.add(edge.target);
+        return set;
+      }, new Set())
+    ]
+      .map((n) => ({
+        id: n,
+        count: allEdges.reduce(
+          (c, e) => c + (e.target === n ? 1 : 0) + (e.source === n ? 1 : 0),
+          0
+        ),
+        depth: distance.get(n)
+      }))
+      .filter((d) => d.depth < maxDistance))
+  </script>
+  <script id="824" type="application/vnd.observable.javascript">
+    linksRaw = (epoch,
+    allEdges
+      .map((e) => ({
+        ...e,
+        source: nodes.find((n) => n.id === e.source),
+        target: nodes.find((n) => n.id === e.target),
+        distance: edgeDistance(e.source, e.target)
+      }))
+      .filter((l) => l.source && l.target))
+  </script>
+  <script id="802" type="application/vnd.observable.javascript" pinned="">
+    unidirectedLinks = linksRaw.filter((l) => {
+      const source = l.source.id;
+      const target = l.target.id;
+      if (source < target) return true;
+      else return !edges.get(`${target}->${source}`);
+    })
+  </script>
+  <script id="853" type="application/vnd.observable.javascript">
+    adj = {
+      const adj = new Map();
+      unidirectedLinks.forEach((link) => {
+        if (!adj.has(link.source.id)) adj.set(link.source.id, []);
+        if (!adj.has(link.target.id)) adj.set(link.target.id, []);
+        adj.get(link.source.id).push(link.target.id);
+        adj.get(link.target.id).push(link.source.id);
+      });
+
+      return adj;
+    }
+  </script>
+  <script id="829" type="application/vnd.observable.javascript">
+    links = {
+      if (k == 1) return unidirectedLinks;
+      else if (k == 2) {
+        // Do a quick DFS to the articulation points
+        const articulations = articulationPoints(initialTerm, adj);
+        const unvisisted = new Set([initialTerm]);
+        const visited = new Set();
+        while (unvisisted.size > 0) {
+          const next = unvisisted.values().next().value;
+          unvisisted.delete(next);
+          visited.add(next);
+          if (articulations.has(next) && next !== initialTerm) {
+          } else {
+            (adj.get(next) || [])
+              .filter((v) => !visited.has(v))
+              .forEach((v) => unvisisted.add(v));
+          }
+        }
+        return unidirectedLinks.filter(
+          (e) => visited.has(e.source.id) && visited.has(e.target.id)
+        );
+      } else {
+        throw new Error();
+      }
+    }
+  </script>
+  <script id="434" type="application/vnd.observable.javascript">
+    chartData = (epoch,
+    {
+      directed: false,
+      links: links.map((l) => ({ ...l, source: l.source.id, target: l.target.id })),
+      nodes: [
+        ...links.reduce((n, l) => {
+          n.add(l.source);
+          n.add(l.target);
+          return n;
+        }, new Set())
+      ]
+    })
+  </script>
+  <script id="431" type="application/vnd.observable.javascript" pinned="">
+    import { viewof visualization } with { chartData as data } from "@tomlarkworthy/ego-graph"
+  </script>
+  <script id="356" type="text/markdown">
+    ### algorithm state
+  </script>
+  <script id="585" type="application/vnd.observable.javascript">
+    viewof version = Inputs.input(0)
+  </script>
+  <script id="609" type="application/vnd.observable.javascript">
+    viewof epoch = Inputs.input(0)
+  </script>
+  <script id="1004" type="application/vnd.observable.javascript">
+    initialTerm = initialTermRaw.toLowerCase()
+  </script>
+  <script id="233" type="application/vnd.observable.javascript">
+    unvisited = new Set([initialTerm])
+  </script>
+  <script id="1306" type="application/vnd.observable.javascript">
+    distance = new Map([[initialTerm, 0]])
+  </script>
+  <script id="1402" type="application/vnd.observable.javascript">
+    exclude = (initialTerm, new Set())
+  </script>
+  <script id="334" type="application/vnd.observable.javascript">
+    edges = (initialTerm, new Map())
+  </script>
+  <script id="1305" type="application/vnd.observable.javascript">
+    edgeDistance = (u, v) =>
+      (1 +
+        2 * MAX_RESULTS -
+        (edges.get(u)?.get(v)?.weight || 0) -
+        (edges.get(v)?.get(u)?.weight || 0)) /
+      (2 * MAX_RESULTS + 1)
+  </script>
+  <script id="1304" type="application/vnd.observable.javascript">
+    import { step as stepDijkstra } from "@tomlarkworthy/dijkstra"
+  </script>
+  <script id="256" type="application/vnd.observable.javascript" pinned="">
+    async function step() {
+      if (unvisited.size > 0) {
+        console.log("step...");
+
+        function findNearestUnvisited(v) {
+          var current = stepDijkstra({
+            seed: { id: v, distance: 0 },
+            adjacent: (u) =>
+              [...(edges.get(u)?.keys() || [])]
+                .map((v) => ({
+                  id: v,
+                  distance: edgeDistance(u, v)
+                }))
+                .filter((e) => !exclude.has(e.id))
+          });
+
+          while (current.lastVertex && !unvisited.has(current.lastVertex.id)) {
+            current = stepDijkstra(current);
+          }
+          return current.lastVertex?.id;
+        }
+
+        const u = findNearestUnvisited(initialTerm);
+
+        unvisited.delete(u);
+
+        const neighbours = await suggestionsFromGoogle({
+          term: u
+        });
+        for (let edge of neighbours) {
+          if (!edges.has(edge.source)) {
+            edges.set(edge.source, new Map());
+          }
+          const outgoingEdges = edges.get(edge.source);
+
+          let v = edge.target;
+          outgoingEdges.set(v, {
+            source: edge.source,
+            target: edge.target,
+            weight: edge.weight
+          });
+          const alt =
+            distance.get(edge.source) + edgeDistance(edge.source, edge.target);
+
+          if (distance.get(v) === undefined) {
+            distance.set(v, alt);
+            if (alt < maxDistance) unvisited.add(v);
+          } else if (alt < distance.get(v)) {
+            distance.set(v, alt);
+          }
+        }
+
+        console.log("step: notify epoch");
+        try {
+          viewof epoch.value = viewof epoch.value + 1;
+          viewof epoch.dispatchEvent(new Event("input", { bubbles: true }));
+        } catch (err) {
+          console.log(err);
+        }
+
+        if (unvisited.size == 0) {
+          console.log("step: nearly ending, notify latest version");
+          viewof version.value = viewof version.value + 1;
+          viewof version.dispatchEvent(new Event("input", { bubbles: true }));
+        } else {
+          if (viewof autoRun.value) {
+            // continue
+            setTimeout(step, 100);
+          }
+        }
+      } else {
+        console.log("step: ending, no unvisted nodes");
+      }
+    }
+  </script>
+  <script id="1328" type="application/vnd.observable.javascript">
+    uploadData = await upload.json()
+  </script>
+  <script id="757" type="application/vnd.observable.javascript">
+    onUpload = {
+      unvisited.clear();
+      distance.clear();
+      edges.clear();
+      uploadData.unvisited.forEach((v) => unvisited.add(v));
+      uploadData.exclude.forEach((v) => exclude.add(v));
+      uploadData.distance.forEach(([k, v]) => distance.set(k, v));
+      uploadData.edges.forEach((e) => {
+        if (!edges.has(e.source)) edges.set(e.source, new Map());
+        edges.get(e.source).set(e.target, e);
+      });
+      viewof version.value += 1;
+      viewof version.dispatchEvent(new Event("input", { bubbles: true }));
+      viewof epoch.value += 1;
+      viewof epoch.dispatchEvent(new Event("input", { bubbles: true }));
+
+      return uploadData;
+    }
+  </script>
+  <script id="1378" type="application/vnd.observable.javascript" pinned="">
+    onPageLoadInitialTerm = {
+      if (!window.didPageLoad && viewof initialTermRaw.value === undefined) {
+        viewof initialTermRaw.value = "poodle";
+        viewof initialTermRaw.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    }
+  </script>
+  <script id="795" type="application/vnd.observable.javascript">
+    onPageLoad = {
+      if (!window.didPageLoad && viewof initialTermRaw.value === "poodle") {
+        window.didPageLoad = true;
+        const data = await FileAttachment("poodle (7).json").json();
+        data.exclude.forEach((v) => exclude.add(v));
+        data.unvisited.forEach((v) => unvisited.add(v));
+        data.distance.forEach(([k, v]) => distance.set(k, v));
+        data.edges.forEach((e) => {
+          if (!edges.has(e.source)) edges.set(e.source, new Map());
+          edges.get(e.source).set(e.target, e);
+        });
+        viewof version.value += 1;
+        viewof version.dispatchEvent(new Event("input", { bubbles: true }));
+        viewof epoch.value += 1;
+        viewof epoch.dispatchEvent(new Event("input", { bubbles: true }));
+        return data;
+      }
+    }
+  </script>
+  <script id="913" type="application/vnd.observable.javascript">
+    reset = () => {
+      unvisited.clear();
+      distance.clear();
+      edges.clear();
+      unvisited.add(initialTerm);
+      distance.set(initialTerm, 0);
+      viewof version.value += 1;
+      viewof version.dispatchEvent(new Event("input", { bubbles: true }));
+      viewof epoch.value += 1;
+      viewof epoch.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  </script>
+  <script id="1432" type="application/vnd.observable.javascript" pinned="">
+    allEdges
+  </script>
+  <script id="1449" type="application/vnd.observable.javascript" pinned="">
+    allEdges.filter((e) => e.target === "loveramics")
+  </script>
+  <script id="1425" type="application/vnd.observable.javascript">
+    deleteVertex = (id) => {
+      const edgesToDelete = allEdges.filter(
+        (e) => e.source === id || e.target === id
+      );
+      edgesToDelete.forEach((e) => {
+        if (e.source === id) edges.delete(id);
+        if (e.target === id) {
+          const outgoing = edges.get(e.source);
+          if (outgoing) outgoing.delete(e.target);
+        }
+      });
+
+      exclude.add(id);
+
+      viewof epoch.value++;
+      viewof epoch.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  </script>
+  <script id="41" type="text/markdown">
+    ### suggestqueries.google.com
+  </script>
+  <script id="163" type="application/vnd.observable.javascript" pinned="">
+    defaultSuggestionsFilter = (suggestions, { term, seperator } = {}) => {
+      term = term.toLowerCase();
+      let w = MAX_RESULTS;
+      return suggestions.reduce((suggestions, suggestion) => {
+        if (
+          suggestions.length < MAX_RESULTS &&
+          suggestion.startsWith(term + " " + seperator + " ", "")
+        ) {
+          // Trim "term VS" repeated prefix
+          suggestion = suggestion.replace(term + " " + seperator + " ", "");
+
+          // If SINGLE_RESULTS_ONLY we check for a single term
+          if (!SINGLE_RESULTS_ONLY || suggestion.split(" ").length === 1) {
+            // There may be several alternatives (e.g. covid vs flu vs cold
+            const alternatives = suggestion.split(` ${seperator} `);
+            alternatives.forEach((alternative) => {
+              suggestions.push({
+                source: term,
+                target: alternative,
+                weight: w--
+              });
+            });
+          }
+        }
+        return suggestions;
+      }, []);
+    }
+  </script>
+  <script id="203" type="text/markdown">
+    ### *suggestionsFromGoogle({term, filter, seperator})*
+  </script>
+  <script id="62" type="application/vnd.observable.javascript">
+    suggestionsFromGoogle = function ({
+      term,
+      filter = defaultSuggestionsFilter,
+      seperator = "vs"
+    } = {}) {
+      return viewof suggestionsFromGoogleParams.send({
+        term,
+        filter,
+        seperator
+      });
+    }
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    viewof suggestionsFromGoogleParams = flowQueue({
+      timeout_ms: 10000
+    })
+  </script>
+  <script id="102" type="application/vnd.observable.javascript">
+    suggestionsFromGoogleParams
+  </script>
+  <script id="968" type="application/vnd.observable.javascript" pinned="">
+    // This is a specialist proxy that does some black magic to avoid rate limits,
+    // but also it caches responses so we do not hit google with the same query twice.
+    // It does not work with anything else other than suggestqueries.google.com
+    proxy = "https://europe-west1-endpointservice.cloudfunctions.net/proxy"
+  </script>
+  <script id="639" type="application/vnd.observable.javascript">
+    url = `${proxy}/suggestqueries.google.com/complete/search?output=toolbar&hl=en&q=${encodeURIComponent(
+      suggestionsFromGoogleParams.term + " " + suggestionsFromGoogleParams.seperator
+    )}`
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    googleResponse = fetch(url, {
+      headers: {
+        Authorization: `Bearer ${await user.getIdToken()}`
+      }
+    })
+  </script>
+  <script id="15" type="application/vnd.observable.javascript" pinned="">
+    googleResponseBody = {
+      if (googleResponse.status == 200) {
+        return googleResponse.text();
+      } else {
+        const err = new Error(await googleResponse.text());
+        viewof suggestionsFromGoogleParams.reject(err);
+        throw err;
+      }
+    }
+  </script>
+  <script id="69" type="application/vnd.observable.javascript" pinned="">
+    googleResponseDoc = parser.parseFromString(googleResponseBody, "text/xml")
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    unfilteredSuggestions = [
+      ...googleResponseDoc.querySelectorAll("suggestion")
+    ].map((e) => e.getAttribute("data"))
+  </script>
+  <script id="106" type="application/vnd.observable.javascript" pinned="">
+    filteredSuggestions = suggestionsFromGoogleParams.filter(
+      unfilteredSuggestions,
+      {
+        term: suggestionsFromGoogleParams.term,
+        seperator: suggestionsFromGoogleParams.seperator
+      }
+    )
+  </script>
+  <script id="121" type="application/vnd.observable.javascript" pinned="">
+    viewof suggestionsFromGoogleParams.respond(filteredSuggestions)
+  </script>
+  <script id="67" type="application/vnd.observable.javascript">
+    parser = new DOMParser()
+  </script>
+  <script id="1247" type="text/markdown">
+    ### Articulation Points
+
+    Articulation points are vertices that separate biconnected components.
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    function articulationPoints(initialTerm, adj) {
+      const visisted = new Set();
+      const depth = new Map();
+      const low = new Map();
+      const parent = new Map();
+      const articulations = new Set();
+
+      function articulationPointsFn(i, d) {
+        visisted.add(i);
+        depth.set(i, d);
+        low.set(i, d);
+        var childCount = 0;
+        var isArticulation = false;
+
+        const adjacent = adj.get(i) || [];
+        adjacent.forEach((ni) => {
+          if (!visisted.has(ni)) {
+            parent.set(ni, i);
+            articulationPointsFn(ni, d + 1);
+            childCount++;
+            if (low.get(ni) >= depth.get(i)) isArticulation = true;
+            low.set(i, Math.min(low.get(i), low.get(ni)));
+          } else if (parent.get(i) !== ni) {
+            low.set(i, Math.min(low.get(i), depth.get(ni)));
+          }
+        });
+
+        if (
+          (parent.get(i) !== undefined && isArticulation) ||
+          (parent.get(i) === undefined && childCount > 1)
+        ) {
+          articulations.add(i);
+        }
+      }
+
+      articulationPointsFn(initialTerm, 0);
+      return articulations;
+    }
+  </script>
+  <script id="715" type="text/markdown">
+    ### Download As JSON
+  </script>
+  <script id="719" type="application/vnd.observable.javascript" pinned="">
+    // https://stackoverflow.com/a/30800715/862295
+    function downloadObjectAsJson(exportObj, exportName) {
+      var dataStr =
+        "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(exportObj));
+      var downloadAnchorNode = document.createElement("a");
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", exportName + ".json");
+      document.body.appendChild(downloadAnchorNode); // required for firefox
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+    }
+  </script>
+  <script id="696" type="text/markdown">
+    ### Style
+  </script>
+  <script id="706" type="application/vnd.observable.javascript">
+    ns = Inputs.text().classList[0]
+  </script>
+  <script id="702" type="text/html" pinned="">
+    <style>
+      form.${ns} {
+        width: inherit;
+      }
+    </style>
+  </script>
+  <script id="51" type="text/markdown">
+    ### Cache
+  </script>
+  <script id="85" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="326" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="744" type="application/vnd.observable.javascript">
+    import { fileInput } from "@tomlarkworthy/fileinput"
+  </script>
+  <script id="958" type="application/vnd.observable.javascript">
+    import { createLogin } from "@endpointservices/endpoint-login-with-comment"
+  </script>
+  <script id="1030" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view"
+  </script>
+  <script id="1225" type="application/vnd.observable.javascript">
+    import { tweet } from "@mbostock/tweet"
+  </script>
+  <script id="1472" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="1497" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

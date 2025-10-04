@@ -1,0 +1,162 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Networking Tools: Realtime Request log</title>
+  <script id="0" type="text/markdown">
+    # Networking Tools: Realtime Request log
+
+    Log who is calling an endpoint and the headers used.
+
+    This notebook hosts an endpoint that reflects back the incoming metadata, and logs it, so you can use it to probe remote services that are not under your control. This utility was used to develop the [onPublish](https://observablehq.com/@tomlarkworthy/onpublish) notebook hook. A similar service to [hookbin.com](https://hookbin.com/)
+
+    Try it out, 
+
+    <a target="_blank" href="https://webcode.run/observablehq.com/@endpointservices/realtime-request-log">https://webcode.run/observablehq.com/@endpointservices/realtime-request-log</a>
+
+    <pre style="background: black; color: white"> 
+        curl https://webcode.run/observablehq.com/@endpointservices/realtime-request-log 
+    </pre>
+
+    If you append an additional URL path, this is logged as /url so you can tag your requests for ease of identification.
+
+
+
+
+  </script>
+  <script id="201" type="text/markdown">
+    ### Requests timeline
+  </script>
+  <script id="174" type="application/vnd.observable.javascript">
+    Plot.plot({
+      marks: [Plot.ruleX(requests, { x: (r) => r.time })]
+    })
+  </script>
+  <script id="206" type="text/markdown">
+    ### Header Counts
+  </script>
+  <script id="263" type="application/vnd.observable.javascript">
+    viewof header = Inputs.select(Object.keys(headers[0]), { value: "user-agent" })
+  </script>
+  <script id="229" type="application/vnd.observable.javascript">
+    Plot.plot({
+      width,
+      marginBottom: 100,
+      x: {
+        tickRotate: 10
+      },
+      marks: [Plot.barY(headers, Plot.groupX({ y: "count" }, { x: header }))]
+    })
+  </script>
+  <script id="126" type="application/vnd.observable.javascript">
+    Inputs.table(requests, {
+      columns: ["time", "method", "url", "headers"],
+      height: "500px",
+      width: {
+        method: "5%",
+        url: "20%",
+        headers: "50%"
+      },
+      format: {
+        headers: (headers) =>
+          htl.html`<table>
+              ${Object.entries(headers).map(
+                ([header, value]) => htl.html.fragment`
+              <tr>
+                <td>${header}</td>
+                <td>${value}</td>
+              </tr>
+            `
+              )}
+            </table>`
+      }
+    })
+  </script>
+  <script id="289" type="text/markdown">
+    ### Data prep
+  </script>
+  <script id="286" type="application/vnd.observable.javascript">
+    requests = requestsRaw
+      .slice()
+      .reverse()
+      .map((r) => ({ ...r, time: new Date(r.time) }))
+  </script>
+  <script id="435" type="application/vnd.observable.javascript" pinned="">
+    JSON.parse(requests[0].body)
+  </script>
+  <script id="224" type="application/vnd.observable.javascript">
+    headers = requests.map((r) => r.headers)
+  </script>
+  <script id="354" type="application/vnd.observable.javascript">
+    viewof requestsRaw = {
+      const holder = Inputs.input([]);
+      const unsubscribe = database.onValue(
+        database.query(ref, database.limitToLast(100)),
+        (snap) => {
+          holder.value = Object.values(snap.val());
+          holder.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      );
+      invalidation.then(unsubscribe);
+      return holder;
+    }
+  </script>
+  <script id="293" type="text/markdown">
+    ### Server
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    viewof url = endpoint("default", async (req, res) => {
+      const data = {
+        ...req,
+        ip: "redacted",
+        time: { ".sv": "timestamp" }
+      };
+      database.push(ref, data);
+      res.json(data);
+    })
+  </script>
+  <script id="298" type="text/markdown">
+    ### Database
+  </script>
+  <script id="318" type="application/vnd.observable.javascript">
+    FIREBASE_VERSION = "9.1.3"
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+      apiKey: "AIzaSyBN4bxw6d0cM0CGPNzRrkRlBqwFQnPLdN4",
+      databaseURL:
+        "https://larkworthy-dfb11-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "larkworthy-dfb11",
+      appId: "1:786910701676:web:8d7dd002acf3b78c74d049"
+    })
+  </script>
+  <script id="311" type="application/vnd.observable.javascript">
+    app = {
+      const app = await import(
+        `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-app.js`
+      );
+      return app.initializeApp(
+        firebaseConfig,
+        "@endpointservices/realtime-request-log"
+      );
+    }
+  </script>
+  <script id="109" type="application/vnd.observable.javascript">
+    database = await import(
+      `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-database.js`
+    )
+  </script>
+  <script id="336" type="application/vnd.observable.javascript">
+    ref = database.ref(
+      database.getDatabase(app),
+      "@endpointservices/realtime-request-log"
+    )
+  </script>
+  <script id="396" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="401" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,252 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Tube Explorer</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    html`
+    <div class="content">
+      <h1>Tube Explorer</h1>
+      <p>Current search: <i>${search}</i></p>
+    </div>`
+  </script>
+  <script id="852" type="application/vnd.observable.javascript">
+    md`DOESN'T WORK SINCE YOUTUBE DEPRECATED search PARAMETER (see https://developers.google.com/youtube/player_parameters#listType) `
+  </script>
+  <script id="322" type="application/vnd.observable.javascript">
+    viewof enabledCatagories = render(({ useSetter }) => {
+      const [value, setValue] = useState(config.catagories || catagories);
+      const [expanded, setExpanded] = useState(false);
+      useSetter(value);
+      function optionCheckChange(event) {
+        const catagory = event.target.name;
+        setValue(event.target.checked ? [...value, catagory]
+                                      : value.filter(x => x != catagory));
+      }
+      return jsx`
+        <div class="level">
+          <div class="level-item level-left">
+            <label class="label">
+              Pickable catagories: ${value.length < 5 ? value.join(", ") : value.length}</label>
+          </div>
+          <div class="level-item level-right">
+            <button class="button" onClick=${evt => setValue(catagories)}>
+              select all
+            </button>
+            <button class="button" onClick=${evt => setValue([])}>
+              select none
+            </button>
+            <button class="button" onClick=${evt => setExpanded(!expanded)}>
+              hide/show
+            </button>
+          </div>
+
+
+        </div>
+        <table class="table" hidden=${!expanded}>
+          <tbody>
+            ${catagories.map((option, index) => {
+              return jsx`
+                <td>
+                  <div class="field is-grouped">
+                    <div class="control">
+                      <input class="checkbox"
+                        name=${option}
+                        checked=${value.includes(option)}
+                        type="checkbox"
+                        onChange=${optionCheckChange}
+                      />
+                    </div>
+                    <div class="control">
+                      <label class="label control">${option}</option>
+                    </div>
+                  </span>
+                </td>
+                ${index % 3 == 2 && jsx`<tr/>`}
+              `
+            })}
+          </tbody>
+        </table>
+      `;
+    })
+  </script>
+  <script id="250" type="application/vnd.observable.javascript">
+    viewof bias = render(({ useSetter }) => {
+      const suggestedBias = ["", "documentary", "DIY", "tutorial", "meme", "experiment", "dancing", "explained", "vlog"]
+      const [value, setValue] = useState(config.bias || suggestedBias[0]);
+      useSetter(value);
+      return jsx`
+        <div class="field is-grouped">
+          <div class="control">
+            <label class="label"> Bias term</label>
+          </div>
+          <div class="control">
+            <select class="select is-small"
+              onChange=${useCallback(event => setValue(event.target.value), [setValue])}>
+              ${suggestedBias.map(option => {
+                return jsx`<option value=${option} selected=${option == value}>${option}</option>`
+              })}
+              <option value="custom" selected=${!suggestedBias.includes(value)}>custom</option>
+            </select>
+          </div>
+          <div class="control">
+            <input
+              class="input is-small"
+              type="text"
+              placeholder="Enter some text..."
+              value=${value}
+              onChange=${useCallback(event => setValue(event.target.value), [setValue])}
+            />
+          </div>
+        </div>
+      `;
+    })
+  </script>
+  <script id="176" type="application/vnd.observable.javascript">
+    // TODO: Figure out short videos only
+    // TODO: Figure out autoplay
+    // TODO: Save search in URL for sharing
+    // Documentaty, DIY are good biases
+    html`<a class="button" href=${
+        document.baseURI}#${encodeURI(JSON.stringify({
+          bias: bias,
+          catagories: (enabledCatagories.length == catagories.length ? "all" : enabledCatagories),
+          search: bias + " " + pick(await entities(pick(enabledCatagories))) + empty(search)
+        }))
+    }>another video</a>`
+  </script>
+  <script id="32" type="application/vnd.observable.javascript">
+    html`
+    <iframe 
+      id="tube"
+      width="100%"
+      height="580"
+      src="https://www.youtube.com/embed?autoplay=1&enablejsapi=1"
+      frameborder="0"
+      allow="autoplay; encrypted-media"
+      allowfullscreen
+      onready="event.target.playVideo()"
+    />
+    `
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    search =  config.search; 
+  </script>
+  <script id="669" type="application/vnd.observable.javascript">
+    html`<div class="content">
+      <h2>About Tube Explorer</h2>
+      <p> A technology that helps me find strange things on YouTube outside my filter bubble.</p>
+      <p> Use a bias term to prepend some search term to everything and select which catagories to draw random entities from. For example, if you bias with "Documentary" and restrict the catagory to "Cities", you will be able to find random documentaries from around the world!</p>
+      <p>Entities are chosen from Never Ending Language Learner dataset.</p>
+      <p> Code is open source and editable in your browser thanks to ObservableHQ.</p>
+    </div>
+    `
+  </script>
+  <script id="742" type="application/vnd.observable.javascript">
+    YT = await new Promise(async (resolve, reject) => {
+      const YT = await require('https://www.youtube.com/iframe_api').catch(
+        () => window['YT']
+      );
+      YT.ready(() => resolve(YT));
+    });
+  </script>
+  <script id="761" type="application/vnd.observable.javascript">
+    player = await new Promise(async (resolve, reject) => {
+      var shouldAutoplay = false;
+      function onStateChange(event) {
+        var state = "undefiend";
+        switch (event.data) {
+          case YT.PlayerState.UNSTARTED:
+            state= "unstarted";
+            break;
+            case YT.PlayerState.ENDED:
+            state = "ended";
+            break;
+            case YT.PlayerState.PLAYING:
+            state = "playing";
+            shouldAutoplay = true;
+            break;
+            case YT.PlayerState.PAUSED:
+            state = "paused";
+            shouldAutoplay = false;
+            break;
+            case YT.PlayerState.BUFFERING:
+            state = "buffering";
+            break;
+            case YT.PlayerState.CUED:
+            state = "video cued";
+            if (shouldAutoplay) player.playVideo();
+            break;
+            default:
+            state = "unknown (" + event.data + ")";
+        }
+
+        console.log('onStateChange: ' + state);
+      }
+
+      var player = new YT.Player('tube', {
+        height: '100%',
+        width: '640',
+        videoId: 'M7lc1UVf-VE',
+        events: {
+          'onReady': () => resolve(player),
+          'onStateChange': onStateChange
+        }
+      });
+    });
+  </script>
+  <script id="777" type="application/vnd.observable.javascript">
+    cue = {
+      console.log("Searching: " + search)
+      player.cuePlaylist({ 
+        listType:"search",
+        list:search,
+        index: 0, // todo more random
+        startSeconds:0
+      });
+    }
+
+  </script>
+  <script id="554" type="application/vnd.observable.javascript">
+    config = {
+      try {
+        const decoded = JSON.parse(decodeURIComponent(hash.substring(1)))
+        if (decoded.catagories == "all") decoded.catagories = catagories
+        return decoded;
+      } catch (err) {
+        return {search: "DIY Miniature Violin Tutorial"}
+      }
+    }
+  </script>
+  <script id="190" type="application/vnd.observable.javascript">
+    hash = Generators.observe(notify => {
+      const hashchange = () => notify(location.hash);
+      hashchange();
+      addEventListener("hashchange", hashchange);
+      return () => removeEventListener("hashchange", hashchange);
+    })
+  </script>
+  <script id="89" type="application/vnd.observable.javascript">
+    catagories = (await fetch("https://nell-37275.firebaseio.com/catagories.json")).json()
+  </script>
+  <script id="92" type="application/vnd.observable.javascript">
+    async function entities(catagory) {
+        return (await fetch(`https://nell-37275.firebaseio.com/entities/${catagory}.json`)).json() 
+    }
+  </script>
+  <script id="95" type="application/vnd.observable.javascript">
+    function pick(options) {
+      return options[Math.floor(Math.random() * options.length)].replace(/_/g, " ");
+    }
+  </script>
+  <script id="152" type="application/vnd.observable.javascript">
+    empty = () => "" 
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    d3 = require("d3@5")
+  </script>
+  <script id="568" type="application/vnd.observable.javascript" pinned="">
+    stylesheet= html`<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.1/css/bulma.min.css">`
+  </script>
+  <script id="242" type="application/vnd.observable.javascript">
+    import {jsx, render, component, useState, useCallback} from '@j-f1/react'
+  </script>
+</notebook>

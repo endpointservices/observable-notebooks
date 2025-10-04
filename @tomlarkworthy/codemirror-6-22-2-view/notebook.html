@@ -1,0 +1,161 @@
+<!doctype html>
+<notebook theme="air">
+  <title>CodeMirror 6 + Javascript</title>
+  <script id="0" type="text/markdown">
+    # CodeMirror 6 + Javascript 
+  </script>
+  <script id="7" type="text/markdown">
+    CodeMirror is sensitive to how it is imported, this is a single dependancy. For more information check out the original [CodeMirror 6 Backwritable View](https://observablehq.com/@tomlarkworthy/codemirror-6)
+
+    ```bash
+    npm install --save codemirror
+    npm install --save @codemirror/lang-javascript
+    echo 'export * from "./node_modules/codemirror/dist/index.js";
+          export * from "./node_modules/@codemirror/lang-javascript/dist/index.js";
+          export * from "./node_modules/@codemirror/view/dist/index.js";
+          export * from "./node_modules/@codemirror/state/dist/index.js";' \
+        | npx esbuild --bundle --format=esm > codemirror_javascript.js```
+  </script>
+  <script id="880" type="application/vnd.observable.javascript">
+    CodeMirror(
+      `function() {
+      // nice!
+      return ""
+    }`,
+      {
+        extensions: [
+          codemirror.EditorView.lineWrapping,
+          codemirror.javascript(),
+          codemirror.basicSetup,
+          myDefaultTheme
+        ]
+      }
+    )
+  </script>
+  <script id="282" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="35" type="application/vnd.observable.javascript" pinned="">
+    CodeMirror = (doc = "", config = {}) => {
+      const extensions = config.extensions ?? [];
+
+      const updateViewOf = codemirror.EditorView.updateListener.of((update) => {
+        console.log(update);
+        container.dispatchEvent(new Event("input", { bubbles: true }));
+      });
+
+      const view = new codemirror.EditorView({
+        doc,
+        extensions: [updateViewOf, ...extensions]
+      });
+      const el = view.dom;
+      const container = htl.html`<div><span onInput=${(evt) =>
+        evt.stopPropagation()}>${el}`;
+      Object.defineProperty(container, "value", {
+        enumerable: true,
+        get: () => view.state.doc.toString(),
+        set: (newContent = "") => {
+          const change = calcChange(
+            view.state.doc.toString(),
+            newContent,
+            view.state.selection
+          );
+          view.dispatch(change);
+        }
+      });
+      return container;
+    }
+  </script>
+  <script id="624" type="application/vnd.observable.javascript">
+    calcChange("abcefg", "abcnewefg", { ranges: [{ from: 8 }] })
+  </script>
+  <script id="621" type="application/vnd.observable.javascript" pinned="">
+    calcChange = (previous, next, selection) => {
+      // Find where to start inserting
+      const [insertOffset, endOffset] = findMiddle(previous, next);
+      const insert = next.substring(insertOffset, next.length - endOffset);
+      const cursor = Math.min(insertOffset + insert.length, next.length);
+      return {
+        changes: [
+          {
+            from: insertOffset,
+            to: previous.length - endOffset,
+            insert
+          }
+        ]
+        /*
+        selection: {
+          anchor: cursor,
+          head: cursor
+        }*/
+      };
+    }
+  </script>
+  <script id="824" type="application/vnd.observable.javascript" pinned="">
+    function findMiddle(s1, s2) {
+      const n = s1.length,
+        m = s2.length;
+
+      // Step 1: Find the shared prefix
+      let prefixLen = 0;
+      while (prefixLen < n && prefixLen < m && s1[prefixLen] === s2[prefixLen]) {
+        prefixLen++;
+      }
+
+      // Step 2: Find the shared suffix
+      let suffixLen = 0;
+      while (
+        suffixLen < n - prefixLen &&
+        suffixLen < m - prefixLen &&
+        s1[n - suffixLen - 1] === s2[m - suffixLen - 1]
+      ) {
+        suffixLen++;
+      }
+
+      return [prefixLen, suffixLen];
+    }
+  </script>
+  <script id="198" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="60" type="application/vnd.observable.javascript" pinned="">
+    myDefaultTheme = codemirror.EditorView.theme({
+      "&": {
+        fontFamily: 'Consolas, "Roboto Mono", monospace',
+        fontSize: "14px",
+        height: "200px",
+        border: "1px solid #ddd"
+      }
+    })
+  </script>
+  <script id="28" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="496" type="application/vnd.observable.javascript">
+    codemirror = {
+      const blob = await unzip(FileAttachment("codemirror_javascript@1.js.gz"));
+
+      const objectURL = URL.createObjectURL(
+        new Blob([blob], { type: "application/javascript" })
+      );
+      try {
+        console.log("Loading codemirror from", objectURL);
+        return await import(objectURL);
+      } finally {
+        URL.revokeObjectURL(objectURL); // Ensure URL is revoked after import
+      }
+    }
+  </script>
+  <script id="921" type="application/vnd.observable.javascript">
+    unzip = async (attachment) => {
+      const response = await new Response(
+        (await attachment.stream()).pipeThrough(new DecompressionStream("gzip"))
+      );
+
+      return response.blob();
+    }
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+</notebook>

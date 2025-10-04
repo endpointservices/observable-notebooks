@@ -1,0 +1,76 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Serverless arrow file server</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Serverless arrow file server
+
+    ![](${await FileAttachment("ApachearrowServer.png").url()})
+
+    * The [server](https://observablehq.com/@endpointservices/how-to-arrow-server) serves the resource in the cloud.
+    * The [client](https://observablehq.com/@endpointservices/how-to-arrow-client) consumes it in a user’s browser.
+
+    We use a [serverless-cell](https://observablehq.com/@endpointservices/how-to-arrow-client) to
+    1. read a big dataset and transform to 
+      - CSV
+      - Apache Arrow
+    2. set the cache control headers so the expensive transformation is cached in CDN
+    3. serve the results from a [serverless-cell](https://observablehq.com/@endpointservices/serverless-cells)
+
+    The Covid19 dataset is CORS protected, so we use [*fetchp*](https://observablehq.com/@tomlarkworthy/fetchp), which in the browser will use a proxy.
+    `
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    md`*Note: this notebook loads a large unoptimized dataset and can be slow to load if your connection’s speed is mediocre (like mine); but we don’t need to open it except for developing and debugging; users will only access its endpoints through the client.*`
+  </script>
+  <script id="2" type="application/vnd.observable.javascript" pinned="">
+    // let’s fetch this rather large dataset from the https://covid19.who.int/ home page.
+    // note: we use fetchp, which acts as a CORS-enabled proxy when developing this notebook
+    // this cell works only if our notebook is published with a custom URL.
+    allData = fetchp(
+      "https://covid19.who.int/page-data/table/page-data.json"
+    ).then((d) => d.json())
+  </script>
+  <script id="21" type="application/vnd.observable.javascript" pinned="">
+    // extract this interesting subset about vaccination
+    data = allData.result.pageContext.rawDataSets.vaccineData.data
+  </script>
+  <script id="29" type="application/vnd.observable.javascript" pinned="">
+    // deploy the subset as a csv
+    deploy("data.csv", async (req, res) => {
+      res.header("Cache-control", `public, max-age=${1 * 3600}`); // 1 hour cache on the CDN
+      res.header("Content-Type", "text/plain");
+      res.send(aq.from(data).toCSV());
+    })
+  </script>
+  <script id="18" type="application/vnd.observable.javascript" pinned="">
+    // deploy the subset as an apache arrow file
+    deploy("data.arrow", async (req, res) => {
+      res.header("Cache-control", `public, max-age=${1 * 3600}`); // 1 hour cache on the CDN
+      res.header("Content-Type", "application/octet-stream");
+      res.header("Content-Disposition", `attachment; filename="data.arrow"`);
+      res.send(aq.from(data).toArrowBuffer());
+    })
+  </script>
+  <script id="42" type="application/vnd.observable.javascript">
+    md`These two endpoints are now ready for consumption by any [client](/@endpointservices/how-to-arrow-client).`
+  </script>
+  <script id="37" type="application/vnd.observable.javascript">
+    md`---
+    _libraries_`
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    import { deploy } from '@endpointservices/serverless-cells'
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="12" type="application/vnd.observable.javascript" pinned="">
+    aq = require('arquero')
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

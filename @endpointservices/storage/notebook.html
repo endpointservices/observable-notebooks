@@ -1,0 +1,379 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Store Files with Storage</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`![](${await FileAttachment("storage.png").url()})
+
+    # Store Files with Storage
+
+    At last, upload files! First, provision a *"bucket"* to hold your files. Once logged in you can upload and download files using a *storageClient*. You login with an [IndieWeb]() identity URL, which needs to be linked to an _observableProfile_ to upload and list files.
+
+    Files uploaded to the _/public_ prefix can be accessed from anywhere without login.
+
+    ~~~js
+       import {bucket, storageClient, storageLogin, user, observableProfiles} from '@endpointservices/storage'
+    ~~~
+
+    These are real Google Cloud Storage buckets accessed through Firebase Storage (including its authorization rules). For power users, it is possible to customize the access logic, map buckets to your local filesystem using [gcs-FUSE](https://cloud.google.com/storage/docs/gcs-fuse), or bulk manipulate them with [gsutil](https://cloud.google.com/storage/docs/gsutil) and access them from other platforms (e.g. colab). Please get in touch to unlock these features.
+
+    Usage is currently capped to 20Mb per bucket, and one bucket per ObservableHQ profile.
+    `
+  </script>
+  <script id="865" type="application/vnd.observable.javascript">
+    html`<iframe width="${width}" height="${width*0.7}" src="https://www.youtube-nocookie.com/embed/hbIbxkacekg" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+  </script>
+  <script id="398" type="application/vnd.observable.javascript">
+    md`## Provision A Storage Bucket`
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    signature(bucket, {
+      description: "Create a Cloud storage bucket that can store files."
+    })
+  </script>
+  <script id="410" type="application/vnd.observable.javascript">
+    md`### Example`
+  </script>
+  <script id="34" type="application/vnd.observable.javascript" pinned="">
+    viewof myBucket = await bucket({
+      name: "mybucket11",
+      location: "europe-west4",
+      // status: "deleted",
+    })
+  </script>
+  <script id="401" type="application/vnd.observable.javascript">
+    md`## Create a storage client`
+  </script>
+  <script id="757" type="application/vnd.observable.javascript">
+    md`Every bucket has a unique \`gs://<bucketname>\` identifier. You can use this to initialize a _storageClient_, even in other notebooks... even from other platforms...`
+  </script>
+  <script id="596" type="application/vnd.observable.javascript" pinned="">
+    storage_link = myBucket.link
+  </script>
+  <script id="352" type="application/vnd.observable.javascript" pinned="">
+    storage = storageClient("gs://o_endpointservices_mybucket11")
+  </script>
+  <script id="404" type="application/vnd.observable.javascript">
+    md`## Get a URL to public object
+
+    The default rules allow unauthenticated read access to /public directory and descendents.
+    `
+  </script>
+  <script id="510" type="application/vnd.observable.javascript" pinned="">
+    developerGif = storage.ref("/public/developers.gif").getDownloadURL()
+  </script>
+  <script id="361" type="application/vnd.observable.javascript" pinned="">
+    // Developers developers developers developers...
+    html`<img src=${developerGif}>`
+  </script>
+  <script id="414" type="application/vnd.observable.javascript">
+    md`## Login for priviledged access
+
+    We use IndieAuth to login both users and admins in.
+    `
+  </script>
+  <script id="420" type="application/vnd.observable.javascript">
+    storageLogin = weblogin
+  </script>
+  <script id="416" type="application/vnd.observable.javascript">
+    import {weblogin, user} with {endpointserviceusers as firebase} from '@endpointservices/weblogin-for-firebase'
+  </script>
+  <script id="432" type="application/vnd.observable.javascript">
+    md`## Admins must be linked to ObservableHQ profile URL
+
+    Only owners of the observable profile (e.g. @endpointservices) can list and upload files by default. 
+
+    To show ownership, the identity URL (e.g. http://tomlarkworthy.endpointservices.net/) needs to host a webpage linked (with rel="me") to the observeable profile URL (e.g. https://observablehq.com/@endpointservices), AND the observable profile URL needs to link back to the identity URL in the websites list. See [microformats](https://microformats.org/wiki/rel-me) wiki.
+
+    The [wizard](https://observablehq.com/@endpointservices/login-wizard) will guide you through the setup. If you are logged in successfull the next line will print your linked Observable username.
+
+    `
+  </script>
+  <script id="546" type="application/vnd.observable.javascript">
+    observableProfiles = { // Its a bit of work but you can find the claims in an accessToken buried in the firebase auth SDK
+      user
+      return JSON.parse(atob(endpointserviceusers.auth().currentUser.toJSON().stsTokenManager.accessToken.split('.')[1]))['observablehq.com']
+    }
+  </script>
+  <script id="611" type="application/vnd.observable.javascript">
+    md`## Upload a file
+
+    The storage client is a preconfigured Firebase storage client. So you can use its [API documentation](https://firebase.google.com/docs/reference/js/firebase.storage) to find all the ways you can use it.
+
+    For a minimal upload we can do it with a simple file input
+    `
+  </script>
+  <script id="617" type="application/vnd.observable.javascript" pinned="">
+    html`<input type="file" onchange=${(evt)=> {
+      const file = evt.target.files[0];
+      return storage.ref(`/public/${file.name}`).put(file);
+    }}>`
+  </script>
+  <script id="37" type="application/vnd.observable.javascript">
+    import {html} from '@observablehq/htl'
+  </script>
+  <script id="651" type="application/vnd.observable.javascript">
+    md`## Download file
+
+    Once authenticated as the owner you can download files from anywhere
+    `
+  </script>
+  <script id="426" type="application/vnd.observable.javascript" pinned="">
+    // If you had logged in as me, you could download this, by default, domain owners have all permissions
+    storage.ref("/foo").getDownloadURL()
+  </script>
+  <script id="671" type="application/vnd.observable.javascript">
+    md`## List files in directory
+
+    Unathenticated users on the default rules are unable to list files, but the bucket owner can.
+    `
+  </script>
+  <script id="656" type="application/vnd.observable.javascript" pinned="">
+    (await storage.ref("/public").listAll()).items.map(item => item.name)
+  </script>
+  <script id="792" type="application/vnd.observable.javascript">
+    md`## More
+
+    This is a thin wrapper over a Firebase storage client. Check it full documentation [here](https://firebase.google.com/docs/storage/web/start).
+    `
+  </script>
+  <script id="678" type="application/vnd.observable.javascript">
+    md`## Rules
+
+    These are the rules we set by default. You can configure others though. See the Firebase [documentation on storage rules](https://firebase.google.com/docs/storage/security).
+    `
+  </script>
+  <script id="314" type="application/vnd.observable.javascript" pinned="">
+    defaultRules = `rules_version = '2';
+    service firebase.storage {
+      match /b/{bucket}/o {
+        match /{allPaths=**} {
+          allow read, write: if '${subdomain()}' in request.auth.token['observablehq.com'];
+        }
+        match /public/{allPaths=**} {
+          allow get;
+        }
+      }
+    }
+    `
+  </script>
+  <script id="519" type="application/vnd.observable.javascript">
+    md`## Implementation`
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    async function bucket({
+      name = "default",          // Lowercase, digits, '-' and '_' only.
+      state = "active",          // or "deleted"      
+      location = 'europe-west4', // https://cloud.google.com/storage/docs/locations
+      rules = defaultRules,      // https://firebase.google.com/docs/storage/security/get-started
+      cors = [{                  // https://cloud.google.com/storage/docs/json_api/v1/buckets/update
+        method: ["*"],
+        origin: ["*"],
+        responseHeader: ["*"],
+        maxAgeSeconds: "3000"
+      }]                  
+    } = {}) {
+      if (!name.match(/^[-_a-z0-9]*$/)) throw new Error("Lowercase, digits '-' and '_' in bucket names only")
+      const fullname = `o_${subdomain()}_${name}`;
+      return resource({
+        name: fullname,
+        fields: ["", "name", "size", "location", "state", "link", "rules", "cors"],
+        endpoint: bucket_endpoint
+      })({
+         name: fullname, state, location, link: `gs://${fullname}`, rules: rules, cors
+      })
+    };
+  </script>
+  <script id="122" type="application/vnd.observable.javascript">
+    bucket_endpoint = resource_endpoint({
+      apply: updateBucket,
+      name: "bucket",
+      max: 1,
+      hostNotebook: "@endpointservices/storage",
+      configPath: (subdomain, notebook, config) =>
+          `services/storage/subdomains/${subdomain}/buckets/${config.name}`
+    })
+  </script>
+  <script id="186" type="application/vnd.observable.javascript">
+    async function updateBucket(current, {
+        name,
+        location,
+        state,
+        rules,
+        link,
+        cors
+      } = {}, {
+        notebook, subdomain, token
+      } = {}) {
+
+      if (!name.startsWith("o_" + subdomain + "_")) throw new Error("Bucket names must start with o_<subdomain>_")
+
+      const gapi = await createGapi({
+        "apiKey": "AIzaSyC4q-5jTXGPmPg7-S49QxdFgWHSleGF4xw",
+        "discoveryDocs": ["https://storage.googleapis.com/$discovery/rest?version=v1"],
+        "access_token": token
+      });
+
+      if (state === "deleted") {
+        await gapi.storage.buckets.delete({
+          bucket: name,
+        });
+        return ({
+          state
+        })
+      } else if (state === "active") {
+        const config = ({
+          project: 'endpointserviceusers',
+          name,
+          location,
+          cors
+        });
+
+        // Sync state
+        if (current.state !== state || !_.isEqual(current.cors, cors)) {
+          if (current.state === "active") {
+            await gapi.storage.buckets.update({
+              ...config,
+              bucket: config.name
+            });
+          } else {
+            try {
+              await gapi.storage.buckets.update(config);
+            } catch(err) {
+              await gapi.storage.buckets.insert(config);
+              // Import bucket to Firebase https://firebase.google.com/docs/reference/rest/storage/rest/v1beta/projects.buckets/addFirebase
+              const response = await fetch(
+                "https://firebasestorage.googleapis.com/v1beta/" +                
+                `projects/endpointserviceusers/buckets/${name}:addFirebase`, {
+                  method: "POST",
+                  headers: {
+                    "Authorization": `Bearer ${token}` 
+                  }
+                });
+              if (response.status !== 200) {
+                throw new Error(`firebasestorage error status ${response.status} ${await response.text()}`)
+              }
+            }
+          }
+        }
+        current.name = config.name;
+        current.location = config.location;
+        current.state = state;
+        current.link = link;
+        current.cors = cors;
+
+        // Sync rules
+        if (current.rules !== rules) {
+          // https://redocly.github.io/redoc/?url=https://api.apis.guru/v2/specs/googleapis.com/firebaserules/v1/openapi.json#operation/firebaserules.projects.rulesets.create
+          const rulesetResponse = await fetch(
+            "https://firebaserules.googleapis.com/v1/" +                
+            `projects/endpointserviceusers/rulesets`, {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${token}` 
+              },
+              body: JSON.stringify({
+                "metadata": {
+                  "services": [
+                    'firebase.storage' // https://github.com/firebase/firebase-admin-node/blob/d961c3f705a8259762a796ac4f4d6a6dd0992eb1/src/security-rules/security-rules.ts#L90
+                  ]
+                },
+                "source": {
+                  "files": [
+                    {
+                      "content": rules,
+                      "fingerprint": await fingerprint(rules),
+                      "name": "storage.rules"
+                    }
+                  ]
+                }
+              })
+            });
+          if (rulesetResponse.status !== 200) {
+            throw new Error(`firebaserules ruleset error ${rulesetResponse.status} ${await rulesetResponse.text()}`)
+          }
+          const ruleset = await rulesetResponse.json();
+
+          // https://redocly.github.io/redoc/?url=https://api.apis.guru/v2/specs/googleapis.com/firebaserules/v1/openapi.json#operation/firebaserules.projects.releases.list
+          const releaseName = `firebase.storage/${name}`;
+          const releaseResponse = await fetch(
+            'https://firebaserules.googleapis.com/v1/projects/endpointserviceusers' + 
+            `/releases/${releaseName}`,
+            {
+              method: 'PATCH',
+              body: JSON.stringify({
+                "release": {
+                  // https://github.com/firebase/firebase-admin-node/blob/d961c3f705a8259762a796ac4f4d6a6dd0992eb1/src/security-rules/security-rules.ts#L216
+                  "name": `projects/endpointserviceusers/releases/${releaseName}`,
+                  "rulesetName": ruleset.name,
+                }
+              }),
+              headers: {
+                "Authorization": `Bearer ${token}` 
+              }
+            }
+          );
+          if (releaseResponse.status !== 200) {
+            throw new Error(`firebaserules release error ${releaseResponse.status} ${await releaseResponse.text()}`)
+          }
+
+          current.rules = rules;
+        }
+
+        return (current)
+      } else {
+        throw new Error(`Unrecognised state: ${state}`)
+      }
+    }
+  </script>
+  <script id="354" type="application/vnd.observable.javascript">
+    function storageClient(link) {
+      return endpointserviceusers.storage(link)
+    }
+  </script>
+  <script id="228" type="application/vnd.observable.javascript">
+    clientconfig = ({
+      apiKey: "AIzaSyBquSsEgQnG_rHyasUA95xHN5INnvnh3gc",
+      authDomain: "endpointserviceusers.firebaseapp.com",
+      projectId: "endpointserviceusers",
+      appId: "1:283622646315:web:baa488124636283783006e"
+    }) 
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    import {firebase as endpointserviceusers} with {clientconfig as firebaseConfig} from '@tomlarkworthy/firebase'
+  </script>
+  <script id="320" type="application/vnd.observable.javascript">
+    async function fingerprint(str) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(str);
+      const hashBuffer =  await crypto.subtle.digest("SHA-256", data);
+      return btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer)));
+    }
+  </script>
+  <script id="523" type="application/vnd.observable.javascript">
+    md`### Imports`
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    import {firebase, listen, subdomain, notebook, signinWithAccessToken, getAccessTokenFromServiceAccount} from '@endpointservices/utils'
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    import {deploy} from '@endpointservices/serverless-cells'
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    import {signature} from '@mootari/signature'
+  </script>
+  <script id="197" type="application/vnd.observable.javascript">
+    import {createGapi} from '@tomlarkworthy/gapi'
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    import {resource, resource_endpoint} from '@endpointservices/infra-as-code'
+  </script>
+  <script id="899" type="application/vnd.observable.javascript">
+    import {_} from '@mbostock/hello-lodash-fp'
+  </script>
+  <script id="934" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="938" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

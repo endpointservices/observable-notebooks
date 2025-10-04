@@ -1,0 +1,326 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Federated Login (⚠️ not in use)</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${md`# Federated Login (⚠️ not in use)
+
+    The controls below create a federated login session that will allow you to login to Endpoint services from your own personal domains.
+
+    Works by creating an encrypted _SameSite=None_ cookie that is sent to shared URL regardless of the origin you are browsing from.
+
+    (Please note UI is very slow ATM)
+    (Works with Chrome, Firefox but not Safari)
+
+    `}`
+  </script>
+  <script id="524" type="application/vnd.observable.javascript">
+    viewof user = {
+      notify
+      let ui;
+
+      // Federated User, perfect!
+      if (federatedLoginState === "LOGGED_IN") {
+        console.log("@endpointservices/login: LOGGED_IN");
+        const redirect = new URLSearchParams(location.search).get('source');
+        ui = html`<div>
+          <p class="content"> You are logged in </p>
+          ${redirect ? html`<a class="button" href=${redirect}>Return to ${redirect.replace('https://observablehq.com', '')}</a>`: null}
+          <button class="button" onclick=${lib.signout}>signout</button>
+        </div>`
+        ui.value = firebase.auth().currentUser
+        return ui;
+      }
+
+      // We can use the Firebase login to log into endpointservice notebooks
+      if (subdomain() === 'endpointservices' && !firebase.auth().currentUser) {
+        ui = html`${viewof firebaseUser}`
+      }
+
+
+      // We can use the Firebase login to log into endpointservice notebooks
+      if (subdomain() === 'endpointservices' && firebase.auth().currentUser && federatedLoginState === "LOGGED_OUT") {
+        ui = html`<button class="button" onclick=${lib.signout}>signout</butt`
+      }
+
+      // On an endpoint service notebook, for a non-custom provider, we can upgrade to a federated login by sending our token off to /signin
+      try {
+
+        let idToken = await firebase.auth().currentUser.getIdToken()
+
+        if (subdomain() === 'endpointservices' &&
+            firebase.auth().currentUser && await checkToken(idToken)) {
+          console.log("@endpointservices/login: Fetching federated token");
+          fetch(baseURL + "/signin", {
+            method: 'POST',
+            body: idToken,
+            credentials: 'include'
+          }).then(() => {
+            mutable notify++; //recalulate out login state
+          });
+          ui = html`Obtaining cookie...`
+        }
+      } catch (err) {
+        // Just means checkToken threw
+      }
+
+      // Non @endpointservices notebooks must login through federated login notebook
+      if (subdomain() !== 'endpointservices' && federatedLoginState === "LOGGED_OUT") {
+        console.log("@endpointservices/login: Login at https://observablehq.com/@endpointservices/login required");
+        ui = html`<a class="button" href=${`https://observablehq.com/@endpointservices/login?source=${html`<a href="">.href`}`}>Login to Endpoint Services</a>`
+      }
+
+      // Non @endpointservices notebook user must  be certified before they can login
+      if (subdomain() !== 'endpointservices' && federatedLoginState === "UNCERTIFIED") {
+        console.log("@endpointservices/login: Certification https://observablehq.com/@endpointservices/certify-subdomain-ownership required");
+        ui = html`<a class="button" href=${`https://observablehq.com/@endpointservices/certify-subdomain-ownership?source=${html`<a href="">.href`}`}>You must certify ownership of ${subdomain()} to login</a>`
+      }
+
+      ui.value = federatedLoginState === "LOGGED_IN" ? firebase.auth().currentUser
+                                                     : new Promise(() => {})
+      return ui
+    }
+  </script>
+  <script id="759" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`
+
+    Login is a *critical* component of offering stateful personalised experiences on the web. A login step allows a user to prove their identity to a backend service. With that knowledge, a backend services can provide conditional access to resources, such as a personal storage space that is isolated from other users.
+
+    Many auth providers are configured to permit login to a single domain, but this does not work well with the Observable workflow where we would like users to be able to fork notebooks into their own subdomain for personal customization. They will need to be able to login to their forked notebook, though even though it is now hosted on their personal subdomain.
+
+    ~~~js
+    import {viewof user} from '@endpointservices/login'
+    ...
+    viewof user // Resolves only when logged in.
+    ~~~
+
+    Because Endpoint Services does not have fine grained access control, we only allow login of of the owner of a subdomain to forked Notebooks. This avoids the risk of construction of malicious forks. If you do wish to share an improvement to an endpoint service notebook, either suggest changes to the @endpointservices notebook, or encourage others to fork your work into their workspace.
+
+    We use the tricks described in [John Carrol's excellent guide to federating Firebase auth](https://dev.to/johncarroll/how-to-share-firebase-authentication-across-subdomains-1ka8) to enable you to login to Endpoint services from your own notebooks. We deviate slightly from his implementation by use Origin header to avoid CSRF attacks instead of his "csst" token.
+
+    The technique for login federation is interesting in its own right. All production code is in this notebook using [serverless cells](https://observablehq.com/@tomlarkworthy/serverless-cells). So you can see how this one works to make your own.
+    `}`
+  </script>
+  <script id="602" type="application/vnd.observable.javascript">
+    federatedLoginState = {
+      // firebase.auth().currentUser is always null on first page reload, will be notified 
+      // by first state change
+      if (notify === 0) return new Promise(() => {});
+
+      // If we already have custom auth token we are already logged in as a federated user
+      /* No if user signouts out on subdomain we might still have custom creds in notebook
+      try { 
+        firebase.auth().currentUser && await checkToken(await firebase.auth().currentUser.getIdToken())
+      } catch (err) {
+        if (err.message === "Not approved signin provider: custom") return "LOGGED_IN"
+      }*/
+      if (this == "LOGGED_IN" && firebase.auth().currentUser) return "LOGGED_IN";
+
+      // Maybe we can become one?
+      const check = await fetch(baseURL + "/check", { 
+        method: 'POST',
+        credentials: 'include'
+      });
+      if (check.status === 200) {
+        const token = await check.text();
+        await firebase.auth().signInWithCustomToken(token);
+        mutable notify++;
+        return "LOGGED_IN"
+      } else if (check.status === 401) {
+        return "LOGGED_OUT"
+      } else if (check.status === 403) {
+        return "UNCERTIFIED"
+      } else {
+        throw new Error("Unexpected: " + check.status)
+      }
+    }
+  </script>
+  <script id="536" type="application/vnd.observable.javascript">
+    mutable notify = { // Triggers a reevaluation of the auth state
+      return 0
+    }
+  </script>
+  <script id="546" type="application/vnd.observable.javascript">
+    lib = {
+      firebase.auth().onAuthStateChanged(function(user) {mutable notify++});
+      return ({
+        signout: async () => {
+          // Remove cookie first
+          await fetch(baseURL + "/signout", {
+            method: 'POST',
+            credentials: 'include'
+          })
+          // Remove firebase 2nd (also notifies listeners)
+          await firebase.auth().signOut();
+        }
+      })
+    }
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`### Endpoint
+
+    We serve a single 'default' serverless cells as the API endpoint connected to an Express router so can use multiple routes.
+    `}`
+  </script>
+  <script id="770" type="application/vnd.observable.javascript">
+    baseURL = "https://endpointservice.web.app/notebooks/@endpointservices/login/secrets/endpointservices_secretadmin_service_account_key"
+  </script>
+  <script id="41" type="application/vnd.observable.javascript">
+    deploy("default", handleWithExpress(api), {
+      // Admin account can mint custom login tokens and encrypt cookies
+      secrets: ['endpointservices_secretadmin_service_account_key'],
+      modifiers: ["terminal"]
+    })
+  </script>
+  <script id="39" type="application/vnd.observable.javascript" pinned="">
+    api = {
+      const api = Router();
+      api.use((req, res, next) => {
+        const cookieHandler = cookieParser(req.context.secrets['endpointservices_secretadmin_service_account_key'])
+        cookieHandler(req, res, next)
+      });
+      api.post('/signin', signinHandler);
+      api.post('/check', checkHandler);
+      api.post('/signout', signoutHandler);
+      return api
+    }
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`## /signin
+
+    Exchanges a Firebase auth ID token for a encrypted cookie containing the user's _uid_.
+
+    Can only be called from Endpoint Service notebooks. If the token is suitable, the server sets a cookie that will be submitted to other login endpoints regardless what origin the call is made from.
+    `}`
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    // Ensure token is ok for exchange for federation. Checks it is not a custom domain itself and it was recently issued.
+    async function checkToken(idToken) {
+      const jwt = await verifyIdToken(firebase, idToken);
+      const secondsSinceIssued = (Date.now() - new Date(jwt.iat * 1000)) / 1000;
+      if (secondsSinceIssued > 60 * 60)
+        throw new Error("Iat too old");
+      if (!firebaseConfig.uiConfig.signInOptions.includes(jwt.firebase.sign_in_provider)) 
+        throw new Error("Not approved signin provider: " + jwt.firebase.sign_in_provider);
+      return jwt;
+    }
+  </script>
+  <script id="72" type="application/vnd.observable.javascript" pinned="">
+    signinHandler = async (req, res) => {
+      res.header('Access-Control-Allow-Origin', 'https://endpointservices.static.observableusercontent.com')
+      res.header('Access-Control-Allow-Credentials', 'true')
+
+      try {
+        const jwt = await checkToken(req.body);
+        res.cookie('endpointservicesuser',
+          jwt.uid /* Firebase id */, {
+            maxAge: 30 * 24 * 60 * 60 * 1000, // 30 day expiry
+            httpOnly: true, // Not availible in JS env
+            secure: true,   // Https only
+            signed: true,   // Encrypted
+            path: '/notebooks/@endpointservices/login', // Prevent access from other notebooks
+            sameSite: 'None'
+          });
+        res.status(200).end();
+      } catch (err) {
+        const msg = err.message;
+        console.error(msg);
+        res.status(403).send(msg);
+      }
+    }
+  </script>
+  <script id="230" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`## /check
+
+    Use /check to retrieve a custom auth token for cross domain use.
+
+    If a signed cookie is present federated credentials will be sent, otherwise the user should use /signin first.
+    `}`
+  </script>
+  <script id="239" type="application/vnd.observable.javascript" pinned="">
+    checkHandler = async (req, res) => {
+      res.header('Access-Control-Allow-Origin', req.headers.origin)
+      res.header('Access-Control-Allow-Credentials', 'true')
+      if (req.signedCookies && req.signedCookies.endpointservicesuser) {
+        const uid = req.signedCookies.endpointservicesuser;
+        const sa = JSON.parse(req.context.secrets['endpointservices_secretadmin_service_account_key']);
+        const access_token = await getAccessTokenFromServiceAccount(sa);
+        await signinWithAccessToken(firebase, access_token)
+
+        if (req.headers.origin === "https://endpointservices.static.observableusercontent.com" || await isOwner(uid, subdomain(req.headers.origin))) {
+          console.log(`Minting ${uid} from ${subdomain(req.headers.origin)}`)
+          res.send(await createCustomToken(sa, uid));
+        } else {
+          // Signin token present but user is calling from an origin that is not allowed federation
+          res.status(403).end()
+        }
+      } else {
+        res.status(401).end() // No signin token present
+      }
+    }
+  </script>
+  <script id="809" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`## /signout
+    Clears cookie
+    `}`
+  </script>
+  <script id="815" type="application/vnd.observable.javascript" pinned="">
+    signoutHandler = async (req, res) => {
+      res.header('Access-Control-Allow-Origin', req.headers.origin)
+      res.header('Access-Control-Allow-Credentials', 'true')
+
+      try {
+        res.clearCookie('endpointservicesuser', {
+            httpOnly: true, // Not availible in JS env
+            secure: true,   // Https only
+            signed: true,   // Encrypted
+            path: '/notebooks/@endpointservices/login', // Prevent access from other notebooks
+            sameSite: 'None'
+          });
+        res.status(200).end();
+      } catch (err) {
+        const msg = err.message;
+        console.error(msg);
+        res.status(500).send(msg);
+      }
+    }
+  </script>
+  <script id="881" type="application/vnd.observable.javascript">
+    html`<div class="content"> ${
+    md`
+    ---
+    ## Imports
+    `}`
+  </script>
+  <script id="163" type="application/vnd.observable.javascript">
+     cookieParser = require('cookie-parser-browserify@1.4.8')
+  </script>
+  <script id="728" type="application/vnd.observable.javascript">
+    bulma
+  </script>
+  <script id="310" type="application/vnd.observable.javascript">
+    import {createCustomToken, verifyIdToken, getAccessTokenFromServiceAccount, signinWithAccessToken} from '@tomlarkworthy/firebase-admin'
+  </script>
+  <script id="477" type="application/vnd.observable.javascript">
+    import {viewof user as firebaseUser, firebaseConfig, firebase, listen, subdomain, isOwner} from '@endpointservices/utils'
+  </script>
+  <script id="22" type="application/vnd.observable.javascript">
+    import {Router, handleWithExpress, deploy} from '@tomlarkworthy/api-hosting-with-express'
+  </script>
+  <script id="564" type="application/vnd.observable.javascript">
+    import {html} from '@observablehq/htl'
+  </script>
+  <script id="726" type="application/vnd.observable.javascript">
+    import {bulma} from '@tomlarkworthy/bulma'
+  </script>
+  <script id="950" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="954" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

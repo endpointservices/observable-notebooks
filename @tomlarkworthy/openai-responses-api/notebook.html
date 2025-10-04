@@ -1,0 +1,342 @@
+<!doctype html>
+<notebook theme="air">
+  <title>👋 Hello, OpenAI Responses API</title>
+  <script id="0" type="text/markdown">
+    # 👋 Hello, OpenAI [Responses API](https://platform.openai.com/docs/api-reference/responses/create)
+
+    ```js
+    import { responses } from "@tomlarkworthy/openai-responses-api"
+    ```
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY = Inputs.bind(
+      Inputs.password({
+        label: "OPENAI_API_KEY",
+        placeholder: "paste openAI key here"
+      }),
+      localStorageView("OPENAI_API_KEY")
+    )
+  </script>
+  <script id="312" type="text/markdown">
+    # Examples
+  </script>
+  <script id="33" type="text/markdown">
+    ### Simple text prompt
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    text_response = responses({
+      input: "how are you?"
+    })
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    text_response.output.at(-1).content.at(-1).text
+  </script>
+  <script id="116" type="text/markdown">
+    ### Image Prompt
+  </script>
+  <script id="89" type="application/vnd.observable.javascript">
+    disk = FileAttachment("image.png").image()
+  </script>
+  <script id="58" type="application/vnd.observable.javascript">
+    async function getDataUrl(img, format = "image/png") {
+      if (img.image) {
+        img = await img.image();
+      }
+      // Create canvas
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      // Set width and height
+      canvas.width = img.width;
+      canvas.height = img.height;
+      // Draw the image
+      ctx.drawImage(img, 0, 0);
+      return canvas.toDataURL(format);
+    }
+  </script>
+  <script id="99" type="application/vnd.observable.javascript">
+    img_response.output.at(-1).content.at(-1).text
+  </script>
+  <script id="47" type="application/vnd.observable.javascript" pinned="">
+    img_response = responses({
+      input: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "input_text",
+              text: "what's in this image?"
+            },
+            {
+              type: "input_image",
+              image_url: getDataUrl(disk, "image/png")
+            }
+          ]
+        }
+      ]
+    })
+  </script>
+  <script id="124" type="text/markdown">
+    ### Tools: Web search
+
+    *not that many models support websearch*
+  </script>
+  <script id="141" type="application/vnd.observable.javascript">
+    websearch_response.output.at(-1).content.at(-1).text
+  </script>
+  <script id="144" type="application/vnd.observable.javascript">
+    websearch_response.tools.at(-1)
+  </script>
+  <script id="131" type="application/vnd.observable.javascript" pinned="">
+    websearch_response = responses({
+      model: "gpt-4o",
+      input: "Whats the weather in Berlin today?",
+      tools: [{ type: "web_search_preview" }]
+    })
+  </script>
+  <script id="149" type="text/markdown">
+    ### Tools: Image generation
+
+    The tool auto-converts the images to a blob inside the image_call output element
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    image_response.output.at(-1).content.at(-1).text
+  </script>
+  <script id="243" type="text/html">
+    <img
+      width="400"
+      src=${URL.createObjectURL(image_response.output[0].blob)}
+      img.onload= ${() => URL.revokeObjectURL(this.url)}
+    ></img>
+  </script>
+  <script id="158" type="application/vnd.observable.javascript" pinned="">
+    image_response = responses({
+      model: "gpt-4o",
+      input: "Draw a pelican riding a bike",
+      tools: [{ type: "image_generation" }]
+    })
+  </script>
+  <script id="166" type="text/markdown">
+    ### Tools: [function calling](https://platform.openai.com/docs/guides/function-calling?api-mode=responses)
+  </script>
+  <script id="209" type="application/vnd.observable.javascript" pinned="">
+    resolved_function_response.output.at(-1).content.at(-1).text
+  </script>
+  <script id="181" type="application/vnd.observable.javascript" pinned="">
+    function_response = responses({
+      model: "o4-mini",
+      input: "You are executing in a browser. What is the current baseURL?",
+      tools: [evalJavaScriptTool],
+      reasoning: {
+        effort: "high",
+        summary: "detailed"
+      },
+      parallel_tool_calls: false
+    })
+  </script>
+  <script id="292" type="application/vnd.observable.javascript">
+    resolved_function_response = runTools(function_response)
+  </script>
+  <script id="174" type="application/vnd.observable.javascript">
+    evalJavaScriptTool = ({
+      type: "function",
+      name: "evalJavaScript",
+      strict: true,
+      description:
+        "Evaluate a javascript expression and return the serialized result and the contents of the terminal in logs and errors ",
+      parameters: {
+        type: "object", // Does not support scalars
+        properties: {
+          code: { type: "string" }
+        },
+        required: ["code"],
+        additionalProperties: false
+      },
+      // Not part of OpenAI API. This is where we define execution
+      execute: async ({ code } = {}) => {
+        const log = console.log.bind(console);
+        const error = console.error.bind(console);
+        const response = {
+          logs: [],
+          errors: []
+        };
+        console.log = (...args) => {
+          response.logs.push(args);
+          log(...args);
+        };
+        console.error = (...args) => {
+          response.errors.push(args);
+          error(...args);
+        };
+        try {
+          response.result = await eval(code);
+        } catch (err) {
+          debugger;
+          console.error(err);
+        } finally {
+          console.log = log;
+          console.error = error;
+        }
+        return response;
+      }
+    })
+  </script>
+  <script id="126" type="text/markdown">
+    ## [Responses API](https://platform.openai.com/docs/api-reference/responses/create)
+  </script>
+  <script id="14" type="application/vnd.observable.javascript" pinned="">
+    async function responses({
+      url = "https://api.openai.com/v1/responses",
+      model = "o4-mini",
+      input,
+      background,
+      include,
+      instructions,
+      max_output_tokens,
+      metadata,
+      parallel_tool_calls,
+      previous_response_id,
+      reasoning,
+      service_tier,
+      store,
+      temperature,
+      text,
+      tool_choice,
+      tools,
+      top_p,
+      truncation,
+      user
+    } = {}) {
+      if (typeof input === "string") {
+        input = [
+          {
+            role: "user",
+            content: input
+          }
+        ];
+      }
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${viewof OPENAI_API_KEY.value}`,
+          "Content-type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+          model,
+          background,
+          input: await deepResolve(input),
+          include,
+          instructions: await (typeof instructions == "function"
+            ? instructions()
+            : instructions),
+          max_output_tokens,
+          metadata,
+          parallel_tool_calls,
+          previous_response_id,
+          reasoning,
+          service_tier,
+          store,
+          temperature,
+          text,
+          tool_choice,
+          tools,
+          top_p,
+          truncation,
+          user
+        })
+      });
+      if (response.status == 403 || response.status == 401)
+        throw "Authentication error: update OPENAI_API_KEY";
+      const responseJson = {
+        ...arguments[0],
+        input,
+        ...(await response.json()),
+        tools
+      };
+
+      console.log(arguments[0], responseJson);
+
+      // Auto decode images to a blob
+      responseJson.output &&
+        (await Promise.all(
+          responseJson.output
+            .filter((o) => o.type == "image_generation_call")
+            .map(async (call) => {
+              call.blob = await fetch(
+                `data:image/${call.format};base64,${call.result}`
+              ).then((r) => r.blob());
+            })
+        ));
+
+      // Auto decode arguments
+      responseJson.output &&
+        (await Promise.all(
+          responseJson.output
+            .filter((o) => o.type == "function_call")
+            .map(async (call) => {
+              call.arguments =
+                typeof call.arguments == "string"
+                  ? JSON.parse(call.arguments)
+                  : call.arguments;
+            })
+        ));
+
+      return responseJson;
+    }
+  </script>
+  <script id="289" type="application/vnd.observable.javascript" pinned="">
+    async function runTools(response) {
+      // Auto function calls
+      // https://platform.openai.com/docs/guides/function-calling?api-mode=responses#handling-function-calls
+      const toolCalls =
+        response.output &&
+        (
+          await Promise.all(
+            response.output.flatMap(async (call, index) => {
+              if (call.type !== "function_call") return [];
+              const tool = response.tools.find((t) => t.name == call.name);
+              const result = await tool.execute(call.arguments);
+              return [
+                {
+                  type: "function_call_output",
+                  call_id: call.call_id,
+                  output:
+                    (typeof result == "string" ? result : JSON.stringify(result)) ||
+                    "undefined"
+                }
+              ];
+            })
+          )
+        ).flat();
+      if (toolCalls?.length > 0) {
+        // auto-follow up
+        return await responses({
+          url: response.url,
+          output: undefined,
+          input: toolCalls,
+          tools: response.tools,
+          reasoning: response.reasoning,
+          previous_response_id: response.id,
+          tool_choice: response.tool_choice
+        });
+      }
+      return undefined; // Nothing to do
+    }
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="77" type="application/vnd.observable.javascript">
+    async function deepResolve(x) {
+      if (x && typeof x.then === "function") return deepResolve(await x); // promise → unwrap
+      if (Array.isArray(x)) return Promise.all(x.map(deepResolve)); // array  → recurse
+      if (x !== null && typeof x === "object") {
+        // plain obj → recurse
+        const entries = await Promise.all(
+          Object.entries(x).map(async ([k, v]) => [k, await deepResolve(v)])
+        );
+        return Object.fromEntries(entries);
+      }
+      return x; // primitive → as-is
+    }
+  </script>
+</notebook>

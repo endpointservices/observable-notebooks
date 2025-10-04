@@ -1,0 +1,253 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Building a SMART FARM EP06: Productionization (custom domain, error monitoring)</title>
+  <script id="0" type="text/markdown">
+    # Building a SMART FARM EP06: Productionization (custom domain, error monitoring)
+
+  </script>
+  <script id="365" type="text/markdown">
+    So far our SMART FARM has data storage provided by Firebase ([EP01](https://observablehq.com/@tomlarkworthy/livecoding-2022-06-07)), and it is actively ingesting data from real farms in Colombia using Blues Wireless cellular connection ([EP02](https://observablehq.com/@tomlarkworthy/blueswireless-2022-06-14)). We are able to send dashboards to field workers on-demand using WhatsApp ([EP03](https://observablehq.com/@tomlarkworthy/dashboards-over-whatsapp)). Last time in ([EP04](https://observablehq.com/@tomlarkworthy/firebase-to-duckdb?collection=@tomlarkworthy/livecoding)) we calculated the *Growing Degree Days* (GDD) using DuckDB SQL and optimized it with a lambda architecture in ([EP05](https://observablehq.com/@tomlarkworthy/lambda-architecture))
+
+    In this episode, we cover some generic topics required to take an Observable based application into production. From scratch, we register a custom domain with [Netlify](https://netlify.com/) and serve a custom interactive dashboard of our production data in under 30 minutes! Later we walkthrough how to monitor our user sessions for unexpected errors using [Sentry](https://sentry.io/) and then how to continuously monitor a notebook for errors using [healthcheck](https://observablehq.com/@endpointservices/healthcheck) and [uptimerobot](https://uptimerobot.com/?rid=ea2c825277fe40).
+  </script>
+  <script id="1092" type="text/markdown">
+    ## Full episode
+    <small>Sorry the video stream lags in the last half, the audio is good though, I am working on a fix for the video long term!</small>
+  </script>
+  <script id="343" type="text/html">
+    <iframe width="${Math.min(width, 640)}" height="350" src="https://www.youtube.com/embed/G9R-_x_MO4U?start=${videoStartAt}&autoplay=${videoStartAt > 10 ? 1 : 0}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen> </iframe>
+  </script>
+  <script id="2758" type="application/vnd.observable.javascript" pinned="">
+    videoStartAt
+  </script>
+  <script id="643" type="application/vnd.observable.javascript">
+    viewof videoStartAt = Inputs.select(
+      new Map([
+        ["Start", 1],
+        ["Updates from TechHub Live (AgTech conference)", 30],
+        ["Simple embedding", 550],
+        ["Serving a website", 670],
+        ["Whitelabelled Custom embedding", 828],
+        ["Custom Domain (Netlify)", 1165],
+        ["Performance tips", 1738],
+        ["Error Monitoring (Sentry)", 2044],
+        ["Active Monitoring (healthcheck + uptimerobot)", 2558],
+        ["Next steps", 3323]
+      ]),
+      {
+        label: "Jump to a location of interest"
+      }
+    )
+  </script>
+  <script id="85" type="text/markdown">
+    ## (EP01) Firebase Database
+    Setup in [EP01](https://observablehq.com/@tomlarkworthy/livecoding-2022-06-07)
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    import {
+      firebase,
+      viewof user,
+      listen
+    } with { firebaseConfig as firebaseConfig } from "@tomlarkworthy/firebase"
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+      apiKey: "AIzaSyA9OQ--0Sn8Gm6C1B4M-SbnxRMtKHgnHzs",
+      authDomain: "agropatterns-iot.firebaseapp.com",
+      databaseURL: "https://agropatterns-iot-default-rtdb.firebaseio.com",
+      projectId: "agropatterns-iot",
+      appId: "1:650132950601:web:115b1ba65750d2b0aaf998",
+      uiConfig: {
+        // https://github.com/firebase/firebaseui-web#configuration
+        signInOptions: ["anonymous"]
+      }
+    })
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    db = firebase.database()
+  </script>
+  <script id="176" type="text/markdown">
+    ## (EP02) Live Temperature Dashboard
+
+    Setup in [EP02](https://observablehq.com/@tomlarkworthy/blueswireless-2022-06-14). This is 24 hour window of latest sensor readings. The green band represents the growth zone for the plant. Most sensors are sending data every 15 minutes which will be reflected in the dashboard automatically.
+  </script>
+  <script id="157" type="text/markdown" pinned="">
+    ### (EP02) streaming query (realtime updates)
+  </script>
+  <script id="159" type="application/vnd.observable.javascript">
+    liveViewRaw = Generators.observe((notify) => {
+      db.ref(`history/sensors/${querySensorName}`)
+        .orderByKey()
+        .startAt(Math.floor(Date.now() / 1000 - 60 * 60 * 24) + "") // reduce data returned
+        .on("value", (snapshot) => {
+          const data = snapshot.val();
+          if (data) notify(data);
+        });
+    })
+  </script>
+  <script id="166" type="application/vnd.observable.javascript">
+    liveView = Object.entries(liveViewRaw).map(([k, v]) => v)
+  </script>
+  <script id="372" type="application/vnd.observable.javascript">
+    latest = Generators.observe((notify) => {
+      db.ref(`current/sensors`).once("value", (snapshot) => {
+        const data = snapshot.val();
+        // clear synthetic data from EP01 testings
+        delete data["sensor2"];
+        delete data["defaultSensorName"];
+        notify(data);
+      });
+    })
+  </script>
+  <script id="2696" type="text/markdown">
+    ### (EP02) Interactive live data Dashboard
+  </script>
+  <script id="140" type="application/vnd.observable.javascript">
+    viewof querySensorName = Inputs.select(Object.keys(latest), {
+      label: "Choose sensor to chart",
+      value: "dev:864475046458393"
+    })
+  </script>
+  <script id="164" type="application/vnd.observable.javascript">
+    dashboard = Plot.plot({
+      x: { type: "time" },
+      y: { domain: [0, 40], label: "Temperature" },
+      color: {
+        domain: [0, 40],
+        scheme: "turbo"
+      },
+      marks: [
+        Plot.rect([{}], { fill: "#F4BFA6", y1: 25, y2: 40 }),
+        Plot.rect([{}], { fill: "#A7D3A6", y1: 5, y2: 25 }),
+        Plot.rect([{}], { fill: "#A4B5E3", y1: 0, y2: 5 }),
+        Plot.ruleY([20], { stroke: "#0003", strokeDasharray: [5] }),
+        Plot.lineY(
+          liveView.filter((d) => d.body.temperature), // Fix for unfiltering data serverside
+          {
+            stroke: "#0003",
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature
+          }
+        ),
+        Plot.dot(
+          liveView.filter((d) => d.body.temperature), // Fix for unfiltering data serverside
+          {
+            r: 5,
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature,
+            fill: (d) => d.body.temperature
+          }
+        )
+      ]
+    })
+  </script>
+  <script id="2500" type="text/markdown">
+    ## Custom Webpage Server
+  </script>
+  <script id="2504" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="2502" type="application/vnd.observable.javascript" pinned="">
+    endpoint("website", async (req, res) => {
+      res.send(sensor_page.outerHTML);
+    })
+  </script>
+  <script id="2700" type="text/markdown">
+    ### Custom webpage source (in a HTML cell)
+  </script>
+  <script id="2756" type="application/vnd.observable.javascript" pinned="">
+
+  </script>
+  <script id="2508" type="text/html" pinned="">
+    <head>
+    </head>
+    <body> 
+      <h1>Agropatterns V2</h1>
+      <h2>Sensor page</h2>
+      <div id="errorButton"></div>
+      <div id="chooser"></div>
+      <div id="dashboard"></div>
+    <script type="module">
+      import {Runtime, Inspector} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@4/dist/runtime.js";
+      import notebook from "https://api.observablehq.com/@tomlarkworthy/productionization.js?v=3";
+      new Runtime().module(notebook, name => {
+        if (name === "dashboard") {
+          return new Inspector(document.querySelector("#dashboard"));
+        } else if (name === "viewof querySensorName") {
+          return new Inspector(document.querySelector("#chooser"));
+        } else if (name === "viewof errorButton") {
+          return new Inspector(document.querySelector("#errorButton"));
+        } else if (name === "mySentry") {
+          return true
+        }
+      });
+    <\/script>
+    </body>
+  </script>
+  <script id="2523" type="text/markdown">
+    ## Custom Domain
+
+    We registered a domain through netlify, the created a site that simply redirects to our custom webserver endpoint. We use Netlify's GitOps workflow to update the site, our only file is the *netlify.toml* that configures Netlify as a reverse proxy, find ours [here](https://github.com/tomlarkworthy/QAFaLWyJ/blob/main/netlify.toml)
+
+    After configuring netlify, our custom domain points to our custom dashboard: [https://qafalwyj.com/](https://qafalwyj.com/)
+
+    Links to further resources
+    - [Advanced Observablehq embedding](https://observablehq.com/@observablehq/advanced-embeds?collection=@observablehq/embed-trail)
+    - [Custom domain in 4 lines-of-code](https://dev.to/tomlarkworthy/custom-domain-in-4loc-l6f)
+  </script>
+  <script id="2527" type="text/markdown">
+    ## Monitoring with Sentry
+
+    After Sentry is installed, any errors thrown will be reported to the Sentry dashboard. It is important you test the integration! You can do this by executing `throw new Error("test")` in the console. Remeber if you are using a custom domain, it needs to be allowlisted in the `'namespaces'` configuration.
+
+    You find the DSN number after creating a sentry Javascript project.
+  </script>
+  <script id="2529" type="application/vnd.observable.javascript">
+    import { sentry } from "@endpointservices/sentry"
+  </script>
+  <script id="2531" type="application/vnd.observable.javascript" pinned="">
+    mySentry = {
+      console.log("sentry has been setup");
+      return sentry({
+        DSN:
+          "https://a6079bd15b7c405bb6346e95a44f3ee8@o1335620.ingest.sentry.io/6603442",
+        namespaces: ["tomlarkworthy", /* IMPORTANT */ "qafalwyj.com"]
+      });
+    }
+  </script>
+  <script id="2553" type="text/markdown">
+    ## Active Monitoring with Healthcheck + Uptimerobot
+
+    With [`healthceck`](https://observablehq.com/@endpointservices/healthcheck) notebook, you can ask it to run a different notebook and detect errors. When you have that setup the check can be exported as a URL. You can then monitor that URL using off-the-shelf monitoring software like [uptimerobot](https://uptimerobot.com/?rid=ea2c825277fe40).
+
+    So if we have a known error:
+  </script>
+  <script id="2555" type="application/vnd.observable.javascript" pinned="">
+    errorCell = {
+      throw new Error("Known error");
+    }
+  </script>
+  <script id="2559" type="text/markdown">
+    Calling the URL ['@endpointservices/healthcheck?target=%40tomlarkworthy%2Fproductionization&wait=5'](https://webcode.run/observablehq.com/@endpointservices/healthcheck?target=%40tomlarkworthy%2Fproductionization&wait=5) will detect the error and return a 503 status check.
+
+    By plugging that URL into [uptimerobot.com](https://uptimerobot.com/?rid=ea2c825277fe40) we can check for errors every 5 minutes or so and be alerted if errors are raised. 
+  </script>
+  <script id="585" type="text/markdown">
+    ## Next episode
+  </script>
+  <script id="616" type="application/vnd.observable.javascript">
+    upcoming
+  </script>
+  <script id="453" type="text/markdown">
+    ## Dependancies
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+    import { upcoming } from "@endpointservices/meetups";
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer"
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

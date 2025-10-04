@@ -1,0 +1,453 @@
+<!doctype html>
+<notebook theme="air">
+  <title>100 Beautiful and Informative Notebooks of 2021</title>
+  <script id="0" type="text/markdown">
+    # 100 Beautiful and Informative Notebooks of 2021
+  </script>
+  <script id="337" type="application/vnd.observable.javascript">
+    {
+      const notebooks = top100
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+      return htl.html`<table width="100%">${Array.from({
+        length: 10
+      }).map(
+        (__, j) =>
+          htl.html.fragment`<tr style="border-bottom: none;">${Array.from({
+            length: 10
+          }).map((__, i) => {
+            const notebook = notebooks[i + j * 10];
+            return htl.html.fragment`<td style="padding: 0px">
+                <a href=${notebook.url} target="_blank" >
+                  <img width="100%" src=${notebook.thumbnail}>`;
+          })}</tr>`
+      )}</table>`;
+    }
+  </script>
+  <script id="551" type="text/markdown">
+    It's the end of 2021, and I would like to reminisce about the amazing work that was produced on Observable over the last year. I have taken all the notebooks that were [trending](https://observablehq.com/trending) from the [Top Trending Notebook Twitter Bot](https://twitter.com/trendingnotebo2) and picked 100 good ones.
+
+    The broad categories apparent in 2021 were "dataviz, art, mathematics, maps, apps, development, design, tutorials and tools". Every notebook listed here is worth a read, but there is rather a lot so it might take you a few sessions!
+
+    OK, enough chat... here are my favorite notebooks of 2021, sorted into topics...
+  </script>
+  <script id="592" type="application/vnd.observable.javascript" pinned="">
+    md`${content}`
+  </script>
+  <script id="481" type="application/vnd.observable.javascript">
+    content = {
+      const order = [
+        "dataviz",
+        "art",
+        "math",
+        "map",
+        "app",
+        "dev",
+        "design",
+        "tutorial",
+        "tool"
+      ];
+
+      const sectionIntro = {
+        dataviz: `## Dataviz
+    Observable is a digital community for data practitioners. In 2021 an enormous quantity of informative dataviz notebooks were produced, but here is some of the very best. Special shout out to [@karimdouieb](https://observablehq.com/@karimdouieb) who has been on fire using 3D graphics to visualize large datasets with great effect in works like [All the passes](https://observablehq.com/@karimdouieb/all-the-passes).
+    `,
+        art: `## Digital and Generative Art
+    The Observable platform is great for iterating on visuals quickly. In 2021 there were many digital artists producing novel and interesting works, some of my top picks are shown below. Makio135's [Creative Coding](https://observablehq.com/@makio135/creative-coding) tutorial notebook on producing generative art on Observable remains a must-read for aspiring digital artists.
+    `,
+        math: `## Mathematics
+    There is something about the reactive interactivity of Observable that makes it useful for intuition building. There is an avid group of mathmaticians on Observable producing engaging mathmatical teaching materials. Prof. [McClure
+    ](https://observablehq.com/@mcmcclur) in particular has an [extensive set of notebooks](https://observablehq.com/@mcmcclur?tab=collections) to support his classes.
+    `,
+        map: `## Maps
+    Maps are a specialised subset of dataviz dealing with realworld spatial data. Maps are a loved topic on Observable. In 2021 [@floledermann](https://observablehq.com/@floledermann) produced the [projection notebook](https://observablehq.com/@floledermann/projection-playground) to end all projection notebooks.
+    `,
+        app: `## Apps
+    At its core, Observable is a front end development platform, and a few of the community have built fully fledged web applications.
+    `,
+        dev: `## Development
+    Building complex applications on Observable requires all kinds of supporting libraries. A number of development notebooks stood out in 2021. Databases were a strong theme over the year, due to additional SQL support provided by the platform.
+    `,
+        design: `## UI, UX and Web Design
+    Observble notebooks promote resuse. A number of useful components were developed which can be used in other Dataviz notebooks. [Mathieu Jouhet](https://observablehq.com/@daformat) wrote a stunning library + tutorial notebook on [Rounding polygon corners in SVG](https://observablehq.com/@daformat/rounding-polygon-corners)
+    `,
+        tutorial: `## Tutorials
+    The Observable community likes to help others learn. There are tutorial notebooks dedicated to a wide variaty of topics. I write a lot about how to build applications on Observable, and a focus area for me in 2021 was [scaling UI development](https://observablehq.com/@tomlarkworthy/ui-development).
+    `,
+        tool: `## Tools
+    The Observble community has built some impressive tooling to support data practitioners. The biggest news of the year was the introduction of [Plot](https://observablehq.com/@observablehq/introducing-observable-plot) by the [Observable](https://observablehq.com/@observablehq) team, which allows rapid production of informative charts.
+    `
+      };
+
+      let markdown = "";
+
+      order.forEach((catagory) => {
+        markdown += `\n${sectionIntro[catagory]}\n`;
+        notebooksByCatagory.get(catagory).forEach((notebook) => {
+          const author = /(@[^)]+)/.exec(notebook.author)[1];
+          markdown += `### [${notebook.title}](${notebook.url}) by [${author}](https://observablehq.com/${author}) \n`;
+          markdown += `<i>\n`;
+          markdown += `\n[![](${notebook.thumbnail})](${notebook.url})\n`;
+          markdown += `\n${notebook?.description || "No description provided"}\n`;
+          markdown += `</i>\n`;
+        });
+        markdown += "\n---\n";
+      });
+
+      return markdown;
+    }
+  </script>
+  <script id="586" type="application/vnd.observable.javascript" pinned="">
+    devmode = false
+  </script>
+  <script id="403" type="text/markdown">
+    ## Top 100 Labeled
+  </script>
+  <script id="424" type="application/vnd.observable.javascript">
+    notebooksByCatagory = d3.group(labelled100, (d) => d.catagory)
+  </script>
+  <script id="281" type="application/vnd.observable.javascript">
+    top100 = d3
+      .sort(data, (d) => -d.score)
+      .slice(0, /*there were some dupes, d3 chart and TimeChart, color inputs*/ 103)
+  </script>
+  <script id="398" type="application/vnd.observable.javascript">
+    labelled100 = top100
+      .map((row, index) => ({
+        ...row,
+        catagory: catagoriesTop100[index]
+      }))
+      .filter((e) => e.catagory !== " ")
+  </script>
+  <script id="389" type="application/vnd.observable.javascript">
+    // manually labelled in excel sheet
+    catagoriesTop100 = [
+      "map",
+      "dev",
+      "map",
+      "dataviz",
+      "design",
+      "math",
+      "tool",
+      "design",
+      "tool",
+      "dataviz",
+      "map",
+      "tool",
+      "art",
+      "design",
+      "dataviz",
+      "tool",
+      "art",
+      "design",
+      "tutorial",
+      "dev",
+      "tool",
+      " ",
+      "design",
+      "tutorial",
+      "art",
+      "map",
+      "art",
+      "tutorial",
+      "tool",
+      "dataviz",
+      "design",
+      " ",
+      "map",
+      "math",
+      "map",
+      "art",
+      "art",
+      "dataviz",
+      "map",
+      "design",
+      "dev",
+      "tool",
+      "tutorial",
+      "tool",
+      "art",
+      "dev",
+      "art",
+      "design",
+      "dataviz",
+      "dataviz",
+      "art",
+      "design",
+      "dataviz",
+      "map",
+      "art",
+      "art",
+      "dataviz",
+      "dev",
+      "map",
+      "tool",
+      "map",
+      "tool",
+      "design",
+      "dataviz",
+      "design",
+      " ",
+      "dataviz",
+      "map",
+      "design",
+      "map",
+      "design",
+      "art",
+      "design",
+      "art",
+      "dataviz",
+      "math",
+      "dataviz",
+      "design",
+      "tutorial",
+      "tool",
+      "design",
+      "dataviz",
+      "map",
+      "tool",
+      "map",
+      "map",
+      "tutorial",
+      "dev",
+      "map",
+      "design",
+      "map",
+      "math",
+      "app",
+      "design",
+      "map",
+      "math",
+      "math",
+      "design",
+      "dataviz",
+      "dataviz",
+      "app",
+      "design",
+      "app"
+    ]
+  </script>
+  <script id="410" type="application/vnd.observable.javascript" pinned="">
+    devmode
+      ? Inputs.table(labelled100, {
+          columns: ["thumbnail", "url", "title", "author", "score", "catagory"],
+          sort: "score",
+          reverse: true,
+          rows: 50,
+          format: {
+            thumbnail: (t) =>
+              html`<a href=${
+                data.find((d) => d.thumbnail === t)?.url
+              } target=_blank><img width=100% src=${t}>`
+          }
+        })
+      : undefined
+  </script>
+  <script id="178" type="text/markdown">
+    ## Combined Dataset
+  </script>
+  <script id="185" type="application/vnd.observable.javascript">
+    data = tweets.map((t, index) => ({
+      title: metadata[index]?.title,
+      description: tags[index]?.description,
+      twitter_like_count: t.like_count,
+      twitter_retweet_count: t.retweet_count,
+      observable_like_count: likes[index],
+      score: (t.like_count + t.retweet_count) * 30 + likes[index], // Twitter dominates but observable likes tie break
+      author: metadata[index]?.author,
+      url: metadata[index]?.url,
+      thumbnail: thumbnailURL(index)
+    }))
+  </script>
+  <script id="200" type="application/vnd.observable.javascript">
+    devmode
+      ? Inputs.table(data, {
+          columns: ["thumbnail", "url", "title", "author", "score"],
+          sort: "score",
+          reverse: true,
+          rows: 50,
+          format: {
+            thumbnail: (t) =>
+              html`<a href=${
+                data.find((d) => d.thumbnail === t)?.url
+              } target=_blank><img width=100% src=${t}>`
+          }
+        })
+      : undefined
+  </script>
+  <script id="74" type="text/markdown">
+    ### Trending Notebook Dataset
+
+    retrieved using [Andrea Mignone](https://observablehq.com/@floatingpurr)'s [Querying the Twitter API](https://observablehq.com/@floatingpurr/twitter-api) from the Twitter account of [@trendingnotebo2](https://twitter.com/trendingnotebo2)
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    twitter = FileAttachment("twitter.json").json()
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    tweets = twitter.tweets.map((t) => ({
+      url: t.entities.urls.find((e) => e.expanded_url.includes("observablehq"))
+        .expanded_url,
+      text: t.text,
+      created_at: t.created_at,
+      like_count: t.public_metrics.like_count,
+      retweet_count: t.public_metrics.retweet_count
+    }))
+  </script>
+  <script id="79" type="text/markdown">
+    ### Notebook Metadata
+
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    import { getMetadata } from "@mootari/notebook-data"
+  </script>
+  <script id="94" type="application/vnd.observable.javascript">
+    viewof fetchMetdata = Inputs.toggle({
+      label: "fetch metadata? (network, slow)"
+    })
+  </script>
+  <script id="85" type="application/vnd.observable.javascript">
+    fetchedMetadata = {
+      if (!fetchMetdata) return invalidation;
+
+      const metadata = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        metadata[i] = await getMetadata(
+          tweets[i].url.replace("https://observablehq.com/", "")
+        );
+      }
+      return metadata;
+    }
+  </script>
+  <script id="107" type="text/markdown">
+    the next cell is the same as above but loaded from file cache
+  </script>
+  <script id="101" type="application/vnd.observable.javascript">
+    metadata = FileAttachment("fetchedMetadata.json").json()
+  </script>
+  <script id="114" type="text/markdown">
+    ### Document Meta
+
+  </script>
+  <script id="122" type="application/vnd.observable.javascript">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="137" type="application/vnd.observable.javascript" pinned="">
+    viewof fetchMeta = Inputs.toggle({
+      label: "fetch doc meta? (network, slow)"
+    })
+  </script>
+  <script id="141" type="application/vnd.observable.javascript">
+    fetchedMeta = {
+      if (!fetchMeta) return invalidation;
+      const meta = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          meta[i] = (
+            await fetchp(
+              `https://api.observablehq.com/document/${metadata[i].id}/meta`
+            )
+          ).json();
+        }
+      }
+      return Promise.all(meta);
+    }
+  </script>
+  <script id="156" type="application/vnd.observable.javascript" pinned="">
+    meta = FileAttachment("fetchedMeta.json").json()
+  </script>
+  <script id="158" type="text/markdown">
+    ### Thumbnail
+  </script>
+  <script id="169" type="application/vnd.observable.javascript">
+    thumbnailURL = (index) =>
+      meta[index]
+        ? `https://static.observableusercontent.com/thumbnail/${
+            meta[index].custom_thumbnail || meta[index].thumbnail
+          }.jpg`
+        : undefined
+  </script>
+  <script id="212" type="text/markdown">
+    ### Notebook Likes
+
+  </script>
+  <script id="227" type="application/vnd.observable.javascript" pinned="">
+    viewof fetchLikes = Inputs.toggle({
+      label: "fetch notebook likes? (network, slow)"
+    })
+  </script>
+  <script id="229" type="application/vnd.observable.javascript" pinned="">
+    fetchedLikes = {
+      if (!fetchLikes) return invalidation;
+      const likes = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          const html = await (await fetchp(metadata[i].url)).text();
+
+          likes[i] = /"likes":(\d+)/.exec(html)[1];
+        }
+      }
+      return likes;
+    }
+  </script>
+  <script id="241" type="application/vnd.observable.javascript">
+    likes = (await FileAttachment("fetchedLikes.json").json()).map((n) =>
+      Number.parseInt(n)
+    )
+  </script>
+  <script id="433" type="text/markdown">
+    ### Social Tags
+  </script>
+  <script id="596" type="application/vnd.observable.javascript" pinned="">
+    (await fetchp(metadata[147].url)).text()
+  </script>
+  <script id="455" type="application/vnd.observable.javascript">
+    viewof fetchTags = Inputs.toggle({
+      label: "fetch page meta tags? (network, slow)"
+    })
+  </script>
+  <script id="453" type="application/vnd.observable.javascript">
+    fetchedTags = {
+      if (!fetchTags) return invalidation;
+      var el = document.createElement("tmp");
+      const tags = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          el.innerHTML = await (await fetchp(metadata[i].url)).text();
+
+          try {
+            tags[i] = {
+              title: el.querySelector("meta[property='og:title']").content,
+              description: el.querySelector("meta[name=description]").content
+            };
+          } catch (err) {
+            console.error("Problem with tags for " + i);
+          }
+        }
+      }
+      return tags;
+    }
+  </script>
+  <script id="463" type="application/vnd.observable.javascript">
+    tags = (await FileAttachment("fetchedTags (1).json").json()).map((t) => {
+      let description = undefined;
+      if (t?.description) {
+        description = t.description;
+
+        if (description.lastIndexOf(".") !== -1)
+          description = description.substring(0, description.lastIndexOf(".") + 1);
+      }
+
+      return {
+        ...t,
+        description
+      };
+    })
+  </script>
+  <script id="570" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="574" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

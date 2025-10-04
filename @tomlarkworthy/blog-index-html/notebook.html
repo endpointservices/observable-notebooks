@@ -1,0 +1,102 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Index.html</title>
+  <script id="414" type="application/vnd.observable.javascript">
+    md`# Index.html
+
+    The top level page is the X most recent articles.
+    `
+  </script>
+  <script id="679" type="application/vnd.observable.javascript" pinned="">
+    config = ({
+      title: "Tom Larkworthy' Personal Blog",
+      description: "Random tech stuff",
+      notebook:
+        "https://observablehq.com/@tomlarkworthy/blog-index-html?collection=@tomlarkworthy/blog",
+      target: "/index.html",
+      subdomain: "tomlarkworthy",
+      app_id: "b6a918d2-9cda-4fde-b2ec-add91b22ea02",
+      base_url: "https://tomlarkworthy.endpointservices.net",
+      dependsOnTags: ["article", 'notebook'],
+      limit: 20
+    })
+  </script>
+  <script id="674" type="application/vnd.observable.javascript">
+    deployStaticFile({...config, source: preview.href})
+  </script>
+  <script id="767" type="application/vnd.observable.javascript" pinned="">
+    preview = deploy("preview", (req, res) => {
+      return res.send(page);
+    })
+  </script>
+  <script id="794" type="application/vnd.observable.javascript" pinned="">
+    page = `<html class="has-navbar-fixed-top">
+    <head>
+    ${header.outerHTML}
+    </head>
+    <body>
+    ${topbar.outerHTML}
+    <div class="columns">
+    ${sidebar.outerHTML}
+    <div class="column is-half">
+    <h1>Recent Articles</h1>
+    ${content.outerHTML}
+    </div>
+    </div>
+    ${articleFooter(config).outerHTML}
+    </body>
+    </html>`
+  </script>
+  <script id="618" type="application/vnd.observable.javascript" pinned="">
+    content = html`
+    ${articles.map(article => html`<section class="section content">
+          <small>${toDate(article.creationDate)}</small>
+          <h2><a href=${article.target}>${article.title}</a></h2>  
+          ${span(article.content)}
+          <hr class="hr"/>
+      </section>`)}
+    `
+  </script>
+  <script id="862" type="application/vnd.observable.javascript" pinned="">
+    function toDate(timestamp) {
+      const date = new Date(0)
+      date.setUTCSeconds(timestamp.seconds) 
+      return date
+    }
+  </script>
+  <script id="813" type="application/vnd.observable.javascript" pinned="">
+    function span(content) {
+      const span = document.createElement("span");
+      span.innerHTML = content;
+      return span;
+    }
+  </script>
+  <script id="806" type="application/vnd.observable.javascript" pinned="">
+    articles
+  </script>
+  <script id="652" type="application/vnd.observable.javascript">
+    utcSecondsToDate = (secs) => {
+      var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+      d.setUTCSeconds(secs);
+      return d;
+    }
+  </script>
+  <script id="586" type="application/vnd.observable.javascript">
+    articles = queryDependants({
+      app_id: config.app_id,
+      dependsOnTags: ['article']
+    })
+  </script>
+  <script id="621" type="application/vnd.observable.javascript">
+    Feed = (await require('https://bundle.run/feed@4.2.1')).Feed
+  </script>
+  <script id="408" type="application/vnd.observable.javascript">
+    import {deployStaticFile, queryDependants} from '@tomlarkworthy/netlify-deploy'
+  </script>
+  <script id="242" type="application/vnd.observable.javascript">
+    import {firebase, DocsView} from '@tomlarkworthy/firebase'
+  </script>
+  <script id="770" type="application/vnd.observable.javascript">
+    import {sidebar, topbar, header, articleFooter, deploy, html} from '@tomlarkworthy/blog-navigation'
+  </script>
+</notebook>

@@ -1,0 +1,716 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Fast Circular Barcode Scanner</title>
+  <script id="0" type="text/markdown">
+    # Fast Circular Barcode Scanner
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    viewof offset_pinhole = Inputs.range([-0.5, 0.5], {
+      label: "offset",
+      value: 0.001
+    })
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    viewof scale_pinhole = Inputs.range([0, 1.5], { label: "scale", value: 0.5 })
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    viewof angle_pinhole = Inputs.range([-Math.PI, Math.PI], {
+      label: "angle",
+      value: 0.3
+    })
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof fov_pinhole = Inputs.range([0.00001, Math.PI], {
+      label: "field-of-view (radians)"
+    })
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    pinhole = (
+      template,
+      px,
+      model = {
+        angle: 0,
+        offset: 0,
+        scale: 1
+      }
+    ) => {
+      const angleCorrection = (px) => {
+        // flatten the image against an image plane, distance d from focal point
+        // tan(angle) = opposite / adjacent
+        // -fov / 2 is the extreme, -0.5 is extreme of image coords
+        //    tan(-fov / 2) = -0.5 / d
+        // => d = -0.5 / tan(-fov * 0.5)
+        // Now we d we can go forward, preserving image coordinates
+        const d = -0.5 / Math.tan(-0.5 * fov_pinhole);
+        return Math.atan((px - model.offset) / d) / fov_pinhole;
+      };
+      const pinhole = (angle) => {
+        angle -= model.offset;
+        const x = angle * fov_pinhole; // range: [-0.5, -0.5]
+        const a = model.angle + Math.PI / 2;
+        const b = 0.5 / (Math.cos(a) - (Math.sin(a) * Math.cos(x)) / Math.sin(x));
+        return (b / model.scale / fov_pinhole + 0.5) * template.length;
+      };
+      const angle = angleCorrection(px);
+      const pinholeX = pinhole(angle);
+      return {
+        angle,
+        ix: px + 0.5,
+        tx: pinholeX / template.length,
+        y: template[Math.round(pinholeX)]
+      };
+    }
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    template = {
+      const half = [
+        1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1,
+        1, 1
+      ];
+      return [...half, 1, 1, ...[...half].reverse()];
+    }
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    templateData = template.flatMap((v, i) => [
+      { x: i, y: v },
+      { x: i + 1, y: v }
+    ])
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    projectedPinholeData = Array.from({ length: width }).map((_, x) => ({
+      x: x,
+      ...pinhole(template, x / width - 0.5, {
+        offset: offset_pinhole,
+        scale: scale_pinhole,
+        angle: angle_pinhole
+      })
+    }))
+  </script>
+  <script id="35" type="module">
+
+  </script>
+  <script id="1121" type="text/markdown">
+    ### Edge detection image features
+  </script>
+  <script id="65" type="application/vnd.observable.javascript">
+    features = {
+      const STEP = 0.1;
+      const features = [];
+      let previousY = pinhole(template, 0, {
+        offset: offset_pinhole,
+        scale: scale_pinhole,
+        angle: angle_pinhole
+      });
+      for (let x = 0 + STEP; x < width; x += STEP) {
+        const y = pinhole(template, x / width - 0.5, {
+          offset: offset_pinhole,
+          scale: scale_pinhole,
+          angle: angle_pinhole
+        });
+        if (y.y !== undefined && previousY.y !== y.y) {
+          features.push({
+            x,
+            ...y
+          });
+          previousY = y;
+        }
+      }
+      return features;
+    }
+  </script>
+  <script id="1098" type="text/markdown">
+    ## Eyeballing the forward model
+  </script>
+  <script id="1104" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([-0.5, 0.5], {
+        label: "offset",
+        value: 0.001
+      }),
+      viewof offset_pinhole
+    )
+  </script>
+  <script id="1111" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([0, 1.5], { label: "scale", value: 0.5 }),
+      viewof scale_pinhole
+    )
+  </script>
+  <script id="1118" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([-Math.PI, Math.PI], {
+        label: "angle",
+        value: 0.3
+      }),
+      viewof angle_pinhole
+    )
+  </script>
+  <script id="1115" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([0.00001, Math.PI], {
+        label: "field-of-view (radians)"
+      }),
+      viewof fov_pinhole
+    )
+  </script>
+  <script id="1100" type="text/markdown">
+    ### Regular spaced intervals
+
+    Ignore template and concentrate on the transform. The following graph shows how a given template space (tx) is mapped to image space (ix) for a given configuration.
+  </script>
+  <script id="1124" type="application/vnd.observable.javascript">
+    grid = Array.from({ length: 100 })
+      .map((x, i) =>
+        pinhole(template, (i - 20) / 40 - 0.5, {
+          offset: offset_pinhole,
+          scale: scale_pinhole,
+          angle: angle_pinhole
+        })
+      )
+      .filter((x) => x.y != undefined)
+  </script>
+  <script id="1138" type="module">
+
+  </script>
+  <script id="1154" type="text/markdown">
+    ## Learning the inverse model
+
+    What we actually want to do is the inverse, from a given set of image/template observation pairs `(ix, tx)`, figure out which curve we are on (offset, angle, scale).
+
+    I think we only need three pairs to figure it out. So lets try generating a training set of three pairs of ix,tx (6 dimensions) mapped to the offset, scale, angle parameters. As we have the forward model, we can sample from that an re-arrange it. 
+
+
+  </script>
+  <script id="1021" type="application/vnd.observable.javascript">
+    random_params = () => ({
+      offset: randomBetween(offset_range),
+      angle: randomBetween(angle_range),
+      scale: randomBetween(scale_range)
+    })
+  </script>
+  <script id="1196" type="application/vnd.observable.javascript">
+    training_sample = () => {
+      const samplePoint = () => pinhole(template, Math.random(), y);
+      let points, y;
+      do {
+        y = random_params();
+        points = [samplePoint(), samplePoint(), samplePoint()]
+          .filter((x) => x.y !== undefined)
+          .sort((a, b) => a.tx - b.tx)
+          .flatMap((x) => [x.tx, x.ix]);
+      } while (points.length !== 6);
+      return [points, [y.offset, y.scale, y.angle]];
+    }
+  </script>
+  <script id="1220" type="application/vnd.observable.javascript">
+    example_training_sample = training_sample()
+  </script>
+  <script id="1258" type="application/vnd.observable.javascript">
+    training_set = Array.from({ length: 20000 })
+      .map(training_sample)
+      .reduce(
+        (dataset, [x, y]) => {
+          dataset.x.push(x);
+          dataset.y.push(y);
+          return dataset;
+        },
+        { x: [], y: [] }
+      )
+  </script>
+  <script id="1263" type="text/markdown">
+    ### 2 Layer Neural Network
+
+    Lets try a simple model
+  </script>
+  <script id="1266" type="application/vnd.observable.javascript" pinned="">
+    model = {
+      const model = tf.sequential();
+      model.add(tf.layers.dense({ units: 12, inputDim: 6 }));
+      model.add(tf.layers.dense({ units: 3, inputDim: 12 }));
+      model.compile({ loss: "meanSquaredError", optimizer: "sgd" });
+      return model;
+    }
+  </script>
+  <script id="1275" type="application/vnd.observable.javascript" pinned="">
+    model.predict(tf.tensor([training_sample()[0]])).data()
+  </script>
+  <script id="1347" type="text/markdown">
+    Click the button to train it
+  </script>
+  <script id="1298" type="application/vnd.observable.javascript" pinned="">
+    viewof trained = Inputs.button("fit model", {
+      reduce: () => {
+        return model.fit(tf.tensor(training_set.x), tf.tensor(training_set.y), {
+          epochs: 20,
+          batchSize: 32
+        });
+      }
+    })
+  </script>
+  <script id="1309" type="application/vnd.observable.javascript">
+    predicted_params = {
+      trained;
+      return model
+        .predict(
+          tf.tensor([
+            [
+              grid[0].tx,
+              grid[0].ix,
+              grid[grid.length / 2].tx,
+              grid[grid.length / 2].ix,
+              grid.at(-1).tx,
+              grid.at(-1).ix
+            ].sort((a, b) => a.tx - b.tx)
+          ])
+        )
+        .data();
+    }
+  </script>
+  <script id="1321" type="application/vnd.observable.javascript">
+    evaluation = grid.map((d) => ({
+      ...d,
+      px: pinhole(template, d.ix, {
+        offset: predicted_params[0],
+        scale: predicted_params[1],
+        angle: predicted_params[2]
+      }).tx
+    }))
+  </script>
+  <script id="1338" type="application/vnd.observable.javascript">
+    Plot.plot({
+      marks: [
+        Plot.dot(evaluation, { x: "tx", y: "ix", tip: true }),
+        Plot.dot(evaluation, { x: "px", y: "ix", fill: "red", tip: true })
+      ]
+    })
+  </script>
+  <script id="1359" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([-0.5, 0.5], {
+        label: "offset",
+        value: 0.001
+      }),
+      viewof offset_pinhole
+    )
+  </script>
+  <script id="1360" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([0, 1.5], { label: "scale", value: 0.5 }),
+      viewof scale_pinhole
+    )
+  </script>
+  <script id="1361" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([-Math.PI, Math.PI], {
+        label: "angle",
+        value: 0.3
+      }),
+      viewof angle_pinhole
+    )
+  </script>
+  <script id="1362" type="application/vnd.observable.javascript">
+    Inputs.bind(
+      Inputs.range([0.00001, Math.PI], {
+        label: "field-of-view (radians)"
+      }),
+      viewof fov_pinhole
+    )
+  </script>
+  <script id="85" type="text/markdown">
+    ## Estimating parameters from three points
+
+    If we some known template ordinates and their projected positions in image space, we can estimate the model. In the special case of three parameters, this is a closed form solution. With more than three points we define an error function and find the best fit.
+  </script>
+  <script id="114" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplate = (
+      sx,
+      model = {
+        angle: 0,
+        offset: 0,
+        scale: 1
+      }
+    ) => {
+      let q = 2 * (sx - model.offset - 0.5);
+      let angle =
+        Math.atan(q * Math.tan(0.5 * fov_pinhole)) - model.offset * fov_pinhole;
+      const a = model.angle;
+      const b =
+        -Math.sin(angle) /
+        (2 *
+          model.scale *
+          fov_pinhole *
+          (Math.sin(a) * Math.sin(angle) + Math.cos(a) * Math.cos(angle)));
+
+      return b + 0.5;
+    }
+  </script>
+  <script id="119" type="application/vnd.observable.javascript" pinned="">
+    data = Promise.all(
+      features.map(async (d) => ({
+        ix: d.ix,
+        tx: d.tx,
+        fwd: scanToTemplate(d.ix, {
+          offset: offset_pinhole,
+          scale: scale_pinhole,
+          angle: angle_pinhole
+        }),
+        /*
+        fwd_py: scanToTemplatePy(d.ix, {
+          offset: offset_pinhole,
+          scale: scale_pinhole,
+          angle: angle_pinhole,
+          fov: fov_pinhole
+        }),
+        fwd_py_flat: scanToTemplateFlat(
+          d.ix,
+          offset_pinhole,
+          scale_pinhole,
+          angle_pinhole,
+          fov_pinhole
+        ),
+        fit: scanToTemplateFlat(
+          d.ix,
+          best_fit[0],
+          best_fit[1],
+          best_fit[2],
+          fov_pinhole
+        ),*/
+        fit_tf: (
+          await scanToTemplateTf(tf.tensor1d([d.ix]), {
+            offset: tf_offset,
+            scale: tf_scale,
+            angle: tf_angle
+          }).data()
+        )[0]
+      }))
+    )
+  </script>
+  <script id="125" type="module">
+
+  </script>
+  <script id="363" type="text/markdown">
+    ## Switch to Python
+  </script>
+  <script id="365" type="application/vnd.observable.javascript">
+    import { py as _py, pyodide as _pyodide } from "@gnestor/pyodide"
+  </script>
+  <script id="368" type="application/vnd.observable.javascript" pinned="">
+    py = {
+      no python
+      await _pyodide.loadPackage("autograd");
+      return _py;
+    }
+  </script>
+  <script id="382" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplatePy = py`
+    import math as Math
+    def scanToTemplate (
+      sx,
+      model
+    ):
+      q = 2 * (sx - model.offset - 0.5)
+      angle = Math.atan(q * Math.tan(0.5 * model.fov)) - model.offset * model.fov
+      a = model.angle
+      b = (-Math.sin(angle) /
+        (2 *
+          model.scale *
+          model.fov *
+          (Math.sin(a) * Math.sin(angle) + Math.cos(a) * Math.cos(angle)))
+      )
+
+      return b + 0.5;
+
+    scanToTemplate
+    `
+  </script>
+  <script id="413" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplatePy(0.5, {
+      offset: offset_pinhole,
+      scale: scale_pinhole,
+      angle: angle_pinhole,
+      fov: fov_pinhole
+    })
+  </script>
+  <script id="429" type="text/markdown">
+    ## Autograd
+  </script>
+  <script id="435" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplateFlat = py`
+    import autograd.numpy as np  # Thinly-wrapped numpy
+    from autograd import grad    # The only autograd function you may ever need
+
+    def scanToTemplate (
+      sx,
+      offset,
+      scale,
+      angle,
+      fov
+    ):
+      q = 2 * (sx - offset - 0.5)
+      angle_inner = np.arctan(q * np.tan(0.5 * fov)) - offset * fov
+      a = angle
+      b = (-np.sin(angle_inner) /
+        (2 *
+          scale *
+          fov *
+          (np.sin(a) * np.sin(angle_inner) + np.cos(a) * np.cos(angle_inner)))
+      )
+
+      return b + 0.5;
+    scanToTemplate
+    `
+  </script>
+  <script id="709" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplateFlat(
+      0.5,
+      offset_pinhole,
+      scale_pinhole,
+      angle_pinhole,
+      fov_pinhole
+    )
+  </script>
+  <script id="557" type="application/vnd.observable.javascript" pinned="">
+    best_fit_autograd = py`
+    import autograd.numpy as np  # Thinly-wrapped numpy
+    from autograd import grad    # The only autograd function you may ever need
+
+    def scanToTemplate (
+      sx,
+      offset,
+      scale,
+      angle,
+      fov
+    ):
+      q = 2 * (sx - offset - 0.5)
+      angle_inner = np.arctan(q * np.tan(0.5 * fov)) - offset * fov
+      a = angle
+      b = (-np.sin(angle_inner) /
+        (2 *
+          scale *
+          fov *
+          (np.sin(a) * np.sin(angle_inner) + np.cos(a) * np.cos(angle_inner)))
+      )
+
+      return b + 0.5;
+
+    inputs = np.array([[${data[0].ix}],
+                       [${data[1].ix}],
+                       [${data.at(-5).ix}],
+                       [${data.at(-1).ix}]])
+    targets = np.array([
+      ${data[0].tx},
+      ${data[1].tx},
+      ${data.at(-5).tx},
+      ${data.at(-1).tx}])
+
+
+    def training_loss(model):
+        preds = np.squeeze(scanToTemplate(inputs, ${offset_pinhole}, model[1], model[2], ${fov_pinhole}))
+        return np.sum(np.square(preds - targets))
+
+    training_gradient_fun = grad(training_loss)
+
+    model = np.array(${best_fit})
+    current_loss = training_loss(model)
+    print("Initial loss:", current_loss)
+    for i in range(10000):
+        loss = training_loss(model)
+        if (loss > current_loss + 0.0001):
+          break
+        current_loss = loss
+        model -= training_gradient_fun(model) * 0.001
+
+    model
+    `
+  </script>
+  <script id="603" type="application/vnd.observable.javascript" pinned="">
+    mutable best_fit = new Float32Array([offset_pinhole, 1, 0])
+  </script>
+  <script id="613" type="application/vnd.observable.javascript" pinned="">
+    best_fit_autograd
+  </script>
+  <script id="462" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplateFlat(
+      data[0].ix,
+      best_fit[0],
+      best_fit[1],
+      best_fit[2],
+      fov_pinhole
+    )
+  </script>
+  <script id="578" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("update fit", {
+      reduce: () => (mutable best_fit = best_fit_autograd)
+    })
+  </script>
+  <script id="832" type="text/markdown">
+    ## Tensorflow
+
+    python kinda works but is slow, maybe tensorflow?
+  </script>
+  <script id="835" type="application/vnd.observable.javascript" pinned="">
+    tf = require("@tensorflow/tfjs@4.16.0")
+  </script>
+  <script id="863" type="application/vnd.observable.javascript" pinned="">
+    tf_offset = tf.variable(tf.scalar(initial_guess.offset))
+  </script>
+  <script id="866" type="application/vnd.observable.javascript" pinned="">
+    tf_scale = tf.variable(tf.scalar(initial_guess.scale))
+  </script>
+  <script id="871" type="application/vnd.observable.javascript" pinned="">
+    tf_angle = tf.variable(tf.scalar(initial_guess.angle))
+  </script>
+  <script id="912" type="application/vnd.observable.javascript" pinned="">
+    tf_fov = tf.variable(tf.scalar(fov_pinhole))
+  </script>
+  <script id="877" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplateTf = (sx, model) => {
+      // const q = 2 * (sx - model.offset - 0.5);
+      const q = tf.scalar(2).mul(sx.sub(model.offset).add(tf.scalar(-0.5)));
+      //const angle =
+      //  Math.atan(q * Math.tan(0.5 * fov_pinhole)) - model.offset * fov_pinhole;
+      const angle = tf
+        .atan(q.mul(tf.tan(tf_fov.mul(tf.scalar(0.5)))))
+        .sub(model.offset.mul(tf_fov));
+      const a = model.angle;
+      /*
+      const b =
+        Math.sin(angle) /
+        (-2 *
+          model.scale *
+          fov_pinhole *
+          (Math.sin(a) * Math.sin(angle) + Math.cos(a) * Math.cos(angle)));*/
+
+      const b = tf.sin(angle).div(
+        tf
+          .scalar(-2)
+          .mul(model.scale)
+          .mul(tf_fov)
+          .mul(
+            tf
+              .sin(a)
+              .mul(tf.sin(angle))
+              .add(tf.cos(a).mul(tf.cos(angle)))
+          )
+      );
+
+      return b.add(tf.scalar(0.5));
+    }
+  </script>
+  <script id="923" type="application/vnd.observable.javascript" pinned="">
+    viewof test_x = Inputs.range()
+  </script>
+  <script id="874" type="application/vnd.observable.javascript" pinned="">
+    scanToTemplate(test_x, {
+      offset: offset_pinhole,
+      scale: scale_pinhole,
+      angle: angle_pinhole
+    })
+  </script>
+  <script id="886" type="application/vnd.observable.javascript" pinned="">
+    {
+      debugger;
+      return scanToTemplateTf(tf.tensor1d([test_x]), {
+        offset: tf_offset,
+        scale: tf_scale,
+        angle: tf_angle
+      }).data();
+    }
+  </script>
+  <script id="931" type="application/vnd.observable.javascript" pinned="">
+    lossFunction = (preds, labels) => {
+      // Use mean squared error as an example
+      return preds.sub(labels).square().mean();
+    }
+  </script>
+  <script id="939" type="application/vnd.observable.javascript" pinned="">
+    inputTensor = tf.tensor1d(features.map((d) => d.ix))
+  </script>
+  <script id="944" type="application/vnd.observable.javascript" pinned="">
+    outputTensor = tf.tensor1d(features.map((d) => d.tx))
+  </script>
+  <script id="1000" type="application/vnd.observable.javascript" pinned="">
+    mutable training = []
+  </script>
+  <script id="1080" type="module" pinned="">
+
+  </script>
+  <script id="937" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("optimize_tf", {
+      reduce: async () => {
+        {
+          mutable training = [];
+          const optimizer =
+            /*tf.train.adam(0.8)*/ /*tf.train.rmsprop(0.1)*/ tf.train.sgd(0.1);
+          for (let i = 0; i < 200; i++) {
+            let loss = optimizer.minimize(() => {
+              // Forward pass
+              const preds = scanToTemplateTf(inputTensor, {
+                offset: tf_offset,
+                scale: tf_scale,
+                angle: tf_angle
+              });
+
+              // Calculate loss
+              return lossFunction(preds, outputTensor);
+            }, true);
+
+            mutable training.push({ i, loss: (await loss.data())[0] });
+            mutable training = mutable training;
+          }
+        }
+      }
+    })
+  </script>
+  <script id="976" type="application/vnd.observable.javascript" pinned="">
+    (await Promise.all([tf_offset.data(), tf_scale.data(), tf_angle.data()])).map(
+      (d) => d[0]
+    )
+  </script>
+  <script id="1005" type="text/markdown">
+    ## Better initial guess
+  </script>
+  <script id="1009" type="application/vnd.observable.javascript">
+    offset_range = [-0.5, 0.5]
+  </script>
+  <script id="1011" type="application/vnd.observable.javascript">
+    angle_range = [-0.5, 0.5]
+  </script>
+  <script id="1013" type="application/vnd.observable.javascript">
+    scale_range = [0.3, 1.5]
+  </script>
+  <script id="1023" type="application/vnd.observable.javascript" pinned="">
+    function randomBetween(range) {
+      const [min, max] = range;
+      return Math.random() * (max - min) + min;
+    }
+  </script>
+  <script id="1039" type="application/vnd.observable.javascript" pinned="">
+    initial_guess = {
+      dasds;
+      let best = random_params(),
+        lowest_loss = Number.MAX_VALUE;
+      for (let i = 0; i < 1000; i++) {
+        const guess = random_params();
+        const preds = scanToTemplateTf(inputTensor, {
+          offset: tf.scalar(guess.offset),
+          scale: tf.scalar(guess.scale),
+          angle: tf.scalar(guess.angle)
+        });
+        const loss = lossFunction(preds, outputTensor);
+        if (loss < lowest_loss) {
+          best = guess;
+          lowest_loss = loss;
+        }
+      }
+      return best;
+    }
+  </script>
+  <script id="1503" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups";
+
+  </script>
+  <script id="1504" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

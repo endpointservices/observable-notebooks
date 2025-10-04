@@ -1,0 +1,164 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Using Secrets for API keys in public notebooks (Airtable Example)</title>
+  <script id="0" type="text/markdown">
+    # Using Secrets for API keys in public notebooks (Airtable Example)
+
+    You can keep API keys secret in a public notebook by using [webcode](https://webcode.run)
+
+  </script>
+  <script id="118" type="text/markdown">
+    ## Create an server endpoint
+
+    Create a server endpoint which will have access to the API KEY, it will do the actual calls, and expose some kind of control API by reading the incoming request.
+
+    For our example, we will create an interface to Airtable, allowing people to submit Observable notebooks they like and list all the notebooks so far. Because the endpoint is executed remotely, the source code cannot be tampered with, and it's a secure place to enforce data constraints. For example, if you allow arbitrary URLs to be submitted, people might use the service for spam, so we also check that the submitted links are for Observable notebooks links only.
+
+  </script>
+  <script id="125" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="158" type="application/vnd.observable.javascript">
+    Airtable = (await import("https://cdn.skypack.dev/airtable@0.11.1?min")).default
+  </script>
+  <script id="122" type="application/vnd.observable.javascript" pinned="">
+    server = endpoint("server", async (request, response, ctx) => {
+      const API_KEY = ctx.secrets["AIRTABLE_API_KEY"];
+      const base = new Airtable({ apiKey: API_KEY }).base("app2lD79fJnGQVTiP");
+
+      // PUT for submitting a new notebook to the database
+      if (request.method === "PUT") {
+        const submission = JSON.parse(request.body);
+        if (!/^https:\/\/observablehq.com\/@[^/]*\/[^/]*$/.exec(submission.url))
+          return response.status(400).send("URL is not an Observable notebook");
+
+        base("notebooks").create(
+          [
+            {
+              fields: submission
+            }
+          ],
+          function (err, records) {
+            if (err) return response.status(500).send(err.message);
+            else response.send("OK");
+          }
+        );
+      }
+      // GET for listing notebooks in the database
+      else if (request.method === "GET") {
+        const results = [];
+        base("notebooks")
+          .select({
+            maxRecords: 20,
+            view: "Grid view"
+          })
+          .eachPage(
+            function page(records, fetchNextPage) {
+              // This function (`page`) will get called for each page of records.
+              records.forEach(function (record) {
+                results.push(record.fields);
+              });
+
+              // To fetch the next page of records, call `fetchNextPage`.
+              // If there are more records, `page` will get called again.
+              // If there are no more records, `done` will get called.
+              fetchNextPage();
+            },
+            function done(err) {
+              if (err) return response.status(500).send(err.message);
+              else response.json(results);
+            }
+          );
+      } else {
+        response.status(400).send("Unknown method", request.method);
+      }
+    })
+  </script>
+  <script id="140" type="text/markdown">
+    ## Upload secret to webcode
+
+    The webcode dashboard has a tab called "secrets"
+
+    - Click "+ new" to create a new secret
+    - Name it something self-explanatory, we called it "AIRTABLE_API_KEY", set the value and click "save"
+    - A few seconds later the UI should refresh with your new secret in the stored secrets section.
+    - Highlight the secret and bind it to your endpoint, making it available in the endpoints context.
+
+    <img src="${await FileAttachment("image.png").url()}"></a>
+  </script>
+  <script id="70" type="application/vnd.observable.javascript">
+    md`## Create an client
+
+    You can call your server using "fetch", but its good practice to hide those details behind your own client SDK.
+    `
+  </script>
+  <script id="176" type="application/vnd.observable.javascript" pinned="">
+    submitNotebook = async (record) => {
+      const response = await fetch(server.href, {
+        method: "PUT",
+        body: JSON.stringify(record)
+      });
+      if (response.status !== 200) throw new Error(await response.text());
+    }
+  </script>
+  <script id="201" type="application/vnd.observable.javascript" pinned="">
+    listNotebooks = async () => {
+      const response = await fetch(server.href, {
+        method: "GET"
+      });
+      if (response.status !== 200) throw new Error(await response.text());
+      return await response.json();
+    }
+  </script>
+  <script id="217" type="text/markdown">
+    ### Create your application
+  </script>
+  <script id="224" type="application/vnd.observable.javascript">
+    (refresh,
+    Inputs.table(listNotebooks(), {
+      columns: ["url", "description", "tags"]
+    }))
+  </script>
+  <script id="237" type="application/vnd.observable.javascript">
+    viewof submitNotebookForm = view`<div>
+      <mark>${error}</mark>
+      ${["url", Inputs.text({ label: "notebook url", width: "100%" })]}
+      ${["description", Inputs.textarea({ label: "description" })]}
+      ${[
+        "tags",
+        Inputs.checkbox(
+          ["developer", "datascience", "math", "data", "ethics", "blog"],
+          { label: "tags" }
+        )
+      ]}
+    `
+  </script>
+  <script id="250" type="application/vnd.observable.javascript">
+    Inputs.button("submit", {
+      reduce: async () => {
+        try {
+          mutable error = "";
+          await submitNotebook(submitNotebookForm);
+          mutable refresh = mutable refresh + 1; // update table
+        } catch (err) {
+          mutable error = err.message;
+        }
+      }
+    })
+  </script>
+  <script id="222" type="application/vnd.observable.javascript">
+    mutable refresh = 0
+  </script>
+  <script id="257" type="application/vnd.observable.javascript">
+    mutable error = ""
+  </script>
+  <script id="233" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view"
+  </script>
+  <script id="279" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="286" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,553 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Visualizer: Own Cell Renderer</title>
+  <script id="0" type="text/markdown">
+    # Visualizer: Own Cell Renderer
+
+    Instead of cells being rendered into a `div` that is setup before the runtime is started, we invert, by rendering cells into a div hosted _inside_ the notebook. Through this inversion, it is possible to change radically change how notebook renders within userspace. For example, creating a minimap, grid or both at the same time. 
+
+    ```js
+    import {visualizer, lopeviz_handle_css} from '@tomlarkworthy/visualizer'
+    ```
+
+    On its own this notebook is not very useful. It lays a foundation for total transformation of how notebooks can be rendered, but those new formats need to be developed.
+
+  </script>
+  <script id="2191" type="text/html">
+    <div class="lope-viz">
+    <div class="observablehq"></div>
+    </div>
+
+  </script>
+  <script id="2049" type="text/markdown">
+    <style>
+      .lope-viz .observablehq {
+        position: relative;
+        min-height: 17px;
+      }
+
+      .lope-viz .observablehq:not(.observablehq--running):empty:after {
+        content: "<detached>";
+        font-style: oblique;
+        font-family: var(--code)
+      }
+      /*
+      .lope-viz .observablehq::after {
+        content: '';
+        position: absolute;
+        cursor: grab; 
+        top: 0px;
+        right: 0px;
+        width: 14px;
+        height: 14px;
+        border: 1px dashed purple;
+        border-radius: 2px;
+      }*/
+      .sortable-chosen {
+        background-color: yellow
+      }
+      .sortable-drag {
+        background-color: green
+      }
+      .ghostClass {
+        background-color: yellow
+      }
+    </style>
+  </script>
+  <script id="1846" type="text/markdown">
+    ### Example - Rendering _this notebook_'s cells into a minimap
+  </script>
+  <script id="1510" type="application/vnd.observable.javascript">
+    {
+      return visualizer(runtime, {
+        inspector: minicellInto,
+        invalidation,
+        filter: (cell_name) => !!cell_name
+      });
+    }
+  </script>
+  <script id="1577" type="text/markdown">
+    ---
+  </script>
+  <script id="1379" type="text/markdown">
+    ## Instructions
+    You can reorder cells with drag and drop. The ordering of the cells is synced to the insertion of the runtime variable set, so there is a **single global ordering of cells** that all visualizers share. While it might make more sense for each visualizer to have its own ordering, the advantage of using the runtime ordering is that this is preserved when [single file exporting](https://observablehq.com/@tomlarkworthy/exporter). Thus, the global ordering changes are be preserved after export. 
+
+    Usage
+    ```js
+    visualizer(runtime, { // get a runtime reference from @mootari/access-runtime
+      invalidation, // the visualizer need a reference to the invalidation promise  to tear down DOM state if being used dynamically
+      module, // default main,
+      filter: (cell_name, variables, cellIndex, statue) => true, // filter what variables are displayed 
+      inspector: /* default */ Inspector.into, // factory for creating cells
+      detachNodes: false, // detach DOM nodes from their current parent when evaluating, so new visualizer can steal them
+      classList: "" // additional class string to add
+    })
+    ```
+  </script>
+  <script id="1858" type="text/markdown">
+    ### Example - Three column Observable-like layout
+
+    When `detachNodes` is true, the visualizer will detach DOM nodes from their parent before fulfilling the custom inspector. This gives the opportunity for DOM nodes to be transferred to the DOM tree hosted by the visualizer. When this happens, the host notebook's nodes DOM nodes are detached, so this is a visually destructive operation. DOM nodes can only have one parent!
+  </script>
+  <script id="1239" type="application/vnd.observable.javascript">
+    viewof toggleVisualizer = Inputs.toggle({
+      label: "enable 3 column layout and steal DOM nodes"
+    })
+  </script>
+  <script id="1321" type="text/html">
+    <style id="lope-viz-">
+      .lope-viz {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .lope-viz .observablehq {
+        width: 30%;
+        max-height: 200px;
+        overflow: scroll;
+      }
+    </style>
+  </script>
+  <script id="208" type="application/vnd.observable.javascript">
+    toggleVisualizer
+      ? visualizer(runtime, {
+          invalidation,
+          filter: (cell_name) => !!cell_name,
+          detachNodes: true
+        })
+      : "toggle the 3 column layout to make this cell render"
+  </script>
+  <script id="1714" type="text/markdown">
+    ## Customizing the visual representation
+
+    The `inspector` variable defines a factory of variable observers, matching the signature of Observable's [`Inspector.into`](https://github.com/observablehq/inspector#Inspector_into) method. The visualizer uses this factory to build listeners to the runtime's variables. By default it is the default observable inspector, which renders cells in the way you are familiar, however, you can change this to anything. In this notebook we also provide examples around the [minicell](https://observablehq.com/@tomlarkworthy/minicell), which renders just the variables's name, giving a minimap feel, but the possibilities are endless.
+  </script>
+  <script id="1587" type="text/markdown">
+    ## Tricks: visualizers ranges
+
+    The `filter` argument allows you to ignore specific variables. We can use this to partition the global list of variables into different segments, depending on whether they are before or after a list delimiter. Dragging variable across the delimiter causes the variable to swap lists. You can drag the delimitor itself around to mass move cells from one list to another. This could be useful to allow moving cells around different layout regions.
+  </script>
+  <script id="2087" type="application/vnd.observable.javascript">
+    between = (symbolStart, symbolEnd) => (cell_name, variables, index, state) => {
+      if (variables[0]._value === symbolStart) {
+        state.between = true;
+      } else if (variables[0]._value === symbolEnd) {
+        state.between = undefined;
+      } else {
+        return state.between;
+      }
+    }
+  </script>
+  <script id="1591" type="application/vnd.observable.javascript">
+    start = Symbol()
+  </script>
+  <script id="1936" type="text/html">
+    <style>
+      .minicell.observablehq {
+       overflow: visible;
+       width: 2rem;
+       transform: rotate(90deg);
+      }
+    </style>
+  </script>
+  <script id="1595" type="application/vnd.observable.javascript">
+    before_deliminator = {
+      return visualizer(runtime, {
+        inspector: minicellInto,
+        invalidation,
+        filter: between(start, middle),
+        classList: "before"
+      });
+    }
+  </script>
+  <script id="2106" type="application/vnd.observable.javascript" pinned="">
+    myvalue = "42"
+  </script>
+  <script id="2091" type="application/vnd.observable.javascript">
+    middle = Symbol()
+  </script>
+  <script id="1636" type="application/vnd.observable.javascript">
+    after_deliminator = {
+      return visualizer(runtime, {
+        inspector: minicellInto,
+        invalidation,
+        filter: between(middle, end),
+        classList: "after"
+      });
+    }
+  </script>
+  <script id="2102" type="application/vnd.observable.javascript" pinned="">
+    mainVariables
+  </script>
+  <script id="1731" type="text/markdown">
+    ---
+
+    ---
+  </script>
+  <script id="1743" type="text/markdown">
+    ## Runtime Tooling Compatible
+
+    Visualizer uses the underlying runtime as the authoritative state, so it composes with the [single file exporter](https://observablehq.com/@tomlarkworthy/exporter) and [editor](https://observablehq.com/@tomlarkworthy/editor) (not shown), enabling editable, reordering and offline-first notebooks that (re)serialise to single files. Try clicking "preview".
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    exporter_cell = exporter()
+  </script>
+  <script id="2094" type="application/vnd.observable.javascript">
+    end = Symbol()
+  </script>
+  <script id="1883" type="text/markdown">
+    ### Differences to other works
+
+    - The Observable's [export cell renderer](https://observablehq.com/documentation/embeds/advanced#rendering-cells) describes a pattern tofirst create a `div`, a CSS style tag, and then use Inspector.into when starting the runtime,
+    - [@asg017/v0-6-0-of-the-unofficial-observablehq-compiler](https://observablehq.com/@asg017/v0-6-0-of-the-unofficial-observablehq-compiler#cell-214) follows a similar pattern of setting up the framing and rendering of the runtime before starting a notebook using Inspector.into
+
+    This approach here is very different. The problem with the above approaches is only one Inspector can be used, _**and**_ it has to be decided before running the notebook in a privileged context, and you have to select a CSS stylesheet all in advance. In contrast, the [visualizer](https://observablehq.com/@tomlarkworthy/visualizer) allows multiple Inspectors to be attached dynamically after the runtime is started, and the can be added from inside the notebook environment like any other notebook logic. The workhorse of the methodology is being able to attached Observers to variables dynamically, which is implemented [here](https://observablehq.com/@tomlarkworthy/runtime-sdk#cell-159).
+
+    So this means you no longer need to choose a stylesheet upfront, or add a div, or even instantiate an Inspector before starting a runtime, as these decisions can be done inside the loaded notebook, allowing you to start the runtime _headless_, then add multiple views of the notebook as needed.
+
+    ```html
+    <!DOCTYPE html>
+    <script type="module">
+    import {Runtime} from "https://cdn.jsdelivr.net/npm/@observablehq/runtime@5/dist/runtime.js";
+    import define from "https://api.observablehq.com/@jashkenas/my-neat-notebook.js?v=3";
+    new Runtime().module(define, {}); // empty inspector
+    <\/script>
+    ```
+
+
+  </script>
+  <script id="1529" type="application/vnd.observable.javascript">
+    minicell_style
+  </script>
+  <script id="1757" type="text/markdown">
+    ---
+
+    ## Implementation
+  </script>
+  <script id="186" type="application/vnd.observable.javascript">
+    viewof allVariables = variables(runtime)
+  </script>
+  <script id="266" type="application/vnd.observable.javascript">
+    mainVariables = [...allVariables].filter((v) => v._module == main)
+  </script>
+  <script id="177" type="application/vnd.observable.javascript" pinned="">
+    visualizer = (
+      runtime,
+      {
+        invalidation,
+        module = main,
+        filter = () => true,
+        inspector = Inspector.into,
+        detachNodes = false,
+        classList = ""
+      } = {}
+    ) => {
+      console.log("creating visualizer");
+      backgroundJobs;
+      const root = html`<div class="observablehq-root lope-viz ${classList}" style="min-height: 2rem; min-width: 2rem;"></div>`;
+      const visualizer = html`<div class="lopecode-visualizer">${root}</div>`;
+      root.filter = filter;
+      root.module = module;
+      root.inspector = inspector;
+      root.detachNodes = detachNodes;
+      root.visualizer = visualizer;
+      const sortable = new Sortable(root, {
+        group: "visualizer",
+        preventOnFilter: false,
+        filter: (e, target) => {
+          const rect = target.getBoundingClientRect();
+          return !(
+            e.clientX >= rect.right - 14 &&
+            e.clientX <= rect.right &&
+            e.clientY >= rect.top &&
+            e.clientY <= rect.top + 14
+          );
+        },
+        onUpdate: (evt) => viewof updateEvent.send({ runtime, evt, sortable }),
+        onAdd: (evt) => viewof updateEvent.send({ runtime, evt, sortable })
+      });
+
+      viewof visualizers.value.add(root);
+      viewof visualizers.dispatchEvent(new Event("input"));
+      invalidation.then(() => {
+        console.log("removing visualizer", root);
+        root.remove();
+        root.visualizer.remove();
+        root.dispatchEvent(new Event("input"));
+        sortable.option("disabled", true);
+        // We need to keep roots around so we know not to sync with them
+        // But this is also a cause of a memory leak.
+        // Probably we need a new set to record the disposed sync div nodes.
+        viewof visualizersToDelete.value.add(root);
+        viewof visualizersToDelete.dispatchEvent(new Event("input"));
+      });
+      return visualizer;
+    }
+  </script>
+  <script id="1244" type="application/vnd.observable.javascript">
+    viewof visualizers = Inputs.input(new Set())
+  </script>
+  <script id="1689" type="application/vnd.observable.javascript">
+    viewof visualizersToDelete = Inputs.input(new Set())
+  </script>
+  <script id="226" type="application/vnd.observable.javascript" pinned="">
+    inspectors = {
+      const inspectors = this || new Map(); // preserve state across invalidations
+      visualizers.forEach((root) => {
+        if (inspectors.has(root)) return;
+        const factory = root.inspector(root);
+        const inspector = (variable, ...args) => {
+          const inspector = factory(variable, ...args);
+          inspector._node.variable = variable;
+          if (variable._name) inspector._node.setAttribute("cell", variable._name);
+          return inspector;
+        };
+        inspectors.set(root, inspector);
+      });
+      inspectors.forEach((fn, root) => {
+        if (!visualizers.has(root)) {
+          console.log("tidy up inspector for ", root);
+          inspectors.delete(root);
+        }
+      });
+      return inspectors;
+    }
+  </script>
+  <script id="2232" type="application/vnd.observable.javascript">
+    TRACE_CELL = "observe"
+  </script>
+  <script id="269" type="application/vnd.observable.javascript" pinned="">
+    syncers = {
+      try {
+        console.log("sync");
+        const syncers = this || new Map();
+
+        // remove stale sync state
+        syncers.forEach(({ observers }, root) => {
+          if (!inspectors.has(root)) {
+            console.log("tidy up syncer for ", root);
+            syncers.delete(root);
+            observers.forEach(({ observer, remove }, v) => {
+              remove();
+              if (v?._observer?.fulfilled && !!v._value) {
+                v._observer.fulfilled(v._value, v._name);
+              }
+            });
+          }
+        });
+
+        inspectors.forEach((inspector, root) => {
+          if (viewof visualizersToDelete.value.has(root)) return;
+          if (!syncers.has(root)) {
+            syncers.set(root, {
+              observers: new Map()
+            });
+          }
+          const { observers } = syncers.get(root);
+          const seen = new Set();
+          let i = 0;
+          const state = {};
+          const cells = liveCellMap.get(root.module);
+          cells.forEach((cell) => {
+            const cell_name = cell.name;
+            const v = cell.variables[0];
+            if (v._name === TRACE_CELL) debugger;
+            if (!root.filter(cell_name, variables, i++, state)) return;
+            // don't put containers in containers, TODO, if pending it can get attached
+            if (visualizers.has(v._value) && v._value.detachNodes) return;
+            seen.add(v);
+            if (
+              observers.has(v) &&
+              // observers.get(v).version == v._version &&
+              observers.get(v).root == root
+            ) {
+              // no change
+            } else {
+              if (observers.has(v)) {
+                observers.get(v).remove(); // tidy up previous
+              }
+              const observer = inspector(v);
+              const remove = observe(v, observer, {
+                detachNodes: root.detachNodes
+              });
+              observers.set(v, {
+                observer,
+                version: v._version,
+                root,
+                remove: () => {
+                  if (v._name === TRACE_CELL) debugger;
+                  observers.delete(v);
+                  observer._node.remove();
+                  remove();
+                }
+              });
+            }
+          });
+
+          // remove stale variables
+          [...observers.entries()].forEach(([v, _]) => {
+            if (v._name === TRACE_CELL) debugger;
+            if (!seen.has(v) && observers.has(v)) {
+              const { observer, remove } = observers.get(v);
+              remove();
+            }
+          });
+
+          // sync dom
+          root.innerHTML = "";
+          allVariables.forEach((v) => {
+            if (observers.has(v)) {
+              const { observer, remove } = observers.get(v);
+              root.appendChild(observer._node);
+            }
+          });
+          // let current = root.firstChild;
+          // allVariables.forEach((v) => {
+          //   if (v._name === TRACE_CELL) debugger;
+          //   if (observers.has(v)) {
+          //     const { observer, remove } = observers.get(v);
+          //     if (current.variable == v) {
+          //       current = current.nextSibling;
+          //     } else {
+          //       debugger;
+          //       current.before(observer._node);
+          //     }
+          //   }
+          // });
+          // // remove left overs
+          // while (current !== null) {
+          //   const toRemove = current;
+          //   current = current.nextSibling;
+          //   toRemove.remove();
+          // }
+
+          return observers;
+        });
+
+        // tidy up resources
+        [...viewof visualizersToDelete.value].forEach((root) => {
+          if (syncers.has(root)) {
+            const { observers } = syncers.get(root);
+            [...observers].forEach((v) => {
+              const existing = observers.get(v);
+              if (!existing) return;
+              const { observer, remove } = existing;
+              observer.remove();
+            });
+          }
+
+          syncers.delete(root);
+          inspectors.delete(root);
+          viewof visualizersToDelete.value.delete(root);
+          viewof visualizers.value.delete(root);
+        });
+        return syncers;
+      } catch (err) {
+        debugger;
+        console.error(err);
+      }
+    }
+  </script>
+  <script id="814" type="text/markdown">
+    ### Drag change handler - onUpdate
+  </script>
+  <script id="646" type="application/vnd.observable.javascript">
+    viewof updateEvent = flowQueue()
+  </script>
+  <script id="715" type="application/vnd.observable.javascript">
+    updateEvent
+  </script>
+  <script id="1352" type="application/vnd.observable.javascript" pinned="">
+    lastVariableMoved = toObject(updateEvent.evt.item.variable)
+  </script>
+  <script id="650" type="application/vnd.observable.javascript" pinned="">
+    onUpdateAction = {
+      console.log("onUpdate", updateEvent);
+      const order = updateEvent.sortable.toArray();
+      const evt = updateEvent.evt;
+      const variable = evt.item.variable;
+      const newIndex = evt.newIndex;
+      const oldIndex = evt.oldIndex;
+      const variables = viewof allVariables.value;
+      // find variable one position after
+      const displaced =
+        updateEvent.evt.item.parentElement.children[evt.newIndex + 1]?.variable;
+      if (displaced !== undefined) {
+        // move to the position that is before
+        const current = [...variables].findIndex((v) => v == variable);
+        let target = [...variables].findIndex((v) => v == displaced);
+        target -= target > current ? 1 : 0;
+        console.log("moving  to ", target, displaced);
+        repositionSetElement(variables, variable, target);
+      } else {
+        // its last in list
+        const last =
+          updateEvent.evt.item.parentElement.children[evt.newIndex - 1].variable;
+        const target = [...variables].findIndex((v) => v == last);
+        console.log("moving  to ", target, displaced);
+        repositionSetElement(variables, variable, target);
+      }
+
+      viewof updateEvent.resolve();
+      return updateEvent;
+    }
+  </script>
+  <script id="1832" type="text/markdown">
+    ### background jobs and keep alive
+  </script>
+  <script id="1446" type="application/vnd.observable.javascript">
+    backgroundJobs = {
+      console.log("background job");
+      keepalive(thisModule, "syncers");
+      keepalive(thisModule, "onUpdateAction");
+    }
+  </script>
+  <script id="1436" type="application/vnd.observable.javascript">
+    notebook_tag = Symbol()
+  </script>
+  <script id="1440" type="application/vnd.observable.javascript">
+    thisModule = [...runtime._variables].find((v) => v._value === notebook_tag)
+      ._module
+  </script>
+  <script id="1835" type="text/markdown">
+    ### imports
+  </script>
+  <script id="223" type="application/vnd.observable.javascript">
+    import { Inspector, isnode } from "@tomlarkworthy/inspector"
+  </script>
+  <script id="197" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view"
+  </script>
+  <script id="183" type="application/vnd.observable.javascript">
+    import {
+      unorderedSync, // needed by consumers
+      repositionSetElement,
+      runtime,
+      main,
+      variables,
+      descendants,
+      lookupVariable,
+      toObject,
+      observe,
+      keepalive
+    } from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    import { exporter, module_map } from "@tomlarkworthy/exporter"
+  </script>
+  <script id="2237" type="application/vnd.observable.javascript">
+    import { liveCellMap } from "@tomlarkworthy/cell-map"
+  </script>
+  <script id="391" type="application/vnd.observable.javascript">
+    import { Sortable } from "@tomlarkworthy/sortablejs"
+  </script>
+  <script id="644" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="1503" type="application/vnd.observable.javascript">
+    import {
+      into as minicellInto,
+      style as minicell_style
+    } from "@tomlarkworthy/minicell"
+  </script>
+</notebook>

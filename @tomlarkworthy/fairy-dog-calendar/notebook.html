@@ -1,0 +1,134 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Esoteric Calendar: The Fairy Dog Calendar</title>
+  <script id="0" type="text/markdown">
+    # Esoteric Calendar: The Fairy Dog Calendar
+  </script>
+  <script id="157" type="application/vnd.observable.javascript" pinned="">
+    fairydog = FileAttachment("fairydog.jpg").image()
+  </script>
+  <script id="167" type="text/markdown">
+    See https://observablehq.com/@str4w/circular_calendar
+  </script>
+  <script id="169" type="text/markdown" pinned="">
+    https://observablehq.com/@roelandschoukens/astronomical-clock
+
+    https://observablehq.com/@igor-a1/the-moon-tilt zodiac
+  </script>
+  <script id="10" type="text/markdown" pinned="">
+    ## Gregorian converter
+  </script>
+  <script id="38" type="application/vnd.observable.javascript" pinned="">
+    import { verticalSliders } from "@tomlarkworthy/vertical-sliders"
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    viewof params = verticalSliders({
+      names: ["ra", "rb", "ca", "cb", "y"],
+      labels: ["ra", "rb", "ca", "CB", "y"],
+      maxs: [1000, 1000, 1000, 1000, 400],
+      values: [150, 150, 300, 300, 200]
+    })
+  </script>
+  <script id="67" type="application/vnd.observable.javascript" pinned="">
+    params
+  </script>
+  <script id="58" type="application/vnd.observable.javascript" pinned="">
+    year = timestamp / (1000 * 60 * 60 * 24 * 265)
+  </script>
+  <script id="20" type="application/vnd.observable.javascript" pinned="">
+    date = new Date(timestamp)
+  </script>
+  <script id="77" type="text/markdown">
+    ## Sirius A around Sirius B (22 year cycle)
+  </script>
+  <script id="28" type="text/html" pinned="">
+    <svg width="600" height="400">
+      <rect width="100%" height="100%" fill="grey"/>
+      <circle cx="${params.ca + params.ra * Math.sin(year + Math.PI)}" cy="${params.y + params.ra * Math.cos(year + Math.PI)}"
+        r="40" stroke="black" stroke-width="3" fill="red" />
+      <circle cx="${params.cb + params.rb * Math.sin(year)}" cy="${params.y + params.rb * Math.cos(year)}"
+        r="20" stroke="black" stroke-width="3" fill="yellow" />
+    </svg>
+  </script>
+  <script id="89" type="text/markdown">
+    ## Earth around Sum (1 year cycle))
+  </script>
+  <script id="91" type="text/html" pinned="">
+    <svg width="600" height="400">
+      <rect width="100%" height="100%" fill="grey"/>
+      <circle cx="${params.ca + params.ra * Math.sin(year * 22 + Math.PI)}" cy="${params.y + params.ra * Math.cos(year * 22 + Math.PI)}"
+        r="40" stroke="black" stroke-width="3" fill="red" />
+      <circle cx="300" cy="200"
+        r="60" stroke="black" stroke-width="3" fill="yellow" />
+    </svg>
+  </script>
+  <script id="101" type="text/markdown">
+    ## Season
+
+  </script>
+  <script id="104" type="application/vnd.observable.javascript" pinned="">
+    fairyYear = year - 60
+  </script>
+  <script id="112" type="application/vnd.observable.javascript" pinned="">
+    fairyDay = (year % 1) * 365
+  </script>
+  <script id="116" type="application/vnd.observable.javascript" pinned="">
+    fairySeason = fairyDay / 73
+  </script>
+  <script id="119" type="application/vnd.observable.javascript" pinned="">
+    fairySeasonDay = (fairySeason % 1) * 73
+  </script>
+  <script id="123" type="application/vnd.observable.javascript" pinned="">
+    card = {
+      // TODO
+      if (fairySeasonDay < 1) return "festival";
+      const suits = ["wands", "penticles", "swords", "cups"];
+      let suit = null;
+      if (fairySeasonDay < 7) suit = "w";
+      else if (fairySeasonDay < 13) suit = "p";
+      else if (fairySeasonDay < 19) suit = "s";
+      else if (fairySeasonDay < 25) suit = "c";
+      else if (fairySeasonDay < 7 + 24) suit = "w";
+      else if (fairySeasonDay < 13 + 24) suit = "p";
+      else if (fairySeasonDay < 19 + 24) suit = "s";
+      else if (fairySeasonDay < 25 + 24) suit = "c";
+      else if (fairySeasonDay < 7 + 42) suit = "w";
+      else if (fairySeasonDay < 13 + 42) suit = "p";
+      else if (fairySeasonDay < 19 + 42) suit = "s";
+      else if (fairySeasonDay < 25 + 42) suit = "c";
+      let value = Math.floor(fairySeasonDay / 9) + 1;
+      return suit + (value < 10 ? "0" : 0) + value;
+    }
+  </script>
+  <script id="141" type="text/html" pinned="">
+    <img src="${await fileAttachments[`${card}.jpg`].url()}">
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    viewof timestamp = Inputs.range(
+      [Date.now() - 100 * 24 * 60 * 60 * 365 * 100, Date.now()],
+      {
+        label: "date",
+        step: 1000 * 60 * 60 * 24
+      }
+    )
+  </script>
+  <script id="135" type="application/vnd.observable.javascript" pinned="">
+    import { fileAttachments } from "@triptych/tarot-utilities"
+  </script>
+  <script id="159" type="text/markdown">
+    ### Planetary symbol (connected to the demon)
+    The Groetia
+    The less key of solomon the king
+    https://en.wikipedia.org/wiki/Buer_(demon)
+
+
+  </script>
+  <script id="176" type="application/vnd.observable.javascript" pinned="">
+    img_20220706_151813 = FileAttachment("IMG_20220706_151813.jpg").image()
+  </script>
+  <script id="162" type="text/markdown" pinned="">
+    ### Zodiac (inner circle)
+
+    The numbers are degrees of the zodiac (Astrology) 30 degres each
+  </script>
+</notebook>

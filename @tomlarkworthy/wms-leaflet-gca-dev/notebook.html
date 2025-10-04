@@ -1,0 +1,662 @@
+<!doctype html>
+<notebook theme="air">
+  <title>WMS Leaflet map GCA (DEV)</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# WMS Leaflet map GCA (DEV)
+    ## An interface to produce a slippy map using WMS (Web Map Service)
+    <p style="margin-bottom: -12px;"></p>
+    <span ${keyword_style}>Leaflet</span>
+    <span ${keyword_style}>Interactive Web Map</span>
+    <span ${keyword_style}>WMS</span> 
+    `
+  </script>
+  <script id="737" type="application/vnd.observable.javascript">
+    md`An interface to produce a slippy map using WMS (Web Map Service) layer from netCDF files available
+    from : <a href="https://www.globalcarbonatlas.org:8443/thredds/catalog/Atlas/Flux_Transcom/catalog.html"
+    target="_blank">https://www.globalcarbonatlas.org:8443/thredds/catalog/Atlas/Flux_Transcom/catalog.html</a>.
+    Vector layers come from a Geoserver and the WMS layer from a Thredds Data Server with the WMS service activated.`
+  </script>
+  <script id="743" type="application/vnd.observable.javascript">
+    md`<hr>
+    ### Interface`
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    viewof layers = Inputs.checkbox(layersArray, {
+      value: [layersArray[2]],
+      label: "Vector layers",
+      format: (x) => x.name
+    })
+  </script>
+  <script id="289" type="application/vnd.observable.javascript">
+    viewof palette0 = Inputs.select(palettesArray, {
+      value: palettesArray[8],
+      label: "Palette"
+    })
+  </script>
+  <script id="336" type="application/vnd.observable.javascript">
+    viewof paletteInversed = Inputs.toggle({
+      label: "Inverse palette",
+      values: ["-inv", ""]
+    })
+  </script>
+  <script id="613" type="application/vnd.observable.javascript">
+    viewof opacity = Inputs.range([0, 100], {
+      value: 100,
+      step: 5,
+      label: "Opacity"
+    })
+  </script>
+  <script id="252" type="application/vnd.observable.javascript">
+    viewof numcolorbands = Inputs.range([10, 250], {
+      value: 20,
+      step: 1,
+      label: "Number of colorbands"
+    })
+  </script>
+  <script id="948" type="application/vnd.observable.javascript">
+    viewof directory = Inputs.select(dirsArray, {
+      width: 600,
+      value: dirsArray[15],
+      label: "Directory"
+    })
+  </script>
+  <script id="1006" type="application/vnd.observable.javascript">
+    viewof period = Inputs.select(
+      [
+        "longterm",
+        "yearlymean",
+        "yearlymean-anom",
+        "monthlymean",
+        "monthlymean-anom"
+      ],
+      {
+        value: "yearlymean-anom",
+        width: 600,
+        label: "Period averaging"
+      }
+    )
+  </script>
+  <script id="417" type="application/vnd.observable.javascript">
+    viewof ressource = Inputs.select(ressourcesArray, {
+      width: 600,
+      value: ressourcesArray[0],
+      label: "Ressource"
+    })
+  </script>
+  <script id="185" type="application/vnd.observable.javascript">
+    viewof variable = {
+      if (typeof this !== "undefined" && variablesArray.includes(this.value)) {
+        var variableToSet = this.value;
+      } else {
+        var variableToSet = variablesArray.slice(-1)[0];
+      }
+      var variable = Inputs.select(variablesArray, {
+        value: variableToSet,
+        label: "Variable"
+      });
+      return variable;
+    }
+  </script>
+  <script id="1697" type="application/vnd.observable.javascript">
+    viewof rangeFrom = Inputs.radio(
+      ["variable", "user choice"],
+      { label: "Get range from", value: "variable" }
+    )
+  </script>
+  <script id="119" type="application/vnd.observable.javascript">
+    viewof range = {
+      const range0 =
+        this && rangeFrom === "user choice" ? this.value : rangeVariable;
+      return rangeSlider({
+        min: Math.floor(range0[0] - Math.abs(range0[0]) * 0.2),
+        max: Math.ceil(range0[1] + Math.abs(range0[1]) * 0.2),
+        step: 10 ** Math.floor(Math.log10(Math.abs(range0[1] - range0[0]) / 100.0)),
+        value: range0,
+        precision: 3,
+        title: "<div style='font-weight:normal;font-size: smaller;'>Range</div>"
+      });
+    }
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    map = {
+      const bounds =
+        //this && this.map && typeof this.map.getBounds === "function" ? this.map.getBounds() : null;
+        this && this.map ? this.map.getBounds() : null;
+
+      const container = html`<div style="display:table;"><div id="map" style="float:left;width:700px;height:400px;"></div><img src="${legend}" style="float:left;margin-left:10px;"></div>`;
+      yield container;
+
+      const map = (container.map = L.map("map"));
+
+      if (bounds) {
+        //console.log(bounds);
+        map.fitBounds(bounds);
+      } else {
+        map.setView([0, 0], 1);
+      }
+
+      //L.control.fullscreen().addTo(map);
+      var resizer = L.control
+        .resizer({ direction: "se", onlyOnHover: true, pan: true })
+        .addTo(map);
+
+      // https://github.com/socib/Leaflet.TimeDimension
+      var timeDimension = new L.TimeDimension({
+        times: timeVariable
+      });
+      map.timeDimension = timeDimension;
+
+      const currentTime =
+        this && this.map ? this.map.timeDimension.getCurrentTime() : null;
+      if (currentTime) {
+        //console.log(currentTime);
+        map.timeDimension.setCurrentTime(currentTime);
+      }
+
+      var player = new L.TimeDimension.Player(
+        {
+          transitionTime: 100,
+          loop: true,
+          startOver: true
+        },
+        timeDimension
+      );
+
+      var timeDimensionControlOptions = {
+        player: player,
+        timeDimension: timeDimension,
+        position: "bottomleft",
+        autoPlay: false,
+        minSpeed: 1,
+        speedStep: 0.5,
+        maxSpeed: 15,
+        timeSliderDragUpdate: true
+      };
+
+      var timeDimensionControl = new L.Control.TimeDimension(
+        timeDimensionControlOptions
+      );
+      map.addControl(timeDimensionControl);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {}).addTo(
+        map
+      );
+
+      let wmsLayer = L.tileLayer.wms(
+        "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+          directory +
+          "/" +
+          period +
+          "/" +
+          ressource +
+          "?",
+        {
+          LAYERS: variable,
+          COLORSCALERANGE: range,
+          NUMCOLORBANDS: numcolorbands,
+          STYLES: "raster/" + palette,
+          ABOVEMAXCOLOR: "extend",
+          BELOWMINCOLOR: "extend",
+          SRS: "EPSG:4326",
+          FORMAT: "image/png",
+          OPACITY: opacity
+        }
+      );
+
+      var tdWmsLayer = L.timeDimension.layer.wms(wmsLayer);
+      tdWmsLayer.addTo(map);
+
+      for (let i = 0; i < layers.length; i++) {
+        let layerGEOSERVER = L.tileLayer.wms(
+          "https://www.globalcarbonatlas.org:8443/geoserver/GCA/wms?",
+          {
+            LAYERS: layers[i].layer,
+            SRS: "EPSG:4326",
+            FORMAT: "image/png",
+            TRANSPARENT: "true"
+          }
+        );
+        layerGEOSERVER.bringToFront();
+        layerGEOSERVER.addTo(map);
+      }
+    }
+  </script>
+  <script id="1627" type="application/vnd.observable.javascript">
+    md`<button onClick="javascript:window.open('https://observablehq.com/embed/@pbrockmann/wms-leaflet-gca?cells=map%2Cviewof+variable%2Cviewof+ressource%2Cviewof+period%2Cviewof+directory%2Cviewof+rangeFrom%2Cviewof+range', '_blank');">Export map</button>`
+  </script>
+  <script id="724" type="application/vnd.observable.javascript">
+    md`<hr>`
+  </script>
+  <script id="2011" type="application/vnd.observable.javascript">
+    mapsSelectionButtons = Inputs.button(
+      [
+        [
+          "Add",
+          () => {
+            mutable mapsArrayMutable = mapsArrayMutable.concat(addMap());
+            //mutable mapsArrayMutable.push(addMap());
+          }
+        ],
+        [
+          "Remove last",
+          () => {
+            mutable mapsArrayMutable = mapsArrayMutable.slice(0, -1);
+            //mutable mapsArrayMutable.splice(1, 1);
+          }
+        ],
+        [
+          "Reset",
+          () => {
+            mutable mapsArrayMutable = [];
+          }
+        ]
+      ],
+      { value: [], label: "List of maps" }
+    )
+  </script>
+  <script id="2182" type="application/vnd.observable.javascript">
+    md`<button onClick="javascript:window.open('https://observablehq.com/embed/@tomlarkworthy/wms-leaflet-gca-dev?cells=mapsArray%2Callmaps&payload=${payload}', '_blank');">Export all maps</button>`
+  </script>
+  <script id="2176" type="application/vnd.observable.javascript">
+    allmaps = {
+      var randomIntegerInRange = (min, max) =>
+        Math.floor(Math.random() * (max - min + 1)) + min;
+
+      const container = html`<div id="mapDiv" style="display: table;"></div>`;
+      yield container;
+
+      if (mapsArray.length == 0) return "No maps";
+
+      var center = [0, 0];
+      var zoom = 0;
+      var width = 150;
+      var height = 150;
+
+      var mapsNb = mapsArray.length;
+
+      var maps = [];
+      for (var i = 0; i < mapsNb; i++) {
+        var div = document.createElement("div");
+        div.style.width = width + "px";
+        div.style.height = height + "px";
+        div.style.float = "left";
+        div.id = "map" + i;
+        document.getElementById("mapDiv").appendChild(div);
+
+        maps["map" + i] = L.map("map" + i);
+        maps["map" + i].setView(center, zoom);
+
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {}).addTo(
+          maps["map" + i]
+        );
+
+        let wmsLayer = L.tileLayer.wms(
+          "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+            mapsArray[i].directory +
+            "/" +
+            mapsArray[i].period +
+            "/" +
+            mapsArray[i].ressource +
+            "?",
+          {
+            LAYERS: mapsArray[i].variable,
+            //TIME: "1979-07-01T12:00:00.000Z",
+            COLORSCALERANGE: mapsArray[i].range,
+            NUMCOLORBANDS: mapsArray[i].numcolorbands,
+            STYLES: "raster/" + mapsArray[i].palette,
+            ABOVEMAXCOLOR: "extend",
+            BELOWMINCOLOR: "extend",
+            SRS: "EPSG:4326",
+            FORMAT: "image/png",
+            OPACITY: mapsArray[i].opacity
+          }
+        );
+        wmsLayer.addTo(maps["map" + i]);
+
+        for (let j = 0; j < layers.length; j++) {
+          let layerGEOSERVER = L.tileLayer.wms(
+            "https://www.globalcarbonatlas.org:8443/geoserver/GCA/wms?",
+            {
+              LAYERS: layers[j].layer,
+              SRS: "EPSG:4326",
+              FORMAT: "image/png",
+              TRANSPARENT: "true"
+            }
+          );
+          layerGEOSERVER.bringToFront();
+          layerGEOSERVER.addTo(maps["map" + i]);
+        }
+      }
+
+      // Synchronize all maps together
+      for (var i = 0; i < mapsNb; i++) {
+        for (var j = 0; j < mapsNb; j++) {
+          if (i != j) {
+            maps["map" + i].sync(maps["map" + j]);
+          }
+        }
+      }
+
+      // https://github.com/jjimenezshaw/Leaflet.Control.Resizer
+      var resizer = L.control
+        .resizer({ direction: "se", onlyOnHover: true })
+        .addTo(maps["map0"]);
+      L.DomEvent.on(resizer, "dragend", function (e) {
+        var map0Div = document.getElementById("map0");
+
+        for (var i = 1; i < mapsNb; i++) {
+          var mapDiv = document.getElementById("map" + i);
+          mapDiv.style.width = map0Div.style.width;
+          mapDiv.style.height = map0Div.style.height;
+          maps["map" + i].invalidateSize();
+        }
+      });
+    }
+  </script>
+  <script id="2376" type="application/vnd.observable.javascript" pinned="">
+    payload = btoa(JSON.stringify(mapsArrayMutable))
+  </script>
+  <script id="1945" type="application/vnd.observable.javascript">
+    function addMap() {
+      var map1 = {
+        directory: directory,
+        ressource: ressource,
+        period: period,
+        variable: variable,
+        timeVariable: timeVariable,
+        range: range,
+        palette: palette,
+        numcolorbands: numcolorbands,
+        opacity: opacity
+      };
+      return map1;
+    }
+  </script>
+  <script id="2301" type="application/vnd.observable.javascript">
+    mapsArray = {
+      var mapsArray = [];
+
+      try {
+        mapsArray = JSON.parse(
+          atob(new URLSearchParams(location.search).get("payload"))
+        );
+      } catch (err) {}
+
+      for (let i = 0; i < mapsArrayMutable.length; i++) {
+        mapsArray.push(mapsArrayMutable[i]);
+      }
+      return mapsArray;
+    }
+  </script>
+  <script id="2337" type="application/vnd.observable.javascript" pinned="">
+    // A static version of mapsArray
+    mapsArrayStatic = [
+      {
+        directory: "Atlas/Flux_Transcom/Inversions-GCP2019",
+        ressource:
+          "fco2_CAMS-V18-2-2019_June2018-ext3_1979-2018_yearlymean-anom_XYT.nc",
+        period: "yearlymean-anom",
+        variable: "Terrestrial_flux",
+        range: [-432, 291],
+        palette: "div-RdYlBu",
+        numcolorbands: 20,
+        opacity: 100
+      },
+      {
+        directory: "Atlas/Flux_Transcom/Inversions-GCP2019",
+        ressource:
+          "fco2_CAMS-V18-2-2019_June2018-ext3_1979-2018_yearlymean-anom_XYT.nc",
+        period: "yearlymean-anom",
+        variable: "Ocean_flux",
+        range: [-29.9, 39.2],
+        palette: "div-RdYlBu",
+        numcolorbands: 20,
+        opacity: 100
+      }
+    ]
+  </script>
+  <script id="2085" type="application/vnd.observable.javascript">
+    mutable mapsArrayMutable = []
+  </script>
+  <script id="1515" type="application/vnd.observable.javascript">
+    md`<hr>`
+  </script>
+  <script id="994" type="application/vnd.observable.javascript">
+    dirsArray = {
+      var xmlResponseDirectories = await fetch(
+        "https://www.globalcarbonatlas.org:8443/thredds/catalog/Atlas/Flux_Transcom/catalog.xml"
+      ).then((response) => {
+        return response.text();
+      });
+      var catalogDirectories = new DOMParser().parseFromString(
+        xmlResponseDirectories,
+        "text/xml"
+      );
+      var dirsArray = Array.from(
+        catalogDirectories.querySelectorAll("dataset > catalogRef"),
+        (n) => n.getAttribute("ID")
+      );
+      return dirsArray;
+    }
+  </script>
+  <script id="889" type="application/vnd.observable.javascript">
+    ressourcesArray = {
+      var ressourcesResponse = await fetch(
+        "https://www.globalcarbonatlas.org:8443/thredds/catalog/" +
+          directory +
+          "/" +
+          period +
+          "/catalog.xml"
+      ).then((response) => {
+        return response.text();
+      });
+      var ressourcesCatalog = new DOMParser().parseFromString(
+        ressourcesResponse,
+        "text/xml"
+      );
+      var ressourcesArray = Array.from(
+        ressourcesCatalog.querySelectorAll("dataset > dataset"),
+        (n) => n.getAttribute("name")
+      ).filter((d) => d.endsWith(".nc"));
+      return ressourcesArray;
+    }
+  </script>
+  <script id="960" type="application/vnd.observable.javascript">
+    variablesArray = {
+      var variablesResponse = await fetch(
+        "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+          directory +
+          "/" +
+          period +
+          "/" +
+          ressource +
+          "?REQUEST=GetCapabilities"
+      ).then((response) => {
+        return response.text();
+      });
+      var variablesCatalog = new DOMParser().parseFromString(
+        variablesResponse,
+        "text/xml"
+      );
+      var variablesArray = Array.from(
+        variablesCatalog.querySelectorAll(
+          "WMS_Capabilities > Capability > Layer > Layer > Layer > Name"
+        ),
+        (n) => n.childNodes[0].nodeValue
+      );
+      return variablesArray;
+    }
+  </script>
+  <script id="1257" type="application/vnd.observable.javascript">
+    timeVariable = {
+      var timeVariableResponse = await fetch(
+        "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+          directory +
+          "/" +
+          period +
+          "/" +
+          ressource +
+          "?REQUEST=GetCapabilities"
+      ).then((response) => {
+        return response.text();
+      });
+      var timeVariableCatalog = new DOMParser().parseFromString(
+        timeVariableResponse,
+        "text/xml"
+      );
+      var timeVariableArray = Array.from(
+        timeVariableCatalog.querySelectorAll(
+          "WMS_Capabilities > Capability > Layer > Layer > Layer > Dimension"
+        ),
+        (n) => n.childNodes[0].nodeValue
+      );
+      return timeVariableArray[0].trim();
+    }
+  </script>
+  <script id="1651" type="application/vnd.observable.javascript">
+    rangeVariable = {
+      var rangeVariableResponse = await fetch(
+        "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+          directory +
+          "/" +
+          period +
+          "/" +
+          ressource +
+          "?REQUEST=GetMetadata&VERSION=1.1.1&LAYER=" +
+          variable +
+          "&ITEM=minmax&SRS=EPSG:4326&BBOX=-180,-90,180,90&WIDTH=200&HEIGHT=200"
+      ).then((response) => {
+        return response.json();
+      });
+      return [rangeVariableResponse.min, rangeVariableResponse.max];
+    }
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    layersArray = [
+      { name: "Land mask", layer: "GCA:GCA_landMask" },
+      { name: "Ocean mask", layer: "GCA:GCA_oceanMask" },
+      { name: "Frontiers", layer: "GCA:GCA_frontiersCountryAndRegions" },
+      { name: "Names", layer: "GCA:GCA_labelsCountriesRegionsOceans" },
+      { name: "Urban areas", layer: "GCA:GCA_citiesLabelsAndFrontiers" },
+      { name: "Lakes and river", layer: "GCA:GCA_lakesAndRivers" },
+      { name: "Graticules", layer: "GCA:GCA_graticules01_05_10" }
+    ]
+  </script>
+  <script id="314" type="application/vnd.observable.javascript">
+    palettesArray = [
+      "div-BrBG",
+      "div-BuRd2",
+      "div-BuRd",
+      "div-PiYG",
+      "div-PRGn",
+      "div-PuOr",
+      "div-RdBu",
+      "div-RdGy",
+      "div-RdYlBu",
+      "div-RdYlGn",
+      "div-Spectral",
+      "psu-inferno",
+      "psu-magma",
+      "psu-plasma",
+      "psu-viridis",
+      "seq-BkBu",
+      "seq-BkGn",
+      "seq-BkRd",
+      "seq-BkYl",
+      "seq-BlueHeat",
+      "seq-Blues",
+      "seq-BuGn",
+      "seq-BuPu",
+      "seq-BuYl",
+      "seq-cubeYF",
+      "seq-GnBu",
+      "seq-Greens",
+      "seq-Greys",
+      "seq-GreysRev",
+      "seq-Heat",
+      "seq-Oranges",
+      "seq-OrRd",
+      "seq-PuBuGn",
+      "seq-PuBu",
+      "seq-PuRd",
+      "seq-Purples",
+      "seq-RdPu",
+      "seq-Reds",
+      "seq-YlGnBu",
+      "seq-YlGn",
+      "seq-YlOrBr",
+      "seq-YlOrRd",
+      "x-Ncview",
+      "x-Occam",
+      "x-Rainbow",
+      "x-Sst"
+    ]
+  </script>
+  <script id="351" type="application/vnd.observable.javascript">
+    palette = palette0 + paletteInversed
+  </script>
+  <script id="199" type="application/vnd.observable.javascript">
+    legend = "https://www.globalcarbonatlas.org:8443/thredds/wms/" +
+      directory +
+      "/" +
+      period +
+      "/" +
+      ressource +
+      "?REQUEST=GetLegendGraphic&LAYER=" +
+      variable +
+      "&STYLES=raster/" +
+      palette +
+      "&COLORSCALERANGE=" +
+      range +
+      "&NUMCOLORBANDS=" +
+      numcolorbands +
+      "&WIDTH=20&HEIGHT=250"
+  </script>
+  <script id="595" type="application/vnd.observable.javascript">
+    html`<img src="${legend}">`
+  </script>
+  <script id="1381" type="application/vnd.observable.javascript">
+    keyword_style = `style="font-family:Source Sans Pro; font-size: 14px; background: #cdebea"`
+  </script>
+  <script id="1366" type="application/vnd.observable.javascript">
+    md`<hr>`
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    L = {
+      const L = await require("leaflet@1.7.1/dist/leaflet-src.js");
+      if (!L._style) {
+        var href = await require.resolve("leaflet@1.7.1/dist/leaflet.css");
+        document.head.appendChild(
+          (L._style = html`<link href=${href} rel=stylesheet>`)
+        );
+      }
+
+      await require("leaflet-fullscreen@1.0.2").catch(() => L.control.fullscreen);
+      var href = await require.resolve(
+        "leaflet-fullscreen@1.0.2/dist/leaflet.fullscreen.css"
+      );
+      document.head.appendChild(html`<link href=${href} rel=stylesheet>`);
+
+      await require("leaflet-timedimension@1.1.1").catch(
+        () => L.control.fullscreen
+      );
+      var href = await require.resolve(
+        "leaflet-timedimension@1.1.1/dist/leaflet.timedimension.control.min.css"
+      );
+      document.head.appendChild(html`<link href=${href} rel=stylesheet>`);
+
+      await require("leaflet.sync@0.2.4").catch(() => L.sync);
+
+      await require("leaflet.control.resizer@0.0.1").catch(() => L.control.resizer);
+      var href = await require.resolve(
+        "leaflet.control.resizer@0.0.1/L.Control.Resizer.css"
+      );
+      document.head.appendChild(html`<link href=${href} rel=stylesheet>`);
+
+      return L;
+    }
+  </script>
+  <script id="117" type="application/vnd.observable.javascript">
+    import { rangeSlider } from "@mootari/range-slider"
+  </script>
+</notebook>

@@ -1,0 +1,452 @@
+<!doctype html>
+<notebook theme="air">
+  <title>AWS Helpers</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# AWS Helpers
+    `
+  </script>
+  <script id="315" type="application/vnd.observable.javascript">
+    md`
+
+    Store AWS credentials in local storage and call the AWS SDK. So far we have added IAM, S3 and CloudFront. If you need more SDK methods, create an web SDK distribution using https://sdk.amazonaws.com/builder/js/ 
+
+    ~~~js
+      import {
+        iam, s3,
+        viewof manualCredentials, saveCreds.
+        listObjects, getObject, putObject,
+        listGroups, listGroupsForUser, addUserToGroup, removeUserFromGroup
+        listUsers, createUser, deleteUser, getUser,
+        listAccessKeys, createAccessKey, deleteAccessKey,
+        listUserTags, tagUser, untagUser
+      } with {REGION as REGION} from '@tomlarkworthy/aws'
+    ~~~
+
+    I am a big fan of using resource tagging to provide attribute based access control (ABAC), as an alternative to API Gateway. With IAM policies, you can add a tag to an s3 object, and a tag to a user account, and express that "only users with the matching tag can access the file". Using wildcards and StringLike expressions, you can tag a user account with all projects they can access, and let them create files only with a matching project prefix.
+
+    For example, the following AWS policy rule allows the authenticated IAM user (a.k.a. the Principle) to create a file with a "project" tag that matches one of the projects in their tag "projects" (space prefixed/suffixed/delimited) list.
+    ~~~
+    {
+        "Effect": "Allow",
+        "Action": [
+            "s3:putObjectTagging"
+            "s3:PutObject"
+        ],
+        "Resource": "arn:aws:s3:::myBucket/*",
+        "Condition": {
+            "StringLike": {
+                "aws:PrincipalTag/projects": "* \${s3:RequestObjectTag/project} *"
+            }
+        }
+    }
+    ~~~
+
+    With the right IAM User Group policies and this AWS SDK wrapper you can build a quite powerful multi-tenancy file storage system without API gateway. Kinda like a Firebase Storage-lite. Don't underestimate tagging! For more info check out Amazon's documentation. 
+
+    https://docs.aws.amazon.com/AmazonS3/latest/userguide/tagging-and-policies.html
+
+    `
+  </script>
+  <script id="153" type="application/vnd.observable.javascript">
+    AWS = require(await FileAttachment("aws-sdk-2.983.0.min.js").url()).then(
+      (_) => window["AWS"]
+    )
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    md`# Credentials
+
+    A credentials file can be used to derive *access_tokens* for SDK calls.
+    ~~~js
+    { 
+      "accessKeyId": <YOUR_ACCESS_KEY_ID>,
+      "secretAccessKey": <YOUR_SECRET_ACCESS_KEY>
+    }
+    ~~~
+    `
+  </script>
+  <script id="35" type="application/vnd.observable.javascript">
+    md`## Input credentials
+
+    Not persisted or shared outside of your local network. Paste an unencrypted JSON of your credentials in the following box to authenticate.
+    `
+  </script>
+  <script id="38" type="application/vnd.observable.javascript">
+    viewof manualCredentials = {
+      const existingCreds = localStorage.getItem(
+        `AWS_CREDS_${btoa(htl.html`<a href>`.href.split("?")[0])}`
+      );
+
+      const control = Inputs.textarea({
+        label: "Supply AWS credentials as JSON",
+        rows: 6,
+        minlength: 1,
+        submit: true,
+        value: existingCreds
+      });
+
+      const wrapped = htl.html`<div class="pmnuxzjxzr">
+        <style>
+          .pmnuxzjxzr > form > div > textarea {
+            ${
+              existingCreds
+                ? `
+                    color: transparent;
+                    text-shadow: 0 0 4px rgba(0,0,0,0.5);
+                  `
+                : null
+            }
+          }
+        </style>
+        ${control}`;
+      Inputs.bind(wrapped, control);
+      return wrapped;
+    }
+  </script>
+  <script id="527" type="application/vnd.observable.javascript">
+    saveCreds = htl.html`<span style="display: flex">${Inputs.button(
+      "Save creds to local storage",
+      {
+        reduce: () =>
+          localStorage.setItem(
+            `AWS_CREDS_${btoa(htl.html`<a href>`.href.split("?")[0])}`,
+            manualCredentials
+          )
+      }
+    )} ${Inputs.button("Clear stored creds", {
+      reduce: () =>
+        localStorage.removeItem(
+          `AWS_CREDS_${btoa(htl.html`<a href>`.href.split("?")[0])}`
+        )
+    })}</span>`
+  </script>
+  <script id="71" type="application/vnd.observable.javascript">
+    md`## Credentials`
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    credentials = Generators.observe(next => {
+      const check = () => {
+        const creds = viewof manualCredentials.value;
+        try {
+          expect(creds).toBeDefined();
+          const parsed = JSON.parse(creds);
+          expect(parsed).toHaveProperty("accessKeyId");
+          expect(parsed).toHaveProperty("secretAccessKey");
+          next(parsed);
+        } catch (err) {
+          //next(err);
+        }
+      };
+
+      viewof manualCredentials.addEventListener('input', check);
+      invalidation.then(() => {
+        viewof manualCredentials.removeEventListener('input', check);
+      });
+      check();
+    })
+  </script>
+  <script id="161" type="application/vnd.observable.javascript">
+    md`Use creds in SDK`
+  </script>
+  <script id="157" type="application/vnd.observable.javascript">
+    login = {
+      AWS.config.credentials = credentials;
+    }
+  </script>
+  <script id="150" type="application/vnd.observable.javascript">
+    md`# IAM`
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    iam = login || new AWS.IAM()
+  </script>
+  <script id="514" type="application/vnd.observable.javascript">
+    md`##### Users`
+  </script>
+  <script id="305" type="application/vnd.observable.javascript" pinned="">
+    listUsers = async () => {
+      const response = await iam.listUsers().promise();
+      return response.Users;
+    }
+  </script>
+  <script id="300" type="application/vnd.observable.javascript" pinned="">
+    createUser = async username => {
+      const response = await iam
+        .createUser({
+          UserName: username
+        })
+        .promise();
+      return response.User;
+    }
+  </script>
+  <script id="453" type="application/vnd.observable.javascript" pinned="">
+    deleteUser = async username => {
+      const response = await iam
+        .deleteUser({
+          UserName: username
+        })
+        .promise();
+    }
+  </script>
+  <script id="626" type="application/vnd.observable.javascript" pinned="">
+    getUser = async username => {
+      const response = await iam
+        .getUser({
+          ...(username && { UserName: username })
+        })
+        .promise();
+      return response.User;
+    }
+  </script>
+  <script id="511" type="application/vnd.observable.javascript">
+    md`##### Access Keys`
+  </script>
+  <script id="469" type="application/vnd.observable.javascript" pinned="">
+    listAccessKeys = async username => {
+      const response = await iam
+        .listAccessKeys({
+          UserName: username
+        })
+        .promise();
+      return response.AccessKeyMetadata;
+    }
+  </script>
+  <script id="442" type="application/vnd.observable.javascript" pinned="">
+    /*https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/IAM.html#createAccessKey-property*/
+    createAccessKey = async username => {
+      const response = await iam
+        .createAccessKey({
+          UserName: username
+        })
+        .promise();
+      return response.AccessKey;
+    }
+  </script>
+  <script id="460" type="application/vnd.observable.javascript" pinned="">
+    deleteAccessKey = async (username, accessKeyId) => {
+      const response = await iam
+        .deleteAccessKey({
+          UserName: username,
+          AccessKeyId: accessKeyId
+        })
+        .promise();
+    }
+  </script>
+  <script id="493" type="application/vnd.observable.javascript">
+    md`##### User Tags`
+  </script>
+  <script id="486" type="application/vnd.observable.javascript" pinned="">
+    listUserTags = async username => {
+      const response = await iam
+        .listUserTags({
+          UserName: username
+        })
+        .promise();
+      return response.Tags.reduce(
+        (acc, r) =>
+          Object.defineProperty(acc, r.Key, { value: r.Value, enumerable: true }),
+        {}
+      );
+    }
+  </script>
+  <script id="492" type="application/vnd.observable.javascript" pinned="">
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/IAM.html#tagUser-property
+    tagUser = async (username, tagDictionary) => {
+      const response = await iam
+        .tagUser({
+          Tags: Object.entries(tagDictionary).map(e => ({
+            Key: e[0],
+            Value: e[1]
+          })),
+          UserName: username
+        })
+        .promise();
+      return response.Tags;
+    }
+  </script>
+  <script id="503" type="application/vnd.observable.javascript" pinned="">
+    untagUser = async (username, keyArray) => {
+      const response = await iam
+        .untagUser({
+          TagKeys: keyArray,
+          UserName: username
+        })
+        .promise();
+      return response.Tags;
+    }
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+    md`##### IAM User groups`
+  </script>
+  <script id="598" type="application/vnd.observable.javascript" pinned="">
+    listGroups = async username => {
+      const response = await iam.listGroups().promise();
+      return response.Groups;
+    }
+  </script>
+  <script id="602" type="application/vnd.observable.javascript" pinned="">
+    listGroupsForUser = async username => {
+      const response = await iam
+        .listGroupsForUser({
+          UserName: username
+        })
+        .promise();
+      return response.Groups;
+    }
+  </script>
+  <script id="607" type="application/vnd.observable.javascript" pinned="">
+    addUserToGroup = async (username, group) => {
+      return await iam
+        .addUserToGroup({
+          UserName: username,
+          GroupName: group
+        })
+        .promise();
+    }
+  </script>
+  <script id="615" type="application/vnd.observable.javascript" pinned="">
+    removeUserFromGroup = async (username, group) => {
+      return await iam
+        .removeUserFromGroup({
+          UserName: username,
+          GroupName: group
+        })
+        .promise();
+    }
+  </script>
+  <script id="164" type="application/vnd.observable.javascript">
+    md`# S3
+
+    `
+  </script>
+  <script id="272" type="application/vnd.observable.javascript">
+    md`S3 service doesn't work until you set a region, and you cannot create buckets through the SDK, you have to set them up in the console first, but you can add and remove files from a pre-existing bucket`
+  </script>
+  <script id="249" type="application/vnd.observable.javascript">
+    REGION = 'us-east-2'
+  </script>
+  <script id="174" type="application/vnd.observable.javascript">
+    s3 = login || new AWS.S3({ region: REGION })
+  </script>
+  <script id="267" type="application/vnd.observable.javascript">
+    md`### CORS
+
+    AWS S3 SDK does not work until you enable a CORS policy in the bucket permissions
+
+    ~~~js
+    [
+        {
+            "AllowedHeaders": [
+                "*"
+            ],
+            "AllowedMethods": [
+                "PUT",
+                "GET",
+                "HEAD"
+            ],
+            "AllowedOrigins": [
+                "*"
+            ],
+            "ExposeHeaders": [],
+            "MaxAgeSeconds": 3000
+        }
+    ]
+    ~~~
+    `
+  </script>
+  <script id="168" type="application/vnd.observable.javascript" pinned="">
+    async function hasBucket(name) {
+      return s3
+        .getBucketLocation({
+          Bucket: name
+        })
+        .promise()
+        .then(() => true)
+        .catch(err => false);
+    }
+  </script>
+  <script id="567" type="application/vnd.observable.javascript" pinned="">
+    listObjects = async function (bucket, prefix = undefined, options = {}) {
+      const response = await s3
+        .listObjectsV2({
+          Bucket: bucket,
+          Delimiter: "/",
+          ...(prefix && { Prefix: prefix }),
+          ...options
+        })
+        .promise();
+      return response.CommonPrefixes;
+    }
+  </script>
+  <script id="226" type="application/vnd.observable.javascript" pinned="">
+    getObject = async (bucket, path) => {
+      const response = await s3
+        .getObject({
+          Bucket: bucket,
+          Key: path
+        })
+        .promise();
+      return response.Body;
+    }
+  </script>
+  <script id="297" type="application/vnd.observable.javascript" pinned="">
+    putObject = async (bucket, path, value, options) => {
+      const s3Options = { ...options };
+      delete s3Options["tags"];
+      return s3
+        .putObject({
+          Bucket: bucket,
+          Key: path,
+          Body: value,
+          ...(options?.tags && {
+            Tagging: Object.entries(options.tags)
+              .map((e) => `${e[0]}=${e[1]}`)
+              .join("&")
+          }),
+          ...s3Options
+        })
+        .promise();
+    }
+  </script>
+  <script id="748" type="application/vnd.observable.javascript" pinned="">
+    md`# CloudFront
+
+    `
+  </script>
+  <script id="754" type="application/vnd.observable.javascript" pinned="">
+    cloudFront = login || new AWS.CloudFront()
+  </script>
+  <script id="752" type="application/vnd.observable.javascript" pinned="">
+    createInvalidation = (distributionId, paths = []) => {
+      const operationId = randomId(16);
+      return cloudFront
+        .createInvalidation({
+          DistributionId: distributionId,
+          InvalidationBatch: {
+            CallerReference: operationId,
+            Paths: {
+              Quantity: paths.length,
+              Items: paths
+            }
+          }
+        })
+        .promise();
+    }
+  </script>
+  <script id="279" type="application/vnd.observable.javascript">
+    md`---`
+  </script>
+  <script id="89" type="application/vnd.observable.javascript">
+    import { expect } from '@tomlarkworthy/testing'
+  </script>
+  <script id="201" type="application/vnd.observable.javascript">
+    import { randomId } from '@tomlarkworthy/randomid'
+  </script>
+  <script id="395" type="application/vnd.observable.javascript">
+    import { resize } from '@endpointservices/resize'
+  </script>
+  <script id="536" type="application/vnd.observable.javascript">
+    import { localStorage } from "@mbostock/safe-local-storage"
+  </script>
+  <script id="721" type="application/vnd.observable.javascript">
+    import { signature } from '@mootari/signature'
+  </script>
+</notebook>

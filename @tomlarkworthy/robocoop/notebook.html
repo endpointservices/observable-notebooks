@@ -1,0 +1,911 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Roboco-op: a computational blackboard for efficient human/AI collaboration</title>
+  <script id="0" type="text/markdown">
+    # Roboco-op: a computational blackboard for efficient human/AI collaboration
+
+  </script>
+  <script id="3585" type="text/markdown">
+    ⚠️ [Roboco-op 2.0 is out](https://observablehq.com/@tomlarkworthy/robocoop-2)
+  </script>
+  <script id="3591" type="text/markdown">
+
+    Robocoop is a different approach to building an AI coding assistant. In Robocoop, the LLM context is paired with code so it can be hand edited, imported, deleted and forked at any point during development. Its like Chat + Computational Notebook + RAG all wrapped into one.
+
+
+    Roboco-op blends [Observablehq.com](https://observablehq.com/)'s reactive notebooks with an **open source** userspace AI coding assistant. Observable notebooks are a unique coding environment because the code development and runtime state are mixed together. This means Robocoop can write code, a human can edit, and the LLM read the output of program fragments all within a single fluid environment.
+
+  </script>
+  <script id="2978" type="text/markdown">
+    ### [Forkable Quickstart Notebook](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate)
+
+    A *"blank slate"* notebook is available [here](https://observablehq.com/@tomlarkworthy/robocoop-blank-slate) which you should fork from for new projects. There are a selection of pre-packaged skill [here](https://observablehq.com/@tomlarkworthy/robocoop-skills) which can be copied and pasted into notebooks to provide specific expertise.
+  </script>
+  <script id="3002" type="text/markdown">
+    ### Automatic Source <--> LLM Context
+
+    In Roboco-op, a notebook cell is: code, execution, a prompt and an AI context **in a single atomic unit**. The chat context is a summation over all the cell's source code. You can edit _anything_ at _any_ time, in _any_ order **without losing state**. **The notebook _is_ the LLM state**. The AI will build upon whatever curated knowledge base that has been laid out via in-context learning.
+
+  </script>
+  <script id="2968" type="text/markdown">
+    ### Copy and Paste Domain expertise with Skills
+    ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/wx93r1pY_6Y" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
+
+    With Roboco-op notebook cells can become copy and pasteable [skills](https://observablehq.com/@tomlarkworthy/robocoop-skills) that can be assembled and adjusted into a situational expert. You can move the cells across notebook, correct them manually, and the LLM will jam from whatever is there for its next completion.
+
+
+  </script>
+  <script id="3021" type="text/markdown">
+    ### `highlight(<expr>)` to bring runtime values into LLM context
+
+    ${html`<iframe width="640" height="480" src="https://www.youtube.com/embed/RAEYuWhWtY4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`}
+
+
+    Roboco-op automatically synchronises notebook source code, but you can also programatically bring runtime **values** into the LLM context too, just by calling the function `highlight`. This is useful for making AI informed decisions based on program state, for example, summerizing information pulled from a network call, or for informing code changes based on test suite feedback.
+
+    Test-driven-development using `highlight` is such a powerful technique for producing production quality code that we have a template to fork directly from [here](https://observablehq.com/@tomlarkworthy/ai-tdd-template)
+  </script>
+  <script id="3033" type="application/vnd.observable.javascript">
+    highlight(Math.random())
+  </script>
+  <script id="3497" type="text/markdown">
+    If highlight is passed a Blob with an image mime type it will convert to a vision prompt. However, not all models support image prompting so the following cell is commented out (but works)
+  </script>
+  <script id="3469" type="application/vnd.observable.javascript">
+    // highlight(example_image)
+  </script>
+  <script id="3249" type="text/markdown">
+    ### RAG for getting started
+
+    The [RAG extension](https://observablehq.com/@tomlarkworthy/rag-extension) adds relevant examples to the context based on the question, which helps with getting started on a fresh notebook.
+
+  </script>
+  <script id="3070" type="text/markdown">
+    ### More
+
+
+    Browse the main Roboco-op notebook ecosystem [here](https://observablehq.com/@tomlarkworthy/robocoop?collection=@tomlarkworthy/robocoop), or ask questions in <a href="https://www.reddit.com/r/robocoop/comments/17rlxaq/welcome_lets_figure_things_out_together/">r/robocoop</a>
+  </script>
+  <script id="2972" type="text/markdown">
+
+    Changes
+    - 2025-02-06 Switch to XML
+    - 2024-12-28 Image prompting
+    - 2024-10-23 Better decompiler for understanding notebook runtime.
+    - 2024-10-15 Added highlight and a bunch of bug fixes
+    - 2024-05-11 Context is truncated according to max_prompt_tokens, oldest is removed first
+
+    TODO:
+    - FEATURE: Unified prompting UI
+      - dynamic GPT model selection per prompt
+      - regenerate response 
+    - BUG(minor): Renaming variable does not update feedback variables
+    - Investigate Summarization (https://github.com/jimmc414/1filellm)
+  </script>
+  <script id="2584" type="text/markdown">
+    ## Random Cell Made by Roboco-op
+  </script>
+  <script id="1927" type="application/vnd.observable.javascript">
+    pong_game = {
+      ({
+        prompt: "Create an automated retro looking game of pong",
+        time: 1699389743848,
+        comment: "Creating an automated retro-looking game of Pong"
+      });
+
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = 200;
+      const context = canvas.getContext("2d");
+
+      const ball = { x: width / 2, y: 20, dx: 3, dy: 2, radius: 15 };
+      const paddle = { x: 5, y: canvas.height / 2, width: 20, height: 60 };
+
+      const drawBall = () => {
+        context.beginPath();
+        context.rect(
+          ball.x,
+          ball.y - ball.radius,
+          ball.radius * 2,
+          ball.radius * 2
+        );
+        context.fillStyle = "#FFFFFF";
+        context.fill();
+        context.closePath();
+      };
+
+      const drawPaddle = () => {
+        context.beginPath();
+        context.rect(paddle.x, paddle.y, paddle.width, paddle.height);
+        context.fillStyle = "#FFFFFF";
+        context.fill();
+        context.closePath();
+      };
+
+      const update = () => {
+        context.fillStyle = "#000000";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        drawBall();
+        drawPaddle();
+
+        if (
+          ball.x + ball.dx > canvas.width - ball.radius ||
+          ball.x + ball.dx < ball.radius + 10
+        ) {
+          ball.dx = -ball.dx;
+        }
+
+        if (ball.y + ball.dy < ball.radius) {
+          ball.dy = -ball.dy;
+        } else if (ball.y + ball.dy > canvas.height - ball.radius) {
+          if (ball.x > paddle.x && ball.x < paddle.x + paddle.width) {
+            ball.dy = -ball.dy;
+          } else {
+            ball.dy = -ball.dy;
+          }
+        }
+        ball.x += ball.dx;
+        ball.y += ball.dy;
+        paddle.y = ball.y - 30;
+      };
+
+      const interval = setInterval(update, 10);
+
+      return canvas;
+    }
+  </script>
+  <script id="1617" type="text/markdown">
+    ## Prompt Interface
+
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt = {
+      const whisper = whisperInput({
+        API_KEY: OPENAI_API_KEY
+      });
+      const ui = view`<div>
+          ${cautious(() => whisper)}
+          ${[
+            "...",
+            Inputs.textarea({
+              placeholder: "ask for a cell",
+              rows: 10,
+              minlength: 1,
+              submit: true
+            })
+          ]}
+        </div>`;
+      // bindOneWay(ui, whisper);
+      invalidation.then(
+        whisper.addEventListener("input", () => {
+          ui.value = whisper.value;
+        })
+      );
+
+      return ui;
+    }
+  </script>
+  <script id="3580" type="application/vnd.observable.javascript" pinned="">
+    formatted_instruction
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => cellsToClipboard([suggestion])
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion = Inputs.textarea({
+      rows: 50,
+      disabled: true,
+      value: formatted_instruction,
+      style: "height: 500px"
+    })
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Last Chat context
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz = Inputs.table(
+      [...extension_context_previous, ...mutable context].map((r) => ({
+        role: r.role,
+        content_or_function_call: r.content || r.function_call
+      })),
+      {
+        format: {
+          role: (role) =>
+            html`<span style="color: ${
+              role == "assistant" ? "red" : "black"
+            }">${role}`,
+          content_or_function_call: (f) =>
+            f.arguments ? inspect(JSON.parse(f.arguments)) : f
+        },
+        layout: "auto"
+      }
+    )
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="2683" type="application/vnd.observable.javascript" pinned="">
+    models = [
+      "gpt-3.5-turbo-1106",
+      "gpt-3.5-turbo",
+      "gpt-3.5-turbo-0301",
+      "gpt-3.5-turbo-0613",
+      "gpt-3.5-turbo-16k",
+      "gpt-3.5-turbo-16k-0613",
+      "gpt-3.5-turbo-instruct",
+      "gpt-3.5-turbo-instruct-0914",
+      "gpt-4-1106-preview",
+      "gpt-4",
+      "gpt-4-32k",
+      "gpt-4-0314",
+      "gpt-4-0613",
+      "gpt-4-turbo",
+      "gpt-4-turbo-2024-04-09",
+      "gpt-4-turbo-preview",
+      "gpt-4-vision-preview",
+      "gpt-4o",
+      "gpt-4o-mini",
+      "o1",
+      "o1-mini",
+      "o1-preview",
+      "o3",
+      "o3-mini",
+      "o4-mini",
+      "o4-mini-high"
+    ]
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY = Inputs.bind(
+      Inputs.password({
+        label: "OPENAI_API_KEY",
+        placeholder: "paste openAI key here"
+      }),
+      localStorageView("OPENAI_API_KEY")
+    )
+  </script>
+  <script id="2700" type="application/vnd.observable.javascript">
+    viewof ANTHROPIC_API_KEY = Inputs.bind(
+      Inputs.password({
+        label: "ANTHROPIC_API_KEY",
+        placeholder: "paste ANTHROPIC_API_KEY key here"
+      }),
+      localStorageView("ANTHROPIC_API_KEY")
+    )
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint = Inputs.bind(
+      Inputs.text({
+        label: "Completion API endpoint"
+      }),
+      localStorageView("OPENAI_API_ENDPOINT", {
+        defaultValue: "https://api.openai.com/v1/chat/completions"
+      })
+    )
+  </script>
+  <script id="1779" type="application/vnd.observable.javascript">
+    viewof settings = ({
+      prompt:
+        '\nThe notebook contains:\n  - cell "form" is Object {a: "", b: ""}\nUsing the already imported view literal for configuring a ChatGPT session. Example response \n\n{\n  model: "gpt-3.5-turbo"\n  temperature: 0.7\n  max_tokens: 1000\n  top_p: 1\n  frequency_penalty: 0\n  presence_penalty: 0\n}\n\nUse Inputs.select for model, Inputs.range for max_tokens etc.',
+      time: 1699384189902,
+      comment:
+        "Creating a form to configure a ChatGPT session. The form includes a select input for model, and range inputs for temperature, max_tokens, top_p, frequency_penalty, and presence_penalty."
+    } &&
+      Inputs.bind(
+        view`
+        <div>${["model", Inputs.select(models.sort(), { label: "model" })]}</div>
+        <div>${[
+          "temperature",
+          Inputs.range([0, 1], { step: 0.1, value: 0.7, label: "temperature" })
+        ]}</div>
+        <div>${[
+          "max_prompt_tokens",
+          Inputs.range([1, 12000], {
+            value: 4000,
+            label: "max_tokens sent (oldest are truncated)"
+          })
+        ]}</div>
+        <div>${[
+          "max_tokens",
+          Inputs.range([1, 32000], {
+            value: 1000,
+            label: "max_tokens for response"
+          })
+        ]}</div>
+        <div>${[
+          "top_p",
+          Inputs.range([0, 1], { step: 0.1, value: 1, label: "top_p" })
+        ]}</div>
+        <div>${[
+          "frequency_penalty",
+          Inputs.range([0, 1], { step: 0.1, value: 0, label: "frequency_penalty" })
+        ]}</div>
+        <div>${[
+          "presence_penalty",
+          Inputs.range([0, 1], { step: 0.1, value: 0, label: "presence_penalty" })
+        ]}</div>
+      `,
+        localStorageView("NOTEBOOK_WRITER_2", {
+          defaultValue: {
+            model: "gpt-4-turbo",
+            temperature: 0.7,
+            max_prompt_tokens: 4000,
+            max_tokens: 2000,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          json: true
+        })
+      ))
+  </script>
+  <script id="63" type="application/vnd.observable.javascript" pinned="">
+    system_prompt = `
+    You are a notebook programming assistent for Observablehq notebook. You respond in XML formatted observable notebook cells only.
+
+    If a question requires clarification, you can generate a markdown cell writing your question.
+
+
+    EXAMPLES
+    ========
+
+    user:
+    import <LIBRARY>
+
+    assistant:
+    <cell>
+    <deps></deps>
+    import("https://esm.sh/<LIBRARY>@2.5.0")
+    </cell>
+
+    user:
+    create an SVG element
+
+    assistant:
+    <cell>
+    <deps>htl</deps>
+    htl.html\`<svg>\`
+    </cell>
+
+    user:
+    create an UI for temperate variable from -10 to 10
+
+    assistant:
+    <cell>
+    <deps>Inputs</deps>
+    viewof temperature = Inputs.range([-10, 10], {label: "set the temperature"})
+    </cell>
+
+    user:
+    create a 1 second counter
+
+    assistant:
+    <cell>
+    <deps></deps>
+    mutable counterIndirect = 0
+    </cell>
+    <cell>
+    <deps>mutable counterIndirect</deps>
+    mutable counter = {
+      let i = 0;
+      while (i < 100) {
+        mutable counterIndirect = i;
+        yield Promises.delay(500, ++i);
+      }
+      yield i;
+    }
+    </cell>
+
+    user:
+    Tell me a joke
+    assistant:
+    <cell>
+    <deps>md</deps>
+    md\`Why did the chicken cross the road?... to get to the other side\`
+    </cell>
+    `
+  </script>
+  <script id="1623" type="text/markdown">
+    ## Roboco-op Implementation below
+  </script>
+  <script id="2448" type="application/vnd.observable.javascript" pinned="">
+    background_tasks = {
+      submit_summary;
+      find_context_extensions;
+      on_prompt;
+      context_updater;
+      api_call_response;
+    }
+  </script>
+  <script id="2222" type="application/vnd.observable.javascript">
+    viewof user_variable_filters = Inputs.bind(
+      Inputs.input({}),
+      localStorageView(
+        `${new URL(document.baseURI).pathname}|user_variable_filters`,
+        {
+          defaultValue: {},
+          json: true
+        }
+      )
+    )
+  </script>
+  <script id="431" type="application/vnd.observable.javascript" pinned="">
+    formatted_instruction = {
+      if (response.action == "upsert_cells") {
+        return response.cells.map((r) => r.code).join("\n\n");
+      }
+      return response.content;
+    }
+  </script>
+  <script id="720" type="application/vnd.observable.javascript" pinned="">
+    response = on_prompt
+  </script>
+  <script id="96" type="application/vnd.observable.javascript" pinned="">
+    on_prompt = {
+      const extension_context_now = await extension_context({
+        question: prompt
+      });
+      viewof extension_context_previous.value = extension_context_now;
+      viewof extension_context_previous.dispatchEvent(new Event("input"));
+      const payload = [
+        ...extension_context_now,
+        ...mutable context,
+        {
+          role: "user",
+          content: prompt
+        }
+      ];
+      console.log("on_prompt", payload);
+      return viewof ask.send(payload);
+    }
+  </script>
+  <script id="3160" type="text/markdown">
+    ## Extensions
+  </script>
+  <script id="3079" type="application/vnd.observable.javascript">
+    viewof context_extensions = Inputs.input(new Set())
+  </script>
+  <script id="3155" type="application/vnd.observable.javascript">
+    find_context_extensions = {
+      viewof context_extensions.value = new Set(
+        Object.entries(code)
+          .map(([name, c]) => c)
+          .filter((cell) => cell.variables[0]._value?.robocoop?.onContext)
+          .map((cell) => cell.variables[0]._value?.robocoop?.onContext)
+      );
+    }
+  </script>
+  <script id="3074" type="application/vnd.observable.javascript" pinned="">
+    extension_context = async ({ question }) => {
+      const context = [];
+      await Promise.all(
+        [...viewof context_extensions.value].map((fn) => fn({ question, context }))
+      );
+      return context;
+    }
+  </script>
+  <script id="2608" type="text/markdown">
+    ### Context Construction
+  </script>
+  <script id="3544" type="application/vnd.observable.javascript">
+    viewof testContext = Inputs.button("test context", {
+      reduce: () => viewof contextRequest.send()
+    })
+  </script>
+  <script id="3549" type="application/vnd.observable.javascript" pinned="">
+    testContext
+  </script>
+  <script id="3532" type="application/vnd.observable.javascript">
+    viewof contextRequest = flowQueue()
+  </script>
+  <script id="3541" type="application/vnd.observable.javascript">
+    modules = {
+      contextRequest;
+      return moduleMap(runtime);
+    }
+  </script>
+  <script id="3565" type="application/vnd.observable.javascript" pinned="">
+    cells = Promise.all(
+      [...modules.entries()].map(async ([m, mInfo]) => ({
+        ...mInfo,
+        cells: await cellMap(m)
+      }))
+    )
+  </script>
+  <script id="3375" type="application/vnd.observable.javascript">
+    mutable context = []
+  </script>
+  <script id="951" type="application/vnd.observable.javascript">
+    context_updater = {
+      const context = [...unprompted_context, ...highlight_context];
+      if (!_.isEqual(mutable context, context)) {
+        mutable context = context;
+      }
+    }
+  </script>
+  <script id="3185" type="application/vnd.observable.javascript">
+    viewof extension_context_previous = Inputs.input([])
+  </script>
+  <script id="2615" type="application/vnd.observable.javascript">
+    unprompted_context = Object.entries(code)
+      .map(([name, c]) => c)
+      .filter((c) => !c.prompt)
+      .filter((c) => c.code && c.code !== "$0")
+      .sort((a, b) => a.time - b.time)
+      .flatMap((c) => [
+        {
+          role: "assistant",
+          content: `<cell>
+    <deps>${c.variables[0]._inputs.map((i) => i._name).join(", ")}</deps>
+    ${c.code}
+    </cell>
+    `
+        }
+      ])
+  </script>
+  <script id="2749" type="application/vnd.observable.javascript" pinned="">
+    highlight_context = Object.entries(code)
+      .flatMap(([k, cell]) =>
+        cell.variables[0]._value && cell.variables[0]._value.robocoop
+          ? [
+              {
+                cell: cell,
+                robocoop: cell.variables[0]._value.robocoop
+              }
+            ]
+          : []
+      )
+      .map(({ cell, robocoop }) =>
+        robocoop.type === "json"
+          ? {
+              role: "user",
+              content: `
+    The cell \`${cell.cell_name}\` defined as
+    ~~~json
+    ${cell.code}
+    ~~~
+    evaluated to
+    ~~~${robocoop.type}
+    ${robocoop.value}
+    ~~~
+    `
+            }
+          : {
+              role: "user",
+              content: [
+                {
+                  type: "text",
+                  text: `The cell \`${cell.cell_name}\` defined as
+    ~~~json
+    ${cell.code}
+    ~~~
+    is an image
+    `
+                },
+                {
+                  type: "image_url",
+                  image_url: {
+                    url: robocoop.value
+                  }
+                }
+              ]
+            }
+      )
+  </script>
+  <script id="2610" type="text/markdown">
+    ### Cell Analysis
+  </script>
+  <script id="839" type="application/vnd.observable.javascript">
+    code = mainVariables &&
+      Object.fromEntries(
+        await Promise.all(
+          [...(await cellMap(main, { excludeInbuilt: true })).entries()]
+            .filter(
+              ([name, variables]) =>
+                variables[0] !== undefined &&
+                !(typeof name == "string" && name.startsWith("@variable "))
+            )
+            .map(async ([name, variables]) => {
+              try {
+                return [
+                  name,
+                  {
+                    module: "main",
+                    code: await decompile(variables),
+                    variables
+                  }
+                ];
+              } catch (e) {
+                debugger;
+                throw e;
+              }
+            })
+        )
+      )
+  </script>
+  <script id="757" type="application/vnd.observable.javascript">
+    selected_variables = Object.fromEntries(
+      mainVariables
+        .filter((v) => !excludes.has(v) && v._type == 1)
+        .map((v) => [v._name || v._observer.id, v])
+    )
+  </script>
+  <script id="3433" type="application/vnd.observable.javascript" pinned="">
+    excludes = new Set([
+      ...descendants(await lookupVariable("mutable context", thisModule)),
+      ...descendants(await lookupVariable("viewof prompt", thisModule))
+    ])
+  </script>
+  <script id="3418" type="application/vnd.observable.javascript" pinned="">
+    mainVariables = [...allVariables].filter((v) => v._module === main)
+  </script>
+  <script id="3425" type="application/vnd.observable.javascript" pinned="">
+    viewof allVariables = variables(runtime)
+  </script>
+  <script id="3385" type="application/vnd.observable.javascript">
+    thisModule = [...allVariables].find((v) => v._value === tag)._module
+  </script>
+  <script id="3383" type="application/vnd.observable.javascript">
+    tag = Math.random()
+  </script>
+  <script id="162" type="application/vnd.observable.javascript" pinned="">
+    viewof history = Inputs.input([])
+  </script>
+  <script id="3344" type="text/markdown">
+    ---
+  </script>
+  <script id="3538" type="text/markdown">
+    ## LLM API Call
+  </script>
+  <script id="69" type="application/vnd.observable.javascript" pinned="">
+    viewof ask = flowQueue({ timeout_ms: 180000 })
+  </script>
+  <script id="2814" type="application/vnd.observable.javascript" pinned="">
+    console.log("Ask", ask)
+  </script>
+  <script id="2471" type="application/vnd.observable.javascript" pinned="">
+    prompt_messages = [
+      {
+        role: viewof settings.value.model.startsWith("o1") ? "user" : "system",
+        content: system_prompt
+      },
+      ...ask
+    ]
+  </script>
+  <script id="2473" type="application/vnd.observable.javascript" pinned="">
+    token_analytics = ({
+      prompt: prompt_messages,
+      prompt_tokens: prompt_messages.map(
+        (p) => (p.content || JSON.stringify(p.function_call)).length / 5
+      )
+    })
+  </script>
+  <script id="2478" type="application/vnd.observable.javascript" pinned="">
+    trimmed_prompt = {
+      console.log("token_analytics", token_analytics);
+      while (d3.sum(token_analytics.prompt_tokens) > settings.max_prompt_tokens) {
+        token_analytics.prompt.splice(1, 1);
+        token_analytics.prompt_tokens.splice(1, 1);
+      }
+      console.log("trimmed_prompt", token_analytics);
+      return token_analytics;
+    }
+  </script>
+  <script id="2695" type="application/vnd.observable.javascript" pinned="">
+    modelConfig = (model) => {
+      if (model.startsWith("claude"))
+        return {
+          model: model,
+          type: "chat",
+          api: "https://api.anthropic.com/v1/messages",
+          roles: ["user", "assistant"],
+          settings: {
+            temperature: 0.7,
+            max_tokens: viewof settings.value.max_prompt_tokens,
+            top_p: 1
+          },
+          headers: () => ({
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true"
+          })
+        };
+      else if (model.startsWith("dall-e")) {
+        return {
+          model: model,
+          type: "image",
+          api: "https://api.openai.com/v1/images/generations",
+          settings: {
+            n: 1,
+            size: "1024x1024",
+            quality: "standard"
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else if (
+        model == "o1-mini" ||
+        model == "o1-preview" ||
+        model == "o3-mini" ||
+        model.startsWith("o4")
+      ) {
+        return {
+          type: "chat",
+          api: "https://api.openai.com/v1/chat/completions",
+          roles: ["user", "assistant"],
+          settings: {
+            model: model,
+            temperature: 1,
+            max_completion_tokens: viewof settings.value.max_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+            // response_format: { type: "json_object" }
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else if (model == "o1") {
+        return {
+          api: "https://api.openai.com/v1/chat/completions",
+          type: "chat",
+          roles: ["user", "system", "assistant"],
+          settings: {
+            //functions: functions,
+            //function_call: { name: "upsert_cell" },
+            model: model,
+            temperature: 1,
+            max_completion_tokens: viewof settings.value.max_prompt_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else {
+        return {
+          api: "https://api.openai.com/v1/chat/completions",
+          type: "chat",
+          roles: ["user", "system", "assistant"],
+          settings: {
+            //functions: functions,
+            //function_call: { name: "upsert_cell" },
+            model: model,
+            temperature: viewof settings.value.temperature,
+            max_tokens: viewof settings.value.max_prompt_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      }
+    }
+  </script>
+  <script id="25" type="application/vnd.observable.javascript" pinned="">
+    openAiResponse = {
+      const body = {
+        //functions: functions,
+        // function_call: { name: "upsert_cell" },
+        messages: trimmed_prompt.prompt,
+        ...modelConfig(viewof settings.value.model).settings
+      };
+      const payload = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${OPENAI_API_KEY}`
+        },
+        body: JSON.stringify(body)
+      };
+      console.log("Sending", body);
+      const response = await fetch(api_endpoint, payload);
+
+      if (response.status !== 200)
+        throw new Error(`${response.status}: ${await response.text()}`);
+      const responseJson = response.json();
+      console.log("Received", await responseJson);
+      return responseJson;
+    }
+  </script>
+  <script id="129" type="application/vnd.observable.javascript" pinned="">
+    instruction = {
+      const message = openAiResponse.choices[0].message;
+      return {
+        cells: process(message.content),
+        prompt: ask[ask.length - 1].content,
+        action: "upsert_cells",
+        time: Date.now()
+      };
+    }
+  </script>
+  <script id="3520" type="application/vnd.observable.javascript">
+    domParser = new DOMParser()
+  </script>
+  <script id="3196" type="application/vnd.observable.javascript" pinned="">
+    content = process(openAiResponse.choices[0].message.content)
+  </script>
+  <script id="2726" type="application/vnd.observable.javascript" pinned="">
+    function process(content) {
+      const doc = domParser.parseFromString(
+        "<response>" + content + "</response>",
+        "text/xml"
+      );
+      const cells = [...doc.querySelectorAll("cell")];
+      debugger;
+      return cells.map((cell) => ({
+        inputs: cell
+          .querySelector("deps")
+          .textContent.split(",")
+          .map((s) => s.trim()),
+        code: content
+      }));
+    }
+  </script>
+  <script id="75" type="application/vnd.observable.javascript" pinned="">
+    api_call_response = viewof ask.resolve(instruction) && instruction
+  </script>
+  <script id="3342" type="text/markdown">
+    ---
+  </script>
+  <script id="3415" type="application/vnd.observable.javascript">
+    import {
+      runtime,
+      variables,
+      descendants,
+      lookupVariable,
+      main
+    } from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="3263" type="application/vnd.observable.javascript">
+    import {
+      decompile,
+      compile,
+      cellMap,
+      parser
+    } from "@tomlarkworthy/observablejs-toolchain"
+  </script>
+  <script id="2508" type="application/vnd.observable.javascript">
+    import { cellsToClipboard } from "@tomlarkworthy/cells-to-clipboard"
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    import { inspect } from "@observablehq/inspector"
+  </script>
+  <script id="1363" type="application/vnd.observable.javascript">
+    import { view, cautious, bindOneWay } from "@tomlarkworthy/view"
+  </script>
+  <script id="2459" type="application/vnd.observable.javascript">
+    // import { encode } from "@codingwithfire/gpt-3-encoder"
+  </script>
+  <script id="2552" type="application/vnd.observable.javascript">
+    import { whisperInput } from "@tomlarkworthy/whisper-input"
+  </script>
+  <script id="2678" type="application/vnd.observable.javascript">
+    import { highlight, example_image } from "@tomlarkworthy/highlight"
+  </script>
+  <script id="1432" type="application/vnd.observable.javascript">
+    dirty_json = import("https://cdn.skypack.dev/dirty-json@0.9.2?min")
+  </script>
+  <script id="3560" type="application/vnd.observable.javascript">
+    import { moduleMap, submit_summary } from "@tomlarkworthy/module-map"
+  </script>
+  <script id="2960" type="application/vnd.observable.javascript">
+    //import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="2963" type="application/vnd.observable.javascript">
+    //footer
+  </script>
+</notebook>

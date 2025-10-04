@@ -1,0 +1,169 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Animated Wormhole V2</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Animated Wormhole V2
+    Lorentzian Wormholes: _a throat joining two asymptotically flat regions_ [1]
+    ![](${await FileAttachment("image.png").url()})
+
+    ### References
+    [1] [_"On the Construction and Traversability of Lorentzian Wormholes"_](https://uu.diva-portal.org/smash/get/diva2:1333284/FULLTEXT01.pdf), Maximilian Svensson
+    `
+  </script>
+  <script id="922" type="application/vnd.observable.javascript">
+    md`# Displacement
+
+    Let one side be x = +1 and the other x = -1. The width of the throat be _w_. The contours of the wormhole are _u_. At u = 0 we are in the throat. When _u_ is _+ve_ infinity, _x_ is 1 and _r_ is infinity.
+    `
+  </script>
+  <script id="1238" type="application/vnd.observable.javascript">
+    md`## Contours of wormhole are _theta_ and _u_
+
+    Lets figure out equations describing 3d coordinate given _u_ and _theta_. Theta is simple, so lets concentrate on the profile bases on _u_ first.
+    `
+  </script>
+  <script id="1243" type="application/vnd.observable.javascript">
+    md`Step *u_steps* times from *-u_max* to *+u_max*:`
+  </script>
+  <script id="927" type="application/vnd.observable.javascript">
+    u_in = range(c.u_steps).map(x => u_step * x - c.u_max)
+  </script>
+  <script id="1221" type="application/vnd.observable.javascript">
+    u_step =  (c.u_max * 2.0) / (c.u_steps-1) 
+  </script>
+  <script id="1115" type="application/vnd.observable.javascript">
+    md`The radius should rapidly increases as we get further from u = 0
+
+    I can't figure out the equations in the Physics papers so I will just use two exponetials so away from zero the value is really high.
+    `
+  </script>
+  <script id="935" type="application/vnd.observable.javascript" pinned="">
+    r = u => Math.exp(u) + Math.exp(-u) + 1
+  </script>
+  <script id="963" type="application/vnd.observable.javascript">
+    svg`<svg width="300" height="300" viewBox="-10 -10 20 10">
+      ${u_in.map(u => svg`<circle cx=${u} cy=${-r(u * 0.4)} r="0.1" />`)}
+    `
+  </script>
+  <script id="1118" type="application/vnd.observable.javascript">
+    md`The x value should tend towards 1 or -1 as _u_ gets big. I used a neural network sigmoid function`
+  </script>
+  <script id="1074" type="application/vnd.observable.javascript" pinned="">
+    x = u => Math.exp(u) / (Math.exp(u) + 1)
+  </script>
+  <script id="1077" type="application/vnd.observable.javascript">
+    svg`<svg width="300" height="300" viewBox="-10 -1 20 1">
+      ${u_in.map(u => svg`<circle cx=${u} cy=${-x(u * 0.9)} r="0.1" />`)}
+    `
+  </script>
+  <script id="1366" type="application/vnd.observable.javascript">
+    md`# Parameterized an put it all together`
+  </script>
+  <script id="1307" type="application/vnd.observable.javascript">
+    c
+  </script>
+  <script id="841" type="application/vnd.observable.javascript">
+    viewof c = {
+      const names = ["th_steps", "u_max", "u_steps", "m_steps", "line_width", "v", "u", "rx", "ry", "rz", "s"];
+      return verticalSliders({
+        values: [8, 5.8, 20, 10, 0.001, 22, 0.5, 0.5, 0.31, 24, 3],
+        maxs: [100, 10, 50, 20, 1, 100, 1, 1, 1, 100, 10],
+        mins: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -10],
+        steps: [1, "any", 1, 1, "any", "any", "any", "any", "any", "any", "any"],
+        names,
+        labels: names
+      })
+    }
+  </script>
+  <script id="770" type="application/vnd.observable.javascript">
+    wormhole = wormholeFrame(c.s*now / 1000)
+  </script>
+  <script id="865" type="application/vnd.observable.javascript" pinned="">
+    // Wormhole theta, u to screen 3d coordinates
+    xyz = ([th, u]) => [
+      Math.sin(th * Math.PI * 2 / c.th_steps) * r(u),
+      Math.cos(th * Math.PI * 2 / c.th_steps) * r(u),
+      -x(u)
+    ];
+  </script>
+  <script id="1180" type="application/vnd.observable.javascript" pinned="">
+    // Orth projection to screen coordinates
+    view = ([x, y, z]) => [
+      x * c.rx,
+      y * c.ry + z * c.rz + c.rz
+    ]
+  </script>
+  <script id="1355" type="application/vnd.observable.javascript" pinned="">
+    loop = c.s*u_step * 2
+  </script>
+  <script id="764" type="application/vnd.observable.javascript">
+    wormholeFrame = {
+      return (t) => svg`<svg xmlns="http://www.w3.org/2000/svg"
+                             width="400"
+                             height="400"
+                             viewBox="${-c.v} ${-c.v} ${2*c.v} ${2*c.v}">
+        <style>
+          polygon {
+            stroke-width: ${c.line_width}px
+          }
+        </style>
+        <rect x=${-c.v} y=${-c.v} width=${2*c.v} height=${2*c.v} style="fill:black" />
+        ${cartesian(u_in, range(c.th_steps)).map(([u_base, th]) => {
+          if (e_eq(u_base, c.u_max)) return;
+          const u = u_base + -t % (2 * u_step);
+        debugger;
+          // The 4 corners
+          const s = view(xyz([th, u]))
+          const s_th = view(xyz([th + 1, u]))
+          const s_u_th  = view(xyz([th + 1, u + u_step]))
+          const s_u  = view(xyz([th, u + u_step]))
+          const u_i = u_in.indexOf(u_base)
+          // Now make a filled polygon using microsteps
+          return svg.fragment`
+            <polygon 
+                fill=${((u_i + th) % 2) ? d3.interpolateGreys(1 - Math.abs(u) / c.u_max) : "black"} stroke="red"
+                points="
+                  ${steps(th, th + 1,    c.m_steps).map(th_i => view(xyz([th_i  , u])).join())}
+                  ${steps(u, u + u_step, c.m_steps).map( u_i => view(xyz([th + 1, u_i])).join())}
+                  ${steps(th + 1, th,    c.m_steps).map(th_i => view(xyz([th_i, u + u_step])).join())}
+                  ${steps(u + u_step, u, c.m_steps).map( u_i => view(xyz([th, u_i])).join())}
+                "
+            />
+          `
+        })}
+      </svg>`
+    }
+  </script>
+  <script id="1149" type="application/vnd.observable.javascript">
+    cartesian(range(3), u_in)
+  </script>
+  <script id="1275" type="application/vnd.observable.javascript">
+    steps = (from, to, steps) => Array(steps).fill(0).map((_, i) => i * (to - from) / steps + from)
+  </script>
+  <script id="797" type="application/vnd.observable.javascript">
+    range = (n) => Array(n).fill(0).map((_, i) => i)
+  </script>
+  <script id="808" type="application/vnd.observable.javascript">
+    vrange = (array) => cartesian(...array.map(d => range(d)))
+  </script>
+  <script id="817" type="application/vnd.observable.javascript">
+    // https://stackoverflow.com/questions/12303989
+    cartesian =
+      (...a) => a.reduce((a, b) => a.flatMap(d => b.map(e => [d, e].flat())));
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    import {slider} from "@jashkenas/inputs"
+  </script>
+  <script id="1228" type="application/vnd.observable.javascript">
+    e_eq = (a, b) => a > b - 0.0001 && a < b + 0.0001 
+  </script>
+  <script id="755" type="application/vnd.observable.javascript">
+    import {svg} from '@observablehq/htl'
+  </script>
+  <script id="837" type="application/vnd.observable.javascript">
+    import {verticalSliders} from '@tomlarkworthy/vertical-sliders'
+  </script>
+  <script id="1340" type="application/vnd.observable.javascript" pinned="">
+    d3 = require("d3-scale-chromatic@1", "d3-interpolate@1")
+  </script>
+</notebook>

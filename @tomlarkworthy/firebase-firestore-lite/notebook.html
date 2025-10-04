@@ -1,0 +1,160 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Firebase Firestore Lite</title>
+  <script id="0" type="text/markdown">
+    # Firebase Firestore Lite
+  </script>
+  <script id="3" type="application/vnd.observable.javascript">
+    https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js = import('https://www.gstatic.com/firebasejs/9.9.2/firebase-firestore-lite.js')
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    Bytes = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['Bytes']
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    CollectionReference = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['CollectionReference']
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    DocumentReference = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['DocumentReference']
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    DocumentSnapshot = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['DocumentSnapshot']
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    FieldPath = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['FieldPath']
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    FieldValue = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['FieldValue']
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    Firestore = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['Firestore']
+  </script>
+  <script id="11" type="application/vnd.observable.javascript">
+    FirestoreError = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['FirestoreError']
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    GeoPoint = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['GeoPoint']
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    Query = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['Query']
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    QueryConstraint = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['QueryConstraint']
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    QueryDocumentSnapshot = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['QueryDocumentSnapshot']
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    QuerySnapshot = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['QuerySnapshot']
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    Timestamp = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['Timestamp']
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    Transaction = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['Transaction']
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    WriteBatch = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['WriteBatch']
+  </script>
+  <script id="20" type="application/vnd.observable.javascript">
+    addDoc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['addDoc']
+  </script>
+  <script id="21" type="application/vnd.observable.javascript">
+    arrayRemove = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['arrayRemove']
+  </script>
+  <script id="22" type="application/vnd.observable.javascript">
+    arrayUnion = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['arrayUnion']
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    collection = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['collection']
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    collectionGroup = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['collectionGroup']
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    connectFirestoreEmulator = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['connectFirestoreEmulator']
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    deleteDoc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['deleteDoc']
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    deleteField = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['deleteField']
+  </script>
+  <script id="28" type="application/vnd.observable.javascript">
+    doc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['doc']
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    documentId = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['documentId']
+  </script>
+  <script id="30" type="application/vnd.observable.javascript">
+    endAt = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['endAt']
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    endBefore = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['endBefore']
+  </script>
+  <script id="32" type="application/vnd.observable.javascript">
+    getDoc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['getDoc']
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    getDocs = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['getDocs']
+  </script>
+  <script id="34" type="application/vnd.observable.javascript">
+    getFirestore = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['getFirestore']
+  </script>
+  <script id="35" type="application/vnd.observable.javascript">
+    increment = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['increment']
+  </script>
+  <script id="36" type="application/vnd.observable.javascript">
+    initializeFirestore = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['initializeFirestore']
+  </script>
+  <script id="37" type="application/vnd.observable.javascript">
+    limit = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['limit']
+  </script>
+  <script id="38" type="application/vnd.observable.javascript">
+    limitToLast = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['limitToLast']
+  </script>
+  <script id="39" type="application/vnd.observable.javascript">
+    orderBy = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['orderBy']
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    query = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['query']
+  </script>
+  <script id="41" type="application/vnd.observable.javascript">
+    queryEqual = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['queryEqual']
+  </script>
+  <script id="42" type="application/vnd.observable.javascript">
+    refEqual = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['refEqual']
+  </script>
+  <script id="43" type="application/vnd.observable.javascript">
+    runTransaction = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['runTransaction']
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    serverTimestamp = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['serverTimestamp']
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    setDoc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['setDoc']
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    setLogLevel = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['setLogLevel']
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    snapshotEqual = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['snapshotEqual']
+  </script>
+  <script id="48" type="application/vnd.observable.javascript">
+    startAfter = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['startAfter']
+  </script>
+  <script id="49" type="application/vnd.observable.javascript">
+    startAt = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['startAt']
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    terminate = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['terminate']
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    updateDoc = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['updateDoc']
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    where = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['where']
+  </script>
+  <script id="53" type="application/vnd.observable.javascript">
+    writeBatch = https___www_gstatic_com_firebasejs_9_9_2_firebase_firestore_lite_js['writeBatch']
+  </script>
+</notebook>

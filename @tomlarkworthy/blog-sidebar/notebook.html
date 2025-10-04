@@ -1,0 +1,83 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Side bar</title>
+  <script id="242" type="application/vnd.observable.javascript">
+    md`# Side bar`
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    sidebar = {
+      function menuitem(options) {
+        return html`<li><a href=${options.href}>
+                        <span class="icon"><i class="fa ${options.icon}"></i></span>
+                        ${options.content || options.href}`;
+      }
+      return html`<aside class="column is-3 is-narrow-mobile is-fullheight section is-hidden-mobile sidebar">
+          <div class="column is-2" style=${{ position: "fixed" }}>
+            <figure class="image is-128x126">
+              <img class="is-rounded" src=${await FileAttachment(
+                "tom_larkworthy.jpeg"
+              ).url()}>
+            </figure>
+            <p>
+              Hacker in Berlin
+            </p>
+            <ul class="menu-list">
+              ${menuitem({
+                href: "https://observablehq.com/@tomlarkworthy",
+                icon: "fa-dot-circle",
+                content: "Observable"
+              })}
+              ${menuitem({
+                href: "https://twitter.com/tomlarkworthy",
+                icon: "fa-twitter",
+                content: "Twitter"
+              })}
+              ${menuitem({
+                href: "https://www.linkedin.com/in/tom-larkworthy-74a3263/",
+                icon: "fa-linkedin",
+                content: "Linkedin"
+              })}
+              ${menuitem({
+                href: "/rss.xml",
+                icon: "fa-rss-square",
+                content: "RSS"
+              })}
+            </ul>
+          </div>
+      </aside>`;
+    }
+  </script>
+  <script id="366" type="application/vnd.observable.javascript">
+    viewof offset = slider({
+      min: 0,
+      max: 1000,
+      value: 380,
+      description: "Adjsut height of sidebar container"
+    })
+  </script>
+  <script id="196" type="application/vnd.observable.javascript">
+    // import {style} with {preamble as premable} from '@tomlarkworthy/custom-bulma'
+    header = html`
+    ${bulmaWithIcons}
+    <script src="https://kit.fontawesome.com/aeb44cf583.js" crossorigin="anonymous"><\/script>
+    `
+  </script>
+  <script id="334" type="application/vnd.observable.javascript">
+    // This is to help editing the side bar, but is not for the html on the page
+    {
+      sidebar
+      const sidebarElement = document.getElementsByClassName("sidebar")[0]
+      sidebarElement.parentElement.style.height = `${offset}px`;
+      return "cellHeightAdjsuter"
+    } 
+  </script>
+  <script id="191" type="application/vnd.observable.javascript">
+    import {bulmaWithIcons} from '@tomlarkworthy/bulma'
+  </script>
+  <script id="311" type="application/vnd.observable.javascript">
+    import {svg, html} from '@observablehq/htl'
+  </script>
+  <script id="369" type="application/vnd.observable.javascript">
+    import {slider} from "@jashkenas/inputs"
+  </script>
+</notebook>

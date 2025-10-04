@@ -1,0 +1,63 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Native inputs</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Native inputs`
+  </script>
+  <script id="4" type="application/vnd.observable.javascript" pinned="">
+    Range = options => {
+      const ui = html`<input type="range">`;
+      Object.keys(options || {}).forEach(option => {
+        ui[option] = options[option];
+      });
+      return ui;
+    }
+  </script>
+  <script id="13" type="application/vnd.observable.javascript" pinned="">
+    viewof range = {
+      let that = Range({
+        onclick: evt => (that.value = Math.random() * 100),
+        value: 10
+      });
+      return that;
+    }
+  </script>
+  <script id="26" type="application/vnd.observable.javascript" pinned="">
+    Div = options => {
+      const ui = html`<div>`;
+      Object.keys(options || {}).forEach(option => {
+        ui[option] = options[option];
+      });
+      return ui;
+    }
+  </script>
+  <script id="45" type="application/vnd.observable.javascript" pinned="">
+    Button = options => {
+      const ui = html`<button>`;
+      Object.keys(options || {}).forEach(option => {
+        ui[option] = options[option];
+      });
+      return ui;
+    }
+  </script>
+  <script id="56" type="application/vnd.observable.javascript" pinned="">
+    Param = options => {
+      const ui = html`<param>`;
+      Object.keys(options || {}).forEach(option => {
+        ui[option] = options[option];
+      });
+      return ui;
+    }
+  </script>
+  <script id="48" type="application/vnd.observable.javascript" pinned="">
+    viewof test = Selec({
+      value: "foo"
+    })
+  </script>
+  <script id="51" type="application/vnd.observable.javascript" pinned="">
+    test
+  </script>
+  <script id="53" type="application/vnd.observable.javascript" pinned="">
+    (viewof test.value = "yo")
+  </script>
+</notebook>

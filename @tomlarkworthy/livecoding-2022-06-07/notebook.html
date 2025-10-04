@@ -1,0 +1,189 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Building a SMART FARM EP01: Firebase storage backend</title>
+  <script id="0" type="text/markdown">
+    # Building a SMART FARM EP01: Firebase storage backend
+
+
+    *Tom: Well that went better than expected! We got the storage backend and a live dashboard programmed. And @gabrielcoch gave us a fascinating peek into industrialised production of flowers in Colombia.*
+
+    Recording of the Livestream below:
+  </script>
+  <script id="20" type="text/html">
+    <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/rkI7bEBRdLw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </script>
+  <script id="25" type="text/markdown">
+    ## Agropatterns
+    - Helping farmers optimize their processes.
+    - Predict time-to-market better (e.g. Valetine's day).
+  </script>
+  <script id="31" type="text/markdown">
+    ## Existing architecture for Agropatterns
+    - React
+    - Meteor
+    - Sensors
+    - Too many technologies
+
+    ## Hoping Observable/Webcode.run
+    - consolidate stack
+
+
+  </script>
+  <script id="41" type="text/markdown">
+    ## Aim for prototype
+    - #1 needs to work offline or through WhatsApp (works over cellular, not wifi)
+        should respond to queries about where infestations are
+    - People gather data through a mobile
+        - record data from each flow bed, manual data collection
+        - Slider input, and click to next flower bed
+        - 2 mins per bed
+    - Also data gathered
+        - automated temperature and humidity
+        - Internet-of-things - Blues wireless "notecard"
+        -    cellular connection too!
+    - Countermeasures (e.g. for pests)
+        - Farmers chemicals (also affected by temperature)
+
+    - Difficult optimization problems!!!!
+        - find best action for Farm on given day!
+
+    - Insights
+        - Flowers thrive under certain temperatures, and take certain speed to mature
+        - Hot temperatures can slow maturation (e.g. green houses)
+
+  </script>
+  <script id="51" type="text/markdown">
+    ## Aims for this episode
+
+    - Centralize storage into a notebook
+    - Let's use Firebase ([helpers here](https://observablehq.com/@tomlarkworthy/firebase)) for now for storage (there will be open source alternative soon! https://observablehq.com/@tomlarkworthy/redis-backend-1)
+    - Later will will need to aggregate
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+      apiKey: "AIzaSyA9OQ--0Sn8Gm6C1B4M-SbnxRMtKHgnHzs",
+      authDomain: "agropatterns-iot.firebaseapp.com",
+      databaseURL: "https://agropatterns-iot-default-rtdb.firebaseio.com",
+      projectId: "agropatterns-iot",
+      appId: "1:650132950601:web:115b1ba65750d2b0aaf998",
+      uiConfig: {
+        // https://github.com/firebase/firebaseui-web#configuration
+        signInOptions: ["anonymous"]
+      }
+    })
+  </script>
+  <script id="85" type="text/markdown">
+    ## Database
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    import {
+      firebase,
+      viewof user,
+      listen
+    } with { firebaseConfig as firebaseConfig } from "@tomlarkworthy/firebase"
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    db = firebase.database()
+  </script>
+  <script id="81" type="text/markdown">
+    ## Login
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    viewof user
+  </script>
+  <script id="246" type="application/vnd.observable.javascript" pinned="">
+
+  </script>
+  <script id="197" type="text/markdown">
+    TOM: since the live stream I added Database rules so that only logged in users can write data
+  </script>
+  <script id="176" type="text/markdown">
+    ## Dashboard
+  </script>
+  <script id="164" type="application/vnd.observable.javascript" pinned="">
+    Plot.plot({
+      marks: [
+        Plot.lineY(liveView, { x: (d) => new Date(d.time), y: (d) => d.temp }),
+        Plot.ruleY([0])
+      ]
+    })
+  </script>
+  <script id="101" type="text/markdown">
+    ### writing sensor data
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    viewof sensorName = Inputs.text({
+      value: "defaultSensorName",
+      label: "name"
+    })
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    viewof sensorTemperature = Inputs.range([-10, 50], {
+      label: "temperature (C)",
+      step: 0.1
+    })
+  </script>
+  <script id="116" type="application/vnd.observable.javascript" pinned="">
+    Inputs.button("upload data", {
+      reduce: () => {
+        uploadSensor();
+      }
+    })
+  </script>
+  <script id="122" type="application/vnd.observable.javascript" pinned="">
+    function uploadSensor() {
+      const time = Date.now();
+      db.ref(`current/sensors/${sensorName}`).set({
+        location: "-76.5 4.7",
+        time,
+        temp: sensorTemperature,
+        battery: 0.5
+      });
+      db.ref(`history/sensors/${sensorName}/${time}`).set({
+        location: "-76.5 4.7",
+        time,
+        temp: sensorTemperature,
+        battery: 0.5
+      });
+    }
+  </script>
+  <script id="133" type="text/markdown">
+    ## Reading data
+  </script>
+  <script id="140" type="application/vnd.observable.javascript">
+    viewof querySensorName = Inputs.text({
+      value: "defaultSensorName",
+      label: "sensor to query"
+    })
+  </script>
+  <script id="135" type="text/markdown">
+    ### static query
+  </script>
+  <script id="137" type="application/vnd.observable.javascript" pinned="">
+    result = (
+      await db.ref(`history/sensors/${querySensorName}`).once("value")
+    ).toJSON()
+  </script>
+  <script id="157" type="text/markdown">
+    ### streaming query (realtime updates)
+  </script>
+  <script id="159" type="application/vnd.observable.javascript" pinned="">
+    liveViewRaw = Generators.observe((notify) => {
+      db.ref(`history/sensors/${querySensorName}`)
+        .limitToLast(6) // reduce data returned
+        .on("value", (snapshot) => {
+          const data = snapshot.val();
+          notify(data);
+        });
+    })
+  </script>
+  <script id="166" type="application/vnd.observable.javascript" pinned="">
+    liveView = Object.entries(liveViewRaw).map(([k, v]) => v)
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer"
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

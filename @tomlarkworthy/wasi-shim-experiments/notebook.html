@@ -1,0 +1,168 @@
+<!doctype html>
+<notebook theme="air">
+  <title>WASI browser_wasi_shim experiments</title>
+  <script id="0" type="text/markdown">
+    # WASI [browser_wasi_shim](https://github.com/bjorn3/browser_wasi_shim) experiments
+
+
+    This notebook executes a C program in a WASI environment and half prints some of the text to xterm.js
+
+    It does not really work properly, we don't have much of stdin working. I was following the example from `browser_wasi_shim` but it does not implement stdin either.
+
+    That said, container2wasm has a fuller example, but in a webworker. 
+
+    https://github.com/ktock/container2wasm/blob/d05d6977df7a0d51dbc807a893f1854db8960c75/examples/wasi-browser/htdocs/worker.js#L169
+
+    The point of this notebook is to see if we can get WASI working in Observable. I learnt: yes we can, but we need a fuller implementation of WASI than the example in browser_wasi_shim, and container2wasm demonstrates this is also possible.
+  </script>
+  <script id="43" type="text/markdown">
+    ## A simple C program that uses stdout and stdin
+
+    ```c
+    #include <stdio.h>  
+    int main() {  
+      char name[50];  
+        int age;  
+        int favoriteNumber;  
+      printf("Enter your name: \n");  
+      scanf("%s", name);  
+      printf("Enter your age: \n");  
+      scanf("%d", &age);  
+      printf("Enter your favorite number: \n");  
+      scanf("%d", &favoriteNumber);  
+      printf("Name: %s\n", name);  
+      printf("Age: %d\n", age);  
+      printf("Favorite Number: %d\n", favoriteNumber);  
+      return 0;  
+    }  
+    ```
+
+    compile it using a docker image of the WASI SDK
+
+    ```
+    docker run -v `pwd`:/src -it -w /src ghcr.io/webassembly/wasi-sdk clang-17 --sysroot=/wasi-sysroot/ --target=wasm32-wasi simple.c -o simple.wasm
+    ```
+
+    should produce a binary you can check it works with `wasmtime` or `wasmer`. Mine is 47k
+
+    ```
+    wasmtime simple.wasm
+    wasmer simple.wasm  
+    ```
+
+
+  </script>
+  <script id="57" type="application/vnd.observable.javascript" pinned="">
+    simple_wasm = FileAttachment("simple.wasm")
+  </script>
+  <script id="71" type="text/markdown">
+    ## Xterm
+
+    Xtrem.js is used to host our program io
+  </script>
+  <script id="119" type="application/vnd.observable.javascript" pinned="">
+    xterm = (await import("https://cdn.skypack.dev/xterm@4.18.0?min")).default
+      .Terminal
+  </script>
+  <script id="77" type="application/vnd.observable.javascript">
+    import {
+      Terminal,
+      terminalContainer,
+      xtermCSS
+    } with { xterm as xterm } from "@asg017/hello-xterm-js"
+  </script>
+  <script id="74" type="application/vnd.observable.javascript" pinned="">
+    terminalContainer
+  </script>
+  <script id="92" type="application/vnd.observable.javascript" pinned="">
+    xtermCSS
+  </script>
+  <script id="90" type="application/vnd.observable.javascript" pinned="">
+    term = Terminal
+  </script>
+  <script id="20" type="text/markdown">
+    ## WASI shim
+  </script>
+  <script id="22" type="application/vnd.observable.javascript" pinned="">
+    wasiShim = import(
+      "https://cdn.jsdelivr.net/npm/@bjorn3/browser_wasi_shim@0.2.17/+esm"
+    )
+  </script>
+  <script id="65" type="text/markdown">
+    ## Xtermio
+
+    We extends wasiShim.Fd to pipe fd_write to our terminal. Note this is only 1 of about 20 methods that need to be implemented.
+
+    see https://github.com/bjorn3/browser_wasi_shim/blob/main/examples/rustc.html
+  </script>
+  <script id="68" type="application/vnd.observable.javascript" pinned="">
+    class XtermStdio extends wasiShim.Fd {
+      /*:: term: Terminal*/
+
+      constructor(term /*: Terminal*/) {
+        super();
+        this.term = term;
+        this.file_pos = 0;
+      }
+      fd_write(
+        view8 /*: Uint8Array*/,
+        iovs /*: [wasi.Iovec]*/
+      ) /*: {ret: number, nwritten: number}*/ {
+        let nwritten = 0;
+        for (let iovec of iovs) {
+          console.log(
+            iovec.buf_len,
+            iovec.buf_len,
+            view8.slice(iovec.buf, iovec.buf + iovec.buf_len)
+          );
+          let buffer = view8.slice(iovec.buf, iovec.buf + iovec.buf_len);
+          this.term.writeln(buffer);
+          nwritten += iovec.buf_len;
+        }
+        return { ret: 0, nwritten };
+      }
+      /*
+      fd_read(
+        view8, // Uint8Array
+        iovs // Array<wasi.Iovec>
+      ) {
+        debugger;
+        let nread = 0;
+        for (const iovec of iovs) {
+          if (this.file_pos < this.file.data.byteLength) {
+            const slice = this.file.data.slice(
+              Number(this.file_pos),
+              Number(this.file_pos + BigInt(iovec.buf_len))
+            );
+            view8.set(slice, iovec.buf);
+            this.file_pos += BigInt(slice.length);
+            nread += slice.length;
+          } else {
+            break;
+          }
+        }
+        return { ret: 0, nread };
+      }*/
+    }
+  </script>
+  <script id="147" type="text/markdown">
+    ## Run WASI
+  </script>
+  <script id="29" type="application/vnd.observable.javascript" pinned="">
+    {
+      let args = ["bin", "arg1", "arg2"];
+      let env = ["FOO=bar"];
+      let fds = [
+        new XtermStdio(term), // stdin
+        new XtermStdio(term), // stdout
+        new XtermStdio(term) // stderr
+      ];
+      let wasi = new wasiShim.WASI(args, env, fds);
+      let wasm = await WebAssembly.compileStreaming(fetch(await simple_wasm.url()));
+      let inst = await WebAssembly.instantiate(wasm, {
+        wasi_snapshot_preview1: wasi.wasiImport
+      });
+      wasi.start(inst);
+    }
+  </script>
+</notebook>

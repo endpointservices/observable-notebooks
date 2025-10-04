@@ -1,0 +1,204 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Simple ChatGPT/Claude Prompt</title>
+  <script id="0" type="text/markdown">
+    # Simple ChatGPT/Claude Prompt
+  </script>
+  <script id="369" type="text/markdown">
+    <details>
+      <summary>About your key privacy</summary>
+      ${md`This notebook stores your keys in localstorage so it's there when you refresh the page. Other than that the only time it is accessed is when making an AI call.
+
+      This notebook is hosted by [observablehq.com](https://observablehq.com/). They do not inspect the internal state of notebook. See their [security policy](https://observablehq.com/@observablehq/security-and-data-access-demo).`}
+
+      => Your key is never disclosed to any party other than the vendor
+    </details>
+  </script>
+  <script id="136" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY = Inputs.bind(
+      Inputs.password({
+        label: "OPENAI_API_KEY",
+        placeholder: "paste openAI key here"
+      }),
+      localStorageView("OPENAI_API_KEY")
+    )
+  </script>
+  <script id="716" type="application/vnd.observable.javascript">
+    viewof ANTHROPIC_API_KEY = Inputs.bind(
+      Inputs.password({
+        label: "ANTHROPIC_API_KEY",
+        placeholder: "paste Anthropic key here"
+      }),
+      localStorageView("ANTHROPIC_API_KEY")
+    )
+  </script>
+  <script id="344" type="application/vnd.observable.javascript">
+    viewof model = Inputs.bind(
+      Inputs.select(
+        [
+          "gpt-3.5-turbo",
+          "gpt-3.5-turbo-0301",
+          "gpt-3.5-turbo-0613",
+          "gpt-3.5-turbo-16k",
+          "gpt-3.5-turbo-16k-0613",
+          "gpt-3.5-turbo-instruct",
+          "gpt-3.5-turbo-instruct-0914",
+          "gpt-4",
+          "gpt-4-0314",
+          "gpt-4-0613",
+          "gpt-4-32k-0613",
+          "gpt-4-32k",
+          "gpt-4-1106-preview",
+          "gpt-4-turbo",
+          "gpt-4o",
+          "gpt-4o-mini",
+          "claude-3-opus-20240229",
+          "claude-3-sonnet-20240229",
+          "claude-3-haiku-20240307",
+          "dall-e-3",
+          "gpt-5",
+          "gpt-5-mini"
+        ].sort(),
+        {
+          label: "model"
+        }
+      ),
+      localStorageView("SIMPLE_MODEL")
+    )
+  </script>
+  <script id="706" type="application/vnd.observable.javascript">
+    viewof max_tokens = Inputs.range([0, 20000], {
+      label: "max_tokens",
+      value: 20000
+    })
+  </script>
+  <script id="450" type="text/markdown">
+    Enter your prompt here
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    viewof input = {
+      return Inputs.textarea({
+        placeholder: "write your prompt here",
+        rows: 100,
+        submit: true
+      });
+    }
+  </script>
+  <script id="262" type="application/vnd.observable.javascript">
+    Inputs.textarea({
+      value: aiChatResponse && aiChatResponse.choices[0].message.content,
+      rows: 100,
+      disabled: true
+    })
+  </script>
+  <script id="725" type="application/vnd.observable.javascript">
+    modelConfig = (model) => {
+      if (model.startsWith("claude"))
+        return {
+          type: "chat",
+          api: "https://api.anthropic.com/v1/messages",
+          roles: ["user", "assistant"],
+          settings: {
+            temperature: 1,
+            max_tokens,
+            top_p: 1
+          },
+          headers: () => ({
+            "x-api-key": ANTHROPIC_API_KEY,
+            "anthropic-version": "2023-06-01",
+            "anthropic-dangerous-direct-browser-access": "true"
+          })
+        };
+      else if (model.startsWith("dall-e")) {
+        return {
+          type: "image",
+          api: "https://api.openai.com/v1/images/generations",
+          settings: {
+            n: 1,
+            size: "1024x1024",
+            quality: "standard"
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else {
+        return {
+          api: "https://api.openai.com/v1/chat/completions",
+          type: "chat",
+          roles: ["user", "system", "assistant"],
+          settings: {
+            temperature: 1,
+            ...(model.startsWith("gpt-5")
+              ? { max_completion_tokens: max_tokens }
+              : { max_tokens: max_tokens }),
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      }
+    }
+  </script>
+  <script id="417" type="text/markdown">
+    ### Open AI
+  </script>
+  <script id="736" type="application/vnd.observable.javascript" pinned="">
+    config = modelConfig(model)
+  </script>
+  <script id="122" type="application/vnd.observable.javascript" pinned="">
+    aiChatResponse = {
+      const config = modelConfig(model);
+      if (config.type !== "chat") return this;
+      const response = await fetch(config.api, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...config.headers()
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            {
+              role: "system" in config.roles ? "system" : "user",
+              content: input
+            }
+          ],
+          ...config.settings
+        })
+      });
+
+      if (response.status !== 200)
+        throw new Error(`${response.status}: ${await response.text()}`);
+      return normalizeChatResponse(response.json());
+    }
+  </script>
+  <script id="771" type="application/vnd.observable.javascript" pinned="">
+    normalizeChatResponse = (response) => {
+      if (response.content) {
+        response.choices = response.content.map((content) => ({
+          message: {
+            role: response.role,
+            content: content.text
+          }
+        }));
+      }
+      return response;
+    }
+  </script>
+  <script id="463" type="text/markdown">
+    ### Misc
+  </script>
+  <script id="161" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="526" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="676" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

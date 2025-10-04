@@ -1,0 +1,252 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Building a SMART FARM EP02: Blues Wireless Integration</title>
+  <script id="0" type="text/markdown">
+    # Building a SMART FARM EP02: Blues Wireless Integration
+
+  </script>
+  <script id="365" type="text/markdown">
+    In this stream we setup a webhook for streaming sensor data from [Blues Wireless](https://blues.io/) into our storage backend. We heavily utilised [WEBCode](https://webcode.run)'s ability to stream production traffic into the notebook, and [Observablehq](https://observablehq.com)'s hot-code reload, to develop the code incrementally, based on real data.
+  </script>
+  <script id="343" type="text/html">
+    <iframe width="${Math.min(width, 640)}" height="350" src="https://www.youtube.com/embed/5KxloAcMeSE" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  </script>
+  <script id="643" type="text/markdown">
+    Video places of interest
+    - start of tech demo: (https://youtu.be/5KxloAcMeSE?t=854)
+  </script>
+  <script id="435" type="text/markdown">
+    ## Bugfixes since Stream
+
+    The endpoint was not storing data when not live tunnelled, this was because the Firebase *set* commands were executed asynchronously (I forgot to *await*). After making them await they threw an error. The error was "permission denied", which is because we require logged in users to write, and the server did not have permission. The fix was to add a *signAnonymously* call before firebase set 
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+    import { upcoming } from "@endpointservices/meetups";
+  </script>
+  <script id="246" type="text/markdown">
+    ## LiveStream Tarot
+    <a target="_blank" href="https://thetarot.online/-N4Xx6RDQegejTqFIwcj"><img 
+    width=${Math.min(width, 640)}                                                                         src="https://storage.googleapis.com/download/storage/v1/b/larkworthy-dfb11.appspot.com/o/@tomlarkworthy%2Ftarot-backend%2Fimages%2F-N4Xx6RDQegejTqFIwcj?generation=1655222599459640&alt=media">
+    </img></a>
+  </script>
+  <script id="25" type="text/markdown">
+    ## Agropatterns
+    - Helping farmers optimize their processes.
+    - Predict time-to-market better (e.g. Valetine's day).
+  </script>
+  <script id="51" type="text/markdown">
+    ## Previously
+
+    - [Last time](https://observablehq.com/@tomlarkworthy/livecoding-2022-06-07) we setup a Firebase database for writing sensor data into
+    - Also we used Firebase to make a realtime query and streamed into a Plot
+  </script>
+  <script id="404" type="text/markdown">
+    ## Aims
+    - Ingest data from Blues Wireless' [notehub.io](https://notehub.io/) and put into database
+    - visualize, see target graph below
+
+    ${await FileAttachment("image.png").image({style: `width: ${Math.min(width, 640)}px`})}
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+      apiKey: "AIzaSyA9OQ--0Sn8Gm6C1B4M-SbnxRMtKHgnHzs",
+      authDomain: "agropatterns-iot.firebaseapp.com",
+      databaseURL: "https://agropatterns-iot-default-rtdb.firebaseio.com",
+      projectId: "agropatterns-iot",
+      appId: "1:650132950601:web:115b1ba65750d2b0aaf998",
+      uiConfig: {
+        // https://github.com/firebase/firebaseui-web#configuration
+        signInOptions: ["anonymous"]
+      }
+    })
+  </script>
+  <script id="85" type="text/markdown">
+    ## Database
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    import {
+      firebase,
+      viewof user,
+      listen
+    } with { firebaseConfig as firebaseConfig } from "@tomlarkworthy/firebase"
+  </script>
+  <script id="87" type="application/vnd.observable.javascript">
+    db = firebase.database()
+  </script>
+  <script id="176" type="text/markdown">
+    ## Realtime Temperature Dashboard 
+  </script>
+  <script id="636" type="application/vnd.observable.javascript">
+    sensor8393 = FileAttachment("sensor8393.png").image({width: 640})
+  </script>
+  <script id="682" type="application/vnd.observable.javascript" pinned="">
+    querySensorName
+  </script>
+  <script id="140" type="application/vnd.observable.javascript">
+    viewof querySensorName = Inputs.select(Object.keys(latest), {
+      label: "Choose sensor to chart",
+      ...(this?.value && { value: this.value }) // Fix to make it remember across cell reevaluations
+    })
+  </script>
+  <script id="164" type="application/vnd.observable.javascript">
+    Plot.plot({
+      x: { type: "time" },
+      y: { domain: [0, 40], label: "Temperature" },
+      color: {
+        domain: [0, 40],
+        scheme: "turbo"
+      },
+      marks: [
+        Plot.rect([{}], { fill: "#F4BFA6", y1: 25, y2: 40 }),
+        Plot.rect([{}], { fill: "#A7D3A6", y1: 5, y2: 25 }),
+        Plot.rect([{}], { fill: "#A4B5E3", y1: 0, y2: 5 }),
+        Plot.ruleY([20], { stroke: "#0003", strokeDasharray: [5] }),
+        Plot.lineY(
+          liveView.filter((d) => d?.body?.temperature), // Fix for unfiltering data serverside
+          {
+            stroke: "#0003",
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature
+          }
+        ),
+        Plot.dot(
+          liveView.filter((d) => d?.body?.temperature), // Fix for unfiltering data serverside
+          {
+            r: 5,
+            x: (d) => new Date(d.when * 1000),
+            y: (d) => d.body.temperature,
+            fill: (d) => d.body.temperature
+          }
+        )
+      ]
+    })
+  </script>
+  <script id="576" type="text/markdown">
+    *tom: I updated graphics after the show, I am not confident enough doing plot live yet!!*
+  </script>
+  <script id="157" type="text/markdown">
+    ### streaming query (realtime updates)
+  </script>
+  <script id="159" type="application/vnd.observable.javascript">
+    liveViewRaw = Generators.observe((notify) => {
+      db.ref(`history/sensors/${querySensorName}`)
+        .orderByKey()
+        .startAt(Math.floor(Date.now() / 1000 - 60 * 60 * 24) + "") // reduce data returned
+        .on("value", (snapshot) => {
+          const data = snapshot.val();
+          if (data) notify(data);
+        });
+    })
+  </script>
+  <script id="665" type="application/vnd.observable.javascript" pinned="">
+    liveViewRaw
+  </script>
+  <script id="662" type="application/vnd.observable.javascript" pinned="">
+    Math.floor(Date.now() / 1000 - 60 * 60 * 24)
+  </script>
+  <script id="166" type="application/vnd.observable.javascript">
+    liveView = Object.entries(liveViewRaw).map(([k, v]) => v)
+  </script>
+  <script id="372" type="application/vnd.observable.javascript">
+    latest = Generators.observe((notify) => {
+      db.ref(`current/sensors`).on("value", (snapshot) => {
+        const data = snapshot.val();
+        // clear synthetic data from EP01 testings
+        delete data["sensor2"];
+        delete data["defaultSensorName"];
+        delete data["defaultSensorName3"];
+         delete data["dev:864475046457429"];
+        notify(data);
+      });
+    })
+  </script>
+  <script id="249" type="text/markdown">
+    ## Sensor Ingestion
+  </script>
+  <script id="251" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="254" type="application/vnd.observable.javascript">
+    endpoint("blues_ingestion", async (request, response, context) => {
+      return response.status(404).send("disabled");
+
+      console.log(request);
+      try {
+        const outcome = await viewof event.send({
+          request,
+          response,
+          context
+        });
+        response.send(outcome);
+      } catch (err) {
+        return response.status(err.code || 500).send(err.message);
+      }
+    })
+  </script>
+  <script id="261" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="286" type="application/vnd.observable.javascript" pinned="">
+    viewof event
+  </script>
+  <script id="283" type="application/vnd.observable.javascript" pinned="">
+    viewof event = flowQueue({
+      timeout_ms: 10000
+    })
+  </script>
+  <script id="289" type="application/vnd.observable.javascript" pinned="">
+    event
+  </script>
+  <script id="302" type="application/vnd.observable.javascript" pinned="">
+    check_auth = {
+      if (
+        event.request.headers["authorization"] !==
+        `Bearer ${event.context.secrets["AGROPATTERNS"]}`
+      ) {
+        const error = new Error("not authorized");
+        error.code = 403;
+        viewof event.reject(error);
+        return invalidation;
+      } else {
+        return "OK";
+      }
+    }
+  </script>
+  <script id="312" type="application/vnd.observable.javascript" pinned="">
+    sensor = JSON.parse(event.request.body)
+  </script>
+  <script id="300" type="application/vnd.observable.javascript" pinned="">
+    uploadToFirebase = {
+      check_auth;
+      try {
+        await firebase.auth().signInAnonymously(); // Bugfix, server needs to login, could also  be done using service account in a secret
+        await db.ref(`current/sensors/${sensor.device}`).set(sensor);
+        await db.ref(`history/sensors/${sensor.device}/${sensor.when}`).set(sensor);
+      } catch (err) {
+        viewof event.reject(err);
+        return invalidation;
+      }
+      return "saved";
+    }
+  </script>
+  <script id="291" type="application/vnd.observable.javascript" pinned="">
+    finishProcessing = {
+      viewof event.respond(uploadToFirebase);
+    }
+  </script>
+  <script id="585" type="text/markdown">
+    ## Next Episode
+  </script>
+  <script id="616" type="application/vnd.observable.javascript">
+    upcoming
+  </script>
+  <script id="453" type="text/markdown">
+    ## Dependancies
+  </script>
+  <script id="206" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer"
+  </script>
+  <script id="227" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

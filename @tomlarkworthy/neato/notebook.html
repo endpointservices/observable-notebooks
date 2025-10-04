@@ -1,0 +1,69 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Hello, Viz.js (with a binding to neato)</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Hello, Viz.js (with a binding to neato)
+
+    See [@mbostock/graphviz](/@mbostock/graphviz) for a convenient wrapper. This version uses a web worker, loads Viz.js directly, and loads the “full” renderer rather than the “lite” one.`
+  </script>
+  <script id="9" type="application/vnd.observable.javascript" pinned="">
+    dot`digraph { a -> b }`
+  </script>
+  <script id="136" type="application/vnd.observable.javascript" pinned="">
+    dot`graph G {
+        B [label="Hello World" pos="0,1!"]
+        A [label=<Hello<I>World</I>>, color=red  pos="0,2!"]
+    }`
+  </script>
+  <script id="154" type="application/vnd.observable.javascript" pinned="">
+    neato`graph G {
+        B [label="Hello World" pos="0,1!"]
+        A [label=<Hello<I>World</I>>, color=red  pos="0,2!"]
+    }`
+  </script>
+  <script id="142" type="application/vnd.observable.javascript" pinned="">
+    viz = {
+      const Viz = await require("viz.js@2");
+
+      return require
+        .resolve("viz.js@2/full.render.js")
+        .then(url => fetch(url))
+        .then(response => response.blob())
+        .then(blob => URL.createObjectURL(blob))
+        .then(url => new Worker(url))
+        .then(worker => new Viz({ worker }));
+    }
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    function dot(strings) {
+      let string = strings[0] + "",
+        i = 0,
+        n = arguments.length;
+      while (++i < n) string += arguments[i] + "" + strings[i];
+      const svg = document.createElement("span");
+
+      viz.renderSVGElement(string, { engine: 'dot' }).then(node => {
+        svg.appendChild(node);
+      });
+      svg.style.maxWidth = "100%";
+      svg.style.height = "auto";
+      return svg;
+    }
+  </script>
+  <script id="146" type="application/vnd.observable.javascript" pinned="">
+    function neato(strings) {
+      let string = strings[0] + "",
+        i = 0,
+        n = arguments.length;
+      while (++i < n) string += arguments[i] + "" + strings[i];
+      const svg = document.createElement("span");
+
+      viz.renderSVGElement(string, { engine: 'neato' }).then(node => {
+        svg.appendChild(node);
+      });
+      svg.style.maxWidth = "100%";
+      svg.style.height = "auto";
+      return svg;
+    }
+  </script>
+</notebook>

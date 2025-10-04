@@ -1,0 +1,226 @@
+<!doctype html>
+<notebook theme="air">
+  <title>The Reddit Research Assistant</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    html`<div class="content">
+    <h1>The Reddit Research Assistant</h1>
+    `
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    html`Nothing happens until you <a href="https://www.reddit.com/api/v1/authorize?client_id=${reddit_config.OAUTH_CLIENT_ID}&response_type=${reddit_config.OAUTH_RESPONSE_TYPE}&state=${reddit_config.OAUTH_STATE}&redirect_uri=${reddit_config.OAUTH_REDIRECT_URI}&duration=${reddit_config.OAUTH_DURATION}&scope=${reddit_config.OAUTH_SCOPE_STRING}">authorize this with reddit</a>`
+  </script>
+  <script id="346" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2> Project </h2>
+    <p> The project is the key to store data. Keep it a secret! Use a gibberish one preferably.
+    </div>`
+  </script>
+  <script id="249" type="application/vnd.observable.javascript">
+    viewof project =  html`<input placeholder="enter secret project code" type="text" value="demo">`
+  </script>
+  <script id="350" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2> Question </h2>
+    <p> What are is the question we are researching? E.g. Whats the best VR goggles?
+    </div>`
+  </script>
+  <script id="314" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2> Factors </h2>
+    <p> Factors are dimentions of relevance when evaluating a research question.
+
+    </div>`
+  </script>
+  <script id="281" type="application/vnd.observable.javascript">
+    JSON.stringify(factors)
+  </script>
+  <script id="363" type="application/vnd.observable.javascript">
+    {
+      const table = html`<center>
+      <table class="table">
+      <thead>
+        <tr>
+          ${factorDimensions.map(dim => html.fragment`
+          <th>
+          ${dim.title}
+          </th>
+          `)}
+        </tr>
+      </thead>
+      <tbody>
+        ${factors.map(row => html.fragment`
+        <tr>
+          ${factorDimensions.map(dim => html.fragment`
+          <th>
+            ${row[dim.key]}
+          </th>
+          `)}
+        </tr>
+        `)}  
+      </tbody>
+      </table>
+      </center>`
+
+      return table;
+    }
+  </script>
+  <script id="372" type="application/vnd.observable.javascript" pinned="">
+    factorDimensions = [
+      {
+        key: "name",
+        title: "name"
+      }
+    ]
+  </script>
+  <script id="271" type="application/vnd.observable.javascript">
+    viewof factors = new DocsView(db.collection("RedditRA").doc(project).collection('factors'))
+  </script>
+  <script id="324" type="application/vnd.observable.javascript">
+    html`<div class="content"><h2> Options </h2>
+    <p> What are possible answers to the research question?
+    </div>`
+  </script>
+  <script id="337" type="application/vnd.observable.javascript">
+    JSON.stringify(options)
+  </script>
+  <script id="334" type="application/vnd.observable.javascript">
+    viewof options = new DocsView(db.collection("RedditRA").doc(project).collection('options'))
+  </script>
+  <script id="274" type="application/vnd.observable.javascript">
+    db = firebase.firestore()
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    searchResults = (await client.get("/r/programming/search.json", {
+      q: "lisp",
+      restrict_sr: true,
+      sort: "relevance",
+      t: "all"
+    })).json() 
+  </script>
+  <script id="231" type="application/vnd.observable.javascript">
+    mutable selectedThread = null
+  </script>
+  <script id="166" type="application/vnd.observable.javascript">
+    {
+      function rowclick(row, evt) {
+        mutable selectedThread = row.data
+      }
+      return html`<table class="table">
+      <thead>
+        <tr>
+          <th>
+           subreddit
+          </th>
+          <th>
+            title
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+      ${searchResults.data.children.map(row => html.fragment`
+        <tr onclick=${rowclick.bind(null, row)}
+            class = "${row.data === selectedThread ? "is-selected" : null}"
+            >
+          <td>
+           ${row.data.subreddit}
+          </td>
+          <td>
+            ${row.data.title}
+          </td>
+          <td>
+            read/not read?
+          </td>
+          <td>
+            <button>maybe relevant (Y)</button>
+            <button>definately not relevant (N)</button>
+            <button>not sure (S)</button>
+          </td>
+        </tr>
+      `)}
+      </tbody>
+      </table>`
+    }
+  </script>
+  <script id="141" type="application/vnd.observable.javascript">
+    client = {
+      const qs = (params) => Object.keys(params)
+        .map(key => `${key}=${params[key]}`)
+        .join('&') + "&raw_json=1";
+
+      return {
+        get: async (url, params) => {
+          return fetch(`https://oauth.reddit.com${url}?${qs(params)}`, {
+            headers: {
+              'Content-Type':'application/json',
+              'Authorization': "Bearer " + credentials.access_token,
+              'User-agent': reddit_config.user_agent
+            }
+          })
+        }
+      }
+    }
+  </script>
+  <script id="132" type="application/vnd.observable.javascript">
+    oauth_code = new Promise((resolve) => {
+      const code = new URLSearchParams(document.location.search).get("code")
+      if (code) resolve(code)
+    });
+  </script>
+  <script id="48" type="application/vnd.observable.javascript">
+    code_exchanger = deploy("code_exchanger", async (req, res, ctx) => {
+      res.header("Access-Control-Allow-Origin", "*"); 
+      res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+      const client_secret = ctx.secrets["tomlarkworthy_reddit_RA_client_secret"];
+      const response = await(await fetch("https://www.reddit.com/api/v1/access_token", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Authorization': "Basic " + btoa(`${reddit_config.OAUTH_CLIENT_ID}:${client_secret}`),
+          'User-agent': reddit_config.user_agent
+        },
+        body: `grant_type=authorization_code&code=${req.query.code}&redirect_uri=${reddit_config.OAUTH_REDIRECT_URI}`
+      })).json();
+      res.json(response)
+    }, {
+      cell: "code_exchanger",
+      secrets: ["tomlarkworthy_reddit_RA_client_secret"]
+    })
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    credentials = (await(fetch(`${code_exchanger.href}?code=${oauth_code}`))).json() 
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    reddit_config = ({
+      OAUTH_CLIENT_ID: "Ma8Ks3R0Wp3dbQ",
+      OAUTH_SCOPE_STRING: "read",
+      OAUTH_REDIRECT_URI: "https://observablehq.com/@tomlarkworthy/reddit-research-assistant",
+      OAUTH_RESPONSE_TYPE: "code",
+      OAUTH_DURATION: "temporary",
+      OAUTH_STATE: Math.random() + "",
+      user_agent: "observablehq.com/@tomlarkworthy/reddit-research-assistant"
+    })
+  </script>
+  <script id="259" type="application/vnd.observable.javascript">
+    firebaseConfig = ({
+        apiKey: "AIzaSyCYR2arNJImk-XpDfvO9LhBdIjZ7y-6cks",
+        authDomain: "nell-37275.firebaseapp.com",
+        databaseURL: "https://nell-37275.firebaseio.com",
+        projectId: "nell-37275",
+        storageBucket: "nell-37275.appspot.com",
+        messagingSenderId: "343593749912",
+        appId: "1:343593749912:web:b6553ef83e5dde38486fed"
+    });
+  </script>
+  <script id="218" type="application/vnd.observable.javascript">
+    bulma
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverside-cells'
+  </script>
+  <script id="262" type="application/vnd.observable.javascript">
+    import {firebase, DocsView, DocView} with {firebaseConfig as firebaseConfig} from '@tomlarkworthy/firebaseui'
+  </script>
+  <script id="196" type="application/vnd.observable.javascript">
+    import {reconcile, html} from '@tomlarkworthy/reconcile-nanomorph'
+  </script>
+  <script id="216" type="application/vnd.observable.javascript">
+    import {bulma} from '@tomlarkworthy/bulma'
+  </script>
+</notebook>

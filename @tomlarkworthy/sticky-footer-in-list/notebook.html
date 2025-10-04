@@ -1,0 +1,28 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Sticky footer in list</title>
+  <script id="0" type="text/markdown">
+    # Sticky footer in list
+  </script>
+  <script id="5" type="text/html" pinned="">
+
+    <ul style="background: yellow;">
+      <div class="footer"><b>my footer</b> is cool</div>
+      <li>one</li>
+      <li>two</li>
+    </ul>
+  </script>
+  <script id="15" type="text/html" pinned="">
+    <style>
+    .footer {
+      position: absolute;
+      bottom: 0px;
+    }
+
+    li:last-child {
+      padding-bottom: 50px
+    }
+
+    </style>
+  </script>
+</notebook>

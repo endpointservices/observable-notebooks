@@ -1,0 +1,68 @@
+<!doctype html>
+<notebook theme="air">
+  <title>serveFunction</title>
+  <script id="0" type="text/markdown">
+    # *serveFunction*
+
+    WEBCode offers a lot of control over HTTP handling, but often the expressivity is overkill and just complicates. If you wish to just expose computation over the internet, serveFunction greatly simplifies the experience, whilst still retaining instant deploys, remote debugging and secrets
+
+    To import:
+    ~~~js
+    import {serveFunction} from '@endpointservices/servefunction'
+    ~~~
+
+    To create a new endpoint:
+    ~~~js
+    viewof remoteFunction = serveFunction((x) => {
+      return x * x;
+    })
+    ~~~
+
+    To call the endpoint:
+    ~~~js
+    await remoteFunction(...)
+    ~~~
+  </script>
+  <script id="35" type="application/vnd.observable.javascript" pinned="">
+    viewof square = serveFunction((x) => {
+      return x * x;
+    })
+  </script>
+  <script id="38" type="application/vnd.observable.javascript" pinned="">
+    square(12)
+  </script>
+  <script id="11" type="application/vnd.observable.javascript" pinned="">
+    serveFunction = (fn, { name = "default" } = {}) => {
+      const server = endpoint(name || "default", async (req, res) => {
+        const args = req.query.args ? JSON.parse(req.query.args) : [];
+        const response = await fn(...args);
+        if (!response) res.status(204).end();
+        else res.json(response);
+      });
+
+      const client = htl.html`<span>${server}`;
+      client.value = async (...args) => {
+        const response = await fetch(
+          server.href + "?args=" + encodeURIComponent(JSON.stringify(args))
+        );
+        if (response.status === 200) {
+          return response.json();
+        } else if (response.status === 204) {
+          return undefined;
+        } else {
+          throw new Error(`Status: ${response.status}, ${await response.text()}`);
+        }
+      };
+      return client;
+    }
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    import { endpoint } from "@endpointservices/webcode"
+  </script>
+  <script id="177" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="180" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

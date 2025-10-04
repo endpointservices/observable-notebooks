@@ -1,0 +1,228 @@
+<!doctype html>
+<notebook theme="air">
+  <title>How to password protect a Notebook secret</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# How to password protect a Notebook secret
+
+    I sometimes wish to hide a secret in a public notebook, for example, a [service account to run billable cloud commands](https://observablehq.com/@endpointservices/cache-bigquery). This notebook provides functionality to generate a password-protected encrypted payload, which is safe to save in a public notebook.
+
+    ~~~js
+    import {encrypt} from '@endpointservices/notebook-secret'
+    ~~~
+
+    Also provided is a _decrypt_ UI control, which can read an encrypted payload and prompt the user for a password. If the correct password is provided the value resolves to the original secret. 
+
+    ~~~js
+    import {decrypt} from '@endpointservices/notebook-secret'
+    ~~~
+
+    This is allows the notebook author to run some privileged commands that other viewers cannot. If you want regular viewers also to be able to run privileged operations, consider using [serverless secrets](https://observablehq.com/@endpointservices/how-to-keep-an-api-key-secret-in-a-public-notebook) where the secret is never exposed to a client browser.
+
+    If you want to encode a secret for programatic use, use decode instead
+
+    ~~~js
+    import {decode} from '@endpointservices/notebook-secret'
+    ~~~
+    `
+  </script>
+  <script id="351" type="application/vnd.observable.javascript">
+    md`## Step 1, generate an encrypted payload
+
+    Configure the password and the secret
+    `
+  </script>
+  <script id="101" type="application/vnd.observable.javascript">
+    viewof pass = html`${Text({"label":"Password"})}`
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof secret = Textarea({label: "Secret", rows: 6})
+  </script>
+  <script id="400" type="application/vnd.observable.javascript">
+    md`This generates a encrypted payload which is safe to put in a public place`
+  </script>
+  <script id="476" type="application/vnd.observable.javascript" pinned="">
+    encrypt = async ({
+      secret, password
+    } = {}) => {
+      const salt = window.crypto.getRandomValues(new Uint8Array(12));
+      const key = await deriveKey(password, salt);
+      const name = "AES-GCM";
+      const iv = window.crypto.getRandomValues(new Uint8Array(12));
+      const ciphertext = await window.crypto.subtle.encrypt(
+        {
+          name, iv
+        },
+        key,
+        enc.encode(secret)
+      );
+      return {
+        name,
+        salt: encode64(salt),
+        iv: encode64(iv),
+        ciphertext: encode64(ciphertext)
+      };
+    }
+  </script>
+  <script id="208" type="application/vnd.observable.javascript">
+    encryptedSecret = encrypt({
+      password: pass,
+      secret
+    })
+  </script>
+  <script id="404" type="application/vnd.observable.javascript">
+    md`You will probably need to pass this to the _decrypt_ function so you can click the following button to copy it to the clipboard`
+  </script>
+  <script id="324" type="application/vnd.observable.javascript">
+    toClipboard = {
+      const msg = html`Copy encrypted payload`;
+
+      function click() {
+        button.innerHTML = "copied!"
+        pbcopy(JSON.stringify(encryptedSecret, null, 2));
+        setTimeout(
+          () => button.innerHTML = msg.outerHTML,
+          1000
+        )
+      }
+      const ui = html`<div>
+        <button class="copy" onclick=${click}>${msg}</button>
+      </div>`
+      let button = ui.querySelector(".copy")
+
+      return ui;
+    }
+  </script>
+  <script id="97" type="application/vnd.observable.javascript">
+    md`## Step 2, create a _decrypt_ control
+
+    The _decrypt_ UI control takes an encrypted payload as an argument, and prompts the reader for a password. Only when the password is correct, the control can resolve a value which is the decrypted secret.
+
+    ~~~js
+    viewof decryptedSecret = decrypt(<encrypted payload>)
+    ~~~
+    `
+  </script>
+  <script id="381" type="application/vnd.observable.javascript">
+    md`In the following example the password is "12345"`
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    viewof decryptedSecret = decrypt({
+      "name": "AES-GCM",
+      "salt": "R6IPpW0u06A+sObp",
+      "iv": "8Qo+fJwwOUBz+UuU",
+      "ciphertext": "D2Hw1RK41fNnYL3MEbJVSdjkQJK2BfjV4hYwavJqdjsbFl5G8QJQUANHri1hE2eLvADXrkFp8tRt7Yk="
+    })
+  </script>
+  <script id="279" type="application/vnd.observable.javascript">
+    html`<a href=${decryptedSecret}>${decryptedSecret}</a>`
+  </script>
+  <script id="76" type="application/vnd.observable.javascript">
+    md`### Implementation Notes
+
+    We use "PBKDF2" to derive a high quality key from a low quality one like a user password.
+
+    We use "AES-GCM" to encrypt the secret payload, which is a notable for being an [authenticated encryption](https://en.wikipedia.org/wiki/Authenticated_encryption) algorithm that is available in the browser.
+
+    `
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    function decrypt(encryptedSecret) {
+      function input(evt) {
+          evt.stopPropagation()
+      }
+
+      async function keypress(evt) {
+        if (evt.keyCode === 13) {
+          let decoded = new Promise(() => {})
+          try {
+            decoded = await decode(password.value, encryptedSecret)
+            feedback.innerHTML = "";
+          } catch (err) {
+            console.error(err)
+            feedback.innerHTML = "Please try again"
+          }
+          password.value = ""
+          ui.value = decoded;
+          ui.dispatchEvent(new Event('input'));
+        }
+      }
+
+      let ui = html`<div>
+        <div class="feedback"></div>
+        <input class="password"
+               type="password"
+               placeholder="Enter your password"
+               oninput=${input}
+               onkeypress=${keypress} />
+      </div>`
+
+      let feedback = ui.querySelector(".feedback");
+      let password = ui.querySelector(".password");
+
+      ui.value = undefined
+      return ui;
+    }
+  </script>
+  <script id="451" type="application/vnd.observable.javascript" pinned="">
+    async function decode(password, encryptedSecret) {
+      if (typeof encryptedSecret === 'string') encryptedSecret = JSON.parse(encryptedSecret)
+      const key = await deriveKey(password, decode64(encryptedSecret.salt));
+      const secret = await window.crypto.subtle.decrypt(
+        {
+          name: encryptedSecret.name,
+          iv: decode64(encryptedSecret.iv)
+        },
+        key,
+        decode64(encryptedSecret.ciphertext)
+      );
+      return new TextDecoder().decode(secret)
+    }
+  </script>
+  <script id="260" type="application/vnd.observable.javascript">
+    deriveKey = async (password, salt) => {
+      const material = await window.crypto.subtle.importKey(
+          "raw", 
+          enc.encode(password), 
+          {name: "PBKDF2"}, 
+          false, 
+          ["deriveBits", "deriveKey"]
+        );
+      return await window.crypto.subtle.deriveKey(
+          {
+            "name": "PBKDF2",
+            salt: salt, 
+            "iterations": 100000,
+            "hash": "SHA-256"
+          },
+          material,
+          { "name": "AES-GCM", "length": 256},
+          true,
+          [ "encrypt", "decrypt" ]
+        );
+    }
+  </script>
+  <script id="217" type="application/vnd.observable.javascript">
+    enc = new TextEncoder()
+  </script>
+  <script id="250" type="application/vnd.observable.javascript">
+    encode64 = (buffer) => btoa(String.fromCharCode(...new Uint8Array(buffer)));
+  </script>
+  <script id="253" type="application/vnd.observable.javascript">
+    decode64 = (b64) => Uint8Array.from(atob(b64), c => c.charCodeAt(0))
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    import {html} from '@observablehq/htl'
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    import {Textarea, Text} from "@observablehq/inputs"
+  </script>
+  <script id="325" type="application/vnd.observable.javascript">
+    import {pbcopy} from "@mbostock/pbcopy"
+  </script>
+  <script id="497" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="501" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

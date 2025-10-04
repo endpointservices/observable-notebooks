@@ -1,0 +1,70 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Firebase playground</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Firebase playground
+
+    `
+  </script>
+  <script id="562" type="application/vnd.observable.javascript">
+    md`### Change these please`
+  </script>
+  <script id="769" type="application/vnd.observable.javascript" pinned="">
+    viewof size = Range([5, 45], {
+      label: "Size",
+      step: 0.1
+    })
+  </script>
+  <script id="1168" type="application/vnd.observable.javascript" pinned="">
+    remoteSize = listen(firestore.doc("sync/size"))
+  </script>
+  <script id="1171" type="application/vnd.observable.javascript" pinned="">
+    {
+      viewof size.value = remoteSize.value; // Always sync remote to the control
+    }
+  </script>
+  <script id="1138" type="application/vnd.observable.javascript" pinned="">
+    // evt.isTrusted can tell whether an event is from a human interaction or not
+    manualSize = Generators.observe(next => {
+      viewof size.addEventListener('input', evt => {
+        if (evt.isTrusted) next(evt.target.value);
+      });
+    })
+  </script>
+  <script id="1159" type="application/vnd.observable.javascript" pinned="">
+    firestore.doc("sync/size").set({
+      value: manualSize // Only update on people changes
+    })
+  </script>
+  <script id="454" type="application/vnd.observable.javascript" pinned="">
+    firebaseConfig = ({
+      apiKey: "AIzaSyBN4bxw6d0cM0CGPNzRrkRlBqwFQnPLdN4",
+      authDomain: "larkworthy-dfb11.firebaseapp.com",
+      databaseURL:
+        "https://larkworthy-dfb11-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "larkworthy-dfb11",
+      storageBucket: "larkworthy-dfb11.appspot.com",
+      appId: "1:786910701676:web:8d7dd002acf3b78c74d049"
+    })
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    md`### Libraries`
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    d3 = require("d3@5.9.2")
+  </script>
+  <script id="724" type="application/vnd.observable.javascript" pinned="">
+    import { firebase, listen, DocView } with {
+      firebaseConfig
+    } from '@tomlarkworthy/firebase'
+  </script>
+  <script id="734" type="application/vnd.observable.javascript" pinned="">
+    firestore = firebase.firestore()
+  </script>
+  <script id="764" type="application/vnd.observable.javascript">
+    import { Range, bind } from "@observablehq/inputs"
+  </script>
+  <script id="230" type="application/vnd.observable.javascript">
+    import { color } from "@jashkenas/inputs"
+  </script>
+</notebook>

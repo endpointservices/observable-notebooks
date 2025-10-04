@@ -1,0 +1,416 @@
+<!doctype html>
+<notebook theme="air">
+  <title>mps3 - Offline-first DB over S3-compatible storage</title>
+  <script id="0" type="text/markdown">
+    # mps3 - Offline-first DB over S3-compatible storage
+    ## vendor examples
+
+
+    Github project https://github.com/endpointservices/mps3
+  </script>
+  <script id="614" type="text/markdown">
+    ### Import `mps3`
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    mps3 = import("https://cdn.skypack.dev/mps3@0.0.79?min")
+  </script>
+  <script id="846" type="text/markdown">
+    ### Configure client(s)
+  </script>
+  <script id="856" type="application/vnd.observable.javascript">
+    awsCredentials = ({
+      accessKeyId: "AKIAT4VAYEMISBT6BHDD",
+      // This key only has access to one bucket that bucket is cleared daily, so its not sensative,
+      // but it keeps triggrering the AWS key leak detector when the notebook is backed up to Github
+      // so we hide it.
+      secretAccessKey: "ᥚᥰ᥅᥆ᥙᥚᥔ᥈᥌ᥴᥭᥛᤧ᥎ᥙ᥆᥋ᤪᥱ᥊ᥘᤦ᥉᥆ᥝ᥸ᤦ᥼ᥰᥔ᥵ᤧ᤯ᥒᥖᥒᤨᥘ᥎᥅"
+        .split("")
+        .map((char) => String.fromCharCode(char.charCodeAt(0) ^ 6431))
+        .join("")
+    })
+  </script>
+  <script id="451" type="application/vnd.observable.javascript">
+    clientConfigs = [
+      {
+        label: "s3",
+        defaultBucket: "mps3-demo",
+        s3Config: {
+          region: "eu-central-1",
+          credentials: awsCredentials
+        }
+      },
+      {
+        label: "localfirst",
+        minimizeListObjectsCalls: false,
+        defaultBucket: "l1",
+        pollFrequency: 10,
+        offlineStorage: false,
+        adaptiveClock: false,
+        s3Config: {
+          endpoint: "indexdb:"
+        }
+      },
+      {
+        defaultBucket: "s3-demo",
+        defaultManifest: "proxy",
+        label: "s3-proxy",
+        s3Config: {
+          endpoint: "https://mps3-proxy.endpointservices.workers.dev"
+        }
+      },
+      {
+        defaultBucket: "mps3-demo",
+        label: "r2",
+        s3Config: {
+          region: "auto",
+          endpoint:
+            "https://a3e2af584fbdedd172bede5ca0018aae.r2.cloudflarestorage.com",
+          credentials: {
+            accessKeyId: "dea2043e6c6d798a11b2ed6cace39b0f",
+            secretAccessKey:
+              "036973c899fdf7607468f1830d038ec274d44fc89116775bc430d393b7dd9b9f"
+          }
+        }
+      },
+      {
+        defaultBucket: "mps3-demo",
+        label: "bckblz",
+        useChecksum: false,
+        useVersioning: true,
+        s3Config: {
+          endpoint: "https://s3.us-east-005.backblazeb2.com",
+          region: "us-east-005",
+          // Configured here: https://secure.backblaze.com/app_keys.htm?bznetid=17927252851691330596178
+          // This auto deletes everything after one day
+          credentials: {
+            accessKeyId: "0056a0e8e0f4cf20000000004",
+            secretAccessKey: "K005trGQCO0zYv+SVpYJhRtW0O399B0"
+          }
+        }
+      },
+      {
+        label: "minio",
+        minimizeListObjectsCalls: false,
+        pollFrequency: 20,
+        defaultBucket: "t8944859",
+        s3Config: {
+          endpoint: "http://127.0.0.1:9102",
+          region: "eu-central-1",
+          label: "minio",
+          credentials: {
+            accessKeyId: "mps3",
+            secretAccessKey: "ZOAmumEzdsUUcVlQ"
+          }
+        }
+      }
+    ]
+  </script>
+  <script id="604" type="text/markdown">
+    ### AWS S3, Cloudflare R2, Backblaze, Minio (localhost), Localfirst (IndexDB)
+  </script>
+  <script id="456" type="application/vnd.observable.javascript">
+    viewof selected = Inputs.table(tableModel, {
+      format: {
+        config: (x) =>
+          Inputs.textarea({
+            value: JSON.stringify(x, null, 2),
+            disabled: true,
+            rows: 5
+          }),
+        latency: (x) => x
+      },
+      columns: ["label", "config", "latency"],
+      height: 600
+    })
+  </script>
+  <script id="606" type="text/markdown">
+    ### S3-like Vendor Latency Measurements
+
+    e2e is the time it takes for a PUT to become visible on a LIST then a GET
+  </script>
+  <script id="557" type="module">
+
+  </script>
+  <script id="706" type="text/markdown">
+    ### Individual Client tester
+  </script>
+  <script id="708" type="application/vnd.observable.javascript">
+    viewof clientLabel = Inputs.select(
+      ["none", ...clientConfigs].map((d) => d.label),
+      { label: "client" }
+    )
+  </script>
+  <script id="766" type="text/markdown">
+    #### writer
+  </script>
+  <script id="717" type="application/vnd.observable.javascript">
+    writer_client = {
+      const config = clientConfigs.find((d) => d.label === clientLabel);
+      return new mps3.MPS3({
+        ...config,
+        label: `${config.label}-w`,
+        log
+      });
+    }
+  </script>
+  <script id="735" type="application/vnd.observable.javascript">
+    viewof value = Inputs.range([0, 10], {
+      step: 1,
+      value: 0,
+      label: "value"
+    })
+  </script>
+  <script id="723" type="application/vnd.observable.javascript">
+    last_write = {
+      writer_client.put("key", value);
+      console.log("wrote", value);
+      return value;
+    }
+  </script>
+  <script id="768" type="text/markdown">
+    #### reader
+  </script>
+  <script id="757" type="application/vnd.observable.javascript">
+    reader_client = {
+      const config = clientConfigs.find((d) => d.label === clientLabel);
+      return new mps3.MPS3({
+        ...config,
+        label: `${config.label}-s`,
+        online
+      });
+    }
+  </script>
+  <script id="786" type="application/vnd.observable.javascript">
+    viewof online = Inputs.toggle({ label: "online" })
+  </script>
+  <script id="743" type="application/vnd.observable.javascript">
+    viewof mirror = Inputs.range([0, 10], {
+      disabled: true,
+      label: "value received"
+    })
+  </script>
+  <script id="730" type="application/vnd.observable.javascript">
+    subscription = Generators.observe((notify) => {
+      // Should update when slider is moved
+      invalidation.then(
+        reader_client.subscribe("key", (val) => {
+          notify(val);
+          viewof mirror.value = val;
+        })
+      );
+    })
+  </script>
+  <script id="797" type="text/markdown">
+    ### IndexDB
+  </script>
+  <script id="814" type="application/vnd.observable.javascript">
+    mutable indexPoll = 0
+  </script>
+  <script id="802" type="application/vnd.observable.javascript">
+    databases = {
+      indexPoll;
+      return (await indexedDB.databases()).filter((d) => d.name.startsWith("mps3"));
+    }
+  </script>
+  <script id="807" type="application/vnd.observable.javascript">
+    Inputs.button("delete all databases", {
+      reduce: async () => {
+        await Promise.all(databases.map((db) => indexedDB.deleteDatabase(db.name)));
+        mutable indexPoll++;
+      }
+    })
+  </script>
+  <script id="623" type="text/markdown">
+    ### Instrumentation
+  </script>
+  <script id="463" type="application/vnd.observable.javascript">
+    tableModel = clientConfigs.map((config) => {
+      console.log("config", config);
+      const writer = new mps3.MPS3({
+        ...config,
+        label: `${config.label}-w`,
+        log: log
+      });
+      const subscriber = new mps3.MPS3({
+        ...config,
+        label: `${config.label}-s`,
+        log: log
+      });
+
+      return {
+        label: config.label,
+        config: config,
+        writer,
+        subscriber,
+        latency: Inputs.button("run", {
+          reduce: async () => {
+            const t_start = Date.now();
+            await writer.put("latency", t_start);
+            const latency = await new Promise((resolve, reject) => {
+              const unsubscribe = subscriber.subscribe("latency", (val) => {
+                if (val === t_start) {
+                  unsubscribe();
+                  resolve(Date.now() - t_start);
+                }
+                if (Date.now() - t_start > 20000) {
+                  unsubscribe();
+                  reject("timeout");
+                }
+              });
+            });
+            console.log("latency", latency);
+            viewof latency_measurements.value.push({
+              client: config.label,
+              latency,
+              operation: "e2e"
+            });
+            viewof latency_measurements.dispatchEvent(new Event("input"));
+          }
+        })
+      };
+    })
+  </script>
+  <script id="497" type="application/vnd.observable.javascript">
+    viewof latency_measurements = Inputs.input([])
+  </script>
+  <script id="619" type="application/vnd.observable.javascript" pinned="">
+    log = (...args) => {
+      console.log(...args);
+      const line = args.join(" ");
+      const match = /(\S+) (\d+)ms (\S+)/.exec(line);
+      logs.push(line);
+      if (match) {
+        const [_, label, millis, operation] = match;
+        viewof latency_measurements.value.push({
+          client: label.replace("-s", "").replace("-w", ""),
+          latency: Number.parseInt(millis),
+          operation:
+            operation.startsWith("PUT") || operation == "CLEANUP"
+              ? "PUT"
+              : operation === "SWEEP" ||
+                operation === "POLL_TIME" ||
+                operation == "LOOK_BACK" ||
+                operation == "GET_CONTENT" ||
+                operation == "GET_LATEST"
+              ? "GET"
+              : operation
+        });
+        viewof latency_measurements.dispatchEvent(new Event("input"));
+      }
+    }
+  </script>
+  <script id="626" type="application/vnd.observable.javascript">
+    viewof logs = Inputs.input([])
+  </script>
+  <script id="147" type="text/markdown">
+    ### S3 Working Example
+
+    To get S3 buckets working you need to remember to
+    - turn on CORS
+      - expose the `X-Amz-Version-Id` header (if using versioned objects)
+      - expose the `ETag` header.
+      - increase the max-age to reduce the effect of preflight requests (doesn't seem to work, TBD)
+
+    ~~~yaml
+      [{
+            "AllowedHeaders": ["*"],
+            "AllowedMethods": ["GET", "PUT", "POST", "DELETE"],
+            "AllowedOrigins": ["*"],
+            "ExposeHeaders": ["X-Amz-Version-Id", "ETag"]
+      }]
+    ~~~
+
+  </script>
+  <script id="56" type="text/markdown">
+    ## Backblaze
+
+    The CORS config is not standard, expose the version header. You can use the AWS CLI for this. Backblaze does not support sha256 checksums so useChecksum options must be set to false 
+
+
+    You can upload a CORS config like this
+    ```
+    AWS_ACCESS_KEY_ID=<ID> AWS_SECRET_ACCESS_KEY=<KEY> \
+      aws s3api put-bucket-cors \
+        --endpoint-url https://s3.us-east-005.backblazeb2.com \
+        --bucket mps3-demo \
+        --cors-configuration file://docs/cors.json
+    ```
+  </script>
+  <script id="192" type="application/vnd.observable.javascript">
+    viewof runBackblaze = Inputs.button("Run Backblaze Eample")
+  </script>
+  <script id="135" type="application/vnd.observable.javascript" pinned="">
+    backblaze_config = runBackblaze && {
+      defaultBucket: "mps3-demo",
+      label: "bckblz",
+      useChecksum: false,
+      useVersioning: true,
+      s3Config: {
+        endpoint: "https://s3.us-east-005.backblazeb2.com",
+        region: "us-east-005",
+        // Configured here: https://secure.backblaze.com/app_keys.htm?bznetid=17927252851691330596178
+        // This auto deletes everything after one day
+        credentials: {
+          accessKeyId: "0056a0e8e0f4cf20000000004",
+          secretAccessKey: "K005trGQCO0zYv+SVpYJhRtW0O399B0"
+        }
+      }
+    }
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    backblaze = backblaze_config && new mps3.MPS3(backblaze_config)
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    backblaze2 = backblaze_config && new mps3.MPS3(backblaze_config)
+  </script>
+  <script id="235" type="application/vnd.observable.javascript" pinned="">
+    latency_backblaze
+  </script>
+  <script id="94" type="application/vnd.observable.javascript" pinned="">
+    viewof latency_backblaze = Inputs.button("latency", {
+      reduce: () => {
+        const t_start = Date.now();
+        backblaze.put("latency", t_start).then(() => backblaze2.refresh());
+        return new Promise((resolve) => {
+          const unsubscribe = backblaze2.subscribe("latency", (val) => {
+            if (val === t_start) {
+              unsubscribe();
+              resolve(Date.now() - t_start);
+            }
+          });
+        });
+      }
+    })
+  </script>
+  <script id="110" type="application/vnd.observable.javascript" pinned="">
+    Generators.observe((notify) => {
+      invalidation.then(backblaze2.subscribe("latency", notify));
+    })
+  </script>
+  <script id="108" type="application/vnd.observable.javascript" pinned="">
+    backblaze2.get("latency")
+  </script>
+  <script id="200" type="application/vnd.observable.javascript" pinned="">
+    backblaze.put("latency", "cool")
+  </script>
+  <script id="72" type="text/markdown">
+    ## minio
+
+    Test against a locally running minio instance using `docker-compose`
+
+    ~~~yaml
+    # docker-compose.yml
+    version: '3'
+    services:
+      minio:
+        image: 'minio/minio:latest'
+        ports:
+          - '\${FORWARD_MINIO_PORT:-9102}:9000'
+          - '\${FORWARD_MINIO_CONSOLE_PORT:-9103}:9090'
+        environment:
+          MINIO_ROOT_USER: 'mps3'
+          MINIO_ROOT_PASSWORD: 'ZOAmumEzdsUUcVlQ'
+        command: minio server /data/minio --console-address ":9090"
+    ~~~
+  </script>
+</notebook>

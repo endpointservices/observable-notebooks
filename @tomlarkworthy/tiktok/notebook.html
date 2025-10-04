@@ -1,0 +1,109 @@
+<!doctype html>
+<notebook theme="air">
+  <title>TikTok</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# TikTok
+
+    ~~~js
+    import {tiktok} from '@tomlarkworthy/tiktok'
+    ~~~
+
+    Issues
+    - if you refresh the cell again the embed will fail the 2nd time :/
+    `
+  </script>
+  <script id="120" type="application/vnd.observable.javascript" pinned="">
+    tiktok('https://www.tiktok.com/@olddemongod/video/6944000387296873733')
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    async function tiktok(link, { maxWidth = "605px", minWidth = "325px" } = {}) {
+      tiktokLib;
+      const data = parse(link);
+
+      const embed = await enrich(data);
+
+      return html`${embed.html}`;
+    }
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    function parse(link) {
+      let match = null;
+      if ((match = link.match(/@(?<artist>[^/]*)\/video\/(?<video>[^?/#]*)/))) {
+        return {
+          artist: match.groups.artist,
+          video: match.groups.video
+        };
+      } else {
+        throw new Error("Cannot parse link");
+      }
+    }
+  </script>
+  <script id="102" type="application/vnd.observable.javascript">
+    async function enrich(data) {
+      const result = await (await fetch(
+        `https://www.tiktok.com/oembed?url=https://www.tiktok.com/@${data.artist}/video/${data.video}`
+      )).json();
+
+      result.html = result.html.replace(
+        '<script async src="https://www.tiktok.com/embed.js"><\/script>',
+        ''
+      );
+      return result;
+    }
+  </script>
+  <script id="71" type="application/vnd.observable.javascript" pinned="">
+    viewof tests = createSuite({
+      name: 'Tests'
+    })
+  </script>
+  <script id="76" type="application/vnd.observable.javascript">
+    tests.test(
+      "Parse https://www.tiktok.com/@olddemongod/video/6944000387296873733",
+      () => {
+        expect(
+          parse("https://www.tiktok.com/@olddemongod/video/6944000387296873733")
+        ).toEqual({
+          artist: "olddemongod",
+          video: "6944000387296873733"
+        });
+      }
+    )
+  </script>
+  <script id="95" type="application/vnd.observable.javascript">
+    tests.test(
+      "Parse https://www.tiktok.com/@olddemongod/video/6944000387296873733?sender_device=pc&sender_web_id=6935878758234670598&is_from_webapp=v2&is_copy_url=0",
+      () => {
+        expect(
+          parse(
+            "https://www.tiktok.com/@olddemongod/video/6944000387296873733?sender_device=pc&sender_web_id=6935878758234670598&is_from_webapp=v2&is_copy_url=0"
+          )
+        ).toEqual({
+          artist: "olddemongod",
+          video: "6944000387296873733"
+        });
+      }
+    )
+  </script>
+  <script id="109" type="application/vnd.observable.javascript">
+    tests.test(
+      "Enrich olddemongod, 6944000387296873733 has html property",
+      async () => {
+        const enrichResult = await enrich({
+          video: "6944000387296873733",
+          artist: 'olddemongod'
+        });
+
+        expect(enrichResult).toHaveProperty("author_name");
+        expect(enrichResult).toHaveProperty("author_url");
+        expect(enrichResult).toHaveProperty("title");
+        expect(enrichResult).toHaveProperty("html");
+      }
+    )
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    tiktokLib = require('https://www.tiktok.com/embed.js').catch(() => {})
+  </script>
+  <script id="68" type="application/vnd.observable.javascript">
+    import { createSuite, expect } from '@tomlarkworthy/testing'
+  </script>
+</notebook>

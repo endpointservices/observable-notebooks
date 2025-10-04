@@ -1,0 +1,2134 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Lazer Cutting Notebook</title>
+  <script id="0" type="text/markdown">
+    # Lazer Cutting Notebook
+
+    click the designs to download
+
+  </script>
+  <script id="3125" type="application/vnd.observable.javascript">
+    toc()
+  </script>
+  <script id="3116" type="text/markdown">
+    ## Global Settings
+  </script>
+  <script id="2347" type="application/vnd.observable.javascript">
+    viewof units = ({
+      prompt: "Write a chooser for units: cm, mm, in, em, ex, pt, pc, and px",
+      time: 1705853654515,
+      comment: "UI for choosing measurement units"
+    } &&
+      Inputs.select(["cm", "mm", "in", "em", "ex", "pt", "pc", "px"], {
+        label: "Choose units",
+        value: "mm"
+      }))
+  </script>
+  <script id="2725" type="application/vnd.observable.javascript">
+    viewof cut_correction = Inputs.range([0, 5], {
+      label: "corner cut correction",
+      value: 0.1
+    })
+  </script>
+  <script id="2811" type="application/vnd.observable.javascript">
+    viewof material_thickness = Inputs.range([0.1, 8], {
+      label: "material thickness",
+      value: 2.1
+    })
+  </script>
+  <script id="2753" type="text/markdown">
+    ## Notes on SVG import with Lightburn
+
+    ### Text
+    - Cannot be CSS, use only SVG attributes
+    - Cannot use inherited attributes, set everything on every text tag
+    - Doesn't support "mm" for font units
+    - dominant-baseline isn't calculated correctly for y alignment
+  </script>
+  <script id="2793" type="text/markdown">
+    ## Material settings Notes
+
+    - 2mm birch, 280mm, 75 power, 2 passes
+    - 3mm MDF, 300mm, 95 power, 3 passes
+  </script>
+  <script id="3781" type="text/markdown">
+    # Math functions
+  </script>
+  <script id="3847" type="text/markdown">
+    ### clamp(value, range)
+  </script>
+  <script id="3849" type="application/vnd.observable.javascript">
+    clamp = (v, min_max = [0, 1]) => Math.min(Math.max(v, min_max[0]), min_max[1])
+  </script>
+  <script id="3924" type="text/markdown">
+    ### addVectors(v1, v2)
+  </script>
+  <script id="3926" type="application/vnd.observable.javascript">
+    addVectors = ({
+      prompt: "write a function to add two vectors",
+      time: 1709491225160,
+      comment: "Function to add two vectors"
+    } &&
+      function addVectors(v1, v2) {
+        return [v1[0] + v2[0], v1[1] + v2[1]];
+      })
+  </script>
+  <script id="3897" type="text/markdown">
+    ### rotateVector(vector, angle)
+  </script>
+  <script id="3888" type="application/vnd.observable.javascript">
+    rotateVector = ({
+      prompt: "write a function to rotate a vector by an angle in degrees",
+      time: 1709490413206,
+      comment: "Function to rotate a vector by an angle in degrees"
+    } &&
+      function rotateVector(vector, angleDegrees) {
+        const angleRadians = (angleDegrees * Math.PI) / 180;
+        const cosA = Math.cos(angleRadians);
+        const sinA = Math.sin(angleRadians);
+        const [x, y] = vector;
+        return [cosA * x - sinA * y, sinA * x + cosA * y];
+      })
+  </script>
+  <script id="3788" type="text/markdown">
+    ### vectorFromAngle(angle)
+  </script>
+  <script id="3785" type="application/vnd.observable.javascript">
+    vectorFromAngle = ({
+      prompt:
+        "write a function to calculate a unit vector as a [x, y] array, given an angle in degrees",
+      time: 1709478746066,
+      comment: "Function to calculate a unit vector given an angle in degrees"
+    } &&
+      function unitVector(angleDegrees, scale = 1) {
+        const angleRadians = (angleDegrees * Math.PI) / 180;
+        return [Math.cos(angleRadians) * scale, Math.sin(angleRadians) * scale];
+      })
+  </script>
+  <script id="3796" type="text/markdown">
+    ### intercept(offset1, direction1, offset2, direction2)
+  </script>
+  <script id="3792" type="application/vnd.observable.javascript">
+    intercept = ({
+      prompt:
+        "Write a function to calculate the intercept between two lines given as vector offsets + vector directions",
+      time: 1709478937939,
+      comment:
+        "Function to calculate the intercept between two lines given as vector offsets + vector directions"
+    } &&
+      function intercept(p1, v1, p2, v2) {
+        const x1 = p1[0],
+          y1 = p1[1],
+          x2 = p2[0],
+          y2 = p2[1],
+          v1x = v1[0],
+          v1y = v1[1],
+          v2x = v2[0],
+          v2y = v2[1];
+
+        const determinant = v1x * v2y - v1y * v2x;
+
+        if (determinant === 0) {
+          // Lines are parallel and will never intercept
+          return null;
+        }
+
+        const t = ((x2 - x1) * v2y + (y1 - y2) * v2x) / determinant;
+        const u = ((x1 - x2) * v1y + (y2 - y1) * v1x) / determinant;
+
+        // Calculate the intersection point
+        return [x1 + t * v1x, y1 + t * v1y];
+      })
+  </script>
+  <script id="3830" type="text/markdown">
+    ### angleBetweenAngles(angle1, angle2)
+  </script>
+  <script id="3828" type="application/vnd.observable.javascript">
+    angleBetweenAngles = ({
+      prompt:
+        "Write a function to compute the angle between two other angles (in degrees)",
+      time: 1709479644272,
+      comment: "Function to compute the angle between two angles (in degrees)"
+    } &&
+      function angleBetweenAngles(angle1, angle2) {
+        const delta = angle2 - angle1;
+        const modDelta = ((delta + 180) % 360) - 180;
+        return modDelta < -180 ? modDelta + 360 : modDelta;
+      })
+  </script>
+  <script id="4026" type="text/markdown">
+    ### distance(v1, v2)
+  </script>
+  <script id="4023" type="application/vnd.observable.javascript" pinned="">
+    distance = ({
+      prompt: "distance between two vector",
+      time: 1709506756661,
+      comment: "Function to calculate the distance between two vectors"
+    } &&
+      function distanceBetweenVectors(v1, v2) {
+        const dx = v2[0] - v1[0];
+        const dy = v2[1] - v1[1];
+        return Math.sqrt(dx * dx + dy * dy);
+      })
+  </script>
+  <script id="3551" type="text/markdown">
+    # Modular Frame System V2
+
+    Cartesian frames are not strong without diagonal cross beams. The V2 improves on the V1 by
+
+    - Unifying the generalising the joint
+      - The X, T, and corner are a single general n-joint type (4, 3, 2 respectively)
+      - You can include more options including a non 90 degree angles
+    - Clarifying the difference between inner and outer dimensions of the tube diameter
+    - Improving the strut so it can transmit forces better
+    - Fixing a few material thickness mis-calculations
+  </script>
+  <script id="4149" type="text/markdown">
+    ### Buying notes. 
+
+    We can use the modular system to reenforce off-the-shelf structs
+
+    [Allwetterholz KDI 2700 x 45 x 22 mm](https://toom.de/p/allwetterholz-kdi-2700-x-45-x-22-mm/4280164)
+  </script>
+  <script id="3668" type="application/vnd.observable.javascript">
+    viewof frame_v2_config_raw = Inputs.form({
+      lattice_length: Inputs.range([0, 100], {
+        label: "lattice_length",
+        value: 20
+      }),
+      diamter_type: Inputs.radio(["inner", "outer"], {
+        label: "diamter_type",
+        value: "inner"
+      }),
+      tube_diameter: Inputs.range([0, 100], {
+        label: "tube_diameter",
+        value: 20
+      }),
+      material_thickness: Inputs.range([0.1, 8], {
+        label: "material thickness",
+        value: material_thickness
+      })
+    })
+  </script>
+  <script id="3943" type="application/vnd.observable.javascript">
+    frame_v2_config = ({
+      ...frame_v2_config_raw,
+      tube_diameter:
+        frame_v2_config_raw.diamter_type == "outer"
+          ? frame_v2_config_raw.tube_diameter
+          : frame_v2_config_raw.tube_diameter +
+            frame_v2_config_raw.material_thickness
+    })
+  </script>
+  <script id="3568" type="text/markdown">
+    ## n-Joint
+  </script>
+  <script id="3675" type="application/vnd.observable.javascript">
+    viewof joint_config = Inputs.form({
+      n: Inputs.range([1, 10], {
+        label: "number of joints",
+        value: 3,
+        step: 1
+      })
+    })
+  </script>
+  <script id="3679" type="application/vnd.observable.javascript">
+    viewof joints_config = Inputs.form(
+      Object.fromEntries(
+        Array.from({ length: joint_config.n }).flatMap((_, i) => [
+          [
+            `j${i}_angle`,
+            Inputs.range([-360, 360], {
+              label: `j${i} angle`,
+              value: i * (360 / joint_config.n)
+            })
+          ],
+          [
+            `j${i}_body_length`,
+            Inputs.range([0, 200], {
+              label: `j${i} body_length`,
+              value: 40
+            })
+          ],
+          [
+            `j${i}_taper`,
+            Inputs.toggle({
+              label: `j${i} taper`,
+              value: false
+            })
+          ]
+        ])
+      )
+    )
+  </script>
+  <script id="3874" type="application/vnd.observable.javascript">
+    joint_params = Array.from({ length: joint_config.n }).map((_, i) => {
+      return {
+        preceeding_angle:
+          joints_config[`j${(i + joint_config.n - 1) % joint_config.n}_angle`] - 90,
+        angle: joints_config[`j${i}_angle`] - 90,
+        taper: joints_config[`j${i}_taper`],
+        body_length: joints_config[`j${i}_body_length`],
+        following_angle: joints_config[`j${(i + 1) % joint_config.n}_angle`] - 90,
+        ...frame_v2_config
+      };
+    })
+  </script>
+  <script id="3710" type="application/vnd.observable.javascript">
+    n_joint_svg = {
+      const { scale, n, diamter_type, lattice_length } = {
+        ...joint_config,
+        ...joints_config,
+        ...frame_v2_config
+      };
+      const max_body_length = d3.max(joint_params, (d) => d.body_length);
+
+      const total_width = max_body_length * 2 + lattice_length * 2;
+      const total_height = max_body_length * 2 + lattice_length * 2;
+      return htl.svg`<div 
+        style=" width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="${n}_joint"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="${-total_width / 2} ${
+        -total_height / 2
+      } ${total_width} ${total_height}">
+          ${Array.from({ length: n }).map((_, i) => joint_arm(joint_params[i]))}
+          ${drill_hole([0, 0])}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3732" type="text/markdown">
+    ## joint arm
+  </script>
+  <script id="3756" type="application/vnd.observable.javascript" pinned="">
+    joint_arm = ({
+      body_length,
+      angle,
+      preceeding_angle,
+      following_angle,
+      lattice_length,
+      tube_diameter,
+      material_thickness,
+      taper = false,
+      taper_angle_1 = 45,
+      taper_angle_2 = 45,
+      debug = false
+    }) => {
+      const preceedingDir = vectorFromAngle(
+        preceeding_angle - angle,
+        tube_diameter
+      );
+      const preceedingOffset = rotateVector(
+        [0, tube_diameter * 0.5],
+        preceeding_angle - angle
+      );
+      const followingDir = vectorFromAngle(following_angle - angle, tube_diameter);
+      const followingOffset = rotateVector(
+        [0, -tube_diameter * 0.5],
+        following_angle - angle
+      );
+
+      const intercept1 = intercept(
+        preceedingOffset,
+        preceedingDir,
+        [0, tube_diameter * -0.5],
+        [1, 0]
+      );
+      const intercept2 = intercept(
+        followingOffset,
+        followingDir,
+        [0, tube_diameter * 0.5],
+        [1, 0]
+      );
+
+      const additional_length = body_length - lattice_length * 2;
+
+      const taperDir1 = vectorFromAngle(taper_angle_1);
+      const taperDir2 = vectorFromAngle(-taper_angle_2);
+      const taperCorner1 = intercept(
+        [lattice_length * 3 + additional_length, 0],
+        taperDir1,
+        [0, tube_diameter * -0.5 + material_thickness],
+        [1, 0]
+      );
+      const taperCorner2 = intercept(
+        [lattice_length * 3 + additional_length, 0],
+        taperDir2,
+        [0, tube_diameter * 0.5 - material_thickness],
+        [1, 0]
+      );
+
+      return svg`
+        <g transform="rotate(${angle})">
+          ${
+            debug
+              ? svg`<path stroke="green" fill="none" d="
+              M ${preceedingOffset[0]} ${preceedingOffset[1]}
+              L ${preceedingOffset[0] + preceedingDir[0]} ${
+                  preceedingOffset[1] + preceedingDir[1]
+                }
+              M ${followingOffset[0]} ${followingOffset[1]}
+              L ${followingOffset[0] + followingDir[0]} ${
+                  followingOffset[1] + followingDir[1]
+                }
+            "/>`
+              : undefined
+          }
+          <path stroke="red" fill="none" d="
+              M ${intercept1[0]} ${intercept1[1]}
+              ${finger_clockwise_v1(
+                [intercept1[0], intercept1[1]],
+                [lattice_length * 2.5 + additional_length, tube_diameter * -0.5],
+                {
+                  finger_depth: material_thickness,
+                  end_anchor: true
+                }
+              )}
+              ${
+                taper
+                  ? `
+                L ${lattice_length * 2.5 + additional_length} ${
+                      tube_diameter * -0.5 + +material_thickness
+                    }
+                L ${taperCorner1[0]} ${taperCorner1[1]}
+                L ${lattice_length * 3 + additional_length} 0
+                L ${taperCorner2[0]} ${taperCorner2[1]}
+                L ${lattice_length * 2.5 + additional_length} ${tube_diameter * 0.5}
+              `
+                  : `L ${lattice_length * 2.5 + additional_length} ${
+                      tube_diameter * 0.5 - material_thickness
+                    }`
+              }
+              ${finger_clockwise_v1(
+                [lattice_length * 2.5 + additional_length, tube_diameter * 0.5],
+                [intercept2[0], intercept2[1]],
+                {
+                  finger_depth: material_thickness
+                }
+              )}
+              L ${intercept2[0]} ${intercept2[1]}
+            "/>
+          ${drill_hole([lattice_length * 1 + additional_length + 8, 0])}
+          <!--${drill_pattern([lattice_length * 1 + additional_length, 0])}-->
+          ${drill_pattern([lattice_length * 2 + additional_length, 0])}
+        </g>
+      `;
+    }
+  </script>
+  <script id="3736" type="application/vnd.observable.javascript">
+    viewof joint_arm_config = Inputs.form({
+      body_length: Inputs.range([0, 100], {
+        label: "body_length",
+        value: 40
+      }),
+      preceeding_angle: Inputs.range([-360, 360], {
+        label: "preceeding_angle",
+        value: -90
+      }),
+      angle: Inputs.range([-360, 360], {
+        label: "angle",
+        value: 0
+      }),
+      following_angle: Inputs.range([-360, 360], {
+        label: "following_angle",
+        value: 90
+      }),
+      taper: Inputs.toggle({
+        label: "taper",
+        value: false
+      }),
+      taper_angle_1: Inputs.range([-360, 360], {
+        label: "taper_angle_1",
+        value: 45
+      }),
+      taper_angle_2: Inputs.range([-360, 360], {
+        label: "taper_angle_2",
+        value: 45
+      }),
+      debug: Inputs.toggle({
+        label: "debug",
+        value: true
+      })
+    })
+  </script>
+  <script id="3740" type="application/vnd.observable.javascript">
+    joint_arm_preview = {
+      const { angle, tube_diameter } = {
+        ...joint_arm_config,
+        ...frame_v2_config
+      };
+      const total_width = tube_diameter * 6;
+      const total_height = tube_diameter * 6;
+      return htl.svg`<div 
+        style=" 
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="joint_arm_${angle}"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="${-total_width / 2} ${
+        -total_height / 2
+      } ${total_width} ${total_height}">
+          ${joint_arm({
+            ...joint_arm_config,
+            ...frame_v2_config
+          })}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3470" type="text/markdown">
+    ## finger joints V1
+  </script>
+  <script id="4157" type="application/vnd.observable.javascript">
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
+  </script>
+  <script id="3478" type="application/vnd.observable.javascript">
+    finger_clockwise_v1 = (
+      start,
+      end,
+      {
+        offset,
+        finger_depth,
+        finger_width,
+        cut_correction,
+        end_anchor = false,
+        reverse = false,
+        delayStart = NaN,
+        delayEnd = NaN,
+        reverseDelay = false,
+        debug = false
+      } = {}
+    ) => {
+      finger_width = finger_width || 2;
+      finger_depth = finger_depth || material_thickness;
+      cut_correction = cut_correction || 0.1;
+      offset = offset || 0;
+      const dir = [end[0] - start[0], end[1] - start[1]];
+      const length = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1]);
+      dir[0] /= length;
+      dir[1] /= length;
+      const commands = [];
+
+      const in_cut = [-finger_depth * dir[1], finger_depth * dir[0]];
+
+      const cos45 = 1 / Math.sqrt(2);
+      const sin45 = 1 / Math.sqrt(2);
+      const cos135 = -1 / Math.sqrt(2);
+      const sin135 = 1 / Math.sqrt(2);
+
+      const corner_cut_a = [
+        (cos135 * dir[0] - sin135 * dir[1]) * cut_correction,
+        (sin135 * dir[0] + cos135 * dir[1]) * cut_correction
+      ];
+
+      const corner_cut_b = [
+        (cos45 * dir[0] - sin45 * dir[1]) * cut_correction,
+        (sin45 * dir[0] + cos45 * dir[1]) * cut_correction
+      ];
+
+      if (debug) debugger;
+
+      let on_outer;
+
+      reverseDelay ^= reverse;
+
+      const dist = distance(start, end);
+      delayEnd = Math.min(delayEnd, dist);
+      if (end_anchor) {
+        offset = (dist % finger_width) + offset;
+        on_outer = dist % (finger_width * 2) < finger_width;
+        reverseDelay ^= on_outer;
+      } else {
+        on_outer = mod(offset, finger_width * 2) <= finger_width;
+      }
+
+      if (reverse) on_outer = !on_outer;
+
+      // adjust delays to stop the delays from inverting
+      // Some weird ruonding errors so we step a funny amount
+      if (!Number.isNaN(delayStart))
+        while (((delayStart - offset) / finger_width + reverseDelay) % 2 <= 1) {
+          delayStart += finger_width / 3;
+        }
+      if (!Number.isNaN(delayEnd))
+        while (
+          delayEnd > 0 &&
+          ((delayEnd - offset) / finger_width + reverseDelay) % 2 <= 1
+        ) {
+          delayEnd -= finger_width / 3;
+        }
+
+      // First cut on boundary
+      if (
+        on_outer ^
+        end_anchor ^
+        (((delayStart - offset) / finger_width) % 2 > 1)
+      ) {
+        commands.push(`
+          L ${start[0]} ${start[1]}
+        `);
+      } else {
+        commands.push(`
+          L ${start[0] + in_cut[0]} ${start[1] + in_cut[1]}
+        `);
+      }
+
+      for (
+        let i = end_anchor ? 0 : 1;
+        (i + offset / finger_width) * finger_width < length - 0.0001;
+        i++
+      ) {
+        const i1 = i + offset / finger_width;
+        if (i1 > delayEnd / finger_width) continue;
+        if (!on_outer) {
+          // outwards cut
+          commands.push(`
+              L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+                ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+
+              L ${
+                start[0] + i1 * finger_width * dir[0] + in_cut[0] + corner_cut_b[0]
+              }
+                ${
+                  start[1] +
+                  i1 * finger_width * dir[1] +
+                  in_cut[1] +
+                  corner_cut_b[1]
+                }
+
+
+              L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+                ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+
+
+              L ${start[0] + i1 * finger_width * dir[0]}
+                ${start[1] + i1 * finger_width * dir[1]}
+            `);
+        } else {
+          // inwards cut
+          commands.push(`
+              L ${start[0] + i1 * finger_width * dir[0]}
+                ${start[1] + i1 * finger_width * dir[1]}
+
+              L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+                ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+
+              L ${
+                start[0] + i1 * finger_width * dir[0] + in_cut[0] + corner_cut_a[0]
+              }
+                ${
+                  start[1] +
+                  i1 * finger_width * dir[1] +
+                  in_cut[1] +
+                  corner_cut_a[1]
+                }
+
+              L ${start[0] + i1 * finger_width * dir[0] + in_cut[0]}
+                ${start[1] + i1 * finger_width * dir[1] + in_cut[1]}
+          `);
+        }
+        on_outer = !on_outer;
+        if (i1 <= delayStart / finger_width) commands.pop();
+      }
+
+      // last cut on boundary
+      if (on_outer) {
+        commands.push(`
+          L ${end[0]} ${end[1]}
+        `);
+      } else {
+        commands.push(`
+          L ${end[0] + in_cut[0]} ${end[1] + in_cut[1]}
+        `);
+      }
+      return commands.join();
+    }
+  </script>
+  <script id="3482" type="application/vnd.observable.javascript">
+    fingers_clockwise_v1_preview = {
+      const total_width = 100;
+      const total_height = 100;
+
+      const { x0, x1, y0, y1 } = finger_clockwise_v1_config;
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_end"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M ${x0} ${y0} 
+            ${finger_clockwise_v1([x0, y0], [x1, y1], finger_clockwise_v1_config)} 
+          "/>
+      </div>`;
+    }
+  </script>
+  <script id="3485" type="application/vnd.observable.javascript">
+    viewof finger_clockwise_v1_config = Inputs.form({
+      x0: Inputs.range([0, 100], {
+        label: "x0",
+        value: 10
+      }),
+      y0: Inputs.range([0, 100], {
+        label: "y0",
+        value: 10
+      }),
+      x1: Inputs.range([0, 100], {
+        label: "x0",
+        value: 80
+      }),
+      y1: Inputs.range([0, 100], {
+        label: "y1",
+        value: 10
+      }),
+      offset: Inputs.range([-10, 10], {
+        label: "offset",
+        value: 0
+      }),
+      finger_depth: Inputs.range([0, 10], {
+        label: "finger_depth",
+        value: 2.1
+      }),
+      finger_width: Inputs.range([0, 10], {
+        label: "finger_width",
+        value: 2
+      }),
+      cut_correction: Inputs.range([0, 10], {
+        label: "cut_correction",
+        value: 0.1
+      }),
+      end_anchor: Inputs.toggle({
+        label: "end_anchor",
+        value: false
+      }),
+      reverse: Inputs.toggle({
+        label: "reverse",
+        value: false
+      }),
+      delayStart: Inputs.range([0, 100], {
+        label: "delay start",
+        value: 0
+      }),
+      delayEnd: Inputs.range([0, 100], {
+        label: "delay end",
+        value: 90
+      }),
+      reverseDelay: Inputs.toggle({
+        label: "reverse delay",
+        value: false
+      }),
+      debug: Inputs.toggle({
+        label: "debug",
+        value: false
+      })
+    })
+  </script>
+  <script id="3136" type="text/markdown">
+    # Smoke extraction for Sculpfun S9
+
+    Based on this [Video](https://www.youtube.com/watch?v=k7qTE4t4sf8) 
+    - Cheap shop vac [40 EUR](https://www.amazon.de/-/en/Einhell-TC-VC-Vacuum-Cleaner-2342370/dp/B014HFNONS/ref=sr_1_3?crid=3HPFZ9YUMJ4XS&dib=eyJ2IjoiMSJ9.BeB-Km7kEBmZG6pkhsr6fUCBr3P2KeSuMP3AqSfeh1oH1celuGENkw8tB5jPkQmpNRWg8te4Sb9xF4DFFju-TJXFF_oPaICn_6i41oqWk9P5OJ-4ZWiRrkuPdg8dWyK_HmnEo_rqNC7Sq74vFdkt9Ydgtmd0Q36LmcKxm5REHd27ZkK5GGSqQgodRVeXzqz0f-Ef5Uwlpc8SJGp778JaeFsXPQ56OSeBENaeUzbkTQA.N7_ts1TJC6fiMnVdwBUIT9byXu0f_vOEDIfQI5d520U&dib_tag=se&keywords=shop%2Bvac&qid=1708718642&sprefix=shop%2Bvac%2Caps%2C141&sr=8-3&th=1)
+    - HEPA filter [20EUR](https://www.amazon.de/-/en/Tristar-Air-Filter-Replacement-Pre-filter/dp/B08XQWDNRT/ref=sr_1_3?crid=X4TORE6KDWUI&dib=eyJ2IjoiMSJ9.Y-4UOjD2wjMF4uGcXq_5E7HTjX9rhvOcyWvpSL5VZMqqy-mp82AKb6OciSUIYBlHhBfxBO1Tf9TLZvLszxin-neGX_o9L6KpB_eoxBOVXwIvxVEHalAiJn4xmWiQoRm9c9lDE6a68XXBFibO09MDti_cd7vs4NJHhg5ERiqKocmQM7pIT9FeCXXjohL1LQJPV5eu62ZdxSYycnebtr81H5T-wxOsko4gpFmBgmmR57s.2ZVc7RusgjjkGe6IVfb4nhET1GQwFkY8GZe4vMhinHg&dib_tag=se&keywords=HEPA%2Bfilter%2Bcarbon&qid=1708719056&sprefix=hepa%2Bfilter%2Caps%2C137&sr=8-3&th=1)
+    - CPAP pipe [10EUR](https://www.amazon.com/SnugellTM-Universal-Premium-Compatible-Respironics/dp/B0883GR4HF?crid=ZVKX9MUB97D9&keywords=CPAP+hose&qid=1675111960&sprefix=cpap+hos,aps,110&sr=8-10&linkCode=sl1&tag=embracemaking-20&linkId=94fca7ba3b3e1a9769a7b519d4dd51c3&language=en_US&ref_=as_li_ss_tl)
+  </script>
+  <script id="3229" type="text/markdown">
+
+    We want the smoke extractor to go up and down with the lazer when it is height adjusted => the nozzle if fixed to the height thumb screws.
+
+    Thumb screws (M4) are located 45mm from the edge of the lazer module, spaced 40mm apart. The plate they attach to is 55mm
+
+    Attached to the lazer module is a UV hood. It is 17mm deep (lazer is usually adjusted to 20mm focal length, so the extra 3 is clearance). It is cylindrical (32mm diameter). The bulk of the lazer module is 40mm square
+
+    ![IMG_20240224_101326.jpg](${await FileAttachment("IMG_20240224_101326.jpg").url()})
+
+
+  </script>
+  <script id="3237" type="text/markdown">
+    ### Backplate
+  </script>
+  <script id="3239" type="application/vnd.observable.javascript">
+    nozzle_backplate = {
+      const total_width = 55;
+      const total_height = 55;
+      const upper = total_height / 2 - 20;
+      const lower = total_height / 2 + 20;
+
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_backplate"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 ${total_height / 2 - 20}
+            ${finger_clockwise_v0([0, upper], [36, upper])}
+            L ${36} 0
+            L ${total_width} 0
+            L ${total_width} ${total_height}
+            L 36 ${total_height}
+            L 36 ${lower}
+            ${finger_clockwise_v0([36, lower], [0, lower])}
+            Z
+          "/>
+          <circle cx=45 cy=${total_height / 2 - 20} r=2 stroke="red" fill="none" />
+          <circle cx=45 cy=${total_height / 2 + 20} r=2 stroke="red" fill="none" />
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3279" type="text/markdown">
+    ### Side A
+  </script>
+  <script id="3284" type="application/vnd.observable.javascript">
+    nozzle_side_a = {
+      const total_width = 16 + 36;
+      const total_height = 40 + 48;
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_side_a"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            L 16 0
+            L 16 40
+            ${finger_clockwise_v0([16, 40], [total_width, 40])}  
+            L ${total_width} 48
+            L 16 64
+            ${finger_clockwise_v0([16, 64], [16, total_height])}
+            ${finger_clockwise_v0([16, total_height], [0, total_height])}
+            ${finger_clockwise_v0([0, total_height], [0, 40])}
+            L 0 40
+            Z
+          "/>
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3449" type="text/markdown">
+    ### Side B
+  </script>
+  <script id="3426" type="application/vnd.observable.javascript">
+    nozzle_side_b = {
+      const total_width = 16 + 36;
+      const total_height = 40 + 48;
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_side_b"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            L 16 0
+            L 16 40
+            ${finger_clockwise_v0([16, 40], [total_width, 40], { invert: true })} 
+            L ${total_width} 40
+            L ${total_width} 48
+            L 16 64
+            ${finger_clockwise_v0([16, 64], [16, total_height], { invert: true })}
+            ${finger_clockwise_v0([16, total_height], [0, total_height], {
+              invert: true
+            })}
+            ${finger_clockwise_v0([0, total_height], [0, 40], { invert: true })}
+            L 0 40
+            Z
+          "/>
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3340" type="text/markdown">
+    ### Nozzle entrace
+  </script>
+  <script id="3344" type="application/vnd.observable.javascript">
+    nozzle_holder = {
+      const total_width = 40;
+      const total_height = 48;
+
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_entrace"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M ${material_thickness} 0
+            L ${total_width - material_thickness} 0
+            L ${total_width - material_thickness} 24
+            ${finger_clockwise_v0([total_width, 24], [total_width, total_height])}  
+            ${finger_clockwise_v0([total_width, total_height], [0, total_height])}  
+            ${finger_clockwise_v0([0, total_height], [0, 24])}  
+            Z
+          "/>
+    <circle cx=${total_width / 2} cy="30" r="8" fill="none" stroke="red" />
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3154" type="text/markdown">
+    ### Tube (x14)
+
+    You will need to glue a stack of these together. CPAP pipe is 19mm outside diameter so we make a 20mm diameter for a tight fit.
+  </script>
+  <script id="3158" type="application/vnd.observable.javascript">
+    nozzle_tube_wall = {
+      const diameter = 20,
+        wall_widith = 2;
+      const total_width = diameter;
+      const total_height = diameter;
+
+      return htl.svg`<div 
+        style=" 
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="tube_wall"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="${-total_width / 2} ${
+        -total_height / 2
+      } ${total_width} ${total_height}">
+              <circle r=${diameter / 2} fill="none" stroke="red" />
+              <circle r=${diameter / 2 - wall_widith} fill="none" stroke="red" />
+
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3371" type="text/markdown">
+    ### End
+  </script>
+  <script id="3403" type="application/vnd.observable.javascript">
+    nozzle_end = {
+      const total_width = 40;
+      const total_height = 16;
+
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_end"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            ${finger_clockwise_v0([0, 0], [total_width, 0])}  
+            ${finger_clockwise_v0([total_width, 0], [total_width, total_height])}  
+            ${finger_clockwise_v0([total_width, total_height], [0, total_height])} 
+            ${finger_clockwise_v0([0, total_height], [0, 0])}   
+            Z
+          "/>
+      </div>`;
+    }
+  </script>
+  <script id="3413" type="text/markdown">
+    ### Underside
+  </script>
+  <script id="3415" type="application/vnd.observable.javascript">
+    nozzle_underside = {
+      const total_width = 40;
+      const total_height = 48;
+
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_underside"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            ${finger_clockwise_v0([0, 0], [total_width, 0])}  
+            ${finger_clockwise_v0([total_width, 0], [total_width, total_height])}  
+            ${finger_clockwise_v0([total_width, total_height], [0, total_height])} 
+            ${finger_clockwise_v0([0, total_height], [0, 0])}   
+            Z
+          "/>
+      </div>`;
+    }
+  </script>
+  <script id="2799" type="text/markdown">
+    # Moduler Frame System V1
+
+    Build large complex boxes and frames from a few pieces
+
+    TODO:
+    1 - finger depth should be material_thickness
+
+
+    ![IMG_20240223_163655.jpg](${await FileAttachment("IMG_20240223_163655.jpg").url()})
+  </script>
+  <script id="2801" type="application/vnd.observable.javascript">
+    viewof trellis = Inputs.form({
+      hole_size: Inputs.range([0, 1000], {
+        label: "hole_size",
+        value: 2.9
+      })
+    })
+  </script>
+  <script id="2926" type="application/vnd.observable.javascript">
+    viewof slop = Inputs.range([0, 1], {
+      label: "slop",
+      value: 0.25
+    })
+  </script>
+  <script id="3100" type="application/vnd.observable.javascript">
+    finger_thickness = 2
+  </script>
+  <script id="2950" type="application/vnd.observable.javascript">
+    drill_hole = (position) => {
+      return svg`<circle
+          r="${trellis.hole_size / 2}"
+          cx=${position[0]}
+          cy=${position[1]}
+          stroke="red"
+          fill="none"></circle>`;
+    }
+  </script>
+  <script id="2952" type="application/vnd.observable.javascript">
+    drill_pattern = (position) => {
+        return [
+          drill_hole([position[0], position[1]]),
+          drill_hole([position[0] - 4, position[1] - 4]),
+          drill_hole([position[0] - 4, position[1] + 4]),
+          drill_hole([position[0] + 4, position[1] - 4]),
+          drill_hole([position[0] + 4, position[1] + 4])
+        ];
+      };
+  </script>
+  <script id="3435" type="text/markdown">
+    ### fingers V0
+  </script>
+  <script id="2959" type="application/vnd.observable.javascript">
+    finger_clockwise_v0 = (start, end, { invert } = {}) => {
+      const dir = [end[0] - start[0], end[1] - start[1]];
+      const length = Math.sqrt(dir[0] * dir[0] + dir[1] * dir[1]);
+      dir[0] /= length;
+      dir[1] /= length;
+      const commands = [];
+
+      const offet = [-finger_thickness * dir[1], finger_thickness * dir[0]];
+      const corner_cut_a = [
+        (-dir[0] + dir[1]) * cut_correction,
+        (dir[1] + dir[0]) * cut_correction
+      ];
+
+      const corner_cut_b = [
+        (dir[0] + dir[1]) * cut_correction,
+        (dir[1] + dir[0]) * cut_correction
+      ];
+
+      const invertOff = invert === true ? 1 : 0;
+      const invertOn = invert === true ? 0 : 1;
+
+      for (let i = 0; i * finger_thickness < length - 0.001; i += 2) {
+        commands.push(`
+            L ${start[0] + i * finger_thickness * dir[0] + offet[0] * invertOff}
+              ${start[1] + i * finger_thickness * dir[1] + offet[1] * invertOff}
+
+            L ${
+              start[0] + (i + 1) * finger_thickness * dir[0] + offet[0] * invertOff
+            }
+              ${
+                start[1] +
+                (i + 1) * finger_thickness * dir[1] +
+                offet[1] * invertOff
+              }
+
+            L ${
+              start[0] + (i + 1) * finger_thickness * dir[0] + offet[0] * invertOn
+            }
+              ${
+                start[1] + (i + 1) * finger_thickness * dir[1] + offet[1] * invertOn
+              }
+
+            L ${
+              start[0] +
+              (i + 1) * finger_thickness * dir[0] +
+              offet[0] +
+              corner_cut_a[0]
+            }
+              ${
+                start[1] +
+                (i + 1) * finger_thickness * dir[1] +
+                offet[1] +
+                corner_cut_a[1]
+              }
+
+            L ${
+              start[0] + (i + 1) * finger_thickness * dir[0] + offet[0] * invertOn
+            }
+              ${
+                start[1] + (i + 1) * finger_thickness * dir[1] + offet[1] * invertOn
+              }
+
+
+            L ${
+              start[0] + (i + 2) * finger_thickness * dir[0] + offet[0] * invertOn
+            }
+              ${
+                start[1] + (i + 2) * finger_thickness * dir[1] + offet[1] * invertOn
+              }
+
+            L ${
+              start[0] +
+              (i + 2) * finger_thickness * dir[0] +
+              offet[0] +
+              corner_cut_b[0]
+            }
+              ${
+                start[1] +
+                (i + 2) * finger_thickness * dir[1] +
+                offet[1] +
+                corner_cut_b[1]
+              }
+
+
+            L ${
+              start[0] +
+              (i + 2) * finger_thickness * dir[0] +
+              offet[0] * invertOn +
+              offet[0] * invertOff
+            }
+              ${
+                start[1] +
+                (i + 2) * finger_thickness * dir[1] +
+                offet[1] * invertOn +
+                offet[1] * invertOff
+              }
+          `);
+      }
+      return commands.join();
+    }
+  </script>
+  <script id="3437" type="application/vnd.observable.javascript" pinned="">
+    fingers_clockwise_v0_preview = {
+      const total_width = 40;
+      const total_height = 16;
+
+      return htl.svg`<div 
+        style="
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="nozzle_end"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            ${finger_clockwise_v0([0, 0], [total_width, 0])}  
+            M 0 0
+
+            ${finger_clockwise_v0([0, 5], [total_width, 5], { invert: true })}  
+
+            M 0 0
+          "/>
+      </div>`;
+    }
+  </script>
+  <script id="2816" type="text/markdown">
+    ### Inner Strut
+  </script>
+  <script id="2819" type="application/vnd.observable.javascript">
+    viewof l_strut = Inputs.form({
+      scale: Inputs.range([0, 3], {
+        label: "visual scale",
+        value: 1
+      }),
+      length: Inputs.range([0, 1000], {
+        label: "length",
+        step: 2 * 2,
+        value: 200
+      }),
+      t_fingers: Inputs.toggle({
+        label: "top fingers?"
+      }),
+      b_fingers: Inputs.toggle({
+        label: "bottom fingers?"
+      })
+    })
+  </script>
+  <script id="2807" type="application/vnd.observable.javascript">
+    l_strut_svg = {
+      const { scale, length, b_fingers, t_fingers } = { ...l_strut, ...trellis };
+      const total_width = length;
+      const total_height = 20;
+      return htl.svg`<div 
+        style=" transform-origin: top left;
+                transform: scale(${scale});
+                width: ${total_width * scale}${units};
+                height: ${total_height * scale}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="strut_${length}_${
+        !t_fingers && !b_fingers
+          ? "flat"
+          : t_fingers || b_fingers
+          ? "corner"
+          : "edge"
+      }"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 0
+            ${
+              t_fingers
+                ? finger_clockwise_v0([0, 0], [total_width, 0])
+                : `L ${total_width} 0`
+            }
+            L ${total_width} ${total_height}
+            ${
+              b_fingers
+                ? finger_clockwise_v0([total_width, total_height], [0, total_height])
+                : `L 0 ${total_height}`
+            }
+            Z
+          "/>
+          ${drill_pattern([10, 10])}
+          ${drill_pattern([total_width - 10, 10])}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="2919" type="text/markdown">
+    ### Square Frame
+    I found this useful for holding the inner struts in place while the finger joints dried
+  </script>
+  <script id="2932" type="application/vnd.observable.javascript">
+    square_frame_svg = {
+      const total_width = 30;
+      const total_height = 30;
+
+      return htl.svg`<div 
+        style=" 
+                width: ${total_width}${units};
+                height: ${total_height}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="square_frame_${length}"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+              <rect width=30 height=30 fill="none" stroke="red"></rect>
+              <rect x=${5 - slop / 2} y=${5 - slop / 2} width=${20 + slop} height=${
+        20 + slop
+      } fill="none" stroke="red"></rect>
+
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="2916" type="text/markdown">
+    ### Outer Corner Joint
+  </script>
+  <script id="2964" type="application/vnd.observable.javascript">
+    joint_svg = {
+      const { scale, length, hole_size } = { ...l_strut, ...trellis };
+      const total_width = 40 + finger_thickness;
+      const total_height = 40 + finger_thickness;
+      return htl.svg`<div 
+        style=" transform-origin: top left;
+                transform: scale(${scale});
+                width: ${total_width * scale}${units};
+                height: ${total_height * scale}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="joint_corner"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M ${finger_thickness} ${finger_thickness}
+            ${finger_clockwise_v0([finger_thickness, 0], [40 + finger_thickness, 0])}
+            L ${40 + finger_thickness} ${20 + finger_thickness}
+            L ${20 + finger_thickness} ${20 + finger_thickness}
+            L ${20 + finger_thickness} ${40 + finger_thickness}
+            L 0 ${40 + finger_thickness}
+            ${finger_clockwise_v0([0, 40 + finger_thickness], [0, finger_thickness])}
+            Z
+          "/>
+          ${drill_pattern([30 + finger_thickness, 10 + finger_thickness])}
+          ${drill_pattern([10 + finger_thickness, 30 + finger_thickness])}
+          ${drill_pattern([10 + finger_thickness, 10 + finger_thickness])}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3008" type="text/markdown">
+    ### Outer T Joint
+  </script>
+  <script id="3013" type="application/vnd.observable.javascript">
+    t_joint_svg = {
+      const { scale, length, hole_size } = { ...l_strut, ...trellis };
+      const total_width = 60 + finger_thickness * 2;
+      const total_height = 40 + finger_thickness;
+      return htl.svg`<div 
+        style=" transform-origin: top left;
+                transform: scale(${scale});
+                width: ${total_width * scale}${units};
+                height: ${total_height * scale}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="joint_t"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M ${finger_thickness} ${finger_thickness}
+            ${finger_clockwise_v0([finger_thickness, 0], [60 + finger_thickness, 0])}
+            L ${60 + finger_thickness} ${20 + finger_thickness}
+            L ${40 + finger_thickness} ${20 + finger_thickness}
+            L ${40 + finger_thickness} ${40 + finger_thickness}
+            L ${20 + finger_thickness} ${40 + finger_thickness}
+            L ${20 + finger_thickness} ${20 + finger_thickness}
+            L ${0 + finger_thickness} ${20 + finger_thickness}
+            L ${0 + finger_thickness} ${20 + finger_thickness}
+            Z
+          "/>
+          ${drill_pattern([30 + finger_thickness, 10 + finger_thickness])}
+          ${drill_pattern([30 + finger_thickness, 30 + finger_thickness])}
+          ${drill_pattern([10 + finger_thickness, 10 + finger_thickness])}
+          ${drill_pattern([50 + finger_thickness, 10 + finger_thickness])}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="3041" type="text/markdown">
+    ### Plus Joint
+  </script>
+  <script id="3044" type="application/vnd.observable.javascript">
+    plus_joint_svg = {
+      const { scale, length, hole_size } = { ...l_strut, ...trellis };
+      const total_width = 60;
+      const total_height = 60;
+      return htl.svg`<div 
+        style=" transform-origin: top left;
+                transform: scale(${scale});
+                width: ${total_width * scale}${units};
+                height: ${total_height * scale}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="joint_plus"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 20 0
+            L 40 0
+            L 40 20
+            L 60 20
+            L 60 40
+            L 40 40
+            L 40 60
+            L 20 60
+            L 20 40
+            L 00 40
+            L 00 20
+            L 20 20
+            Z
+          "/>
+          ${drill_pattern([30, 10])}
+          ${drill_pattern([30, 30])}
+          ${drill_pattern([30, 50])}
+          ${drill_pattern([10, 30])}
+          ${drill_pattern([50, 30])}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="2605" type="text/markdown">
+    # Bed Corner Guide
+  </script>
+  <script id="2608" type="application/vnd.observable.javascript">
+    viewof bench_corner = Inputs.form({
+      scale: Inputs.range([0, 1], {
+        label: "visual scale",
+        value: 1
+      }),
+      x: Inputs.range([0, 1000], {
+        label: "x",
+        value: 100
+      }),
+      y: Inputs.range([0, 1000], {
+        label: "y",
+        value: 100
+      }),
+      thickness: Inputs.range([0, 50], {
+        label: "thickness"
+      }),
+      tick_inset: Inputs.range([0, 10], {
+        label: "tick inset",
+        value: 0
+      }),
+      tick_length: Inputs.range([0, 10], {
+        label: "tick length",
+        value: 5
+      }),
+      font_size: Inputs.range([0, 32], {
+        label: "font_size",
+        value: 5
+      }),
+      text_padding: Inputs.range([0, 32], {
+        label: "text_padding",
+        value: 1
+      })
+    })
+  </script>
+  <script id="2622" type="application/vnd.observable.javascript">
+    bench_corner_svg = {
+      const {
+        x,
+        y,
+        thickness,
+        scale,
+        tick_inset,
+        tick_length,
+        font_size,
+        text_padding
+      } = bench_corner;
+      const total_width = x + thickness;
+      const total_height = y + thickness;
+
+      const xTicks = [];
+      for (let i = 0; i < x; i += 10) {
+        xTicks.push(i);
+      }
+      const yTicks = [];
+      for (let j = 0; j < y; j += 10) {
+        yTicks.push(j);
+      }
+      return htl.svg`<div 
+        style=" transform-origin: top left;
+                transform: scale(${scale});
+                width: ${total_width * scale}${units};
+                height: ${total_height * scale}${units};
+                padding: 5px;
+        ">
+        <svg  class="lzr"
+              filename="bed_corner_${x}_${y}"
+              width="${total_width}${units}"
+              height="${total_height}${units}"
+              viewBox="0 0 ${total_width} ${total_height}">
+          <path stroke="red" fill="white" d="
+            M 0 ${total_height}
+            L ${x + thickness} ${total_height}
+            L ${x + thickness} ${total_height - thickness}
+            L ${thickness} ${total_height - thickness}
+            L ${thickness - cut_correction} ${
+        total_height - thickness + cut_correction
+      }
+            L ${thickness} ${total_height - thickness}
+            L ${thickness} 0
+            L 0 0
+            Z
+          "/>
+          <!-- Ticks -->
+          ${xTicks.map(
+            (i) =>
+              svg`<line
+                x1=${i + thickness}
+                x2=${i + thickness}
+                y1=${y + tick_inset}
+                y2=${y + tick_inset + tick_length}
+                stroke="green">`
+          )}
+          ${yTicks.map(
+            (j) =>
+              svg`<line
+                y1=${total_height - thickness - j}
+                y2=${total_height - thickness - j}
+                x1=${thickness - tick_inset}
+                x2=${thickness - tick_inset - tick_length}
+                stroke="green">`
+          )}
+          <!-- Tick Text -->
+          ${xTicks.map(
+            (i) =>
+              svg`<text 
+                    x=${i + thickness}
+                    y=${y + tick_inset + tick_length + text_padding}
+                    text-anchor="middle"
+                    dominant-baseline="hanging"
+                    font-size="${font_size}"
+                    font-family="arial"
+                    fill="green"
+                    class="tick_text x_text">${i}</text>`
+          )}
+          ${yTicks.map(
+            (j) =>
+              svg`<text 
+                    x=${thickness - tick_inset - tick_length - text_padding}
+                    y=${total_height - thickness - j}
+                    text-anchor="end"
+                    dominant-baseline="middle"
+                    font-size="${font_size}"
+                    font-family="arial"
+                    fill="green"
+                    class="tick_text y_text">${j}
+                  </text>`
+          )}
+        </svg>
+      </div>`;
+    }
+  </script>
+  <script id="2468" type="text/markdown">
+    # Rolling Contact Hand Clamp
+
+    <iframe id="player" type="text/html" width="640" height="390"
+      src="https://www.youtube.com/embed/-vBctwi2Jyk?enablejsapi=1"
+      frameborder="0"></iframe>
+  </script>
+  <script id="2557" type="text/markdown">
+    ### Assembly
+
+    A mates with B, but to get a full structure you need three layers. So one side is A, B, A and the other side is B, A, B. So you need 6 in pieces total. 
+  </script>
+  <script id="2474" type="application/vnd.observable.javascript">
+    viewof clampConfigV1 = ({
+      prompt:
+        'create a UI for configuring a clamp. "jaw width", "jaw length", "handle length", "tool width", "thickness", "bands"',
+      time: 1705860505633,
+      comment: "UI for configuring a clamp"
+    } &&
+      view`<div style="display: flex; flex-direction: column; gap: 10px;">
+      ${[
+        "jawWidth",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 0,
+          label: `Jaw Width (${units})`
+        })
+      ]}
+      ${[
+        "jawLength",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 50,
+          label: `Jaw Length (${units})`
+        })
+      ]}
+      ${[
+        "handleLength",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 50,
+          label: `Handle Length (${units})`
+        })
+      ]}
+      ${[
+        "toolWidth",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 50,
+          label: `Tool Width (${units})`
+        })
+      ]}
+      ${[
+        "thickness",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 10,
+          label: `Thickness (${units})`
+        })
+      ]}
+      ${["bands", Inputs.range([2, 10], { step: 1, value: 2, label: "Bands" })]}
+      ${[
+        "bandRadius",
+        Inputs.range([0, 10], { step: 0.1, value: 3, label: "Band radius" })
+      ]}
+      ${[
+        "drillDiameter",
+        Inputs.range([0, 10], { step: 0.2, value: 4, label: "Drill diameter" })
+      ]}
+    </div>`)
+  </script>
+  <script id="2550" type="text/markdown">
+    ### A
+  </script>
+  <script id="2478" type="application/vnd.observable.javascript">
+    clamp_v1_a = {
+      ({
+        prompt:
+          "Create an SVG drawing of one half of a clamp that works like scissors/clothes pegs, which has elastic bands added to add the closing force.",
+        time: 1705860651237,
+        comment: "SVG drawing of one half of a clamp with elastic bands"
+      });
+
+      const {
+        drillDiameter,
+        jawWidth,
+        jawLength,
+        handleLength,
+        toolWidth,
+        thickness,
+        bands,
+        bandRadius
+      } = clampConfigV1;
+      const halfToolWidth = toolWidth / 2;
+      const bandWidth = thickness / 4;
+      const bandSpacing = (jawWidth - bandWidth * bands) / (bands - 1 + 2); // spacing between bands and on edges
+
+      const total_width = handleLength + jawLength;
+      const total_height = toolWidth / 2;
+      const radius = total_height - thickness;
+      const alpha = Math.atan((toolWidth / 2 - jawWidth / 2) / jawLength);
+      const intercept = jawLength - radius + thickness / 2;
+      const band_step = (jawLength - intercept) / (bands - 1);
+
+      return htl.svg`<svg class="lzr" width="${total_width}${units}" height="${
+        total_height * 2
+      }${units}" viewBox="0 0 ${total_width} ${total_height * 2}">
+        <path stroke="red" fill="white" d="
+          M 0 ${total_height - jawWidth / 2}
+          L 0 0
+          L ${intercept - bandRadius} 0
+          ${Array.from({ length: bands })
+            .map(
+              (_, i) => `
+            A ${bandRadius} ${bandRadius} 180 1 0 ${
+                intercept + band_step * i + bandRadius
+              } ${0}
+            L ${intercept + band_step * (i + 1) - bandRadius} 0
+          `
+            )
+            .join("")}
+          L ${total_width - handleLength + bandRadius} 0
+          L ${total_width} 0
+          L ${total_width} ${thickness}
+          L ${jawLength + radius} ${thickness}
+          A ${radius} ${radius} 90 0 1 ${jawLength} ${total_height}
+          L ${jawLength - radius + thickness} ${total_height}
+          L ${jawLength - radius + thickness} ${total_height + thickness}
+          L ${jawLength - radius}  ${total_height + thickness}
+          L ${jawLength - radius} ${thickness}
+          L ${thickness} ${thickness}
+          L ${thickness} ${total_height - jawWidth / 2}
+          Z
+        "/>
+        <circle r="${drillDiameter / 2}" cx="${jawLength}" cy="${
+        toolWidth / 4
+      }" stroke="red" fill="white"></circle>
+        <circle r="${drillDiameter / 2}" cx="${thickness / 2}" cy="${
+        total_height - jawWidth / 2 - thickness / 2
+      }" stroke="red" fill="white"></circle>
+      </svg>`;
+    }
+  </script>
+  <script id="2552" type="text/markdown">
+    ### B
+  </script>
+  <script id="2499" type="application/vnd.observable.javascript">
+    clamp_v1_b = {
+      ({
+        prompt:
+          "Create an SVG drawing of one half of a clamp that works like scissors/clothes pegs, which has elastic bands added to add the closing force.",
+        time: 1705860651237,
+        comment: "SVG drawing of one half of a clamp with elastic bands"
+      });
+
+      const {
+        drillDiameter,
+        jawWidth,
+        jawLength,
+        handleLength,
+        toolWidth,
+        thickness,
+        bands,
+        bandRadius
+      } = clampConfigV1;
+      const halfToolWidth = toolWidth / 2;
+      const bandWidth = thickness / 4;
+      const bandSpacing = (jawWidth - bandWidth * bands) / (bands - 1 + 2); // spacing between bands and on edges
+
+      const total_width = handleLength + jawLength;
+      const total_height = toolWidth / 2;
+      const radius = total_height - thickness;
+      const alpha = Math.atan((toolWidth / 2 - jawWidth / 2) / jawLength);
+      const intercept = jawLength - radius + thickness / 2;
+      const band_step = (jawLength - intercept) / (bands - 1);
+
+      return htl.svg`<svg class="lzr" width="${total_width}${units}" height="${
+        total_height * 2
+      }${units}" viewBox="0 0 ${total_width} ${total_height * 2}">
+        <path stroke="red" fill="white" d="
+          M 0 ${total_height - jawWidth / 2}
+          L 0 0
+          L ${intercept - bandRadius} 0
+          ${Array.from({ length: bands })
+            .map(
+              (_, i) => `
+            A ${bandRadius} ${bandRadius} 180 1 0 ${
+                intercept + band_step * i + bandRadius
+              } ${0}
+            L ${intercept + band_step * (i + 1) - bandRadius} 0
+          `
+            )
+            .join("")}
+          L ${total_width - handleLength + bandRadius} 0
+          L ${total_width} 0
+          L ${total_width} ${thickness}
+          L ${jawLength + radius} ${thickness}
+          A ${radius} ${radius} 90 0 1 ${jawLength} ${total_height}
+          L ${jawLength - radius + thickness} ${total_height}
+          L ${jawLength - radius + thickness} ${total_height - thickness}
+          L ${jawLength - radius}  ${total_height - thickness}
+          L ${jawLength - radius} ${thickness}
+          L ${thickness} ${thickness}
+          L ${thickness} ${total_height - jawWidth / 2}
+          Z
+        "/>
+        <circle r="${drillDiameter / 2}" cx="${jawLength}" cy="${
+        toolWidth / 4
+      }" stroke="red" fill="white"></circle>
+        <circle r="${drillDiameter / 2}" cx="${thickness / 2}" cy="${
+        total_height - jawWidth / 2 - thickness / 2
+      }" stroke="red" fill="white"></circle>
+      </svg>`;
+    }
+  </script>
+  <script id="2370" type="text/markdown">
+    ## Clamp V0 (doesn't work)
+  </script>
+  <script id="2372" type="application/vnd.observable.javascript">
+    viewof clampConfigV0 = ({
+      prompt:
+        'create a UI for configuring a clamp. "jaw width", "jaw length", "handle length", "tool width", "thickness", "bands"',
+      time: 1705860505633,
+      comment: "UI for configuring a clamp"
+    } &&
+      view`<div style="display: flex; flex-direction: column; gap: 10px;">
+      ${[
+        "jawWidth",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 10,
+          label: `Jaw Width (${units})`
+        })
+      ]}
+      ${[
+        "jawLength",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 100,
+          label: `Jaw Length (${units})`
+        })
+      ]}
+      ${[
+        "handleLength",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 50,
+          label: `Handle Length (${units})`
+        })
+      ]}
+      ${[
+        "toolWidth",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 50,
+          label: `Tool Width (${units})`
+        })
+      ]}
+      ${[
+        "thickness",
+        Inputs.range([0, 300], {
+          step: 1,
+          value: 10,
+          label: `Thickness (${units})`
+        })
+      ]}
+      ${["bands", Inputs.range([2, 10], { step: 1, value: 4, label: "Bands" })]}
+      ${[
+        "band_radius",
+        Inputs.range([0, 10], { step: 0.1, value: 3, label: "Band radius" })
+      ]}
+    </div>`)
+  </script>
+  <script id="2376" type="application/vnd.observable.javascript">
+    svg_clamp = {
+      ({
+        prompt:
+          "Create an SVG drawing of one half of a clamp that works like scissors/clothes pegs, which has elastic bands added to add the closing force.",
+        time: 1705860651237,
+        comment: "SVG drawing of one half of a clamp with elastic bands"
+      });
+
+      const {
+        jawWidth,
+        jawLength,
+        handleLength,
+        toolWidth,
+        thickness,
+        bands,
+        band_radius
+      } = clampConfigV0;
+      const halfToolWidth = toolWidth / 2;
+      const bandWidth = thickness / 4;
+      const bandSpacing = (jawWidth - bandWidth * bands) / (bands - 1 + 2); // spacing between bands and on edges
+
+      let bandPaths = "";
+      for (let i = 0; i < bands; i++) {
+        const bandX = halfToolWidth + bandSpacing + i * (bandWidth + bandSpacing);
+        bandPaths +=
+          `<path d="M${bandX},${-halfToolWidth} v${jawLength + handleLength}" ` +
+          `stroke="black" stroke-width="${bandWidth}" fill="none"/>`;
+      }
+      const total_width = handleLength + jawLength;
+      const total_height = toolWidth / 2;
+      const radius = total_height - thickness;
+      const alpha = Math.atan((toolWidth / 2 - jawWidth / 2) / jawLength);
+      const intercept = thickness / Math.tan(alpha);
+      const band_step = (jawLength - intercept) / (bands - 1);
+
+      return htl.svg`<svg class="lzr" width="${total_width}${units}" height="${total_height}${units}" viewBox="0 0 ${total_width} ${total_height}">
+        <path stroke="red" fill="white" d="
+          M 0 0
+          L ${intercept - band_radius} 0
+          ${Array.from({ length: bands })
+            .map(
+              (_, i) => `
+            A ${band_radius} ${band_radius} 180 1 0 ${
+                intercept + band_step * i + band_radius
+              } ${0}
+            L ${intercept + band_step * (i + 1) - band_radius} 0
+          `
+            )
+            .join("")}
+          L ${total_width - handleLength + band_radius} 0
+          L ${total_width} 0
+          L ${total_width} ${thickness}
+          L ${jawLength + radius} ${thickness}
+          A ${radius} ${radius} 90 0 1 ${jawLength} ${total_height}
+          A ${radius} ${radius} 90 0 1 ${jawLength - radius} ${thickness}
+          L ${intercept} ${thickness}
+          Z
+        "/>
+        ${bandPaths}
+      </svg>`;
+    }
+  </script>
+  <script id="2318" type="text/markdown">
+    ### Corner shape
+  </script>
+  <script id="2282" type="application/vnd.observable.javascript">
+    viewof dimensions_l = ({
+      prompt: "Create a UI for width, height and thickness pixel parameters",
+      time: 1705851970481,
+      comment:
+        "UI for setting width, height, and thickness parameters using range inputs"
+    } &&
+      view`<div style="display: flex; flex-direction: column; gap: 10px;">
+      ${[
+        "width",
+        Inputs.range([0, 1920], { step: 1, value: 50, label: `Width (${units})` })
+      ]}
+      ${[
+        "height",
+        Inputs.range([0, 1080], { step: 1, value: 50, label: `Height (${units})` })
+      ]}
+      ${[
+        "thickness",
+        Inputs.range([0, 100], {
+          step: 1,
+          value: 10,
+          label: `Thickness (${units})`
+        })
+      ]}
+    </div>`)
+  </script>
+  <script id="2303" type="application/vnd.observable.javascript">
+    svg_l_shape = {
+      ({
+        prompt: "Draw an L shape SVG in using dimension_l in a single polyline",
+        time: 1705852324991,
+        comment: "SVG of an L shape using the dimensions_l parameters"
+      });
+
+      const { width, height, thickness } = dimensions_l;
+      const points = [
+        `${thickness},${thickness}`, // Start at top left of the L shape's horizontal line
+        `${width},${thickness}`, // Move to the right, leaving space for the vertical line's thickness
+        `${width},0`, // Move up to start the vertical line
+        `0,0`, // Move to the right to create the thickness of the L shape's vertical line
+        `0,${height}`, // Move down to the bottom of the L shape
+        `${thickness},${height}`, // Move to the left to create the bottom line of the L shape
+        `${thickness},${thickness}` // Move up to close the L shape
+      ].join(" ");
+
+      return htl.html`<svg class="lzr" width="${width}${units}" height="${height}${units}" viewBox="0 0 ${width} ${height}">
+        <polyline points="${points} ${units}" fill="white" stroke="red"/>
+      </svg>`;
+    }
+  </script>
+  <script id="2335" type="application/vnd.observable.javascript">
+    poll_and_download_svg = {
+      ({
+        prompt:
+          "poll for new SVGs on the page and add a click handler that downloads the sVG",
+        time: 1705853058219,
+        comment:
+          "Poll for SVG elements on the page and add a click handler that downloads the SVG"
+      });
+      setInterval(() => {
+        const svgElements = document.querySelectorAll(".lzr");
+        svgElements.forEach((svg) => {
+          svg.style.cursor = "pointer";
+          svg.onclick = () => download_svg(svg);
+        });
+      }, 1000);
+    }
+  </script>
+  <script id="2330" type="application/vnd.observable.javascript">
+    download_svg = ({
+      prompt: "write a function that downloads a passed in SVG element argument",
+      time: 1705852941582,
+      comment: "Function to download an SVG element"
+    } &&
+      function downloadSVG(svgEl) {
+        const serializer = new XMLSerializer();
+        const svgStr = serializer.serializeToString(svgEl);
+        const filename = svgEl.attributes["filename"]?.value || "image";
+        const dataUri =
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgStr);
+        const link = document.createElement("a");
+        link.setAttribute("href", dataUri);
+        link.setAttribute("download", `${filename}.svg`);
+        document.body.appendChild(link); // Required for Firefox
+        link.click();
+        document.body.removeChild(link);
+      })
+  </script>
+  <script id="2271" type="text/markdown">
+    # AI Assistant
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1470" type="text/markdown">
+    tick the cells to include in the next prompt
+  </script>
+  <script id="1473" type="application/vnd.observable.javascript">
+    viewof feedback_cells_selector
+  </script>
+  <script id="1542" type="application/vnd.observable.javascript">
+    viewof feedback_prompt
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      api_call_response,
+      background_tasks,
+      mutable context,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof feedback_prompt,
+      viewof feedback_cells_selector,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="3121" type="application/vnd.observable.javascript" pinned="">
+    import { toc } from "@harrystevens/toc@129"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+  <script id="2267" type="application/vnd.observable.javascript">
+    import { view } from "@tomlarkworthy/view" // required notebook import for bindable UI
+  </script>
+  <script id="2264" type="application/vnd.observable.javascript">
+    viewof bindableUISkill = ({
+      prompt:
+        "Demonstrate how to use the bidirection bindable UI composer, the view literal",
+      time: 1700263368139,
+      comment: "Binding inputs, composing within HTML and accessing via a viewof"
+    } &&
+      view`<div class="skill">
+
+      ${md`
+      ## Bindable UI Skill
+      ~~~js
+      import {view} from '@tomlarkworthy/view' // required notebook import for bindable UI
+      ~~~
+      The view literal can compose bidirectional HTML UIs, whose value can be written to and the UI will visually update. You can bind them storage so they remember values across page refreshes
+      `}
+      <details><summary>example</summary>
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <h3>Text Input</h3>
+          <!-- Note a 2 element array bind the 2nd arg to the parent under the field name of the first arg -->
+          ${[
+            "textInput",
+            Inputs.text({ placeholder: "Type something...", value: "Hello World!" })
+          ]}
+        </div>
+
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <h3>Select Input</h3>
+          ${[
+            "selectInput",
+            Inputs.select(["Option 1", "Option 2", "Option 3"], {
+              value: "Option 2",
+              label: "Choose an option"
+            })
+          ]}
+        </div>
+
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <h3>Input Arrays</h3>
+          <!-- Note a 3 element array bind the 2nd array to the parent under the field name of the first arg, and uses the 3rd arg as a builder when the underlying data array expands-->
+          ${[
+            "array",
+            Array.from({ length: 3 }, (_, i) =>
+              Inputs.text({ placeholder: `Input ${i + 1}` })
+            ),
+            (value) => Inputs.text({ value: value })
+          ]}
+        </div>
+
+        <div style="border: 1px solid #ccc; padding: 10px;">
+          <h3>Button Action</h3>
+          <div style="display: flex; justify-content: flex-start;">
+          <!-- the Inputs.button has a lot of formatting which breaks flexbox -->
+          ${[
+            "buttonAction",
+            htl.html`<button onclick=${(evt) => {
+              const container = evt.target.closest(".skill");
+              container.value.array.push(5); // manipulating the data array will trigger the UI builder
+              container.dispatchEvent(new Event("input"));
+            }}>add`
+          ]}
+          ${[
+            "buttonAction",
+            htl.html`<button onclick=${(evt) =>
+              evt.target.closest(".skill").value.array.pop()}>remove`
+          ]}
+          </div>
+        </div>
+
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <h3>Radio Input</h3>
+          ${[
+            "radioInput",
+            Inputs.radio(["Choice A", "Choice B", "Choice C"], {
+              value: "Choice B",
+              label: "Pick one"
+            })
+          ]}
+        </div>
+
+        <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+          <h3>Checkbox Input</h3>
+          ${[
+            "checkboxInput",
+            Inputs.checkbox(["Check 1", "Check 2"], {
+              values: ["Check 1"],
+              label: "Select checks"
+            })
+          ]}
+        </div>
+
+    </details>
+      </div>`)
+  </script>
+  <script id="4137" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="4139" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

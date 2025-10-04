@@ -1,0 +1,242 @@
+<!doctype html>
+<notebook theme="air">
+  <title>fetchp tests</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# _fetchp_ tests
+    `
+  </script>
+  <script id="129" type="application/vnd.observable.javascript">
+    viewof suite = createSuite({
+      name: "tests"
+    })
+  </script>
+  <script id="491" type="application/vnd.observable.javascript">
+    md`#### Endpoint to figure out how proxy has mutated requests`
+  </script>
+  <script id="472" type="application/vnd.observable.javascript">
+    // Diagnosis cell that responds with the contents of the request
+    reflect = deploy("reflect request", (req, res) => res.json(req), {
+      modifiers: ["terminal"],
+      reusable: true
+    })
+  </script>
+  <script id="487" type="application/vnd.observable.javascript">
+    md`#### Vanilla proxying (with no CORS)`
+  </script>
+  <script id="406" type="application/vnd.observable.javascript">
+    import { fetchp } from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="21" type="application/vnd.observable.javascript" pinned="">
+    suite.test("GET google.com", async () => {
+      const response = await fetchp("https://google.com");
+      if (response.status !== 200) console.error(await response.text());
+      expect(response.status).toBe(200);
+      expect(await response.text()).toMatch("advanced_search");
+    })
+  </script>
+  <script id="646" type="application/vnd.observable.javascript" pinned="">
+    //allData = fetchp(
+      "https://covid19.who.int/page-data/table/page-data.json"
+    ).then(d => d.json())
+  </script>
+  <script id="606" type="application/vnd.observable.javascript" pinned="">
+    //data = await fetchp(
+      "https://www.st.nmfs.noaa.gov/st1/recreational/MRIP_Survey_Data/CSV/ps_2000_2004_csv.zip",
+      {
+        region: "europe-west1"
+      }
+    )
+  </script>
+  <script id="546" type="application/vnd.observable.javascript" pinned="">
+    import { fetchp as fetchpWithAllowDomain } with {
+      trusted_domain as ALLOW_DOMAINS
+    } from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="435" type="application/vnd.observable.javascript">
+    md`#### Create custom proxy for parameter secret injection`
+  </script>
+  <script id="409" type="application/vnd.observable.javascript" pinned="">
+    import { fetchp as fetchpWithSecrets } with {
+      trusted_domain as ALLOW_DOMAINS,
+      secrets as SECRET_PARAMS,
+      modifiers as MODIFIERS
+    } from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="660" type="application/vnd.observable.javascript">
+    modifiers = ['external']
+  </script>
+  <script id="412" type="application/vnd.observable.javascript">
+    secrets = ({ secret: 'tomlarkworthy_example_secret' })
+  </script>
+  <script id="415" type="application/vnd.observable.javascript">
+    trusted_domain = [
+      'webcode.run',
+      'endpointservice.web.app',
+      'storage.googleapis.com',
+      'localhost:8080'
+    ]
+  </script>
+  <script id="295" type="application/vnd.observable.javascript">
+    suite.test("Inject a secret into URL params", async () => {
+      // Our proxy, that has been setup to inject a secret
+      const response = await fetchpWithSecrets(reflect.href);
+      if (response.status !== 200) console.error(await response.text());
+      expect(response.status).toBe(200);
+      expect((await response.json()).query.secret).toBe(
+        "correct horse battery staple"
+      );
+    })
+  </script>
+  <script id="481" type="application/vnd.observable.javascript">
+    suite.test(
+      "Inject a secret into URL params with existing paramater",
+      async () => {
+        // Our proxy, that has been setup to inject a secret
+        const response = await fetchpWithSecrets(reflect.href + "?foo");
+        if (response.status !== 200) console.error(await response.text());
+        expect(response.status).toBe(200);
+        expect((await response.json()).query.secret).toBe(
+          "correct horse battery staple"
+        );
+      }
+    )
+  </script>
+  <script id="504" type="application/vnd.observable.javascript">
+    md`#### Create custom proxy with basic auth injection`
+  </script>
+  <script id="510" type="application/vnd.observable.javascript" pinned="">
+    basicAuth = ({
+      protocol: "RFC 7617",
+      username: "username",
+      passwordSecret: "tomlarkworthy_example_secret"
+    })
+  </script>
+  <script id="507" type="application/vnd.observable.javascript" pinned="">
+    import { fetchp as fetchpWithBasicAuth } with {
+      trusted_domain as ALLOW_DOMAINS,
+      basicAuth as BASIC_AUTH,
+      modifiers as MODIFIERS
+    } from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="515" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Injects basic auth header into request", async () => {
+      // Our proxy, that has been setup to inject a secret
+      const response = await fetchpWithBasicAuth(reflect.href);
+      if (response.status !== 200) console.error(await response.text());
+      expect(response.status).toBe(200);
+      expect((await response.json()).headers['authorization']).toBe(
+        "Basic dXNlcm5hbWU6Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ=="
+      );
+    })
+  </script>
+  <script id="522" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "Injects basic auth header into request with additional headers",
+      async () => {
+        // Our proxy, that has been setup to inject a secret
+        const response = await fetchpWithBasicAuth(reflect.href, {
+          headers: { foo: 'bar' }
+        });
+        if (response.status !== 200) console.error(await response.text());
+        expect(response.status).toBe(200);
+        const json = await response.json();
+        expect(json.headers['authorization']).toBe(
+          "Basic dXNlcm5hbWU6Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ=="
+        );
+        expect(json.headers['foo']).toBe('bar');
+      }
+    )
+  </script>
+  <script id="443" type="application/vnd.observable.javascript">
+    md`#### Create custom proxy with no allowed domains`
+  </script>
+  <script id="445" type="application/vnd.observable.javascript">
+    no_domain = []
+  </script>
+  <script id="448" type="application/vnd.observable.javascript">
+    import { fetchp as fetchpWithNoAllowDomain } with {
+      no_domain as ALLOW_DOMAINS,
+      secrets as SECRET_PARAMS
+    } from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="451" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Proxy rejects unauthorized domains with 403", async () => {
+      const response = await fetchpWithNoAllowDomain("https://www.example.com", {
+        modifiers: ["external"]
+      });
+      expect(response.status).toBe(403);
+    })
+  </script>
+  <script id="526" type="application/vnd.observable.javascript">
+    md`#### Short curcuits`
+  </script>
+  <script id="541" type="application/vnd.observable.javascript">
+    serverlessFetchp = deploy("serverlessFetchp", async (req, res) => {
+      const response = await fetchp(
+        'https://storage.googleapis.com/o_tomlarkworthy_toms/public/empty.txt'
+      );
+      res.json(await Object.fromEntries(response.headers.entries()));
+    })
+  </script>
+  <script id="550" type="application/vnd.observable.javascript">
+    serverlessFetchpWithAllowDomain = deploy(
+      "serverlessFetchpWithAllowDomain",
+      async (req, res) => {
+        const response = await fetchpWithAllowDomain(
+          'https://storage.googleapis.com/o_tomlarkworthy_toms/public/empty.txt'
+        );
+        res.json(await Object.fromEntries(response.headers.entries()));
+      }
+    )
+  </script>
+  <script id="543" type="application/vnd.observable.javascript">
+    serverlessFetchpWithBasicAuth = deploy(
+      "serverlessFetchpWithBasicAuth",
+      async (req, res) => {
+        const response = await fetchpWithBasicAuth(
+          'https://storage.googleapis.com/o_tomlarkworthy_toms/public/empty.txt'
+        );
+        res.json(await Object.fromEntries(response.headers.entries()));
+      }
+    )
+  </script>
+  <script id="586" type="application/vnd.observable.javascript" pinned="">
+    suite.test("fetchp short cucuits inside serverless cells", async () => {
+      // If direct the headers will be from a GCS server
+      expect((await (await fetch(serverlessFetchp.href)).json()).server).toBe(
+        "UploadServer"
+      );
+    })
+  </script>
+  <script id="594" type="application/vnd.observable.javascript" pinned="">
+    suite.test("fetchp with ALLOW_DOMAIN short cucuits inside serverless cells", async () => {
+      // If direct the headers will be from a GCS server
+      expect((await (await fetch(serverlessFetchpWithAllowDomain.href)).json()).server).toBe(
+        "UploadServer"
+      );
+    })
+  </script>
+  <script id="595" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "fetchp with BASIC_AUTH DOESN'T short cucuits inside serverless cells",
+      async () => {
+        // If not direct the headers will be from GFE (Cloud Run)
+        expect(
+          (await (await fetch(serverlessFetchpWithBasicAuth.href)).json()).server
+        ).toBe("Google Frontend");
+      }
+    )
+  </script>
+  <script id="617" type="application/vnd.observable.javascript" pinned="">
+    url = URL.createObjectURL(new Blob([await data.arrayBuffer()]))
+  </script>
+  <script id="621" type="application/vnd.observable.javascript" pinned="">
+    html`<a href=${url}>download`
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    import {createSuite, expect} from '@tomlarkworthy/testing'
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverless-cells'
+  </script>
+</notebook>

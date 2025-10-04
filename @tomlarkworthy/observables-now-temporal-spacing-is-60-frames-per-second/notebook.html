@@ -1,0 +1,59 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Observable's 'now' temporal spacing is 60 or 30 frames per second.</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Observable's _'now'_ temporal spacing is 60 or 30 frames per second.
+
+    Take a __*weighted running mean*__ of subsequent _'now'_ measurements. As its so fast it should quickly converge to a stable measure. The stability comes from integrating information over hundreds of samples.
+
+    My final measurement was _16.6ms_, which is bang-on 60 _frames per second_ (Chrome M1).
+
+    [Jacob Rus](https://observablehq.com/@jrus) reports 30 FPS in Safari
+    `
+  </script>
+  <script id="10" type="application/vnd.observable.javascript" pinned="">
+    mutable mean_diff_ms = 10 // Initial guess is forgotten over time.
+  </script>
+  <script id="16" type="application/vnd.observable.javascript" pinned="">
+    mutable prev_now = (new Date()).getTime();
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    iteration = {
+      // Take a weighted average between the latest measurement and the history, strongly bias towards
+      // history (0.99 unit weight)
+      mutable mean_diff_ms = 0.99 * mean_diff_ms + 0.01 * (now - prev_now)
+      mutable prev_now = now;
+    }
+  </script>
+  <script id="86" type="application/vnd.observable.javascript">
+    md`## Decimating 'now'
+
+    'now' runs a bit fast, can we trigger every 10th?
+    `
+  </script>
+  <script id="92" type="application/vnd.observable.javascript" pinned="">
+    slow_now = {
+      const latest = now; // Will update at 30 or 60 fps
+      if (Math.random() < 0.1) return now
+      else return new Promise(() => {}) // Mask update by returning unresolved promise
+    }
+  </script>
+  <script id="99" type="application/vnd.observable.javascript" pinned="">
+    mutable slow_updates = 0;
+  </script>
+  <script id="111" type="application/vnd.observable.javascript" pinned="">
+    mutable updates = 0; 
+  </script>
+  <script id="105" type="application/vnd.observable.javascript" pinned="">
+    {
+      slow_now
+      mutable slow_updates++
+    }
+  </script>
+  <script id="108" type="application/vnd.observable.javascript" pinned="">
+    {
+      now
+      mutable updates++
+    }
+  </script>
+</notebook>

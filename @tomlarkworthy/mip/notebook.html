@@ -1,0 +1,579 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Mixed Integer / Linear Programming</title>
+  <script id="581" type="text/markdown">
+    # Mixed Integer / Linear Programming
+
+    Mixed integer programming for the browser! Mixed integer programming is restricted but powerful formalism for solving optimization problems. 
+
+    Variables can be
+    - non-negative continuous (default)
+    - integer
+    - binary (which is integer restricted to 0 or 1)
+
+    You can request to **minimize** or **maximize** some **linear** objective function _e.g._ ${tex`4x + 5y`}. Note the main linear limitation is you cannot multiply variables.
+
+    You can provide additional _linear_ constraints on the solution space
+    - ${tex`4x \leq 4`}
+    - ${tex`x - b == 0`}
+
+    The solver will then find a solution that is optimal for your objective (though may take a long time).
+
+    This solver frontend is very different to other linear programming libraries in Javascript, it accepts expressions encoded as strings and does algebraic rearrangement for you.
+
+    Whilst the linearity requirements are a restriction on the creative space, the fact that an optimal solution will be found is why we like the formalism. There are techniques to make Mixed Integer Programming apply to problems that naively look non-linear, e.g. the [Big M method](https://en.wikipedia.org/wiki/Big_M_method) or piecewise discretization. 
+
+    There are very powerful solvers in the commercial market ([Gurobi](gurobi.com), [Google DeepMind](https://deepmind.com/research/publications/2021/Solving-Mixed-Integer-Programs-Using-Neural-Networks)), the one here uses the open source solver [GNU GLPK](https://www.gnu.org/software/glpk/) as a backend but we can add support for more if we can find a WASM binary. GLPK was transpiled to JS by [glpk.js](https://github.com/jvail/glpk.js). GLPK is not directly called, hence the front end can be ISC licensed as a seperate work.
+  </script>
+  <script id="679" type="text/markdown">
+    ### Change log
+    - 2021-09-05: [Fuzzing testing](https://observablehq.com/@tomlarkworthy/expression-fuzzer) + rewrite of some of simplification logic greatly increased robustness
+  </script>
+  <script id="696" type="text/markdown">
+    ## Use outside of Observable?
+
+    Notebooks are ES6 modules, you can depend on them in a package.json!
+  </script>
+  <script id="619" type="application/vnd.observable.javascript">
+    md`### Jo Wood's Observable Intro to Linear Programming
+
+    Jo prepared and excellent selection of examples using this library in their notebook [Hello Linear Programming](https://observablehq.com/@jwolondon/hello-linear-programming)`
+  </script>
+  <script id="538" type="application/vnd.observable.javascript">
+    md`
+    ~~~js
+    import {mip} from '@tomlarkworthy/mip'
+    ~~~
+
+    Example:
+
+    ~~~js
+      mip()
+        .objective(Math.min, '40x1 + 60x2 + 15u2') // Cost, includes fixed cost of using ingredient 2
+        .subjectTo('x1 + x2 + x3 == 1') // Mixing
+        .subjectTo('100x1 + 200x2 >= 90 * (1 - va)') // Nutriant A
+        .subjectTo('80x1 + 150x2 >= 50 * (1 - vb)') // Nutriant B
+        .subjectTo('40x1 + 20x2 >= 20 * (1 - vc)') // Nutriant C
+        .subjectTo('10x1 >= 2 * (1 - vd)') // Nutriant D
+        .var('u2', Boolean) // Used ingredient 2 flag
+        .subjectTo('x2 - u2 <= 0') // For x2 > 0 (but < 1), u2 must also be non-zero, and its a boolean so 1
+        .var('va', Boolean) // violate nutriants A
+        .var('vb', Boolean)
+        .var('vc', Boolean)
+        .var('vd', Boolean)
+        .subjectTo('va + vb + vc + vd <= 1') // Only one violation
+        .solve()
+    ~~~
+    `
+  </script>
+  <script id="632" type="application/vnd.observable.javascript">
+    md`### Conversation on Twitter`
+  </script>
+  <script id="635" type="application/vnd.observable.javascript">
+    tweet('1422788681778307075')
+  </script>
+  <script id="606" type="text/markdown">
+    ### Reporting Bugs
+
+    Post message to https://talk.observablehq.com/t/mixed-integer-programming/5414
+  </script>
+  <script id="589" type="text/markdown">
+
+
+    ## Another example: J E Beasley Operation Research Examples 
+
+    Taken from http://people.brunel.ac.uk/~mastjjb/jeb/or/moreip.html
+
+    ### Basic Blending problem
+
+    Consider the example of a manufacturer of animal feed who is producing feed mix for dairy cattle. In our simple example the feed mix contains two active ingredients and a filler to provide bulk. One kg of feed mix must contain a minimum quantity of each of four nutrients as below:
+
+    ~~~
+    Nutrient       A      B     C     D
+    gram           90     50    20    2
+    ~~~
+    The ingredients have the following nutrient values and cost
+    ~~~
+                            A      B       C       D      Cost/kg
+    Ingredient 1 (gram/kg)  100    80      40      10     40
+    Ingredient 2 (gram/kg)  200    150     20      -      60
+    ~~~
+    What should be the amounts of active ingredients and filler in one kg of feed mix?
+  </script>
+  <script id="374" type="text/markdown">
+    ### Blending problem solution
+    Variables
+
+    In order to solve this problem it is best to think in terms of one kilogram of feed mix. That kilogram is made up of three parts - ingredient 1, ingredient 2 and filler so: let
+    x1 = amount (kg) of ingredient 1 in one kg of feed mix
+    x2 = amount (kg) of ingredient 2 in one kg of feed mix
+    x3 = amount (kg) of filler in one kg of feed mix
+    where x1 >= 0, x2 >= 0 and x3 >= 0.
+
+    Constraints
+    balancing constraint (an implicit constraint due to the definition of the variables)
+    x1 + x2 + x3 = 1
+    nutrient constraints
+
+    100x1 + 200x2 >= 90 (nutrient A)
+    80x1 + 150x2 >= 50 (nutrient B)
+    40x1 + 20x2 >= 20 (nutrient C)
+    10x1 >= 2 (nutrient D)
+    Note the use of an inequality rather than an equality in these constraints, following the rule we put forward in the Two Mines example, where we assume that the nutrient levels we want are lower limits on the amount of nutrient in one kg of feed mix.
+
+    #### Objective
+
+    Presumably to minimise cost, i.e.
+
+    _minimize_ ${tex`40x1 + 60x2`}
+
+
+    which gives us our complete LP model for the blending problem.
+  </script>
+  <script id="394" type="application/vnd.observable.javascript" pinned="">
+    blendingAns = mip()
+      .objective(Math.min, '40x1 + 60x2')
+      .subjectTo('x1 + x2 + x3 == 1')
+      .subjectTo('100x1 + 200x2 >= 90')
+      .subjectTo('80x1 + 150x2 >= 50')
+      .subjectTo('40x1 + 20x2 >= 20')
+      .subjectTo('10x1 >= 2')
+      .solve()
+  </script>
+  <script id="428" type="application/vnd.observable.javascript">
+    Inputs.table(
+      Object.entries(blendingAns.vars).map(([k, v]) => ({ var: k, value: v }))
+    )
+  </script>
+  <script id="440" type="text/markdown">
+    #### Blending Problem++
+
+    Suppose now we have the additional conditions:
+
+    if we use any of ingredient 2 we incur a fixed cost of 15
+    we need not satisfy all four nutrient constraints but need only satisfy three of them (i.e. whereas before the optimal solution required all four nutrient constraints to be satisfied now the optimal solution could (if it is worthwhile to do so) only have three (any three) of these nutrient constraints satisfied and the fourth violated.
+    Give the complete MIP formulation of the problem with these two new conditions added.
+  </script>
+  <script id="460" type="application/vnd.observable.javascript" pinned="">
+    Inputs.table(
+      Object.entries(blendingPlusAns.vars).map(([k, v]) => ({ var: k, value: v }))
+    )
+  </script>
+  <script id="456" type="application/vnd.observable.javascript" pinned="">
+    blendingPlusAns = mip()
+      .objective(Math.min, '40x1 + 60x2 + 15u2') // Cost, includes fixed cost of using ingredient 2
+      .subjectTo('x1 + x2 + x3 == 1') // Mixing
+      .subjectTo('100x1 + 200x2 >= 90 * (1 - va)') // Nutriant A
+      .subjectTo('80x1 + 150x2 >= 50 * (1 - vb)') // Nutriant B
+      .subjectTo('40x1 + 20x2 >= 20 * (1 - vc)') // Nutriant C
+      .subjectTo('10x1 >= 2 * (1 - vd)') // Nutriant D
+      .var('u2', Boolean) // Used ingredient 2 flag
+      .subjectTo('x2 - u2 <= 0') // For x2 > 0 (but < 1), u2 must also be non-zero, and its a boolean so 1
+      .var('va', Boolean) // violate nutriants A
+      .var('vb', Boolean)
+      .var('vc', Boolean)
+      .var('vd', Boolean)
+      .subjectTo('va + vb + vc + vd <= 1') // Only one violation
+      .solve()
+  </script>
+  <script id="60" type="application/vnd.observable.javascript">
+    function mip() {
+      glpkService;
+      const model = new Model();
+      return {
+        objective: function(maxOrMin, expr) {
+          model.objective(maxOrMin, expr);
+          return this;
+        },
+        var: function(label, type = Number) {
+          model.var(label, type);
+          return this;
+        },
+        subjectTo: function(label, expr) {
+          model.subjectTo(label, expr);
+          return this;
+        },
+        model: function() {
+          return model;
+        },
+        solve: async function() {
+          const session = randomId();
+          let resolve, reject;
+          const result = new Promise((_resolve, _reject) => {
+            resolve = _resolve;
+            reject = _reject;
+          });
+          // listen for solution
+          function solutionHandler(event) {
+            if (
+              event.origin === window.origin &&
+              event.data.tag === server_comm_tag &&
+              event.data.method === "solution" &&
+              event.data.session === session
+            ) {
+              console.log("Response received");
+              const result = event.data.result;
+
+              if (result.status === "optimal") resolve(result);
+              else {
+                const err = new Error(result.status);
+                err.result = result;
+                reject(err);
+              }
+            }
+          }
+          window.addEventListener("message", solutionHandler, false);
+          invalidation.then(() =>
+            window.removeEventListener("message", solutionHandler)
+          );
+
+          // Send problem off to solver
+          window.postMessage(
+            {
+              tag: server_comm_tag,
+              method: "solve",
+              session: session,
+              model: model
+            },
+            window.origin
+          );
+          return result;
+        }
+      };
+    }
+  </script>
+  <script id="263" type="application/vnd.observable.javascript">
+    md`### Tests`
+  </script>
+  <script id="292" type="application/vnd.observable.javascript" pinned="">
+    suite.test("subjectTo lower bound", async () => {
+      const result = await mip()
+        .objective(Math.min, 'y')
+        .subjectTo("y >= 1")
+        .solve();
+      expect(result.vars.y).toBe(1);
+    })
+  </script>
+  <script id="371" type="application/vnd.observable.javascript" pinned="">
+    suite.test("subjectTo upper bound", async () => {
+      const result = await mip()
+        .objective(Math.max, 'y')
+        .subjectTo("y <= 10")
+        .solve();
+      expect(result.vars.y).toBe(10);
+    })
+  </script>
+  <script id="400" type="application/vnd.observable.javascript" pinned="">
+    // See https://github.com/jvail/glpk.js/issues/29
+    suite.test("variables cannot be negative", async () => {
+      const result = await mip()
+        .objective(Math.min, 'x')
+        .subjectTo("x >= -1")
+        .solve();
+      expect(result.vars.x).toBe(0);
+    })
+  </script>
+  <script id="613" type="application/vnd.observable.javascript" pinned="">
+    // See https://github.com/jvail/glpk.js/issues/29
+    suite.test("variables cannot be negative workaround", async () => {
+      const result = await mip()
+        .objective(Math.min, 'x_pos - x_neg')
+        .subjectTo("x_pos - x_neg >= -1")
+        .solve();
+      expect(result.vars.x_pos).toBe(0);
+      expect(result.vars.x_neg).toBe(1);
+    })
+  </script>
+  <script id="309" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Integer variable", async () => {
+      const result = await mip()
+        .objective(Math.min, 'x')
+        .var("x", BigInt)
+        .subjectTo("x >= 1.1")
+        .solve();
+      expect(result.vars.x).toBe(2);
+    })
+  </script>
+  <script id="364" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Boolean variable max is 1", async () => {
+      const result = await mip()
+        .objective(Math.max, 'x')
+        .var("x", Boolean)
+        .solve();
+      expect(result.vars.x).toBe(1);
+    })
+  </script>
+  <script id="470" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Boolean variable min is 0", async () => {
+      const result = await mip()
+        .objective(Math.min, 'x')
+        .var("x", Boolean)
+        .solve();
+      expect(result.vars.x).toBe(0);
+    })
+  </script>
+  <script id="520" type="application/vnd.observable.javascript" pinned="">
+    suite.test("Using boolean to indicate non-negative", async () => {
+      const result = await mip()
+        .objective(Math.min, 'x + b')
+        .var('b', Boolean)
+        .subjectTo('x >= 1')
+        .subjectTo('x - b <= 0') // For x > 0 (but < 1), b must also be non-zero, and its a boolean so 1
+        .solve();
+      expect(result.vars.b).toBe(1);
+    })
+  </script>
+  <script id="300" type="application/vnd.observable.javascript" pinned="">
+    suite.test("solve unbounded throws", async done => {
+      try {
+        const result = await mip()
+          .objective(Math.max, 'x')
+          .solve();
+      } catch (err) {
+        expect(err.result.status).toBe('unbounded');
+        done();
+      }
+    })
+  </script>
+  <script id="654" type="application/vnd.observable.javascript" pinned="">
+    suite.test(
+      "scaling to 10000 variables if the objective function is in a simple form",
+      async () => {
+        const terms = Array.from({ length: 10000 })
+          .map((_, i) => `x${i}`)
+          .join(" + ");
+        const result = await mip()
+          .objective(Math.min, terms)
+          .solve();
+        expect(result.vars.x0).toBe(0);
+      }
+    )
+  </script>
+  <script id="285" type="application/vnd.observable.javascript">
+    viewof suite = createSuite({ name: "MIP tests" })
+  </script>
+  <script id="282" type="application/vnd.observable.javascript">
+    import { createSuite, expect } from '@tomlarkworthy/testing'
+  </script>
+  <script id="210" type="application/vnd.observable.javascript">
+    import { randomId } from '@tomlarkworthy/randomid'
+  </script>
+  <script id="15" type="text/markdown">
+    ### Licensing
+
+    The solver backend is GLPK which is GPL 3.0, but this MIP front end is ISC. Our integration to the backend is pluggable and the front end communicates with the GLPK core via postMessage in a analogous way to a CLI. Let me explain how this works and why the client can be released as ISC and doesn't have to take on GPL licensing terms.
+
+    **Background**
+
+    If one program is statically or dynamically linked to a GPL program. It needs to also be releases under GPL terms. However, if the two programs remain separate, it does not.
+
+    _"By contrast, pipes, sockets and command-line arguments are communication mechanisms normally used between two separate programs. So when they are used for communication, the modules normally are separate programs."_ -- [GNU FAQ](https://www.gnu.org/licenses/old-licenses/gpl-2.0-faq.en.html#TOCMereAggregation) 
+
+    We can see this separation at work in the Python ecosystem, e.g. PuLP invokes GLPK but is not GPL because it invokes through the CLI https://github.com/coin-or/pulp (which is common to how MIP solvers are invoked).
+
+    https://github.com/coin-or/pulp/blob/master/pulp/apis/glpk_api.py
+
+    One the Web, *almost* everything is dynamically linked so what is the equivalent interface to a UNIX pipe?
+    Critically, so the separate programs directly call each other functions? Or do they call an intermedia public API. Some musings are here.
+
+    _"But it is also possible to call generically written Javascript from a document and pass information to that Javascript using a well-established public API. This would be an indication that the works may be considered separate. The answer would be dependent on an analysis of the particular case at hand."_ [Stack overflow](https://opensource.stackexchange.com/a/4500/24642)
+
+    postMessage is a WEB API often used to serialize messages between web workers who have isolated address spaces. This is the WEB version of process isolation and analogous to independant programs on native OSes. So, if we wrap GLPK with a postMessage interface, and keep its interface generic like its CLI, then programs that go through the postMessage interface should are considered separate programs and are not required to be GPLed, as long as the integration is generic.
+
+    Thus particular effort is made to ensure the GLPK backend is swappable and we use the postMessage interface to communicate.
+  </script>
+  <script id="93" type="application/vnd.observable.javascript">
+    md`### Linear Programming Model (Dual license, ISC and GPL)
+    Here we define our Linear Programming data model, which can be serialized and deserialized either side of the postMessage interface.
+    `
+  </script>
+  <script id="100" type="application/vnd.observable.javascript" pinned="">
+    class Model {
+      constructor() {
+        this.types = {};
+        this.constraints = {};
+      }
+      objective(dir, expr) {
+        if (dir === Math.max) this.dir = "max";
+        else if (dir === Math.min) this.dir = "min";
+        else throw new Error(`Unrecognized dir ${dir}`);
+
+        this.objective = extract(expr + "<= 0").vars;
+      }
+      var(label, type = Number) {
+        let _type = undefined;
+        if (type === BigInt) _type = "int";
+        else if (type === Number) _type = "real";
+        else if (type === Boolean) _type = "bool";
+        else throw new Error(`Unrecognized type ${type}`);
+
+        this.types[label] = _type;
+      }
+      subjectTo(
+        expr,
+        { label = `c-${Object.keys(this.constraints).length}` } = {}
+      ) {
+        const constraint = extract(expr);
+        this.constraints[label] = constraint;
+      }
+    }
+  </script>
+  <script id="75" type="application/vnd.observable.javascript">
+    client_comm_tag = "uuCTsfALkm"
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    md`### GLPK backend (GPL licensed)`
+  </script>
+  <script id="78" type="application/vnd.observable.javascript">
+    server_comm_tag = "uuCTsfALkm"
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    messages = []
+  </script>
+  <script id="184" type="application/vnd.observable.javascript" pinned="">
+    mip()
+      .objective(Math.max, 'x1')
+      .var("x1")
+      .subjectTo("x1 <= 10")
+      .model()
+  </script>
+  <script id="179" type="application/vnd.observable.javascript" pinned="">
+    function modelToLp(model) {
+      return {
+        name: 'LP',
+        objective: {
+          direction:
+            model.dir == "max"
+              ? glpk.GLP_MAX
+              : model.dir == "min"
+              ? glpk.GLP_MIN
+              : "unknown",
+          name: 'obj',
+          vars: model.objective
+        },
+        generals: Object.entries(model.types)
+          .filter(e => e[1] === 'int')
+          .map(([name, type]) => name),
+        binaries: Object.entries(model.types)
+          .filter(e => e[1] === 'bool')
+          .map(([name, type]) => name),
+        subjectTo: Object.entries(model.constraints).map(([name, c]) => ({
+          name,
+          vars: c.vars,
+          bnds: {
+            type:
+              c.bounds.upper === c.bounds.lower
+                ? glpk.GLP_FX
+                : c.bounds.upper !== undefined && c.bounds.lower !== undefined
+                ? glpk.GLP_DB
+                : c.bounds.upper !== undefined
+                ? glpk.GLP_UP
+                : glpk.GLP_LO,
+            ub: c.bounds.upper,
+            lb: c.bounds.lower
+          }
+        }))
+      };
+    }
+  </script>
+  <script id="240" type="application/vnd.observable.javascript" pinned="">
+    function glpkToResult(result) {
+      const status =
+        result.status === glpk.GLP_UNDEF
+          ? "undefined"
+          : result.status === glpk.GLP_FEAS
+          ? "feasible"
+          : result.status === glpk.GLP_INFEAS
+          ? "infeasible"
+          : result.status === glpk.GLP_NOFEAS
+          ? "nofeasible"
+          : result.status === glpk.GLP_OPT
+          ? "optimal"
+          : result.status === glpk.GLP_UNBND
+          ? "unbounded"
+          : "unrecognised status code";
+
+      return {
+        vars: result.vars,
+        status: status
+      };
+    }
+  </script>
+  <script id="490" type="application/vnd.observable.javascript">
+    viewof debug = Inputs.checkbox(['debug'])
+  </script>
+  <script id="506" type="application/vnd.observable.javascript" pinned="">
+    mutable cplex = ""
+  </script>
+  <script id="513" type="application/vnd.observable.javascript" pinned="">
+    mutable lp = ({})
+  </script>
+  <script id="53" type="application/vnd.observable.javascript" pinned="">
+    glpkService = {
+      const handler = async event => {
+        if (
+          event.origin === window.origin &&
+          event.data.tag === server_comm_tag &&
+          event.data.method === "solve"
+        ) {
+          console.log("Running on GLPK");
+          const model = modelToLp(event.data.model);
+          if (debug.length) {
+            const result = glpk.write(model);
+            mutable cplex = result;
+            mutable lp = JSON.stringify(model, null, 2);
+            debugger;
+          }
+          const output = await glpk.solve(model, event.data.options || {});
+          console.log("GLPK complete");
+          event.source.postMessage(
+            {
+              tag: server_comm_tag,
+              method: "solution",
+              session: event.data.session,
+              result: glpkToResult(output.result)
+            },
+            window.origin
+          );
+        }
+      };
+      window.addEventListener("message", handler, false);
+      invalidation.then(() => window.removeEventListener("message", handler));
+    }
+  </script>
+  <script id="2" type="application/vnd.observable.javascript">
+    glpk = {
+      const module = await import('https://cdn.skypack.dev/glpk.js@4.0.1?min')
+      return module.default()
+    }
+  </script>
+  <script id="88" type="application/vnd.observable.javascript" pinned="">
+    glpk.solve({
+      name: 'LP',
+      objective: {
+        direction: glpk.GLP_MIN,
+        name: 'obj',
+        vars: [{ name: 'x', coef: 1 }]
+      },
+      subjectTo: [
+        {
+          name: 'cons1',
+          vars: [{ name: 'x', coef: 1.0 }],
+          bnds: { type: glpk.GLP_UP, lb: -1.0, ub: 1000 }
+        }
+      ]
+    })
+  </script>
+  <script id="129" type="application/vnd.observable.javascript">
+    import { extract, extractLHS } from '@tomlarkworthy/glpk-canonicalization'
+  </script>
+  <script id="628" type="application/vnd.observable.javascript">
+    import { tweet } from '@mbostock/tweet'
+  </script>
+  <script id="710" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/endpoint-services-footer"
+  </script>
+  <script id="717" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

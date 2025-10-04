@@ -1,0 +1,512 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Static Site Generator (Netlify)</title>
+  <script id="382" type="application/vnd.observable.javascript">
+    html`<div class="content">${md`
+    # Static Site Generator (Netlify)
+
+    Deploy an high performance static site from a notebook. Using Observable as the administrative front end to Netlify hosting has a few nice properties.
+
+    - Static file hosting for incredible performance.
+    - Option to create your build tooling and content programatically. 
+    - All hosted in the browser so no tools to install.
+    - Out of the box support for Markdown, Latex, SVG and raw HTML. Add your own!
+    - Partial deployments, only files that change are sent to Netlify. Its fast to deploy.
+    - Intelligent cacheing, CDN cache is purged on deploy, so no more uncertainty waiting around for the live version to update.
+    - URL based content definition, deploy files from external sources too.
+
+    To use, call _deployStaticFile_ in a content notebook.
+
+    ~~~js
+        import {deployStaticFile, queryDependants} from '@tomlarkworthy/netlify-deploy'
+    ~~~
+
+    Instantiate against the *api_id* of your Netlify project (mislabelled app_id here), the URL of the content you wish to deploy, and the path on the website that you want.
+
+    ~~~js
+        deployStaticFile({
+          app_id: 'b6a918d2-9cda-4fde-b2ec-add91b22ea02', // Find in Netlify site settings
+          source: preview.href,                           // Address to find the content 
+          target: "/blogs/jamstack.html",                 // Path suffix on domain
+          tags: ["blog"],                                 // Used for organization
+          dependsOnTags: ["global"]                       // Content inter-depedencies
+        })
+    ~~~
+
+    The function will return a HTML form that triggers a deploy:
+
+    ![](${await FileAttachment("image@5.png").url()})
+
+    For a minimal example have a look at [@tdlgkjfhdljovtttqrzu/netlify-test](https://observablehq.com/@tdlgkjfhdljovtttqrzu/netlify-test)
+
+    I write my personal blog using this tool. Some examples
+
+    - An article template I fork for blog posts https://observablehq.com/@tomlarkworthy/blog-simple-article-template
+    - Setting up a common page theme: https://observablehq.com/@tomlarkworthy/blog-theme
+    - Creating a top level index.html of the last 20 articles: https://observablehq.com/@tomlarkworthy/blog-index-html
+    - Adding an RSS feed: https://observablehq.com/@tomlarkworthy/rss-feed
+
+    The blog is hosted on [tomlarkworthy.endpointservices.net](https://tomlarkworthy.endpointservices.net/). On my blog, the footer of each page links the [Observablehq.com](https://observablehq.com) source code.
+
+    `}`;
+  </script>
+  <script id="827" type="application/vnd.observable.javascript">
+    html`<div class="content">${md`
+    ### One-off Setup
+    Login to Endpoint Services and Authorize it with Netlify
+    `}`
+  </script>
+  <script id="678" type="application/vnd.observable.javascript">
+    authorizer = {
+      // Ensure user is logged in
+      if (!(viewof user).value.uid) return html`${viewof user}`;
+      if (session.access_token) {
+        async function unauthorize() {
+          await firebase.firestore()
+            .doc(`/services/netlify-proxy/sessions/${(viewof user).value.uid}`)
+            .delete();
+        }
+        return html`<div>
+                    ${viewof user}
+                    <a class="button"
+                       href="https://app.netlify.com/authorize"
+                       onclick=${unauthorize}>Unauthorize with Netlify</a>`
+      } else if (params.access_token) {
+        if (session.nonce === params.state.nonce) {
+          await firebase.firestore()
+            .doc(`/services/netlify-proxy/sessions/${(viewof user).value.uid}`)
+            .set({
+              access_token: params.access_token,
+              token_type: params.token_type
+            }, {merge: true});
+          return html`Authorized`;
+        } else {
+          return html`<a class="button" href="https://observablehq.com/@endpointservices/netlify">Mismatched nonce reload</a>`;
+        }
+      } else {
+        if (nextNonce !== session.nonce) {
+          await firebase.firestore()
+            .doc(`/services/netlify-proxy/sessions/${(viewof user).value.uid}`)
+            .set({
+              nonce: nextNonce
+            }, {merge: true});
+        }
+
+        async function authorize(evt) {
+          const url = 'https://app.netlify.com/authorize?' +
+                'client_id=' + client_id +
+                '&response_type=token' +
+                '&redirect_uri=https://observablehq.com/@endpointservices/netlify' +
+                '&state=' + encodeURIComponent(JSON.stringify(session));
+          evt.target.href = url;
+        }
+
+        return html`<div>
+          ${viewof user}
+          <a class="button"
+             href="https://app.netlify.com/authorize"
+             onclick=${authorize}>authorize with Netlify</a>
+        </div>`
+      }
+
+    }
+
+
+  </script>
+  <script id="1079" type="application/vnd.observable.javascript">
+    html`<div class="content">${md`
+    ## Static Site Generator library functions
+    `}`
+  </script>
+  <script id="965" type="application/vnd.observable.javascript">
+    signature(deployStaticFile, {
+      description: 'Deploys a file to a path on a Netlify hosted domain.',
+      open: true
+    })
+  </script>
+  <script id="255" type="application/vnd.observable.javascript">
+    async function deployStaticFile({
+        app_id,             // Netlify api_id (typod to app_id)
+        target,             // Path on domain to deploy this file to
+        source,             // URL where to fecth file contents.
+        tags = [],          // Search tags for content queries
+        dependsOnTags = [], // Describe depedencies between content
+        ...metadata         // Additional user fields to be saved in CMS
+      } = {}) {
+      return deployStaticFiles({
+        app_id,
+        files: [{
+          app_id,
+          target,
+          source,
+          tags,
+          dependsOnTags,
+          ...metadata
+        }]
+      })
+    }
+  </script>
+  <script id="1181" type="application/vnd.observable.javascript" pinned="">
+    signature(deployStaticFiles, {
+      description: 'Deploys several files on Netlify hosted domain.',
+      open: true
+    })
+  </script>
+  <script id="1168" type="application/vnd.observable.javascript" pinned="">
+    async function deployStaticFiles({
+        app_id,             // Netlify api_id (typod to app_id)
+        immediate = false,    // auto-deploy (no button click)
+        files = [
+          //target,             // Path on domain to deploy this file to
+          //source,             // URL where to fecth file contents.
+          //tags = [],          // Search tags for content queries
+          //dependsOnTags = [], // Describe depedencies between content
+          //...metadata         // Additional user fields to be saved in CMS
+        ]
+      } = {}) {
+      const id = files[0].target;
+      if (spinners[id]) return html`${spinners[id]}`;
+
+      // Ensure user is logged in
+      if (!(viewof user).value.uid) return html`${viewof user}`;
+
+      // If there is no session data
+      if (!session.access_token) {  
+        "deployStaticFiles: no access token"
+        if (nextNonce !== session.nonce) {
+          await firebase.firestore()
+            .doc(`/services/netlify-proxy/sessions/${(viewof user).value.uid}`)
+            .set({
+              nonce: nextNonce
+            }, {merge: true});
+        }
+
+        async function authorize(evt) {
+          const url = 'https://app.netlify.com/authorize?' +
+                'client_id=' + client_id +
+                '&response_type=token' +
+                '&redirect_uri=https://observablehq.com/@endpointservices/netlify' +
+                '&state=' + encodeURIComponent(JSON.stringify(session));
+          evt.target.href = url;
+        }
+
+        return html`
+              <a class="button"
+               href="https://app.netlify.com/authorize"
+               onclick=${authorize}>authorize with Netlify</a>
+        `;
+      }
+      // have access token
+      const subdomain = location.host.split(".")[0];
+
+
+      async function digestFileAndDeploySite(evt) {
+        const unitsPromise = files.map(async file => {
+          const unit = ({
+            ...file,
+            source: file.source,
+            tags: file.tags || [],
+            dependsOnTags: file.dependsOnTags || [],
+            app_id,
+            target: file.target,
+            type: "file",
+            safeTarget: encodeURIComponent(file.target),
+          });
+
+          const unitURI = `/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units/${unit.safeTarget}`;
+
+          console.log("deployStaticFile: fetching previous deploy");
+          const existing = (await firebase.firestore().doc(unitURI).get()).data()
+
+
+          if (existing && existing.creationDate === undefined) {
+            console.log("deployStaticFile: backfilling creationDate");
+            await firebase.firestore()
+              .doc(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units/${unit.safeTarget}`)
+              .set({creationDate: firebase.firebase_.firestore.FieldValue.serverTimestamp()}, {merge: true})
+          }
+
+          console.log("deployStaticFile: syncing paramaters");
+          await firebase.firestore()
+            .doc(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units/${unit.safeTarget}`)
+            .set({
+              ...(!existing && {
+                creationDate: firebase.firebase_.firestore.FieldValue.serverTimestamp()
+              }),
+              ...unit
+            }, {merge: true})
+
+          return unit;
+        });
+
+        var units = await promiseRecursive(unitsPromise);
+
+        var tags = units.reduce(
+          (list, unit) => list.concat(unit.tags)
+          ,[]
+        )
+
+
+        const cache = {};
+
+        message(id, "Deploying...\nQuerying dependents");
+
+        // For now we do one round of dependencies
+        const dependees = tags.length > 0 ? (await firebase.firestore()
+                          .collection(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units`)
+                          .where("type", "==", "file")
+                          .where("dependsOnTags", "array-contains-any", [...new Set(tags || [])])
+                          .limit(100)
+                          .get()).docs.map(d => d.data())
+                          : [];
+
+        const updates = dependees.concat(units).map(unit => updateDigest({
+          app_id, subdomain
+        }, unit, cache));
+
+        message(id, `${updates.length} files to update`)
+        await Promise.all(updates);
+
+
+        message(id, `Retreiving existing ${dependees.length} files metadata`)
+        const existingFiles = (await firebase.firestore()
+                          .collection(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units`)
+                          .where("type", "==", "file")
+                          .get()).docs.map(d => d.data());
+
+        // console.log(existingFiles, cache)
+        message(id, `Creating deploy with Netlify`)
+        const deploy_json = await createDeploy(app_id, existingFiles);
+        const requiredDigests = deploy_json.required;
+        deployments[id] = deploy_json.ssl_url;
+        message(id, `Syncing required files ${requiredDigests}`)
+        const uploads = requiredDigests.map(digest => {
+          if (!cache[digest]) {
+            console.error(`Netlify has requested digest ${digest} which was not part of our sync`);
+            // So lets find it
+            let record;
+            firebase.firestore()
+              .collection(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units`)
+              .where("digest", "==", digest)
+              .get()
+              .then(snap => {
+                record = snap.docs[0].data()
+                return fetch(record.source);
+              }).then(response => response.text())
+              .then(content => {
+                return uploadContent(deploy_json.id, record.target, content);
+              })
+          } else {
+            return uploadContent(deploy_json.id, cache[digest].target, cache[digest].content);
+          }
+        });
+
+        try {
+          await Promise.all(uploads);
+          message(id, null);
+        } catch (err) {
+          message(id, err.message);
+        }
+      }
+      if (immediate && (!deployments[id])) {
+        deployments[id] = 'inprogress'
+        digestFileAndDeploySite()
+      } else if (deployments[id] === 'inprogress') {
+        return md`Deployment in progress`
+      } else {
+        return html`
+          ${Inputs.table(files)}
+        ${deployments[id] ?
+          html`<p>Deployed to <a target="_blank" href=${deployments[id] + files[0].target}>${deployments[id] +  files[0].target}</a>`
+          : null}
+        <button class="button" onclick=${digestFileAndDeploySite}>deploy</button>
+        `
+      }
+    }
+  </script>
+  <script id="955" type="application/vnd.observable.javascript">
+    signature(queryDependants, {
+      description: 'Query dependants searches for all content with specific tags, useful for content grouping, sitemaps RSS feeds etc.',
+      open: true
+    })
+  </script>
+  <script id="573" type="application/vnd.observable.javascript">
+    function queryDependants({
+        app_id,
+        dependsOnTags,
+        limit = 100
+      } = {}) {
+      const subdomain = location.host.split(".")[0]
+      return listen(firebase.firestore().collection(
+        `/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units`)
+            .where("type", "==", "file")
+            .where("tags", "array-contains-any", [...new Set(dependsOnTags)])
+            .orderBy("creationDate", "desc")
+            .limit(limit)
+        );  
+    }
+  </script>
+  <script id="0" type="application/vnd.observable.javascript">
+    html`<div class=content>${
+    md`### Setup up your Netlify
+
+
+    Create a Netfliy site (without git)
+    ![](${await FileAttachment("image.png").url()})
+
+    Drag and empty folder, this creates a new site.
+
+    ![](${await FileAttachment("image@2.png").url()})
+
+    Make a note of its API ID
+
+    ![](${await FileAttachment("image@3.png").url()})
+
+    `}`
+  </script>
+  <script id="920" type="application/vnd.observable.javascript">
+    html`<div class="content">${
+    md`## Supporting state
+    `}`
+  </script>
+  <script id="1202" type="application/vnd.observable.javascript" pinned="">
+    function message(id, message) {
+      mutable spinners = ({
+        ...mutable spinners,
+        id: message
+      })
+    }
+  </script>
+  <script id="1002" type="application/vnd.observable.javascript">
+    mutable spinners = ({
+
+    })
+  </script>
+  <script id="1020" type="application/vnd.observable.javascript">
+    mutable deployments = ({
+
+    });
+  </script>
+  <script id="178" type="application/vnd.observable.javascript">
+    params = {
+      const params = Object.fromEntries(new URLSearchParams(location.hash.substring(1)).entries())
+      params.state = params.state ? JSON.parse(decodeURIComponent(params.state)): null;
+      return params;
+    }
+  </script>
+  <script id="713" type="application/vnd.observable.javascript">
+    session = (viewof user).value.uid ? listen(firebase.firestore().doc(`/services/netlify-proxy/sessions/${(viewof user).value.uid}`), {
+      defaultValue: {}
+    }): {}
+  </script>
+  <script id="768" type="application/vnd.observable.javascript">
+    nextNonce = Math.random();
+  </script>
+  <script id="582" type="application/vnd.observable.javascript">
+    async function updateDigest({
+        subdomain, app_id
+      } = {}, unit, cache) {
+      const response = await fetch(unit.source)
+      if (response.status >= 400) throw new Error(`Cannot remote resource: ${unit.source}`)
+      const content = await response.text();
+      const digest = await new hashes.SHA1().hex(content);
+      await firebase.firestore()
+        .doc(`/services/netlify-proxy/subdomains/${subdomain}/apps/${app_id}/units/${unit.safeTarget}`)
+        .set({digest}, {merge:true})
+      console.log(`${unit.target} has digest: ${digest}, content: ${content.substring(20)}`)
+      cache[digest] = {
+        content: content,
+        target: unit.target,
+        digest: digest,
+      };
+    }
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+
+    async function createDeploy(app_id, files) {
+
+      const deploy_response = await fetchp(`https://api.netlify.com/api/v1/sites/${app_id}/deploys`, {
+        method: "POST",
+        body: JSON.stringify({
+          "files": files.reduce(
+            (acc, file) => ({ ...acc, [file.target]: file.digest }),
+            {}
+          )
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${session.access_token}`
+        }
+      });
+      if (deploy_response.status !== 200)
+        throw new Error(`${deploy_response.status}): ${deploy_response.text()}`);
+      const deploy = await deploy_response.json();
+      console.log(deploy)
+      return deploy;
+    }
+  </script>
+  <script id="597" type="application/vnd.observable.javascript">
+    async function uploadContent(deploy_id, target, content) {
+      const netlify = "https://api.netlify.com/api/v1";
+      const uploadResponse = await fetchp(`${netlify}/deploys/${deploy_id}/files/${target}`, {
+        method: "PUT",
+        body: new TextEncoder().encode(content),
+        headers: {
+          "Content-Type": "application/octet-stream",
+          "Authorization": `Bearer ${session.access_token}`
+        }
+      })
+      const text = await uploadResponse.text();
+      if (uploadResponse.status >= 400) throw new Error(text)
+      return text;
+    }
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    version = 9
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    hashes = require("jshashes")
+  </script>
+  <script id="148" type="application/vnd.observable.javascript">
+    client_id = "nR-8fzREOHe0-6B2vGY6czBXxxpurQloK0niTCRR4PM"
+  </script>
+  <script id="1141" type="application/vnd.observable.javascript">
+    html`<div class="content"><h4> Credits</h4><p>
+    Preview image, <span>Photo by <a href="https://unsplash.com/@andredantan19?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Andre Tan</a> on <a href="https://unsplash.com/s/photos/static?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a></span>
+    `
+
+  </script>
+  <script id="1137" type="application/vnd.observable.javascript">
+    html`<div class="content"><h4> Imports`
+  </script>
+  <script id="548" type="application/vnd.observable.javascript">
+    import {html} from "@observablehq/htl"
+  </script>
+  <script id="889" type="application/vnd.observable.javascript">
+    import {viewof user, firebase, listen} from '@endpointservices/login'
+  </script>
+  <script id="154" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverside-cells'
+  </script>
+  <script id="199" type="application/vnd.observable.javascript">
+    import {bulma} from '@tomlarkworthy/bulma'
+  </script>
+  <script id="884" type="application/vnd.observable.javascript">
+    import {fetchp} from '@tomlarkworthy/fetchp'
+  </script>
+  <script id="962" type="application/vnd.observable.javascript">
+    import {signature} from '@mootari/signature'
+  </script>
+  <script id="1173" type="application/vnd.observable.javascript" pinned="">
+    import {promiseRecursive} from '@tomlarkworthy/utils'
+  </script>
+  <script id="693" type="application/vnd.observable.javascript">
+    bulma
+  </script>
+  <script id="1248" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="1253" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

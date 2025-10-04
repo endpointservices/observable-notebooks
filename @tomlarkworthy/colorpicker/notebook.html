@@ -1,0 +1,137 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Color Picker (with alpha) and optional pickrOptions, see Code</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Color Picker (with alpha) and optional pickrOptions, see **Code**
+    <i>\`<input type=color>\` doesn't support [alpha](https://github.com/w3c/html/issues/1422), so here's [Pickr](https://github.com/Simonwep/pickr) trimmed down for Observable.</i>
+    `
+  </script>
+  <script id="249" type="application/vnd.observable.javascript">
+    md`
+    \`\`\`js
+    import {colorPicker} from "@tomlarkworthy/colorpicker"
+    \`\`\`
+    `
+  </script>
+  <script id="521" type="application/vnd.observable.javascript">
+    viewof nameExample = colorPicker("steelblue")
+  </script>
+  <script id="539" type="application/vnd.observable.javascript">
+    viewof hexExample = colorPicker("#eee")
+  </script>
+  <script id="511" type="application/vnd.observable.javascript">
+    viewof rgbExample = colorPicker("rgb(219, 44, 44)")
+  </script>
+  <script id="520" type="application/vnd.observable.javascript">
+    viewof rgbaExample = colorPicker("rgba(64, 161, 0, 0.77)")
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    viewof hslExample = colorPicker("hsl(220, 53%, 43%)")
+  </script>
+  <script id="592" type="application/vnd.observable.javascript">
+    viewof hsvaExample = colorPicker("hsva(240, 69%, 66%, 0.4)")
+  </script>
+  <script id="505" type="application/vnd.observable.javascript">
+    md`## Formatting
+    - Color string is formatted according to the initial value (first arg).
+    - Optionally pass an explicit [TinyColor format string](https://github.com/bgrins/TinyColor#tostring) as second arg.
+      - e.g. \`"hex", "rgb", "hsl", "hsv", "name"\`
+
+    ## Known issues
+    - Pickr seems to be lossy
+      - i.e. moving the knobs to original position may not return original value
+    - Pickr modal is occluded by expanded cells.
+    - Trying to adjust Pickr modal size (width,height,padding) throws off the knob positions, so we're stuck with the default.
+    `
+  </script>
+  <script id="258" type="application/vnd.observable.javascript">
+    md`## Code`
+  </script>
+  <script id="85" type="application/vnd.observable.javascript">
+    function colorPicker(defaultValue, format, pickrOptions = {}) {
+      // Set desired color format.
+      format = format || tinycolor(defaultValue).getFormat();
+
+      // Build container element.
+      const container = html`
+      <div style="height:2.4em;">
+        ${styles}
+        <div id="picker"></div>
+        <code id="label" style="margin-left: 0.5em;"></code>
+      </div>`;
+      const picker = container.querySelector("#picker");
+      const label = container.querySelector("#label");
+
+      // Set color value.
+      const setValue = colorStr => {
+        // Create color object from string.
+        const color = tinycolor(colorStr);
+
+        // Hex doesn't support alpha (but will in CSS4), so force RGB if alpha is < 1.
+        const actualFormat = tinycolor(color.toString(format)).getFormat();
+        const forceRGB = actualFormat === "hex" && color.getAlpha() < 1;
+
+        // Create desired output color string and display it.
+        const finalColorStr = color.toString(forceRGB ? "rgb" : format);
+        label.innerHTML = finalColorStr;
+
+        // Notify Observable about change in value.
+        container.value = finalColorStr;
+        container.dispatchEvent(new window.Event("input", { bubbles: true }));
+      };
+      setValue(defaultValue);
+
+      // Setup Pickr.
+      const setupPickr = () => {
+        new Pickr({
+          el: picker,
+          default: tinycolor(defaultValue).toString("rgb"),
+          onChange: c => setValue(c.toRGBA().toString()),
+          comparison: false,
+          components: {
+            preview: false,
+            opacity: true,
+            hue: true
+          },
+          ...pickrOptions
+        });
+      };
+
+      // For some reason, Pickr doesn't want to set the default color unless the element is mounted,
+      // so we wait for it to mount here.
+      const interval = setInterval(() => {
+        if (document.body.contains(container)) {
+          clearInterval(interval);
+          setupPickr();
+        }
+      }, 100);
+
+      return container;
+    }
+  </script>
+  <script id="344" type="application/vnd.observable.javascript">
+    styles = html`
+    <link rel="stylesheet" href="https://unpkg.com/pickr-widget@0.2.0/dist/pickr.min.css"/>
+    <style>
+      /* Make sure picker stays above other Observable elements. */
+      .pcr-app.visible {
+        z-index: 10000000;
+      }
+      /* Allow our value label to be appended with good alignment. */
+      .pickr {
+        display: inline-block;
+        vertical-align: middle;
+      }
+    </style>
+    `
+  </script>
+  <script id="682" type="application/vnd.observable.javascript">
+    md`## Dependencies`
+  </script>
+  <script id="368" type="application/vnd.observable.javascript" pinned="">
+    tinycolor = require("tinycolor2@1.4.1")
+  </script>
+  <script id="15" type="application/vnd.observable.javascript" pinned="">
+    Pickr = require("pickr-widget@0.2.0")
+  </script>
+</notebook>

@@ -1,0 +1,46 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Serverless arrow file consumption</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`![](${await FileAttachment("ApachearrowClient@1.png").url()})
+
+    # Serverless arrow file consumption
+
+    * The [server](https://observablehq.com/@endpointservices/how-to-arrow-server) serves the resource in the cloud.
+    * The [client](https://observablehq.com/@endpointservices/how-to-arrow-client) consumes it in a user’s browser.
+
+    Here we read a _CSV_ and _arrow_ dataset off a [serverless](https://observablehq.com/@endpointservices/serverless-cells) endpoint using _d3_ and _arquero_
+
+
+    `
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    notebook = `@endpointservices/how-to-arrow-server`
+  </script>
+  <script id="18" type="application/vnd.observable.javascript" pinned="">
+    // data.csv endpoint
+    d3.csv(`https://webcode.run/observablehq.com/${notebook};data.csv`, d3.autoType)
+  </script>
+  <script id="2" type="application/vnd.observable.javascript" pinned="">
+    // data.arrow endpoint
+    dt = aq.loadArrow(`https://webcode.run/observablehq.com/${notebook};data.arrow`)
+  </script>
+  <script id="9" type="application/vnd.observable.javascript" pinned="">
+    results = Table(dt)
+  </script>
+  <script id="5" type="application/vnd.observable.javascript" pinned="">
+    aq = require('arquero')
+  </script>
+  <script id="7" type="application/vnd.observable.javascript" pinned="">
+    import { Table } from "@observablehq/inputs"
+  </script>
+  <script id="33" type="application/vnd.observable.javascript" pinned="">
+    d3 = require("d3@6")
+  </script>
+  <script id="86" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="90" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

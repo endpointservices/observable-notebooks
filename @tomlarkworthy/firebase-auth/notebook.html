@@ -1,0 +1,249 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Firebase Auth</title>
+  <script id="0" type="text/markdown">
+    # Firebase Auth
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js = import(
+      await FileAttachment("firebase-auth@1.min.js").url()
+    )
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    ActionCodeOperation = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['ActionCodeOperation']
+  </script>
+  <script id="8" type="application/vnd.observable.javascript">
+    ActionCodeURL = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['ActionCodeURL']
+  </script>
+  <script id="9" type="application/vnd.observable.javascript">
+    AuthCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['AuthCredential']
+  </script>
+  <script id="10" type="application/vnd.observable.javascript">
+    AuthErrorCodes = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['AuthErrorCodes']
+  </script>
+  <script id="11" type="application/vnd.observable.javascript">
+    EmailAuthCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['EmailAuthCredential']
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    EmailAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['EmailAuthProvider']
+  </script>
+  <script id="13" type="application/vnd.observable.javascript">
+    FacebookAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['FacebookAuthProvider']
+  </script>
+  <script id="14" type="application/vnd.observable.javascript">
+    FactorId = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['FactorId']
+  </script>
+  <script id="15" type="application/vnd.observable.javascript">
+    GithubAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['GithubAuthProvider']
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    GoogleAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['GoogleAuthProvider']
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    OAuthCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['OAuthCredential']
+  </script>
+  <script id="18" type="application/vnd.observable.javascript">
+    OAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['OAuthProvider']
+  </script>
+  <script id="19" type="application/vnd.observable.javascript">
+    OperationType = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['OperationType']
+  </script>
+  <script id="20" type="application/vnd.observable.javascript">
+    PhoneAuthCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['PhoneAuthCredential']
+  </script>
+  <script id="21" type="application/vnd.observable.javascript">
+    PhoneAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['PhoneAuthProvider']
+  </script>
+  <script id="22" type="application/vnd.observable.javascript">
+    PhoneMultiFactorGenerator = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['PhoneMultiFactorGenerator']
+  </script>
+  <script id="23" type="application/vnd.observable.javascript">
+    ProviderId = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['ProviderId']
+  </script>
+  <script id="24" type="application/vnd.observable.javascript">
+    RecaptchaVerifier = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['RecaptchaVerifier']
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    SAMLAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['SAMLAuthProvider']
+  </script>
+  <script id="26" type="application/vnd.observable.javascript">
+    SignInMethod = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['SignInMethod']
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    TwitterAuthProvider = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['TwitterAuthProvider']
+  </script>
+  <script id="28" type="application/vnd.observable.javascript">
+    applyActionCode = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['applyActionCode']
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    beforeAuthStateChanged = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['beforeAuthStateChanged']
+  </script>
+  <script id="30" type="application/vnd.observable.javascript">
+    browserLocalPersistence = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['browserLocalPersistence']
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    browserPopupRedirectResolver = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['browserPopupRedirectResolver']
+  </script>
+  <script id="32" type="application/vnd.observable.javascript">
+    browserSessionPersistence = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['browserSessionPersistence']
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    checkActionCode = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['checkActionCode']
+  </script>
+  <script id="34" type="application/vnd.observable.javascript">
+    confirmPasswordReset = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['confirmPasswordReset']
+  </script>
+  <script id="35" type="application/vnd.observable.javascript">
+    connectAuthEmulator = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['connectAuthEmulator']
+  </script>
+  <script id="36" type="application/vnd.observable.javascript">
+    createUserWithEmailAndPassword = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['createUserWithEmailAndPassword']
+  </script>
+  <script id="37" type="application/vnd.observable.javascript">
+    debugErrorMap = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['debugErrorMap']
+  </script>
+  <script id="38" type="application/vnd.observable.javascript">
+    deleteUser = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['deleteUser']
+  </script>
+  <script id="39" type="application/vnd.observable.javascript">
+    fetchSignInMethodsForEmail = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['fetchSignInMethodsForEmail']
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    getAdditionalUserInfo = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getAdditionalUserInfo']
+  </script>
+  <script id="41" type="application/vnd.observable.javascript">
+    getAuth = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getAuth']
+  </script>
+  <script id="42" type="application/vnd.observable.javascript">
+    getIdToken = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getIdToken']
+  </script>
+  <script id="43" type="application/vnd.observable.javascript">
+    getIdTokenResult = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getIdTokenResult']
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    getMultiFactorResolver = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getMultiFactorResolver']
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    getRedirectResult = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['getRedirectResult']
+  </script>
+  <script id="46" type="application/vnd.observable.javascript">
+    inMemoryPersistence = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['inMemoryPersistence']
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    indexedDBLocalPersistence = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['indexedDBLocalPersistence']
+  </script>
+  <script id="48" type="application/vnd.observable.javascript">
+    initializeAuth = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['initializeAuth']
+  </script>
+  <script id="49" type="application/vnd.observable.javascript">
+    isSignInWithEmailLink = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['isSignInWithEmailLink']
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    linkWithCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['linkWithCredential']
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    linkWithPhoneNumber = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['linkWithPhoneNumber']
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    linkWithPopup = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['linkWithPopup']
+  </script>
+  <script id="53" type="application/vnd.observable.javascript">
+    linkWithRedirect = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['linkWithRedirect']
+  </script>
+  <script id="54" type="application/vnd.observable.javascript">
+    multiFactor = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['multiFactor']
+  </script>
+  <script id="55" type="application/vnd.observable.javascript">
+    onAuthStateChanged = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['onAuthStateChanged']
+  </script>
+  <script id="56" type="application/vnd.observable.javascript">
+    onIdTokenChanged = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['onIdTokenChanged']
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    parseActionCodeURL = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['parseActionCodeURL']
+  </script>
+  <script id="58" type="application/vnd.observable.javascript">
+    prodErrorMap = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['prodErrorMap']
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    reauthenticateWithCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['reauthenticateWithCredential']
+  </script>
+  <script id="60" type="application/vnd.observable.javascript">
+    reauthenticateWithPhoneNumber = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['reauthenticateWithPhoneNumber']
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    reauthenticateWithPopup = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['reauthenticateWithPopup']
+  </script>
+  <script id="62" type="application/vnd.observable.javascript">
+    reauthenticateWithRedirect = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['reauthenticateWithRedirect']
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    reload = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['reload']
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    sendEmailVerification = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['sendEmailVerification']
+  </script>
+  <script id="65" type="application/vnd.observable.javascript">
+    sendPasswordResetEmail = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['sendPasswordResetEmail']
+  </script>
+  <script id="66" type="application/vnd.observable.javascript">
+    sendSignInLinkToEmail = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['sendSignInLinkToEmail']
+  </script>
+  <script id="67" type="application/vnd.observable.javascript">
+    setPersistence = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['setPersistence']
+  </script>
+  <script id="68" type="application/vnd.observable.javascript">
+    signInAnonymously = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInAnonymously']
+  </script>
+  <script id="69" type="application/vnd.observable.javascript">
+    signInWithCredential = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithCredential']
+  </script>
+  <script id="70" type="application/vnd.observable.javascript">
+    signInWithCustomToken = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithCustomToken']
+  </script>
+  <script id="71" type="application/vnd.observable.javascript">
+    signInWithEmailAndPassword = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithEmailAndPassword']
+  </script>
+  <script id="72" type="application/vnd.observable.javascript">
+    signInWithEmailLink = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithEmailLink']
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    signInWithPhoneNumber = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithPhoneNumber']
+  </script>
+  <script id="74" type="application/vnd.observable.javascript">
+    signInWithPopup = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithPopup']
+  </script>
+  <script id="75" type="application/vnd.observable.javascript">
+    signInWithRedirect = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signInWithRedirect']
+  </script>
+  <script id="76" type="application/vnd.observable.javascript">
+    signOut = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['signOut']
+  </script>
+  <script id="77" type="application/vnd.observable.javascript">
+    unlink = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['unlink']
+  </script>
+  <script id="78" type="application/vnd.observable.javascript">
+    updateCurrentUser = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['updateCurrentUser']
+  </script>
+  <script id="79" type="application/vnd.observable.javascript">
+    updateEmail = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['updateEmail']
+  </script>
+  <script id="80" type="application/vnd.observable.javascript">
+    updatePassword = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['updatePassword']
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    updatePhoneNumber = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['updatePhoneNumber']
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    updateProfile = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['updateProfile']
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    useDeviceLanguage = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['useDeviceLanguage']
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    verifyBeforeUpdateEmail = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['verifyBeforeUpdateEmail']
+  </script>
+  <script id="85" type="application/vnd.observable.javascript">
+    verifyPasswordResetCode = https___www_gstatic_com_firebasejs_9_9_2_firebase_auth_js['verifyPasswordResetCode']
+  </script>
+</notebook>

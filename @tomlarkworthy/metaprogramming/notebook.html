@@ -1,0 +1,277 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Metaprogramming with Peek [Not recommended for production user]</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Metaprogramming with _Peek_ [Not recommended for production user]
+
+    <center style="height:320px"><span style="font-size:800px; line-height: 730px">*</span></center>
+
+    _Peek_ will dynamically evaluate another notebook cell as a [generator](https://observablehq.com/@observablehq/introduction-to-generators?collection=@observablehq/generators). _PeekFirst_ will read a cell as a promise.
+
+    This will help build notebooks (metabooks?) that apply a common functions to other notebooks, e.g. [SVG to GIF converter](https://observablehq.com/@tomlarkworthy/svg-to-gif).
+
+    `
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    signature(peek, {
+      description: "Reads 'cell' in another notebook and returns the stream of values as a [generator](https://observablehq.com/@observablehq/introduction-to-generators?collection=@observablehq/generators)"
+    })
+  </script>
+  <script id="19" type="application/vnd.observable.javascript" pinned="">
+    function peek({
+      notebook = "@tomlarkworthy/metaprogramming", // Target notebook
+      cell = undefined, // Name of target cell, or undefined for anonymous
+      filter = value => true // Filter values (useful for extracting anonymous values
+    } = {}) {
+      notebook = notebook.replace('https://observablehq.com/', '');
+      const safeFilter = value => {
+        try {
+          return filter(value);
+        } catch (err) {
+          console.error(err);
+          return false;
+        }
+      };
+      return Generators.observe(next => {
+        // See Mike Bostock's https://talk.observablehq.com/t/importcell-conflicts-with-static-import/4548/14
+        // Instantiate a new runtime, but reuse the existing runtime’s require.
+        // (This is ensures that any requires in imports still work.)
+        const library = Object.assign(new Library(), { require: () => require });
+        const runtime = new Runtime(library);
+
+        import(`https://api.observablehq.com/${notebook}.js?v=3`)
+          .then(({ default: define } = {}) => {
+            const imported = runtime.module(define, name => {
+              if (cell && name !== cell) return null;
+              console.log("name", name);
+              return {
+                fulfilled(value) {
+                  if (safeFilter(value)) next(value);
+                },
+                rejected(err) {
+                  if (safeFilter(err)) next(Promise.reject(err));
+                }
+              };
+            });
+          })
+          .catch(err => next(Promise.reject(err)));
+
+        return () => runtime.dispose();
+      });
+    }
+  </script>
+  <script id="272" type="application/vnd.observable.javascript">
+    signature(peekFirst, {
+      description: "Same as peek but returns a promise, useful for reading static values"
+    })
+  </script>
+  <script id="267" type="application/vnd.observable.javascript">
+    function peekFirst(args) {
+      const generator = peek(args)
+      const value = generator.next().value;
+      value.then(() => generator.return()); // Afgter we resolve a vlaue then we can dispose of the generator
+      return value;
+    }
+  </script>
+  <script id="514" type="application/vnd.observable.javascript">
+    signature(peekMany, {
+      description:
+        "Same as peek but returns an array of generators running off the same runtime. Useful for aggregating data across a dataflow graph."
+    })
+  </script>
+  <script id="512" type="application/vnd.observable.javascript" pinned="">
+    function peekMany({
+      notebook = "@tomlarkworthy/metaprogramming", // Target notebook
+      cells = [] // Name of target cell, or undefined for anonymous
+    } = {}) {
+      notebook = notebook.replace('https://observablehq.com/', '');
+
+      const generators = [];
+      const nexts = cells.reduce((acc, cell) => {
+        generators.push(Generators.observe(next => (acc[cell] = next)));
+        return acc;
+      }, {});
+
+      // See Mike Bostock's https://talk.observablehq.com/t/importcell-conflicts-with-static-import/4548/14
+      // Instantiate a new runtime, but reuse the existing runtime’s require.
+      // (This is ensures that any requires in imports still work.)
+      const library = Object.assign(new Library(), { require: () => require });
+      const runtime = new Runtime(library);
+
+      import(`https://api.observablehq.com/${notebook}.js?v=3`).then(
+        ({ default: define } = {}) => {
+          const imported = runtime.module(define, name => {
+            if (!nexts[name]) return null;
+            return {
+              fulfilled(value) {
+                nexts[name](value);
+              },
+              rejected(err) {
+                nexts[name](Promise.reject(err));
+              }
+            };
+          });
+        }
+      );
+      return generators;
+    }
+  </script>
+  <script id="511" type="application/vnd.observable.javascript" pinned="">
+
+  </script>
+  <script id="137" type="application/vnd.observable.javascript" pinned="">
+    md`## Examples`
+  </script>
+  <script id="139" type="application/vnd.observable.javascript" pinned="">
+    peek_value = peek({
+      notebook: "@tomlarkworthy/metaprogramming",
+      cell: 'constant_string'
+    });
+  </script>
+  <script id="490" type="application/vnd.observable.javascript" pinned="">
+    /*
+    peek_injected_value = peek({
+      notebook: "@tomlarkworthy/metaprogramming",
+      cell: 'constant_string',
+      injections: { constant_string: "rewrite" }
+    })*/
+  </script>
+  <script id="147" type="application/vnd.observable.javascript" pinned="">
+    peek_promise = peek({
+      notebook: "@tomlarkworthy/metaprogramming",
+      cell: 'promise'
+    });
+  </script>
+  <script id="160" type="application/vnd.observable.javascript" pinned="">
+    peek_promise_err = peek({
+      notebook: "@tomlarkworthy/metaprogramming",
+      cell: 'promise_err'
+    });
+  </script>
+  <script id="255" type="application/vnd.observable.javascript" pinned="">
+    peek_generator = peek({
+      notebook: "@tomlarkworthy/metaprogramming",
+      cell: 'generator'
+    });
+  </script>
+  <script id="17" type="application/vnd.observable.javascript">
+    Runtime = observablehq.Runtime
+  </script>
+  <script id="453" type="application/vnd.observable.javascript">
+    Library = observablehq.Library
+  </script>
+  <script id="54" type="application/vnd.observable.javascript">
+    viewof peekTests = createSuite({
+      name: "Peak Tests"
+    })
+  </script>
+  <script id="60" type="application/vnd.observable.javascript">
+    peekTests.test("peek_value", async () => {
+      expect(peek_value).toMatch("https://observablehq.com/@tomlarkworthy/metaprogramming#constant_string")
+    })
+  </script>
+  <script id="491" type="application/vnd.observable.javascript" pinned="">
+    /*
+    peekTests.test("peek_injected_value", async () => {
+      expect(peek_injected_value).toMatch("rewrite");
+    })*/
+  </script>
+  <script id="151" type="application/vnd.observable.javascript">
+    peekTests.test("peak_promise", async () => {
+      expect(peek_promise).toMatch("promised")
+    })
+  </script>
+  <script id="164" type="application/vnd.observable.javascript">
+    peekTests.test("peak_promise_err", async () => {
+      const value = peek({
+          notebook: "@tomlarkworthy/metaprogramming",
+          cell: 'promise_err'
+        }).next().value
+      return await expect(value).rejects.toBe("rejected")
+    })
+  </script>
+  <script id="257" type="application/vnd.observable.javascript">
+    peekTests.test("peak_generator", async () => {
+      const generator = peek({
+        notebook: "@tomlarkworthy/metaprogramming",
+        cell: 'generator'
+      });
+      await expect(generator.next().value).resolves.toBe(1);
+      await expect(generator.next().value).resolves.toBe(2);
+      await expect(generator.next().value).resolves.toBe(3);
+    })
+  </script>
+  <script id="554" type="application/vnd.observable.javascript">
+    peekTests.test("peak_dependent_generator", async () => {
+      const dependentGenerator = peek({
+        notebook: "@tomlarkworthy/metaprogramming",
+        cell: 'dependentGenerator'
+      });
+      await expect(dependentGenerator.next().value).resolves.toBe(2);
+      await expect(dependentGenerator.next().value).resolves.toBe(3);
+      await expect(dependentGenerator.next().value).resolves.toBe(4);
+    })
+  </script>
+  <script id="279" type="application/vnd.observable.javascript">
+    peekTests.test("peakFirst_generator", async () => {
+      const value = peekFirst({
+          notebook: "@tomlarkworthy/metaprogramming",
+          cell: 'generator'
+        });
+      await expect(value).resolves.toBe(1)
+    })
+  </script>
+  <script id="421" type="application/vnd.observable.javascript">
+    peekTests.test("bad import throws", async () => {
+      const value = peek({
+          notebook: "@tomlarkworthy/no_such_notebook",
+          cell: 'promise_err'
+        }).next().value
+      return await expect(value).rejects.toThrow()
+    })
+  </script>
+  <script id="522" type="application/vnd.observable.javascript">
+    peekTests.test("peak_many_intertwined_generator", async () => {
+      const generators = peekMany({
+        notebook: "@tomlarkworthy/metaprogramming",
+        cells: ['generator', 'dependentGenerator']
+      });
+      await expect(generators[0].next().value).resolves.toBe(1);
+      await expect(generators[0].next().value).resolves.toBe(2);
+      await expect(generators[0].next().value).resolves.toBe(3);
+      await expect(generators[1].next().value).resolves.toBe(2);
+      await expect(generators[1].next().value).resolves.toBe(3);
+      await expect(generators[1].next().value).resolves.toBe(4);
+    })
+  </script>
+  <script id="101" type="application/vnd.observable.javascript">
+    md`## Test Data`
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    constant_string = "https://observablehq.com/@tomlarkworthy/metaprogramming#constant_string"
+  </script>
+  <script id="107" type="application/vnd.observable.javascript">
+    promise = new Promise((resolve) => resolve("promised"))
+  </script>
+  <script id="110" type="application/vnd.observable.javascript">
+    promise_err = new Promise((resolve, reject) => reject("rejected"))
+  </script>
+  <script id="253" type="application/vnd.observable.javascript">
+    generator = yield* new Set([1, 2, 3])
+  </script>
+  <script id="528" type="application/vnd.observable.javascript">
+    dependentGenerator = generator + 1
+  </script>
+  <script id="383" type="application/vnd.observable.javascript">
+    md`### Imports`
+  </script>
+  <script id="49" type="application/vnd.observable.javascript">
+    import {createSuite, expect} from '@tomlarkworthy/testing'
+  </script>
+  <script id="25" type="application/vnd.observable.javascript">
+    import {signature} from '@mootari/signature'
+  </script>
+  <script id="449" type="application/vnd.observable.javascript" pinned="">
+    observablehq = require("@observablehq/runtime@4")
+  </script>
+</notebook>

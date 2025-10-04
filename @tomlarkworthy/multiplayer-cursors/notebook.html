@@ -1,0 +1,197 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Multiplayer Cursors</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Multiplayer Cursors
+
+    I love the shared cursor thing Miro has. 
+
+    This is kind of similar except it doesn't work at the document level as their is no consistency between layouts across devices. Miro works because it has a fixed layout (with independent zoom levels).
+
+    Still, it is a very cool effect and combined with [@tomlarkworthy/shareview](https://observablehq.com/@tomlarkworthy/shareview) that allows controls to be synchronized between viewers you can kind of figure out what the other person is doing.
+
+    ### Conclusion
+
+    Database overhead peaked at 11% with 10 concurrent users. We should maybe try to be a little more effecient (max publish rate). No-pne cursors line up becuase layouts differ, so some kinda of relative positioning might be better if we want to stick with a general solution.
+
+    Cursers that are backgrounded for a while get flooded with updates when going back online, the full history is replayed which seems suboptimal. Ideally we should disconnect the server and reconnect. (the person is not really there)
+
+    We were suffering from zombie cursers due to https://github.com/firebase/firebase-js-sdk/issues/174 but that seems to be fixed 2022-08-11
+    `
+  </script>
+  <script id="128" type="application/vnd.observable.javascript">
+    html`<div><h2>Online now</h2><ul>${online.sort().map(
+      entry => html`
+    <li id=${entry.device}>
+    ${entry.device}
+    </li>`
+    )}</ul>`
+  </script>
+  <script id="372" type="application/vnd.observable.javascript">
+    md`## Try some controls out!`
+  </script>
+  <script id="449" type="application/vnd.observable.javascript">
+    md`Normal controls can be interacted with bot the other people all have different views`
+  </script>
+  <script id="375" type="application/vnd.observable.javascript">
+    Range([0, 100], { label: "unshared control" })
+  </script>
+  <script id="444" type="application/vnd.observable.javascript">
+    md`If we use [@tomlarkworthy/shareview](https://observablehq.com/@tomlarkworthy/shareview) this control we update for everybody`
+  </script>
+  <script id="384" type="application/vnd.observable.javascript">
+    viewof shared = Range([0, 100], { label: "shared control" })
+  </script>
+  <script id="386" type="application/vnd.observable.javascript">
+    share("shared", viewof shared)
+  </script>
+  <script id="297" type="application/vnd.observable.javascript">
+    online = listen(onlineRef, {
+      includeId: true
+    })
+  </script>
+  <script id="402" type="application/vnd.observable.javascript">
+    mutable devices = []
+  </script>
+  <script id="406" type="application/vnd.observable.javascript">
+    syncDevices = {
+      const current = online.map(r => r._id);
+      if (!_.isEqualWith(devices, current)) {
+        mutable devices = current;
+      }
+    }
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    onlineRef = db.ref(
+      `/shareinput/${FKEY.encode(html`<a href>`.href.split('?')[0])}/online`
+    )
+  </script>
+  <script id="268" type="application/vnd.observable.javascript">
+    meRef = {
+      if (!devices.includes(device)) {
+        const meRef = onlineRef.child(device);
+        meRef.onDisconnect().set(null);
+        meRef.set({
+          device
+        });
+      }
+      return onlineRef.child(device);
+    }
+  </script>
+  <script id="47" type="application/vnd.observable.javascript">
+    syncPointers = {
+      online.forEach((player) => {
+        if (pointers[player.device]) {
+          const rect = pointers[player.device].parentNode.getBoundingClientRect();
+          pointers[player.device].style.left = player.x;
+          pointers[player.device].style.top = player.y;
+        }
+      });
+    }
+  </script>
+  <script id="347" type="application/vnd.observable.javascript">
+    updateMyMouse = {
+      const pointermoved = e => {
+        const rect = pointers[device].parentNode.getBoundingClientRect();
+        meRef.set({
+          device,
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+      };
+      document.addEventListener("pointermove", pointermoved);
+      invalidation.then(() => {
+        document.removeEventListener("pointermove", pointermoved);
+      });
+    }
+  </script>
+  <script id="580" type="application/vnd.observable.javascript">
+    enableLogging = firebase.firebase_.database.enableLogging(true)
+  </script>
+  <script id="353" type="application/vnd.observable.javascript">
+    md`### Graphics`
+  </script>
+  <script id="358" type="application/vnd.observable.javascript">
+    viewof pointers = {
+      const svgs = devices.reduce((acc, device) => {
+        acc[device] = pointer(device);
+        return acc;
+      }, {});
+
+      const ui = html`<div>${Object.values(svgs)}`;
+      ui.value = svgs;
+      return ui;
+    }
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    pointer = seed => {
+      return svg`<svg style="position: relative; stroke-width:10;pointer-events: none;" viewBox="9 9 125 190" width="12">
+        <polygon points="10,10 10,150 45,117 73,181 92,173 63,110 113,105"/ fill="${colorFromString(
+          seed
+        )}" stroke="black">
+      </svg>`;
+    }
+  </script>
+  <script id="96" type="application/vnd.observable.javascript">
+    FIREBASE_CONFIG = ({
+      apiKey: "AIzaSyAqtghLj-S9NX0rj11ynWIovHOj3Wx9bqQ",
+      databaseURL: "https://calculus-d7a63.firebaseio.com",
+      projectId: "calculus-d7a63",
+      appId: "1:55204078424:web:ee6243e9fcb0578e653b2d"
+    })
+  </script>
+  <script id="111" type="application/vnd.observable.javascript">
+    device = {
+      let session = localStorage.getItem("@tomlarkworthy/multiplayer-cursors");
+      if (!session) {
+        session = randomId(16);
+        localStorage.setItem("@tomlarkworthy/multiplayer-cursors", session);
+      }
+      return session;
+    }
+  </script>
+  <script id="462" type="application/vnd.observable.javascript">
+    colorFromString = str => {
+      let sum = 1;
+      for (var i = 0; i < str.length; i++) {
+        sum *= str.charCodeAt(i);
+      }
+      return `hsl(${sum % 360},100%,50%)`;
+    }
+  </script>
+  <script id="500" type="application/vnd.observable.javascript">
+    colorFromString("400")
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    import {
+      share,
+      db,
+      firebase,
+      FKEY
+    } with { FIREBASE_CONFIG } from "@tomlarkworthy/shareview"
+  </script>
+  <script id="294" type="application/vnd.observable.javascript">
+    import { listen } with { FIREBASE_CONFIG } from '@tomlarkworthy/firebase'
+  </script>
+  <script id="102" type="application/vnd.observable.javascript">
+    import { randomId } from '@tomlarkworthy/randomid'
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    import { localStorage } from '@mbostock/safe-local-storage'
+  </script>
+  <script id="132" type="application/vnd.observable.javascript">
+    import { Range } from '@observablehq/inputs'
+  </script>
+  <script id="169" type="application/vnd.observable.javascript">
+    import { reconcile } from '@tomlarkworthy/reconcile-nanomorph'
+  </script>
+  <script id="528" type="application/vnd.observable.javascript">
+    import { html, svg } from '@observablehq/htl'
+  </script>
+  <script id="553" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="574" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,144 @@
+<!doctype html>
+<notebook theme="air">
+  <title>RAG Extension for Roboco-op</title>
+  <script id="0" type="text/markdown">
+    # RAG Extension for Roboco-op
+
+    This extension reads the user question to locate relvant examples from a knowledge base. Invoke the extension function in a roboco-op notebook to install it. Uses a prepared index built with [@tomlarkworthy/notebook-rag](https://observablehq.com/@tomlarkworthy/notebook-rag)
+
+    ~~~js
+    import {extension} from "@tomlarkworthy/rag-extension"
+    ~~~
+
+    TODO:
+    - We should save the _inputs and (maybe) the _name in the code index, then we can decompile more effectively
+
+  </script>
+  <script id="2853" type="application/vnd.observable.javascript">
+    viewof question = Inputs.textarea({ label: "question" })
+  </script>
+  <script id="2860" type="application/vnd.observable.javascript">
+    example_results = vector_search(question)
+  </script>
+  <script id="2864" type="application/vnd.observable.javascript" pinned="">
+    {
+      debugger;
+      return formatResults(example_results, { n: 2 });
+    }
+  </script>
+  <script id="2822" type="application/vnd.observable.javascript" pinned="">
+    extension = ({
+      robocoop: {
+        onContext: async ({ question, context }) => {
+          const examples = await rag_context(question, { n: 4 });
+          context.push({
+            role: "user",
+            content: examples
+          });
+        }
+      }
+    })
+  </script>
+  <script id="2768" type="application/vnd.observable.javascript" pinned="">
+    rag_context("draw a plot", { n: 4 })
+  </script>
+  <script id="2811" type="application/vnd.observable.javascript" pinned="">
+    rag_context = load_indexes &&
+      (async (question, options) => formatResults(await vector_search(question, options)))
+  </script>
+  <script id="2785" type="application/vnd.observable.javascript" pinned="">
+    formatResults = async (results) => `
+    General Examples
+    ================
+
+    ${(
+      await Promise.all(
+        results.map(
+          async (result, i) => `assistant:
+    upsert_cell({
+      cell_name: "example_${i}",
+      code: \`${await decompile([
+        {
+          _inputs: [],
+          _name: undefined,
+          _definition: result.code
+        }
+      ])}\`
+    })`
+        )
+      )
+    ).join("\n\n")}
+
+    `
+  </script>
+  <script id="2774" type="application/vnd.observable.javascript" pinned="">
+    load_indexes // Ensure load_indexes has executed
+  </script>
+  <script id="2746" type="application/vnd.observable.javascript">
+    import { vector_search, load_indexes } from "@tomlarkworthy/notebook-rag"
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+    code is automatically added to the context. Use `highlight(<expr>)` to selectively bring runtime values into the context as well
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      variables,
+      api_call_response,
+      background_tasks,
+      ndd,
+      _ndd,
+      instruction,
+      _events,
+      highlight,
+      decompile,
+      compile,
+      mutable context,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+</notebook>

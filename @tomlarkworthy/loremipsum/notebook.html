@@ -1,0 +1,30 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Lorem Ipsum</title>
+  <script id="0" type="text/markdown">
+    # Lorem Ipsum
+  </script>
+  <script id="8" type="application/vnd.observable.javascript" pinned="">
+    loremIpsum = (await require("https://bundle.run/lorem-ipsum@2.0.4")).loremIpsum
+  </script>
+  <script id="32" type="application/vnd.observable.javascript" pinned="">
+    example = loremIpsum({
+      count: 3, // Number of "words", "sentences", or "paragraphs"
+      format: "plain", // "plain" or "html"
+      paragraphLowerBound: 3, // Min. number of sentences per paragraph.
+      paragraphUpperBound: 7, // Max. number of sentences per paragarph.
+      random: Math.random, // A PRNG function
+      sentenceLowerBound: 5, // Min. number of words per sentence.
+      sentenceUpperBound: 15, // Max. number of words per sentence.
+      suffix: "\n", // Line ending, defaults to "\n" or "\r\n" (win32)
+      units: "paragraph" // paragraph(s), "sentence(s)", or "word(s)"
+      // words: ["ad", ...]       // Array of words to draw from
+    })
+  </script>
+  <script id="11" type="text/markdown" pinned="">
+    ${
+      // We need two newlines to start new paragraphs in Markdown, whereas the generator only generate one newline per paragraph
+      example.replaceAll("\n", "\n\n")
+    }
+  </script>
+</notebook>

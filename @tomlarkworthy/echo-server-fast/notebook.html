@@ -1,0 +1,22 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Echo Server Fast</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Echo Server Fast `
+  </script>
+  <script id="4" type="application/vnd.observable.javascript">
+    import { deploy } from "@endpointservices/webcode"
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    echo = deploy(
+      "default",
+      (req, res) => {
+        req.body ? res.send(req.body) : res.end();
+      },
+      {
+        modifiers: ["terminal"],
+        reusable: true
+      }
+    )
+  </script>
+</notebook>

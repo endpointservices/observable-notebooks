@@ -1,0 +1,562 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Responsive grid</title>
+  <script id="0" type="text/markdown">
+    # Responsive *grid*
+
+    Place views on responsive grid panels to create mobile friendly composite views *quickly*.
+
+    ~~~js
+      import {grid} from '@tomlarkworthy/grid'
+    ~~~
+
+  </script>
+  <script id="714" type="application/vnd.observable.javascript">
+    viewof gridPanelExample = grid({
+      elements: exampleElements // See below, [{name: {p,x,y,z,w,h,view:...}}, ...]
+    })
+  </script>
+  <script id="1555" type="application/vnd.observable.javascript">
+    gridEditor(viewof gridPanelExample)
+  </script>
+  <script id="1037" type="application/vnd.observable.javascript">
+    gridEditor = (gridView) =>
+      grid({
+        config: {
+          rows: 9
+        },
+        elements: {
+          configTitle: { panel: 0, w: 12, view: md`**config**` },
+          config: {
+            p: 0,
+            y: 1,
+            w: 12,
+            view: Inputs.bind(
+              view`<span>${[
+                "rows",
+                Inputs.range([1, 24], {
+                  label: "rows",
+                  value: 6,
+                  step: 1
+                })
+              ]}
+          ${[
+            "columns",
+            Inputs.range([1, 24], { label: "columns", value: 12, step: 1 })
+          ]}
+          ${[
+            "gridSize",
+            Inputs.range([25, 45], {
+              label: "gridSize (⚠️ global)",
+              value: 32,
+              step: 1
+            })
+          ]}
+          ${[
+            "panels",
+            Inputs.range([1, 12], { label: "panels", value: 32, step: 1 })
+          ]}`,
+              gridView.config
+            )
+          },
+          childTitle: {
+            p: 1,
+            w: 12,
+            view: Inputs.bind(
+              Inputs.select(Object.keys(gridView.elements), {
+                label: "element"
+              }),
+              viewof selected
+            )
+          },
+          child: {
+            p: 1,
+            y: 1,
+            w: 12,
+            view: Inputs.bind(
+              view`<span>${["p", Inputs.range([0, 10], { label: "p", step: 1 })]}
+            ${["x", Inputs.range([0, 36], { label: "x" })]}
+            ${["y", Inputs.range([0, 36], { label: "y" })]}
+            ${["w", Inputs.range([1, 24], { label: "w", step: 1 })]}
+            ${["h", Inputs.range([0, 24], { label: "h", step: 1 })]}
+            ${["z", Inputs.range([-10, 10], { label: "z", step: 1 })]}
+            ${["_view", Inputs.input(gridView.elements.plot.view)]}`,
+              gridView.elements[selected]
+            )
+          }
+        }
+      })
+  </script>
+  <script id="1324" type="text/markdown">
+    ## Simple Uniform Coordinates... *yet responsive*
+
+    The controls above are for building intuition over the coordinate system and grid parameters. Play with it! (you can instantiate it against your own grids too)
+
+    Formally, there are *n* panels which rearrange to suit the screen resolutions. Typically three panels per row for **desktop** and 1 per row on **mobile**. 
+
+    On each panel is a **uniform** grid, typically 12 x 12, that keyed subviews can be placed. The constructor and the view's value emits objects of the form:-
+
+    ```
+    grid({
+      config: {
+        panels: <number: total number of panels, default calculated>
+        columns: <number: columns per panel, default 12>
+        rows: <number: rows per panel, default 12>
+        elements: <dictionary: named elements (see above)>
+      },
+      elements: {
+        <key>: {
+          p: <number: panel the element is on>
+          x: <number: x coord on grid>,
+          y: <number: y coord on grid>,
+          z: <number: z-index for occlusion>,
+          w: <number: width on grid>,
+          h: <number: height on grid>
+          view: <DOMNode: the visual element>
+        }
+      }
+    })
+    ```
+
+
+
+
+
+
+  </script>
+  <script id="147" type="application/vnd.observable.javascript">
+    exampleElements = ({
+      // prettier-ignore
+      plot: { x: 1, y: 1, w: 10, h: 4,
+        view: dynamicTimeseries([], {
+          width: 10 * 32,
+          height: 4 * 32
+        })
+      },
+      // prettier-ignore
+      background0: {  x: 0, y: 0, w: 12, h: 6, z: -1,
+        view: svg`<svg viewBox="0 0 12 6" preserveAspectRatio="none">
+                  <rect width="100%" height="100%" fill="white" />
+                  <rect x="0.25" y="0.25" width="11.5" height="5.5" rx="0.5"
+                        style="fill:blue;stroke-width:0.25;stroke:rgb(0,0,0)" />`
+      },
+      // prettier-ignore
+      console: { p: 1, x: 1, y: 1, w: 10, h: 2,
+        view: Inputs.textarea({
+          value: ">",
+          width: "100%",
+          rows: 3
+        })
+      },
+      // prettier-ignore
+      stopstart: { p: 1, x: 1, y: 3, w: 10, h: 2,
+        view: juice(Inputs.button, { label: [0] })(md`⏹`, { width: "100%" })
+      },
+      // prettier-ignore
+      background1: {p: 1, x: 0, y: 0, w: 12, h: 6, z: -1,
+        view: svg`<svg viewBox="0 0 12 6" preserveAspectRatio="none">
+                  <rect width="100%" height="100%" fill="white" />
+                  <rect x="0.25" y="0.25" width="11.5" height="5.5" rx="0.5"
+                        style="fill:red;stroke-width:0.25;stroke:rgb(0,0,0)" />`
+      },
+      // prettier-ignore
+      p2: { p: 2, w: 12, h: 6,
+        view: svg`<svg viewBox="0 0 12 6" preserveAspectRatio="none">
+                  <rect width="100%" height="100%" fill="white" />
+                  <rect x="0.25" y="0.25" width="11.5" height="5.5" rx="0.5"
+                        style="fill:green;stroke-width:0.25;stroke:rgb(0,0,0)" />`
+      },
+      // prettier-ignore
+      p3: { p: 3, w: 12, h: 6,
+        view: svg`<svg viewBox="0 0 12 6" preserveAspectRatio="none">
+                  <rect width="100%" height="100%" fill="white" />
+                  <rect x="0.25" y="0.25" width="11.5" height="5.5" rx="0.5"
+                        style="fill:yellow;stroke-width:0.25;stroke:rgb(0,0,0)" />`
+      }
+    })
+  </script>
+  <script id="345" type="text/markdown">
+    ## Mutable and reactive throughout
+    You don't need to decide upfront what the grid layout it and what components are in it. It can be mutated reactively using ["views are mutable values"](https://observablehq.com/@mbostock/views-are-mutable-values) idioms. In our example below we use *Inputs.bind* to [synchronize](https://observablehq.com/@mbostock/synchronized-views) the controls to the grid above, without invoking Dataflow.
+  </script>
+  <script id="1423" type="text/markdown">
+    ### CSS var(--gridSize)
+
+    Typically the grid will calculate the ideal *gridSize* which will be near 32 pixels. It is available on the config object of the grid, but additionally through the global CSS param `--gridSize` which can be sometimes be simpler or performant
+
+    ⚠️ --gridSize is global and shared across *all* grids in a notebook.
+
+  </script>
+  <script id="852" type="text/markdown">
+    ## Responsive
+
+    You can make your UI responsive by setting the *p* from *panel* attribute of your elements. 
+
+    The panels are arranged to suit the display width, 3 columns on desktop, less on narrower devices. 
+
+    All panels share the same height, as defined by the `<rows>` attribute of the *config*.
+
+    Each panel has its own origin for the x,y coordinates starting at 0,0 and meant for use upto (`<columns>`, `<rows>`).  
+
+    **Responsiveness is opt-in, if you want to make a non-responsive UIs, don't set the *panel*
+    and use all the coordinates upto 36 on Desktop.**
+
+  </script>
+  <script id="860" type="application/vnd.observable.javascript">
+    viewof responsiveExample = grid({
+      elements: {
+        p0: {
+          p: 0,
+          w: 12,
+          h: 6,
+          view: svg`<svg><rect width="100%" height="100%" fill="blue" rx="15" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white">panel 0</text>`
+        },
+        p1: {
+          p: 1,
+          w: 12,
+          h: 6,
+          view: svg`<svg><rect width="100%" height="100%" fill="green" rx="15" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white">panel 1</text>`
+        },
+        p2: {
+          p: 2,
+          w: 12,
+          h: 6,
+          view: svg`<svg><rect width="100%" height="100%" fill="red" rx="15" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white">panel 2</text>`
+        },
+        p3: {
+          p: 3,
+          w: 12,
+          h: 6,
+          view: svg`<svg><rect width="100%" height="100%" fill="yellow" rx="15" /><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black">panel 3</text>`
+        }
+      }
+    })
+  </script>
+  <script id="1484" type="application/vnd.observable.javascript" pinned="">
+    responsiveExample
+  </script>
+  <script id="1440" type="text/markdown">
+    ## Auto-sizing
+
+    If you omit a config object, the *grid* will configure itself reactively based on what elements are around at construction time. 
+
+    ** ⚠️ autosizing is not reactive, configure it in advance if you don't have elements at construction time **
+  </script>
+  <script id="599" type="text/markdown">
+    ## External State
+
+    To support the example application have additional state defined external to the presentation cell.
+  </script>
+  <script id="486" type="application/vnd.observable.javascript">
+    viewof tsDataRunning = Inputs.toggle({ label: "running", value: true })
+  </script>
+  <script id="458" type="application/vnd.observable.javascript">
+    viewof logs = Inputs.input(">")
+  </script>
+  <script id="1204" type="application/vnd.observable.javascript">
+    viewof selected = Inputs.input("background0")
+  </script>
+  <script id="355" type="application/vnd.observable.javascript">
+    viewof tsData = Inputs.input([
+      {
+        t: Date.now(),
+        y: Math.sin(Date.now() / 1000)
+      }
+    ])
+  </script>
+  <script id="371" type="application/vnd.observable.javascript">
+    timeseries_process = {
+      viewof tsData.value = [
+        ...viewof tsData.value,
+        {
+          t: now,
+          y: viewof tsDataRunning.value ? Math.sin(now / 100) : 0
+        }
+      ];
+      while (viewof tsData.value[0].t < now - 2000)
+        viewof tsData.value = viewof tsData.value.slice(1);
+      viewof tsData.dispatchEvent(new Event("input", { bubbles: true }));
+    }
+  </script>
+  <script id="441" type="application/vnd.observable.javascript">
+    md`## External Business Logic
+
+    Business logic is located outside of the presentation cell can be dynamically patched in with *bind*, often against state held externally. I think this is a good seperation of concerns.
+
+    In out example, our UI is interacting with a timeseries gathering process outside of the UI.
+    `
+  </script>
+  <script id="448" type="application/vnd.observable.javascript" pinned="">
+    logicExample = {
+      // Connect timeseries chart to plot
+      Inputs.bind(viewof gridPanelExample.elements.plot.view.data, viewof tsData);
+
+      // Connect logs to console
+      Inputs.bind(viewof gridPanelExample.elements.console.view, viewof logs);
+
+      // On button click
+      let playing = true;
+      const startStopListener = () => {
+        if (playing) {
+          viewof logs.value = "> stopping\n" + viewof logs.value;
+        } else {
+          viewof logs.value = "> starting\n" + viewof logs.value;
+        }
+        playing = !playing;
+        viewof tsDataRunning.value = playing;
+        viewof gridPanelExample.elements.stopstart.view.label.value = playing
+          ? md`⏹`
+          : md`▶️`;
+        viewof logs.dispatchEvent(new Event("input", { bubble: true }));
+      };
+      viewof gridPanelExample.elements.stopstart.view.result.addEventListener(
+        "input",
+        startStopListener
+      );
+      invalidation.then(() =>
+        viewof gridPanelExample.elements.stopstart.view.result.removeEventListener(
+          "input",
+          startStopListener
+        )
+      );
+    }
+  </script>
+  <script id="594" type="application/vnd.observable.javascript">
+    md`## Implementation`
+  </script>
+  <script id="1570" type="application/vnd.observable.javascript" pinned="">
+    32 * 12
+  </script>
+  <script id="1572" type="application/vnd.observable.javascript" pinned="">
+    width / 3 / 12
+  </script>
+  <script id="544" type="application/vnd.observable.javascript">
+    grid = ({
+      config = {
+        // panels, // Number of panels  (will calculate from elements)
+        // rows    // size of individual panel (will calculate from elements)
+        // columns = 12, // size of individual panel
+        // gridSize = undefined, // Near 32px and stored in CSS var(--gridSize)
+      },
+      elements = {
+        //  <string: logical name of element>: {
+        //    p: <number: panel the element is on>
+        //    x: <number: x coord on grid>,
+        //    y: <number: y coord on grid>,
+        //    z: <number: z-index for occlusion>,
+        //    w: <number: width on grid>,
+        //    h: <number: height on grid>
+        //    view: <DOMNode: the visual element>
+        //  }
+      },
+      width = notebookWidth
+    } = {}) => {
+      const viewLit = view;
+
+      if (!config.gridSize) {
+        config.gridSize = width < 32 * 12 ? width / 12 : 32;
+      }
+      if (!config.panels) {
+        config.panels =
+          d3.max(
+            Object.entries(elements).map(([name, value]) => value.p || 0) || 0
+          ) + 1;
+      }
+      if (!config.rows) {
+        config.rows =
+          d3.max(
+            Object.entries(elements).map(
+              ([name, value]) => (value.y || 0) + (value.h || 1)
+            )
+          ) || 0;
+        config.rows = Math.max(1, config.rows);
+      }
+
+      const gridSizeVar = variable(config.gridSize, { name: "gridSize" });
+      const columnsVar = variable(config.columns || 12, { name: "columns" });
+      const rowsVar = variable(config.rows, { name: "rows" });
+      const panelsVar = variable(config.panels, { name: "panels" });
+
+      let panelsPerRow = Math.floor(width / gridSizeVar.value / columnsVar.value);
+      let totalHeight = Math.ceil(panelsVar.value / panelsPerRow);
+
+      const updateGeometry = () => {
+        if (!config.panels)
+          panelsPerRow = Math.floor(width / gridSizeVar.value / columnsVar.value);
+        totalHeight = Math.ceil(panelsVar.value / panelsPerRow);
+        panel.style.width = `calc(var(--gridSize) * ${
+          panelsPerRow * columnsVar.value
+        })`;
+        panel.style.height = `calc(var(--gridSize) * ${
+          totalHeight * rowsVar.value
+        })`;
+
+        Object.keys(panel.elements.value).forEach((childKey) =>
+          panel.elements[childKey].updateXY()
+        );
+      };
+
+      // This is an grid element builder, it wraps a view and places it in the grid, whilst exposting all its controls as dynamic variables
+      const childView = ({
+        p = 0,
+        x = 0,
+        y = 0,
+        z = 0,
+        w = 1,
+        h = 1,
+        view
+      } = {}) => {
+        const panelVar = variable(p, { name: "p" });
+        const xVar = variable(x, { name: "x" });
+        const yVar = variable(y, { name: "y" });
+        const zVar = variable(z, { name: "z" });
+        const widthVar = variable(w, { name: "width" });
+        const heightVar = variable(h, { name: "height" });
+
+        const updateXY = () => {
+          ev.style.left = `calc(var(--gridSize) * ${xVar.value} + ${
+            (panelVar.value % panelsPerRow) * columnsVar.value * gridSizeVar.value
+          }px)`;
+          ev.style.top = `calc(var(--gridSize) * ${yVar.value} + ${
+            Math.floor(panelVar.value / panelsPerRow) *
+            rowsVar.value *
+            gridSizeVar.value
+          }px)`;
+        };
+        panelVar.addEventListener("assign", updateXY);
+        xVar.addEventListener("assign", updateXY);
+        yVar.addEventListener("assign", updateXY);
+        zVar.addEventListener("assign", (evt) => (ev.style.zIndex = zVar.value));
+        widthVar.addEventListener(
+          "assign",
+          (evt) => (ev.style.width = `calc(var(--gridSize) * ${widthVar.value})`)
+        );
+        heightVar.addEventListener(
+          "assign",
+          (evt) => (ev.style.height = `calc(var(--gridSize) * ${heightVar.value})`)
+        );
+
+        const ev = viewLit`<span 
+                class="gridPanel-element"
+                style="z-index: ${z};
+                       width:  calc(var(--gridSize) * ${w});
+                       height: calc(var(--gridSize) * ${h});">
+          ${["p", panelVar]}
+          ${["x", xVar]}
+          ${["y", yVar]}
+          ${["z", zVar]}
+          ${["w", widthVar]}
+          ${["h", heightVar]}
+          ${["view", view]}`;
+        ev.updateXY = updateXY;
+        updateXY();
+        return ev;
+      };
+
+      const gridVar = view`<span>${[
+        "...",
+        {
+          columns: columnsVar,
+          rows: rowsVar,
+          gridSize: gridSizeVar,
+          panels: panelsVar
+        }
+      ]}`;
+
+      gridSizeVar.addEventListener("assign", (evt) => {
+        const root = document.documentElement;
+        root.style.setProperty("--gridSize", `${gridSizeVar.value}px`);
+        updateGeometry();
+      });
+      columnsVar.addEventListener("assign", updateGeometry);
+      rowsVar.addEventListener("assign", updateGeometry);
+      panelsVar.addEventListener("assign", updateGeometry);
+
+      const panelNS = `panel-${DOM.uid().id}`;
+      const panel = viewLit`<div class="${panelNS}">
+        <style>
+          :root {
+            --gridSize: ${gridSizeVar.value}px;
+            --panelsPerRow: ${panelsPerRow};
+          }
+          .${panelNS} {
+            line-height: 0px;
+            position: relative;
+          }
+          .gridPanel-element {
+            display: inline-block;
+            position: absolute;
+          }
+          .gridPanel-element > * {
+            height: 100%;
+            width: 100%;
+          }
+        </style>
+        ${["config", gridVar]}
+        ${[
+          "elements",
+          view`<span>${[
+            "...",
+            Object.fromEntries(
+              Object.entries(elements).map(([name, d]) => [name, childView(d)])
+            ),
+            childView
+          ]}`
+        ]}
+        `;
+      updateGeometry();
+      return panel;
+    }
+  </script>
+  <script id="1182" type="application/vnd.observable.javascript">
+    notebookWidth = width
+  </script>
+  <script id="428" type="application/vnd.observable.javascript">
+    md`### Helper: Timeseries View
+
+    We use juice to "lift" data into a backwritable subvew, avoid plot cell refreshes when the data changes.
+    `
+  </script>
+  <script id="362" type="application/vnd.observable.javascript" pinned="">
+    viewof dynamicTimeseriesExample = dynamicTimeseries([], {
+      width: 300,
+      height: 200
+    })
+  </script>
+  <script id="407" type="application/vnd.observable.javascript" pinned="">
+    Inputs.bind(viewof dynamicTimeseriesExample.data, viewof tsData)
+  </script>
+  <script id="357" type="application/vnd.observable.javascript">
+    dynamicTimeseries = juice(
+      (tsData, options) =>
+        Plot.plot({
+          ...options,
+          y: {
+            domain: [-1, 1],
+            grid: true
+          },
+          x: {
+            type: "utc",
+            domain: [Date.now() - 2000, Date.now()],
+            grid: true
+          },
+          marks: [Plot.line(tsData, { x: "t", y: "y" })]
+        }),
+      {
+        data: "[0]"
+      }
+    )
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    import { view, variable } from "@tomlarkworthy/view"
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    import { juice } from "@tomlarkworthy/juice"
+  </script>
+  <script id="1576" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="1594" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

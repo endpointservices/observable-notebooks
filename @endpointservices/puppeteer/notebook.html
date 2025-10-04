@@ -1,0 +1,202 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Browser Automation with Puppeteer</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Browser Automation with Puppeteer
+
+    ![](${await FileAttachment("puppeteer.png").url()})
+
+    [Puppeteer by Google](https://github.com/puppeteer/puppeteer) is a headless Chrome automation library. Now you can do it in the browser without installing or running anything! 
+
+    By using the work of [pupeteer-web](https://www.npmjs.com/package/puppeteer-web) (thanks [@entrptaher](https://github.com/entrptaher)!) we are able to make a connection with a remote pupeteer instance hosted by [@endpointservices](https://observablehq.com/@endpointservices) (in the serverless cell [binary](https://github.com/endpointservices/serverlesscells))
+
+    You need to login to use the service. We use IndeWeb login, so you can use either
+
+    1. An [IndieWeb Identity URL](https://indieweb.org/IndieAuth) of your personal homepage.
+    2. a Github profile URL.
+    3. an Observable profile URL, if it includes a link to a Github profile URL or some other authentication method. 
+
+    Alternatively, you can use a demo identity to login and try without any prior setup:
+
+    ~~~
+        https://webcode.run/notebooks/@endpointservices/identity/deploys/demo/mods/T
+    ~~~
+
+
+    There is no billing for this ATM. But if it is popular I would adopt some usage based pricing in the order of $0.0001 per second.
+
+    ## What can I do? 
+    [puppeteer docs](https://github.com/puppeteer/puppeteer#what-can-i-do)
+
+    <iframe width="640" height="400" src="https://www.youtube.com/embed/lhZOFUY1weo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+
+    Most things that you can do manually in the browser can be done using Puppeteer! Here are a few examples to get you started:
+
+    - Collect data from other websites
+    - Generate screenshots and PDFs of pages.
+    - Crawl a SPA (Single-Page Application) and generate pre-rendered content (i.e. "SSR" (Server-Side Rendering)).
+    - Automate form submission, UI testing, keyboard input, etc.
+    - Create an up-to-date, automated testing environment. Run your tests directly in the latest version of Chrome using the latest JavaScript and browser features.
+    - Capture a timeline trace of your site to help diagnose performance issues.
+
+
+
+    ### Quickstart
+
+    ~~~js
+        import {viewof connect, viewof user} from '@endpointservices/puppeteer'
+    ~~~
+
+    An example of a 3rd party notebook using puppeteer can be found [here](https://observablehq.com/@tdlgkjfhdljovtttqrzu/puppeteer-example)
+
+    `
+  </script>
+  <script id="64" type="application/vnd.observable.javascript">
+    viewof user
+  </script>
+  <script id="123" type="application/vnd.observable.javascript">
+    viewof connect = {
+      const ui = md`
+    <details>
+    <summary>[puppeteer](https://observablehq.com/@endpointservices/puppeteer) connection settings</summary>
+    account ${user.uid}
+    </details>
+
+      `
+
+      ui.value = async function connect() {
+          const url = `wss://webcode.run/puppeteer?token=${await user.getIdToken()}`
+          return await puppeteer_web.connect({
+            browserWSEndpoint: url,
+            ignoreHTTPSErrors: true
+          });
+        }
+      return ui;
+    }
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    md`### Taking a screenshot`
+  </script>
+  <script id="16" type="application/vnd.observable.javascript" pinned="">
+    screenshot = {
+      runDemos;
+      const browser = await connect();
+      const page = await browser.newPage();
+      await page.goto("https://news.ycombinator.com");
+      const buffer = await page.screenshot();
+
+      const imgBlob = new Blob([buffer], { type: "image/png" });
+      const img = htl.html`<img width="400px" src=${URL.createObjectURL(imgBlob)}>`;
+
+      browser.close(); // Usage based pricing! Close when not in use!!!
+      return img;
+    }
+  </script>
+  <script id="229" type="application/vnd.observable.javascript">
+    md`### Scraping the DOM`
+  </script>
+  <script id="232" type="application/vnd.observable.javascript" pinned="">
+    scrapeDOM = {
+      runDemos;
+      const browser = await connect();
+      const page = await browser.newPage();
+      await page.goto("https://news.ycombinator.com");
+      await page.waitForSelector(".titlelink");
+      // Get the link to all the required books
+      let links = await page.$$eval(".titlelink", (links) =>
+        links.map((link, i) => ({
+          rank: i + 1,
+          href: link.href,
+          title: link.innerHTML
+        }))
+      );
+
+      browser.close(); // Usage based pricing! Close when not in use!!!
+      return Inputs.table(links, {
+        columns: ["rank", "title", "href"],
+        layout: "auto"
+      });
+    }
+  </script>
+  <script id="259" type="application/vnd.observable.javascript">
+    md`## Performance Tracing`
+  </script>
+  <script id="303" type="application/vnd.observable.javascript" pinned="">
+    Plot.plot({
+      y: {
+        axis: null
+      },
+      marks: [
+        Plot.barX(completeEvents,  {
+          x1: "ts",
+          x2: "te",
+          y: "depth",
+          fill: "#000",
+        })
+      ]
+    })
+
+  </script>
+  <script id="262" type="application/vnd.observable.javascript" pinned="">
+    traceData = {
+      runDemos
+      const browser = await connect()
+      const page = await browser.newPage();
+      // Drag and drop this JSON file to the DevTools Performance panel!
+      await page.tracing.start({categories: ['blink', 'cc', 'netlog', 'v8', 'sequence_manager', 'toplevel']});
+      await page.goto('https://observablehq.com');
+      const buffer = await page.tracing.stop();
+      await browser.close();
+      return buffer
+    }
+  </script>
+  <script id="396" type="application/vnd.observable.javascript" pinned="">
+    htl.html`
+
+
+    <a download="profile.json" href="${URL.createObjectURL(new Blob([JSON.stringify(JSON.parse(traceData))], {type: "application/json"}))}"> download profile data</a>
+    <p>Its compatible with <a href="https://chromedevtools.github.io/timeline-viewer/">timeline-viewer</a>
+    `
+  </script>
+  <script id="348" type="application/vnd.observable.javascript">
+    // Trace format: https://docs.google.com/document/d/1CvAClvFfyA5R-PhYUmn5OOQtYMH4h6I0nSsKchNAySU/preview
+    completeEvents = {
+      let depth = 0;
+      return JSON.parse(traceData).traceEvents.reduce(
+        (acc, evt) => {
+          if (evt.ph === 'B') {
+            depth++;
+          } else if (evt.ph === 'E') {
+            depth--;
+          } else if (evt.ph === 'X') {
+            acc.push({
+              ...evt,
+              te: evt.ts + evt.dur,
+              depth: depth
+            })
+          }
+          return acc;
+        }
+      , [])
+
+    }
+  </script>
+  <script id="201" type="application/vnd.observable.javascript">
+    runDemos = htl.html`<a href="">`.href.startsWith('https://observablehq.com/@endpointservices/puppeteer') || invalidation
+  </script>
+  <script id="5" type="application/vnd.observable.javascript">
+    puppeteer_web = require(await FileAttachment("puppeteer-web-0.0.3.js").url())
+  </script>
+  <script id="120" type="application/vnd.observable.javascript">
+    import {view} from '@tomlarkworthy/view'
+  </script>
+  <script id="418" type="application/vnd.observable.javascript">
+    import { viewof user } from "@endpointservices/login-with-comment"
+  </script>
+  <script id="438" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="441" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

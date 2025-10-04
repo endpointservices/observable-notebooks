@@ -1,0 +1,86 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Hello, Leaky Bucket</title>
+  <script id="0" type="text/markdown">
+    # Hello, Leaky Bucket
+
+    Live demo of 
+    ~~~js
+    bucket.throttle(<cost>);
+    ~~~
+
+    Will throw or decrement a bucket of capacity. Used for rate limiting. Supports some other useful features like idle tidy up of resources.
+  </script>
+  <script id="3" type="application/vnd.observable.javascript">
+    Bucket = (await import("https://cdn.skypack.dev/leaky-bucket@4.1.4?min"))
+      .default
+  </script>
+  <script id="142" type="application/vnd.observable.javascript">
+    viewof capacity = Inputs.range([0, 20], {
+      value: 20,
+      step: 1,
+      label: "capacity"
+    })
+  </script>
+  <script id="146" type="application/vnd.observable.javascript">
+    viewof interval = Inputs.range([0.1, 20], {
+      value: 10,
+      step: 0.1,
+      label: "interval"
+    })
+  </script>
+  <script id="6" type="application/vnd.observable.javascript" pinned="">
+    // a leaky bucket, that will burst 60 items, then will throttle the items to one per seond
+    bucket = new Bucket({
+      capacity: capacity,
+      interval: interval
+    })
+  </script>
+  <script id="36" type="application/vnd.observable.javascript">
+    Plot.plot({
+      y: {
+        domain: [0, 20.1]
+      },
+      marks: [Plot.barY([bucketState], { y: "currentCapacity" })]
+    })
+  </script>
+  <script id="42" type="application/vnd.observable.javascript">
+    htl.html`<div style="display: flex;">
+    ${Inputs.button(".throttle()", {
+      reduce: async () => {
+        try {
+          await bucket.throttle();
+          console.log("tick");
+        } catch (err) {
+          viewof errors.value.push(err);
+          viewof errors.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }
+    })}
+    ${Inputs.button(".throttle(10)", {
+      reduce: async () => {
+        try {
+          await bucket.throttle(10);
+        } catch (err) {
+          viewof errors.value.push(err);
+          viewof errors.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      }
+    })}`
+  </script>
+  <script id="50" type="application/vnd.observable.javascript">
+    htl.html`<b>Thrown errors</b><ul>${errors.map(
+      (err) => htl.html`<li>${err.message}`
+    )}`
+  </script>
+  <script id="45" type="application/vnd.observable.javascript">
+    viewof errors = Inputs.input([]);
+  </script>
+  <script id="33" type="application/vnd.observable.javascript">
+    bucketState = (now,
+    bucket.throttle(0.000001), // Tick the bucket but with near 0 cost (0 causes a bug with windup)
+    {
+      currentCapacity: bucket.getCurrentCapacity()
+    })
+  </script>
+</notebook>

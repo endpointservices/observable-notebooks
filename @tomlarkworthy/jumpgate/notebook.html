@@ -1,0 +1,529 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Jumpgate</title>
+  <script id="21" type="text/markdown">
+    <div>
+      <h1 style="display: none">Jumpgate</h1>
+      ${await FileAttachment("image (7) (1).png").image({width: 640})}
+    </div>
+  </script>
+  <script id="31" type="text/markdown">
+    Jumpgate takes an ordinary notebook from Observable, mixes it with extra tooling (the frame), and exports it to a single lopecode file, which you can optionally push to Github, preview or download as an offline-first file.
+
+    We use this approach to mixin userspace tooling implemented notebook tooling, like an editor and a notebook explorer. The resultant file is enriched, including the ability to self-edit and reserialize itself, but now without an internet connection and openable as a `file://` domain.
+
+    This notebook be automated via url parameters (see [my lopebooks](https://observablehq.com/@tomlarkworthy/my-lopebooks)).
+
+    ⚠️ the userspace tooling is under active development.
+
+    [Youtube intro video](https://www.youtube.com/watch?v=1UQMFp0wz-Q)
+  </script>
+  <script id="884" type="text/markdown">
+    ### Changes
+    - 2025-05-17 [Avoid cloning the remote](https://bsky.app/profile/larkworthy.bsky.social/post/3lpetshkbes2i) buy using a blank repositor (rolled back as this does not work when overwriting existing files)
+    - 2025-05-17 Fixed bug that was not exploiting the cache properly, or switching branches cleanly.
+  </script>
+  <script id="576" type="text/markdown">
+    ## Source Configuration
+  </script>
+  <script id="359" type="application/vnd.observable.javascript">
+    viewof source = Inputs.bind(
+      Inputs.text({
+        label: "source",
+        width: "100%"
+      }),
+      urlQueryFieldView("source", {
+        defaultValue: "https://observablehq.com/@tomlarkworthy/jumpgate"
+      })
+    )
+  </script>
+  <script id="178" type="application/vnd.observable.javascript">
+    viewof frame = Inputs.bind(
+      Inputs.text({
+        label: "frame",
+        width: "100%"
+      }),
+      localStorageView("frame", {
+        defaultValue: "https://observablehq.com/@tomlarkworthy/lopepage"
+      })
+    )
+  </script>
+  <script id="721" type="text/markdown">
+    We set the [export_state.json](https://observablehq.com/@tomlarkworthy/exporter#exportState) configuration file so that subsequent exports keep settings, and open with the main notebook first with the module selection.
+  </script>
+  <script id="508" type="application/vnd.observable.javascript">
+    viewof export_state_text = Inputs.bind(
+      Inputs.textarea({
+        label: "export_state.json",
+        rows: 8
+      }),
+      urlQueryFieldView("export_state", {
+        defaultValue: JSON.stringify(
+          {
+            options: {
+              headless: true
+            },
+            hash: `#view=S100%28${encodeURIComponent(
+              source_notebook
+            )}%2C%40tomlarkworthy%2Fmodule-selection%29`
+          },
+          null,
+          2
+        )
+      })
+    )
+  </script>
+  <script id="728" type="application/vnd.observable.javascript">
+    viewof load_source = Inputs.bind(
+      Inputs.toggle({
+        label: "load source"
+      }),
+      urlQueryFieldView("load_source", {
+        defaultValue: false,
+        decode: JSON.parse
+      })
+    )
+  </script>
+  <script id="835" type="text/markdown">
+    **The following lines error until you instruct the notebook to call the Observable API by ticking the box above.**
+  </script>
+  <script id="291" type="application/vnd.observable.javascript">
+    Inputs.textarea({
+      label: "export",
+      value: exported.source,
+      width: "100%",
+      disabled: true,
+      rows: 20
+    })
+  </script>
+  <script id="553" type="application/vnd.observable.javascript">
+    Inputs.button("preview", {
+      reduce: () => {
+        const url = URL.createObjectURL(
+          new Blob([exported.source], { type: "text/html" })
+        );
+        window.open(url, "_blank");
+      }
+    })
+  </script>
+  <script id="677" type="application/vnd.observable.javascript">
+    Inputs.button("download", {
+      reduce: () => {
+        const url = URL.createObjectURL(
+          new Blob([exported.source], { type: "text/html" })
+        );
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${source_notebook}_${getCompactISODate()}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    })
+  </script>
+  <script id="578" type="text/markdown">
+    ## Target Repository
+
+    Here is configuration of the target git repository. You will need to add a personal access token to give the notebook the authority to write to branches.
+  </script>
+  <script id="40" type="application/vnd.observable.javascript">
+    viewof target_git = Inputs.bind(
+      Inputs.text({
+        label: "git URL",
+        width: "100%"
+      }),
+      urlQueryFieldView("git_url", {
+        defaultValue: "https://github.com/tomlarkworthy/lopebooks"
+      })
+    )
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    viewof github_token = Inputs.bind(
+      Inputs.password({
+        label: "Github token (saved to local storage)"
+      }),
+      localStorageView("jumpgate_github_token")
+    )
+  </script>
+  <script id="942" type="application/vnd.observable.javascript">
+    viewof corsProxy = Inputs.text({
+      label: "cors proxy",
+      value: "https://isomorphic.endpointservices.workers.dev"
+    })
+  </script>
+  <script id="626" type="application/vnd.observable.javascript">
+    viewof wipe_filesystem = Inputs.toggle({
+      label: "wipe filesystem",
+      value: false
+    })
+  </script>
+  <script id="549" type="application/vnd.observable.javascript">
+    viewof commit = Inputs.bind(
+      Inputs.toggle({
+        label: "commit"
+      }),
+      urlQueryFieldView("commit", {
+        defaultValue: false,
+        decode: JSON.parse
+      })
+    )
+  </script>
+  <script id="842" type="text/markdown">
+    **The following line will error until you instruct the notebook to perform git operations by ticking `commit`** the checkbox above. The git checkout state is persisted to IndexDB using lighning-fs and isomorphic-git, if the notebook gets stuck, you might find checking "wipe filesystem" helps reset the state.
+
+  </script>
+  <script id="609" type="text/html">
+    ${push_git && ""}
+    <a href="${target_git}/compare/${ref}" target="_blank">Create Github Pull Request</a>
+  </script>
+  <script id="580" type="text/markdown">
+    ---
+  </script>
+  <script id="622" type="text/markdown">
+    # Implementation
+  </script>
+  <script id="198" type="text/markdown">
+    ## TODO
+    - <strike>git is not caught up (pull/merge missing)
+    - each upstream origin should be own repo directory</strike>
+    - <strike>double file attachments
+      - file attachments move from source to page</strike>
+    - <strike>make offline first (including runtime)</strike>
+    - Refreshing overwrites loses current hash URL
+    - d/2efed83da255d4dd id named notebooks don;t work
+  </script>
+  <script id="705" type="text/markdown">
+    isomorphic-git [docs](https://isomorphic-git.org/docs/en/alphabetic)
+  </script>
+  <script id="159" type="text/markdown">
+    ## Source to filesystem
+  </script>
+  <script id="364" type="application/vnd.observable.javascript">
+    source_notebook = source.trim().replace("https://observablehq.com/", "")
+  </script>
+  <script id="215" type="application/vnd.observable.javascript">
+    frame_notebook = frame.trim().replace("https://observablehq.com/", "")
+  </script>
+  <script id="251" type="application/vnd.observable.javascript">
+    notebook_filename = source_notebook.replace("/", "_") + ".html"
+  </script>
+  <script id="188" type="application/vnd.observable.javascript">
+    embedded_runtime = {
+      const library = new Library();
+      const runtime = new Runtime(library);
+      invalidation.then(() => runtime.dispose());
+      return runtime;
+    }
+  </script>
+  <script id="213" type="application/vnd.observable.javascript">
+    frame_define = {
+      if (!load_source) throw "Load source not ticked";
+      return (await import(`https://api.observablehq.com/${frame_notebook}.js?v=4`))
+        .default;
+    }
+  </script>
+  <script id="382" type="application/vnd.observable.javascript" pinned="">
+    source_define = {
+      if (!load_source) throw "Load source not ticked";
+      return (
+        await import(`https://api.observablehq.com/${source_notebook}.js?v=4`)
+      ).default;
+    }
+  </script>
+  <script id="165" type="application/vnd.observable.javascript" pinned="">
+    embedded_frame = embedded_runtime.module(frame_define)
+  </script>
+  <script id="380" type="application/vnd.observable.javascript" pinned="">
+    embedded_source = embedded_runtime.module(source_define)
+  </script>
+  <script id="236" type="application/vnd.observable.javascript" pinned="">
+    mutable output = undefined
+  </script>
+  <script id="434" type="application/vnd.observable.javascript" pinned="">
+    modules = {
+      embedded_frame;
+      embedded_source;
+      const modules = await moduleMap(embedded_runtime);
+
+      return modules;
+    }
+  </script>
+  <script id="1036" type="application/vnd.observable.javascript" pinned="">
+    check_module_map_invariants = {
+      expect(modules.get(embedded_frame)).toBeDefined();
+      expect(modules.get(embedded_source)).toBeDefined();
+    }
+  </script>
+  <script id="401" type="application/vnd.observable.javascript" pinned="">
+    module_selections = [...modules.values()].filter(
+      (info) => info.name == "@tomlarkworthy/module-selection"
+    )
+  </script>
+  <script id="510" type="application/vnd.observable.javascript" pinned="">
+    exporters = [...modules.values()].filter(
+      (info) => info.name == "@tomlarkworthy/exporter"
+    )
+  </script>
+  <script id="408" type="application/vnd.observable.javascript" pinned="">
+    register_additional_module = {
+      embedded_frame;
+      embedded_source;
+
+      return Promise.all(
+        module_selections.map(async (module_selection) => {
+          const file = jsonFileAttachment("additionalModules.json", [
+            source_notebook
+          ]);
+          setFileAttachment(file, module_selection.module);
+        })
+      );
+    }
+  </script>
+  <script id="689" type="application/vnd.observable.javascript">
+    export_state = JSON.parse(export_state_text)
+  </script>
+  <script id="527" type="application/vnd.observable.javascript" pinned="">
+    register_export_state = {
+      embedded_frame;
+      embedded_source;
+
+      return Promise.all(
+        exporters.map(async (exporter) => {
+          const file = jsonFileAttachment("export_state.json", export_state);
+          setFileAttachment(file, exporter.module);
+        })
+      );
+    }
+  </script>
+  <script id="201" type="application/vnd.observable.javascript" pinned="">
+    exported = {
+      register_additional_module;
+      register_export_state;
+      debugger;
+      return exportToHTML({
+        notebook: frame_notebook,
+        module: embedded_frame,
+        modules: new Map([[source_notebook, embedded_source]]),
+        options: {
+          ...export_state.options,
+          debug: false,
+          headless: true,
+          main_files: false,
+          style: default_style,
+          output: (out) => (mutable output = out)
+        }
+      });
+    }
+  </script>
+  <script id="327" type="application/vnd.observable.javascript" pinned="">
+    tasks = {
+      tomlarkworthy_exporter_task;
+    }
+  </script>
+  <script id="785" type="application/vnd.observable.javascript" pinned="">
+    dir = "/" +
+      target_git.replace("https://", "").replaceAll("/", "_").replaceAll(".", "_")
+  </script>
+  <script id="69" type="application/vnd.observable.javascript">
+    filesystem = new FS("jumpgate", {
+      wipe: wipe_filesystem
+    }).promises
+  </script>
+  <script id="94" type="application/vnd.observable.javascript" pinned="">
+    update_main_branch = {
+      if (!commit) throw "skipped";
+      try {
+        await filesystem.lstat(dir);
+        await git.fetch({
+          fs: filesystem,
+          filesystem,
+          http,
+          dir,
+          corsProxy: corsProxy,
+          url: target_git,
+          ref: "main",
+          remoteRef: "main",
+          singleBranch: true
+        });
+      } catch (err) {
+        return git.clone({
+          fs: filesystem,
+          filesystem,
+          http,
+          dir,
+          corsProxy: corsProxy,
+          url: target_git,
+          ref: "main",
+          //noCheckout: true,
+          singleBranch: true
+        });
+      }
+    }
+  </script>
+  <script id="541" type="application/vnd.observable.javascript">
+    ref = {
+      dir;
+      wipe_filesystem;
+      return notebook_filename + "_" + getCompactISODate();
+    }
+  </script>
+  <script id="129" type="application/vnd.observable.javascript" pinned="">
+    branch_to_ref = {
+      update_main_branch;
+      return await git.branch({
+        fs: filesystem,
+        object: "origin/main",
+        dir,
+        ref,
+        checkout: true
+      });
+    }
+  </script>
+  <script id="242" type="application/vnd.observable.javascript" pinned="">
+    create_directory = {
+      branch_to_ref;
+      try {
+        return await filesystem.mkdir(`${dir}/notebooks`); //EEXIST if opening this page again, FS persists to IndexedDB!
+      } catch (err) {
+        if (err.message === "EEXIST") {
+          return;
+        } else {
+          throw err;
+        }
+      }
+    }
+  </script>
+  <script id="240" type="application/vnd.observable.javascript" pinned="">
+    write_notebook = {
+      create_directory;
+      return await filesystem.writeFile(
+        `${dir}/notebooks/${notebook_filename}`,
+        exported.source
+      );
+    }
+  </script>
+  <script id="258" type="application/vnd.observable.javascript" pinned="">
+    filepaths = {
+      write_notebook;
+      const paths = [];
+      async function walk(d) {
+        for (const name of await filesystem.readdir(d)) {
+          const p = d === "/" ? `/${name}` : `${d}/${name}`;
+          const stat = await filesystem.stat(p);
+          debugger;
+          if (stat.type === "dir") {
+            await walk(p);
+          } else {
+            paths.push(p);
+          }
+        }
+      }
+      await walk("/");
+      return paths;
+    }
+  </script>
+  <script id="739" type="application/vnd.observable.javascript" pinned="">
+    written_file = {
+      write_notebook;
+      return filesystem.readFile(`${dir}/notebooks/${notebook_filename}`, {
+        encoding: "utf8"
+      });
+    }
+  </script>
+  <script id="123" type="application/vnd.observable.javascript" pinned="">
+    add_git = {
+      written_file;
+      return git.add({
+        fs: filesystem,
+        dir,
+        filepath: "." //`notebooks/${notebook_filename}`
+      });
+    }
+  </script>
+  <script id="127" type="application/vnd.observable.javascript" pinned="">
+    commit_git = {
+      if (!commit) throw "skipped";
+
+      add_git;
+      return git.commit({
+        fs: filesystem,
+        dir,
+        author: {
+          name: "Jumpgate",
+          email: "jumpgate@lopecode.com"
+        },
+        message: `Jumpgate for ${ref}`
+      });
+    }
+  </script>
+  <script id="135" type="application/vnd.observable.javascript" pinned="">
+    push_git = {
+      commit_git;
+      return git.push({
+        fs: filesystem,
+        force: true,
+        http,
+        dir,
+        remote: "origin",
+        ref,
+        corsProxy: corsProxy,
+        remoteRef: ref,
+        onAuth: () => ({ username: github_token })
+      });
+    }
+  </script>
+  <script id="167" type="text/markdown">
+    ## Imports
+  </script>
+  <script id="196" type="application/vnd.observable.javascript">
+    import {
+      Runtime,
+      Inspector,
+      Library,
+      RuntimeError
+    } from "@tomlarkworthy/observable-runtime"
+  </script>
+  <script id="398" type="application/vnd.observable.javascript">
+    import {
+      getFileAttachment,
+      setFileAttachment,
+      removeFileAttachment,
+      attachments,
+      jsonFileAttachment
+    } from "@tomlarkworthy/fileattachments"
+  </script>
+  <script id="392" type="application/vnd.observable.javascript">
+    import { moduleMap } from "@tomlarkworthy/module-map"
+  </script>
+  <script id="225" type="application/vnd.observable.javascript">
+    import {
+      exportToHTML,
+      default_style,
+      tomlarkworthy_exporter_task,
+      getCompactISODate
+    } from "@tomlarkworthy/exporter"
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    import { FS } from "@tomlarkworthy/lightning-fs-4-6-0"
+  </script>
+  <script id="90" type="application/vnd.observable.javascript">
+    import { git, http } from "@tomlarkworthy/isomorphic-git-1-30-1"
+  </script>
+  <script id="0" type="application/vnd.observable.javascript">
+    import { page, background_jobs } from "@tomlarkworthy/lopepage"
+  </script>
+  <script id="52" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="157" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="468" type="application/vnd.observable.javascript">
+    import { toObject } from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="962" type="application/vnd.observable.javascript">
+    import { urlQueryFieldView } from "@tomlarkworthy/url-query-field-view"
+  </script>
+  <script id="1021" type="application/vnd.observable.javascript">
+    import { expect } from "@tomlarkworthy/jest-expect-standalone"
+  </script>
+</notebook>

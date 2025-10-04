@@ -1,0 +1,234 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Lazer Light</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Lazer Light`
+  </script>
+  <script id="730" type="application/vnd.observable.javascript">
+    viewof spring = {
+      var ctx = DOM.context2d(canvas_w, canvas_h);
+      // We flush fill the foreground color so that it fades into the natural minimum
+      // of the foreground will
+      ctx.lineCap = "round";
+
+      function vortexPoints(offset, coils, tightness, scale_x, scale_y) {
+        var points = [];
+        for (var theta = offset; theta < offset + coils * 2 * Math.PI; theta += 0.3) {
+          const width = (coils * 2 * Math.PI - (theta-offset -10)) / (coils * 2 * Math.PI);
+          const shakeyness = 30;
+          const shake = (Math.random() / shakeyness + (1 - 1 / shakeyness) );
+          points.push([
+            width * Math.cos(theta) * scale_x * canvas_w * 0.5 * shake + canvas_w / 2,
+            width * Math.sin(theta) * scale_y * canvas_h * shake + (theta - offset) * tightness + canvas_h / 2
+          ]);
+        }
+        return points;
+      }
+      const start_time = Date.now();
+      while (true) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0, canvas_w, canvas_h);
+        drawLazerPath(ctx, vortexPoints(
+          - 2 * Math.PI * ((Date.now() - start_time) / 500),
+          10,
+          4,
+          0.25,
+          0.1
+        ));
+
+        yield ctx.canvas
+      }  
+    }
+  </script>
+  <script id="899" type="application/vnd.observable.javascript">
+    viewof spring_beam = {
+      var ctx = DOM.context2d(canvas_w, canvas_h);
+      // We flush fill the foreground color so that it fades into the natural minimum
+      // of the foreground will
+      ctx.lineCap = "round";
+
+      function vortexPoints(start, end, scale_x, scale_y) {
+        var points = [];
+        var step = (end - start) / 10;
+        for (var theta = start; theta <= end + step / 2; theta += step) {
+          const width = 3;
+          points.push([
+            width * Math.cos(theta * Math.PI * 2) * scale_x * canvas_w * 0.5 + canvas_w / 2,
+            width * Math.sin(theta * Math.PI * 2) * scale_y * canvas_h * 0.5 + canvas_h / 2
+          ]);
+        }
+        return points;
+      }
+      var beam_state = undefined;
+      var velocity = 1;
+      var t_prev = (((Date.now() - 10) / 1000) * velocity);
+      while (true) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0, canvas_w, canvas_h);
+        var t_now = (Date.now() / 1000 * velocity);
+        var points = vortexPoints(
+          t_prev,
+          t_now,
+          0.25,
+          0.1
+        );
+        t_prev = t_now;
+        beam_state = tickBeam(ctx, Date.now(), points, beam_state);
+
+        yield ctx.canvas
+      }  
+    }
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    viewof canvas_w = slider({
+      min: 1,
+      max: 1024,
+      step: 1,
+      value: 800,
+      format: ",",
+      description:
+        "Width of canvas"
+    })
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    viewof canvas_h = slider({
+      min: 1,
+      max: 1024,
+      step: 1,
+      value: 600,
+      format: ",",
+      description:
+        "Height of canvas"
+    })
+  </script>
+  <script id="679" type="application/vnd.observable.javascript">
+    viewof halo_color = color({
+      value: "#80182c",
+      title: "Midground Color"
+    })
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    viewof saturation_color = color({
+      value: "#fff6fb",
+      title: "Foreground Color"
+    })
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    viewof lazer_power = slider({
+      min: 0,
+      max: 5,
+      value: 2.6
+    })
+  </script>
+  <script id="833" type="application/vnd.observable.javascript">
+    viewof power_decay_exponent = slider({
+      min: -2,
+      max: -0.1,
+      value: -.33 
+    })
+  </script>
+  <script id="838" type="application/vnd.observable.javascript">
+    viewof floor = slider({
+      min: 0,
+      max: 1,
+      value: 0.5
+    })
+  </script>
+  <script id="715" type="application/vnd.observable.javascript">
+    viewof sqrt_width_px = slider({
+      min: 1,
+      max: 20,
+      step: 1,
+      value: 11
+    })
+  </script>
+  <script id="709" type="application/vnd.observable.javascript">
+    drawLazerPath = (ctx, points, options) => {
+      options = options || {};
+      options.power = options.power || lazer_power;
+      const hue = d3.hsl(halo_color).h;
+      for (var i = sqrt_width_px; i > 0; i--) {
+        const distance = i*i;
+        const saturation = options.power * Math.pow(distance, power_decay_exponent) - floor;
+        const lightness = saturation;
+        ctx.strokeStyle = d3.hsl(hue, saturation, lightness);
+        ctx.lineWidth = distance;
+        ctx.beginPath();
+        ctx.moveTo.apply(ctx, points[0]);
+        for (var p = 1; p < points.length; p++) {
+          ctx.lineTo.apply(ctx, points[p]);
+        }
+        ctx.stroke();
+      }
+    }
+  </script>
+  <script id="890" type="application/vnd.observable.javascript">
+    function tickBeam(ctx, t, path, beam_state) {
+      const frames = 20;
+      const beam_power = lazer_power;
+      const previousCompositeOperation = ctx.globalCompositeOperation;
+      ctx.globalCompositeOperation = "lighten";
+      beam_state = beam_state || {
+        paths: []
+      };
+      // Push latest path on memory
+      beam_state.paths.unshift(path);
+      while (beam_state.paths.length >= frames) {
+        beam_state.paths.pop();
+      };
+      //drawLazerPath(ctx, path);
+      // Draw each beam, last-to-first
+      for (var frame = beam_state.paths.length - 1; frame >= 0; frame--) {
+        var power = beam_power * (1 - (frame/frames)); // should be affected by length of path too
+        //var power = Math.pow(beam_power, -frames); // should be affected by length of path too
+        drawLazerPath(ctx, beam_state.paths[frame], {
+          power: power
+        });
+      }
+      ctx.globalCompositeOperation = previousCompositeOperation;
+      return beam_state;
+    }
+  </script>
+  <script id="201" type="application/vnd.observable.javascript">
+    viewof scribble = {
+      var rand2d = () => [Math.random() * canvas_w, Math.random() * canvas_h];
+      var avg = (a, b) => {
+        var result = new Array(a.length);
+        for (var i = 0; i < a.length; i++) {
+          result[i] = (a[i] + b[i]) / 2;
+        }
+        return result;
+      }
+      var ctx = DOM.context2d(canvas_w, canvas_h);
+      // We flush fill the foreground color so that it fades into the natural minimum
+      // of the foreground will
+      ctx.lineCap = "round";
+
+      var last_pos = rand2d();
+      while (true) {
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0, canvas_w, canvas_h);
+        var new_pos = avg(avg(rand2d(), last_pos), last_pos);
+        drawLazerPath(ctx, [last_pos, new_pos]);
+        last_pos = new_pos;
+
+        yield ctx.canvas
+      }  
+    }
+  </script>
+  <script id="669" type="application/vnd.observable.javascript">
+    d3 = require("d3")
+  </script>
+  <script id="818" type="application/vnd.observable.javascript">
+    import {slider} from "@jashkenas/inputs"
+  </script>
+  <script id="821" type="application/vnd.observable.javascript">
+    import {color} from "@jashkenas/inputs"
+  </script>
+  <script id="1032" type="application/vnd.observable.javascript" pinned="">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="1050" type="application/vnd.observable.javascript" pinned="">
+
+  </script>
+</notebook>

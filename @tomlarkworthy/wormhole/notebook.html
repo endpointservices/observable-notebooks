@@ -1,0 +1,184 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Animated Wormhole</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`# Animated Wormhole
+    This notebook is fractal and self-referential
+    `
+  </script>
+  <script id="728" type="application/vnd.observable.javascript" pinned="">
+    tweet("1213219519096926216")
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    import {slider} from "@jashkenas/inputs"
+  </script>
+  <script id="726" type="application/vnd.observable.javascript" pinned="">
+    import {color} from "@jashkenas/inputs"
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    import {tweet} from "@mbostock/tweet"
+  </script>
+  <script id="725" type="application/vnd.observable.javascript" pinned="">
+
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    viewof canvas_w = slider({
+      min: 1,
+      max: 1024,
+      step: 1,
+      value: 512,
+      format: ",",
+      description:
+        "Width of canvas"
+    })
+  </script>
+  <script id="7" type="application/vnd.observable.javascript">
+    viewof canvas_h = slider({
+      min: 1,
+      max: 1024,
+      step: 1,
+      value: 384,
+      format: ",",
+      description:
+        "Height of canvas"
+    })
+  </script>
+  <script id="300" type="application/vnd.observable.javascript">
+    viewof animated_wormhole = {
+      var ctx = DOM.context2d(canvas_w, canvas_h);
+      // We flush fill the foreground color so that it fades into the natural minimum
+      // of the foreground will
+      ctx.lineCap = "round"; 
+
+      var seg_scale_z = 0.1;
+      var lineSegStep = 0.1;
+      var thetaOffset = 0.5;
+
+      function unitToScreen(unitCoords) {
+        return [0.5 * canvas_w + 0.5 * canvas_w * unitCoords[0],
+                0.5 * canvas_h + 0.5 * canvas_h * unitCoords[1]];
+      }
+
+      function quadratic(x, a, b, c) {
+        return x * a * a + x * b + c;
+      }
+
+      function arcPoint(arc, segment) {
+        return [segment * scale_x * seg_scale_z * Math.cos(2 * arc * Math.PI),
+                offset_y + scale_y_inv / (segment * segment + 1) + quadratic(segment, 0, scale_y, skew_y) * Math.sin(2 * arc * Math.PI)];
+      }
+
+      function segment_f(segment) {
+        return (1 + segment) - (Date.now() % 1000) / 1000;
+      }
+
+      function line_w(segment) {
+        var unit = segment_f(segment) / segments;
+        return Math.max((unit + Math.min(0, - 2 * unit + 1)) * thickness, 0.1);
+      }
+
+      while (true) {
+        ctx.globalCompositeOperation = "destination-out";
+        ctx.fillStyle = "black";
+        ctx.fillRect(0,0, canvas_w, canvas_h);
+        ctx.globalCompositeOperation = "source-over";
+
+        // Rings
+        for (var segment = 0; segment < segments; segment++) {
+          ctx.lineWidth = line_w(segment);
+          ctx.strokeStyle = foreground;
+          ctx.beginPath();
+
+          for (var arc = thetaOffset; arc <= arcs + thetaOffset; arc++) {
+            var arc_f = arc / arcs;
+            var arc_pos = unitToScreen(arcPoint(arc_f, segment_f(segment)));
+            ctx.lineTo.apply(ctx, arc_pos);
+          }
+          ctx.stroke();
+        }
+        // Inward lines
+        for (var line = thetaOffset; line < lines; line++) {
+          ctx.strokeStyle = foreground;
+          ctx.beginPath();
+          var line_f = line / lines;
+          for (var segment = -3; segment < segments-1; segment+= lineSegStep) {
+            ctx.beginPath();
+            ctx.moveTo.apply(ctx, unitToScreen(arcPoint(line_f, segment_f(segment - lineSegStep))));
+            var arc_pos = unitToScreen(arcPoint(line_f, segment_f(segment)));
+            ctx.lineTo.apply(ctx, arc_pos);
+            ctx.lineWidth = line_w(segment);
+            ctx.stroke();
+          }
+        }
+
+        yield ctx.canvas
+      }  
+    }
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    viewof foreground = color({
+      value: "#ffeb34",
+      title: "Foreground Color"
+    })
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    viewof thickness = slider({
+      min: 1,
+      max: 10,
+      value: 6
+    })
+  </script>
+  <script id="303" type="application/vnd.observable.javascript">
+    viewof segments = slider({
+      min: 1,
+      max: 24,
+      step: 1,
+      value: 12
+    })
+  </script>
+  <script id="305" type="application/vnd.observable.javascript">
+    viewof arcs = slider({
+      min: 3,
+      max: 50,
+      step: 1,
+      value: 32,
+    })
+  </script>
+  <script id="321" type="application/vnd.observable.javascript">
+    viewof lines = slider({
+      min: 0,
+      max: 64,
+      step: 1,
+      value: 14})
+  </script>
+  <script id="587" type="application/vnd.observable.javascript">
+    viewof scale_x = slider({
+      min: 0,
+      max: 5,
+      value: 0.73})
+  </script>
+  <script id="599" type="application/vnd.observable.javascript">
+    viewof scale_y = slider({
+      min: 0,
+      max: 1,
+      value: 0.04})
+  </script>
+  <script id="609" type="application/vnd.observable.javascript">
+    viewof scale_y_inv = slider({
+      min: -2,
+      max: 2,
+      value: .95})
+  </script>
+  <script id="615" type="application/vnd.observable.javascript">
+    viewof offset_y = slider({
+      min: -1,
+      max: 1,
+      value: -0.13})
+  </script>
+  <script id="621" type="application/vnd.observable.javascript">
+    viewof skew_y = slider({
+      min: -1,
+      max: 1,
+      value: 0})
+  </script>
+</notebook>

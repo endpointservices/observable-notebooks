@@ -1,0 +1,859 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Direct Manipulation Plot</title>
+  <script id="0" type="text/markdown">
+    # Direct Manipulation Plot
+
+
+    In a [Future of Coding conversation](https://akkartik.name/archives/foc/linking-together/1721317807.883659.html) provoked by the blog [Where Should Visual Programming Go?](https://tonsky.me/blog/diagrams/) I argued that great visualization tools like `Plot` were the Future of Coding. However, some disagreed becuase it is _"only"_ a data -> viz transformation, and *true* Future of Code tools would support direct manipulation for the inverse. That made we wonder if it is possible to "invert" visual tools to generate direct manipulation tools in a methodical way?
+
+  </script>
+  <script id="1689" type="text/markdown">
+    ~~~js
+    import {manipulate, invert} from '@tomlarkworthy/manipulate'
+    ~~~
+  </script>
+  <script id="1444" type="text/markdown">
+    ## Plot is extremely flexible
+
+    You might not appreciate how flexible plot is at illustrating technical and spatial concepts. What the optimal angle to throw a ball to make it travel furthest? 
+  </script>
+  <script id="1447" type="application/vnd.observable.javascript">
+    viewof x_trajectory = Inputs.input([{ j: 40, i: 20 }])
+  </script>
+  <script id="1450" type="application/vnd.observable.javascript">
+    viewof plot_trajectory = Plot.plot({
+      aspectRatio: 1,
+      x: {
+        domain: [0, 300]
+      },
+      y: {
+        domain: [0, 150]
+      },
+      marks: [
+        Plot.dot(
+          x_trajectory,
+          Plot.pointer({
+            x: "i",
+            y: "j",
+            fill: "red",
+            r: 20,
+            maxRadius: 100
+          })
+        ),
+        Plot.dot(x_trajectory, { x: "i", y: "j", value: true, r: 20 }),
+        Plot.line(arc, {
+          strokeDasharray: [1, 20]
+        }),
+        Plot.link([max_arc], {
+          x1: max_arc[0],
+          y1: (d) => 40,
+          x2: (d) => max_arc[0],
+          y2: (d) => 0,
+          stroke: "red"
+        }),
+        Plot.link([max_arc], {
+          x1: 0,
+          y1: (d) => d[1],
+          x2: (d) => d[0] / 2,
+          y2: (d) => d[1],
+          stroke: "blue"
+        }),
+        Plot.text(x_trajectory, {
+          x: 5,
+          y: max_arc[1],
+          text: (d) => `${max_arc[1].toFixed(1)}`,
+          textAnchor: "start",
+          fontSize: 12,
+          fill: "blue",
+          dy: -10
+        }),
+
+        Plot.text(x_trajectory, {
+          x: d3.max(arc, (d) => d[0]),
+          y: 5,
+          text: (d) => `${max_arc[0].toFixed(1)}`,
+          textAnchor: "end",
+          fontSize: 12,
+          fill: "red",
+          dy: -10
+        }),
+        Plot.text(x_trajectory, {
+          x: 20,
+          y: 5,
+          text: (d) => `${((Math.atan(d.j / d.i) * 180) / Math.PI).toFixed(0)}°`,
+          textAnchor: "start",
+          fontSize: 24
+        }),
+        Plot.arrow([{}], {
+          x1: 0,
+          y1: 0,
+          x2: arc.at(-1)[0],
+          y2: 0
+        }),
+        Plot.arrow(x_trajectory, {
+          x1: 0,
+          y1: 0,
+          x2: "i",
+          y2: "j",
+          stroke: "green"
+        })
+      ]
+    })
+  </script>
+  <script id="1542" type="application/vnd.observable.javascript" pinned="">
+    trajectory_manipulate = manipulate({
+      this: this,
+      viewofData: viewof x_trajectory,
+      viewofPlot: viewof plot_trajectory,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        // Adjust control surface
+        const scaleX = viewofPlot.scale("x");
+        const scaleY = viewofPlot.scale("y");
+        dataCurrent.i = Math.max(
+          invert(
+            scaleX,
+            scaleX.apply(dataStart.i) + pixelCurrent[0] - pixelStart[0]
+          ),
+          0.1
+        );
+        dataCurrent.j = Math.max(
+          invert(
+            scaleY,
+            scaleY.apply(dataStart.j) + pixelCurrent[1] - pixelStart[1]
+          ),
+          0.1
+        );
+
+        // fix velocity
+        const magnitude = Math.sqrt(
+          dataCurrent.i * dataCurrent.i + dataCurrent.j * dataCurrent.j
+        );
+        if (magnitude > 50) {
+          const scale = 50 / magnitude;
+          dataCurrent.i *= scale;
+          dataCurrent.j *= scale;
+        }
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="1478" type="application/vnd.observable.javascript">
+    arc = {
+      const g = 9.81; // acceleration due to gravity in m/s^2
+
+      // Initial velocity components
+      const v = Math.sqrt(
+        Math.pow(x_trajectory[0].i, 2) + Math.pow(x_trajectory[0].j, 2)
+      );
+      const thetaRad = Math.atan2(x_trajectory[0].j, x_trajectory[0].i);
+
+      const points = [];
+
+      // Function to calculate y for a given x using the parabolic motion formula
+      function getY(x) {
+        return (
+          x * Math.tan(thetaRad) -
+          (g * x * x) / (2 * v * v * Math.pow(Math.cos(thetaRad), 2))
+        );
+      }
+
+      // Calculate the range of the projectile
+      const range = (v * v * Math.sin(2 * thetaRad)) / g;
+      const step = range / 200; // dividing the range into 100 steps
+
+      // Generate points for the arc
+      for (let x = 0; x <= range; x += step) {
+        const y = getY(x);
+        points.push([x, y]);
+      }
+
+      return points;
+    }
+  </script>
+  <script id="1510" type="application/vnd.observable.javascript">
+    max_arc = [d3.max(arc, (d) => d[0]), d3.max(arc, (d) => d[1])]
+  </script>
+  <script id="1683" type="text/markdown">
+    # Theory
+
+  </script>
+  <script id="183" type="text/markdown">
+    ## Inverting scales
+
+    Given a dataset, ${tex`X`}, each Plot creates scales, ${tex`S`}, that map data space to pixel space, ${tex`P`}:
+
+    <div style="margin-left: 100px; margin-bottom: 15px"> ${tex`XS = P`} </div>
+    When we click the mouse, ${tex`m`}, at time ${tex`t`}, we indicate a position in pixel space, ${tex`u`}:
+
+    <div style="margin-left: 100px; margin-bottom: 15px"> ${tex`u \in P \times P := m_t`} </div>
+    When we drag the mouse, ${tex`m`}, on the screen, we express a vector action, ${tex`\bar{u}`}, in pixel space. This vector is the difference between the starting and ending positions:
+
+    <div style="margin-left: 100px"> ${tex`\bar{u} \in P \times P := m_t - u`} </div>
+    To invert the mapping:
+
+    <div style="margin-left: 100px; margin-bottom: 15px"> ${tex`(X + x)S = P + \bar{u}`} </div>
+    If ${tex`S`} is linear, inversion is straightforward. However, for general cases, we minimize the following objective:
+
+    <div style="margin-left: 100px; margin-bottom: 15px"> ${tex`\min_x \| (X + x)S - (P + \bar{u}) \|^2`} </div>
+    This ensures we find ${tex`x`} such that the adjusted dataset maps to the perturbed pixel space, accounting for the drag action. The minimisation approach generalizes to ordinal and categorical variables.
+  </script>
+  <script id="519" type="application/vnd.observable.javascript">
+    invert = (scale, point) => {
+      if (scale.type === "linear") {
+        // easy case
+        return scale.invert(point);
+      } else if (scale.type === "point") {
+        // nearest neighbour search
+        let nearestSq = Number.MAX_VALUE;
+        let nearest = undefined;
+        for (let i = 0; i < scale.domain.length; i++) {
+          const candidate = scale.apply(scale.domain[i]);
+          const distSq = (point - candidate) * (point - candidate);
+          if (distSq < nearestSq) {
+            nearestSq = distSq;
+            nearest = scale.domain[i];
+          }
+        }
+        return nearest;
+      } else {
+        throw new Error(`Can't invert '${scale.type}'`);
+      }
+    }
+  </script>
+  <script id="1228" type="application/vnd.observable.javascript">
+    Generators.observe((notify) => {
+      invalidation.then(
+        interactions(({ event, pixelStart, pixelCurrent }) => {
+          notify({ event, pixelStart, pixelCurrent });
+        })
+      );
+    })
+  </script>
+  <script id="1432" type="text/markdown">
+    ## Manipulate
+
+    Manipulate is the userspace function to update the data from manipulations of the [Plot pointer](https://observablehq.com/plot/interactions/pointer). There is quite a lot of state tracking going on, so it is vitally important the result of manipulate is returned from the enclosing cell, so that next tick, `this` is initialised to the previous result.
+
+    ~~~js
+    manipulate({
+      this: this,     // important! It juggles the 
+      viewofData: viewof x_trajectory,    // the data the pointer is drawn from
+      viewofPlot: viewof plot_trajectory, // a plot that contains a pointer
+      invalidation,
+      onInteraction: ({
+        event,        // triggering DOM event, event.preventDefault() to stop scrolling
+        pixelStart,   // start pointer position in pixel space
+        pixelCurrent, // current pointer position in pixel space
+        dataStart,    // shallow copy of selected data when drag began
+        dataCurrent,  // live reference to selected data
+        viewofPlot    // reference to viewofPlot
+      }) => {
+        // your custom code here
+        // typically you will read the scale from viewofPlot
+        // convert the delta in pixel space to a delta in data space using invert
+        // then set dataCurrent to be dataStart + delta data space
+        // but you can also apply any domain constraints programatically
+        // or change a different dataset, or do nothing.
+        // its a good ideal to call event.preventDefault() if you have served an interaction
+        // as this prevents scrolling on mobile.
+      }
+    );
+    ~~~
+  </script>
+  <script id="1280" type="application/vnd.observable.javascript">
+    function manipulate({
+      this: state,
+      viewofData,
+      viewofPlot, // or anything that can select
+      invalidation,
+      onInteraction = undefined
+    }) {
+      state = state || {};
+      if (onInteraction) {
+        if (state.interactor) state.interactor();
+        state.interactor = interactions((interaction) => {
+          if (!interaction.pixelCurrent) {
+            state.dataCurrent = undefined;
+            state.dataStart = undefined;
+          } else if (!state.dataCurrent) {
+            state.dataCurrent = viewofData.value.find((x) => x == viewofPlot.value);
+            state.dataStart = { ...state.dataCurrent };
+          }
+
+          if (state.dataCurrent) {
+            onInteraction({
+              ...interaction,
+              ...state,
+              dataStart: state.dataStart,
+              dataCurrent: state.dataCurrent,
+              viewofPlot,
+              viewofData
+            });
+            viewofData.dispatchEvent(new Event("input"));
+          }
+        });
+      }
+      return state;
+    }
+  </script>
+  <script id="252" type="text/markdown">
+    ## Interaction
+
+    We listen to DOM events and pipe the pixel change *synchronously* to a callback. We include the triggering events, so that downstream listeners can conditionally cancel the DOM event to prevent unwanted scrolling on mobile.
+  </script>
+  <script id="1217" type="application/vnd.observable.javascript">
+    interactions = {
+      const listeners = new Set();
+
+      const register = (callback) => {
+        listeners.add(callback);
+        return () => listeners.delete(callback);
+      };
+      const notify = (event) => {
+        listeners.forEach((callback) => {
+          try {
+            callback(event);
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      };
+      const position = (evt) =>
+        evt.clientX
+          ? [evt.clientX, evt.clientY]
+          : [evt.touches[0].clientX, evt.touches[0].clientY];
+      let start = undefined;
+      let current = undefined;
+
+      const emit = (event) => {
+        if (start && current)
+          notify({
+            event,
+            pixelCurrent: current,
+            pixelStart: start
+          });
+        else {
+          notify({
+            event,
+            pixelCurrent: undefined,
+            pixelStart: undefined
+          });
+        }
+        //event.preventDefault();
+      };
+
+      function pointerdown(evt) {
+        start = current = position(evt);
+        evt.target.addEventListener("touchmove", move, { passive: false });
+        evt.target.addEventListener("touchend", pointerup);
+        emit(evt);
+      }
+      function pointerup(evt) {
+        start = current = undefined;
+        evt.target.removeEventListener("touchmove", move, { passive: false });
+        evt.target.removeEventListener("touchend", pointerup);
+        emit(evt);
+      }
+      function move(evt) {
+        if (evt instanceof MouseEvent) {
+          const flags = evt.buttons !== undefined ? evt.buttons : evt.which;
+          const primaryMouseButtonDown = (flags & 1) === 1;
+          if (primaryMouseButtonDown) current = position(evt);
+          else start = current = undefined;
+        } else {
+          // touch
+          current = position(evt);
+        }
+        emit(evt);
+      }
+      //overlay.addEventListener("pointerdown", pointerdown); swallowed by plot
+      document.addEventListener("mousedown", pointerdown);
+      document.addEventListener("touchstart", pointerdown, { passive: false });
+      document.addEventListener("pointerup", pointerup);
+      document.addEventListener("pointermove", move, { passive: false });
+      document.addEventListener("touchend", pointerup);
+
+      invalidation.then(() => {
+        //overlay.removeEventListener("pointerdown", pointerdown);
+        document.removeEventListener("mousedown", pointerdown);
+        document.removeEventListener("touchstart", pointerdown, { passive: false });
+        document.removeEventListener("pointerup", pointerup);
+        document.removeEventListener("pointermove", move, { passive: false });
+        document.removeEventListener("touchmove", move, { passive: false });
+        document.removeEventListener("touchend", pointerup);
+      });
+      return register;
+    }
+  </script>
+  <script id="1672" type="text/markdown">
+    # MORE EXAMPLES
+  </script>
+  <script id="199" type="text/markdown">
+    ## Continuous Linear case 
+  </script>
+  <script id="237" type="application/vnd.observable.javascript">
+    viewof x_simple = Inputs.input([
+      { x: 0.1, y: 0.1 },
+      { x: 0.9, y: 0.1 },
+      { x: 0.1, y: 0.9 },
+      { x: 0.5, y: 0.5 }
+    ])
+  </script>
+  <script id="1361" type="application/vnd.observable.javascript" pinned="">
+    manipulate({
+      this: this,
+      viewofData: viewof x_simple,
+      viewofPlot: viewof plot_simple,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        const scaleX = viewofPlot.scale("x");
+        const scaleY = viewofPlot.scale("y");
+        dataCurrent.x = invert(
+          scaleX,
+          scaleX.apply(dataStart.x) + pixelCurrent[0] - pixelStart[0]
+        );
+        dataCurrent.y = invert(
+          scaleY,
+          scaleY.apply(dataStart.y) + pixelCurrent[1] - pixelStart[1]
+        );
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="235" type="application/vnd.observable.javascript">
+    viewof plot_simple = Plot.plot({
+      marks: [
+        Plot.density(x_simple, {
+          x: "x",
+          y: "y",
+          stroke: "blue",
+          fill: "#fefeff",
+          thresholds: 5,
+          bandwidth: 70,
+          strokeWidth: 0.25
+        }),
+        Plot.dot(x_simple, { x: "x", y: "y", value: true, r: 20 }),
+        Plot.dot(
+          x_simple,
+          Plot.pointer({
+            x: "x",
+            y: "y",
+            fill: "red",
+            r: 20,
+            maxRadius: Infinity
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="472" type="text/markdown">
+    todo: its pretty trivial to add points with a click, and remove the last selected point with a key press
+  </script>
+  <script id="474" type="text/markdown">
+    ## Ordinal/Categorical Data
+
+    Not all data domains are continuous
+  </script>
+  <script id="477" type="application/vnd.observable.javascript">
+    viewof x_ordcat = Inputs.input([
+      { ordinal: "small", categorical: "a" },
+      { ordinal: "medium", categorical: "b" },
+      { ordinal: "large", categorical: "c" }
+    ])
+  </script>
+  <script id="1380" type="application/vnd.observable.javascript" pinned="">
+    manipulate({
+      this: this,
+      viewofData: viewof x_ordcat,
+      viewofPlot: viewof plot_ordcat,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        const scaleX = viewofPlot.scale("x");
+        const scaleY = viewofPlot.scale("y");
+        dataCurrent.ordinal = invert(
+          scaleX,
+          scaleX.apply(dataStart.ordinal) + pixelCurrent[0] - pixelStart[0]
+        );
+        dataCurrent.categorical = invert(
+          scaleY,
+          scaleY.apply(dataStart.categorical) + pixelCurrent[1] - pixelStart[1]
+        );
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="513" type="text/markdown">
+    non-linear scales aren't directly invertible, so we do nearest neighbour instead. You achieve a nice snapping effect.
+  </script>
+  <script id="479" type="application/vnd.observable.javascript">
+    viewof plot_ordcat = Plot.plot({
+      x: {
+        type: "point",
+        domain: ["small", "medium", "large"],
+        grid: true
+      },
+      y: {
+        type: "point",
+        domain: ["a", "b", "c"],
+        grid: true
+      },
+      marks: [
+        Plot.dot(x_ordcat, {
+          x: "ordinal",
+          y: "categorical",
+          value: true,
+          r: 10
+        }),
+        Plot.dot(
+          x_ordcat,
+          Plot.pointer({
+            x: "ordinal",
+            y: "categorical",
+            fill: "red",
+            r: 10,
+            maxRadius: Infinity
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="572" type="text/markdown">
+    ## Clamping
+
+    `Plot` provides a ton of flexibility when going from data space to visualisation. These features carry over to derived manipulations
+  </script>
+  <script id="578" type="application/vnd.observable.javascript">
+    viewof x_sliders = Inputs.input([
+      { value: 0 },
+      { value: 1 },
+      { value: 0.5 },
+      { value: -0.1 },
+      { value: -0.1 }
+    ])
+  </script>
+  <script id="1256" type="application/vnd.observable.javascript" pinned="">
+    manipulate({
+      this: this,
+      viewofData: viewof x_sliders,
+      viewofPlot: viewof plot_sliders,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        const y_scale = viewofPlot.scale("y");
+        dataCurrent.value = invert(
+          y_scale,
+          y_scale.apply(dataStart.value) + pixelCurrent[1] - pixelStart[1]
+        );
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="580" type="application/vnd.observable.javascript">
+    viewof plot_sliders = Plot.plot({
+      height: 200,
+      y: {
+        type: "linear",
+        domain: [-1, 1],
+        clamp: true,
+        grid: true
+      },
+      x: {
+        domain: [-0.5, 4.5],
+        axis: null
+      }, // hide axis
+      marks: [
+        Plot.ruleX(x_sliders, {
+          x: (d, i) => i,
+          strokeWidth: 2,
+          strokeLinecap: "round",
+          stroke: "#aaa"
+        }),
+        Plot.dot(x_sliders, {
+          symbol: "square2",
+          r: 25,
+          x: (d, i) => i,
+          y: "value",
+          stroke: "black",
+          fill: "#eee"
+        }),
+        Plot.text(x_sliders, {
+          x: (d, i) => i,
+          y: "value",
+          text: "value"
+        }),
+        Plot.dot(
+          x_sliders,
+          Plot.pointer({
+            x: (d, i) => i,
+            y: "value",
+            symbol: "square2",
+            stroke: "red",
+            r: 25,
+            maxRadius: Infinity
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="645" type="text/markdown">
+    ## References
+
+    Some types of data points need to reference to others, think arrows or edges on graphs.
+  </script>
+  <script id="662" type="application/vnd.observable.javascript">
+    viewof x_nodes = Inputs.input([
+      {
+        id: "node1",
+        x: 0,
+        y: 1
+      },
+      {
+        id: "node2",
+        x: 1,
+        y: 0
+      },
+      {
+        id: "node3",
+        x: 0,
+        y: 0.2
+      }
+    ])
+  </script>
+  <script id="666" type="application/vnd.observable.javascript">
+    viewof x_edges = Inputs.input([
+      {
+        start: "node1",
+        end: "node2"
+      },
+      {
+        start: "node2",
+        end: "node3"
+      },
+      {
+        start: "node3",
+        end: "node2"
+      }
+    ])
+  </script>
+  <script id="1402" type="application/vnd.observable.javascript" pinned="">
+    manipulate({
+      this: this,
+      viewofData: viewof x_nodes,
+      viewofPlot: viewof plot_graph,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        const x_scale = viewofPlot.scale("x");
+        const y_scale = viewofPlot.scale("y");
+        dataCurrent.x = invert(
+          x_scale,
+          x_scale.apply(dataStart.x) + pixelCurrent[0] - pixelStart[0]
+        );
+        dataCurrent.y = invert(
+          y_scale,
+          y_scale.apply(dataStart.y) + pixelCurrent[1] - pixelStart[1]
+        );
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="670" type="application/vnd.observable.javascript">
+    viewof plot_graph = Plot.plot({
+      width: 400,
+      aspectRatio: 1,
+      x: {
+        domain: [-0.2, 1.2]
+      },
+      y: {
+        domain: [-0.2, 1.2]
+      },
+      axis: false,
+      marks: [
+        Plot.frame(),
+        Plot.dot(x_nodes, { x: "x", y: "y", r: 40 }),
+        Plot.text(x_nodes, { x: "x", y: "y", text: "id" }),
+        Plot.arrow(x_edges, {
+          x1: (d) => x_nodes.find((n) => n.id == d.start).x,
+          x2: (d) => x_nodes.find((n) => n.id == d.end).x,
+          y1: (d) => x_nodes.find((n) => n.id == d.start).y,
+          y2: (d) => x_nodes.find((n) => n.id == d.end).y,
+          inset: 40,
+          bend: true
+        }),
+        Plot.dot(
+          x_nodes,
+          Plot.pointer({
+            x: "x",
+            y: "y",
+            r: 40,
+            stroke: "red",
+            maxRadius: Infinity
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="712" type="text/markdown">
+    We can consider the references as a separate categorical map. You can mix and match multiple manipulations targeting the same data and plots freely.
+  </script>
+  <script id="735" type="application/vnd.observable.javascript">
+    viewof x_edges_domain = Inputs.input(
+      Array.from({ length: x_nodes.length * x_nodes.length }).flatMap((_, i) =>
+        i % x_nodes.length != Math.floor(i / x_nodes.length)
+          ? {
+              start: x_nodes[i % x_nodes.length].id,
+              end: x_nodes[Math.floor(i / x_nodes.length)].id
+            }
+          : []
+      )
+    )
+  </script>
+  <script id="717" type="application/vnd.observable.javascript">
+    viewof plot_edges = Plot.plot({
+      x: {
+        type: "point",
+        domain: x_nodes.map((n) => n.id),
+        grid: true
+      },
+      y: {
+        type: "point",
+        domain: x_nodes.map((n) => n.id),
+        grid: true
+      },
+      marks: [
+        Plot.dot(x_edges, {
+          x: "start",
+          y: "end",
+          r: 5,
+          fill: "black"
+        }),
+        Plot.dot(
+          x_edges_domain,
+          Plot.pointer({
+            x: "start",
+            y: "end",
+            r: 7,
+            stroke: (d) => (x_edges.find((e) => _.isEqual(d, e)) ? "red" : "blue")
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="1410" type="application/vnd.observable.javascript" pinned="">
+    manipulate({
+      this: this,
+      viewofData: viewof x_edges_domain,
+      viewofPlot: viewof plot_edges,
+      invalidation,
+      onInteraction: ({
+        event,
+        pixelStart,
+        pixelCurrent,
+        dataStart,
+        dataCurrent,
+        viewofPlot
+      }) => {
+        if (!_.isEqual(pixelStart, pixelCurrent)) return; // only trigger for click
+        const edgeIndex = viewof x_edges.value.findIndex((x) =>
+          _.isEqual(x, dataCurrent)
+        );
+        if (edgeIndex != -1) {
+          viewof x_edges.value.splice(edgeIndex, 1);
+        } else {
+          viewof x_edges.value.push({ ...dataCurrent });
+        }
+        viewof x_edges.dispatchEvent(new Event("input"));
+        event.preventDefault(); // prevents scrolling on mobile
+      }
+    })
+  </script>
+  <script id="995" type="text/markdown">
+    ## Non linear Spaces (projections)
+
+    DOES NOT WORK waiting on https://github.com/observablehq/plot/issues/1191
+  </script>
+  <script id="1007" type="application/vnd.observable.javascript">
+    // import { land } from "@observablehq/plot-world-map"
+  </script>
+  <script id="1001" type="application/vnd.observable.javascript">
+    viewof longitude = Inputs.range([-180, 180])
+  </script>
+  <script id="1013" type="application/vnd.observable.javascript">
+    viewof x_location = Inputs.input([
+      {
+        longitude: 0,
+        latitude: 0
+      }
+    ])
+  </script>
+  <script id="999" type="application/vnd.observable.javascript">
+    viewof plot_location = Plot.plot({
+      width: 300,
+      projection: { type: "orthographic", rotate: [-longitude, 0] },
+      r: { transform: (d) => Math.pow(10, d) }, // convert Richter to amplitude
+      marks: [
+        Plot.geo(land, { fill: "currentColor", fillOpacity: 0.2 }),
+        Plot.sphere(),
+        Plot.dot(x_location, {
+          x: "longitude",
+          y: "latitude",
+          stroke: "blue",
+          fill: "blue",
+          r: 10,
+          fillOpacity: 0.2
+        }),
+        Plot.dot(
+          x_location,
+          Plot.pointer({
+            x: "longitude",
+            y: "latitude",
+            stroke: "red",
+            fill: "red",
+            r: 10,
+            fillOpacity: 0.2
+          })
+        )
+      ]
+    })
+  </script>
+  <script id="1686" type="text/markdown">
+    ## Editable Text
+
+    Not sure if its possible, ideally we would use https://github.com/observablehq/plot/issues/1213
+  </script>
+</notebook>

@@ -1,0 +1,100 @@
+<!doctype html>
+<notebook theme="air">
+  <title>RSS/Atom/JSON feed</title>
+  <script id="414" type="application/vnd.observable.javascript">
+    md`# RSS/Atom/JSON feed
+
+    Render the XML of a feed based on a query over deployed static files.
+
+    Uses https://github.com/jpmonette/feed
+
+    ~~~js
+      import {deploy} with {rss_config as config} from '@tomlarkworthy/rss-atom-feed'
+    ~~~
+    `
+  </script>
+  <script id="787" type="application/vnd.observable.javascript">
+    current_user = {
+      while (true) {
+        yield Promises.delay(
+          1000,
+          md`Current user is ${(firebase.auth().currentUser || {}).uid}`
+        );
+      }
+    }
+  </script>
+  <script id="679" type="application/vnd.observable.javascript">
+    config = ({
+      title: "Tom Larkworthy' Personal Blog",
+      description: "Random tech stuff",
+      feed_type: "RSS2", // or Atom1, or JSON1
+      target: "/rss.xml",
+      subdomain: "tomlarkworthy",
+      app_id: "b6a918d2-9cda-4fde-b2ec-add91b22ea02",
+      base_url: "https://tomlarkworthy.endpointservices.net",
+      dependsOnTags: ["article"],
+      limit: 20
+    })
+  </script>
+  <script id="674" type="application/vnd.observable.javascript">
+    deployStaticFile({...config, source: preview.href})
+  </script>
+  <script id="767" type="application/vnd.observable.javascript" pinned="">
+    preview = deploy("preview", (req, res) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Content-Type", "application/rss+xml")
+      return res.send(content)
+    });
+  </script>
+  <script id="650" type="application/vnd.observable.javascript" pinned="">
+    feed = {
+      const feed = new Feed({
+        ...config.title && {title: config.title},
+        ...config.description && {description: config.description},
+        id: config.base_url,
+        link: config.base_url,
+        language: "en", // optional, used only in RSS 2.0, possible values: http://www.w3.org/TR/REC-html40/struct/dirlang.html#langcodes
+      })
+      articles.forEach(article => feed.addItem({
+        ...article.title && {title: article.title},
+        ...article.description && {description: article.description},
+        ...article.content && {content: article.content},
+        ...article.image && {image: article.image},
+        id: config.base_url + article.target,
+        link: config.base_url + article.target,
+        author: [],
+        contributor: [],
+        date: utcSecondsToDate(article.creationDate.seconds),
+      }));
+      return feed;
+    }
+  </script>
+  <script id="618" type="application/vnd.observable.javascript">
+    content = config.feed_type === "Atom1" ? feed.atom1() : config.feed_type === "JSON1" ? feed.json1() : feed.rss2()
+  </script>
+  <script id="608" type="application/vnd.observable.javascript">
+    articles
+  </script>
+  <script id="652" type="application/vnd.observable.javascript">
+    utcSecondsToDate = (secs) => {
+      var d = new Date(0); // The 0 there is the key, which sets the date to the epoch
+      d.setUTCSeconds(secs);
+      return d;
+    }
+  </script>
+  <script id="586" type="application/vnd.observable.javascript">
+    articles = queryDependants(config)
+  </script>
+  <script id="621" type="application/vnd.observable.javascript">
+    Feed = (await require('https://bundle.run/feed@4.2.1')).Feed
+  </script>
+  <script id="408" type="application/vnd.observable.javascript">
+    import {deployStaticFile, queryDependants} from '@endpointservices/netlify'
+  </script>
+  <script id="242" type="application/vnd.observable.javascript">
+    import {firebase, DocsView} from '@tomlarkworthy/firebase'
+  </script>
+  <script id="770" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverside-cells'
+  </script>
+</notebook>

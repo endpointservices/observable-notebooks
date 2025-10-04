@@ -1,0 +1,231 @@
+<!doctype html>
+<notebook theme="air">
+  <title>highlight() values to roboco-op</title>
+  <script id="0" type="text/markdown">
+    # `highlight()` values to [roboco-op](https://observablehq.com/d/9ed286bafcced0c3?collection=@tomlarkworthy/robocoop)
+
+    Adds a runtime value to the LLM context programatically, closing a feedback loop.
+
+    Changes
+
+     - 2024-12-28: highlight blobs and if they are images they become image prompts
+  </script>
+  <script id="2854" type="application/vnd.observable.javascript">
+    highlight(example)
+  </script>
+  <script id="2898" type="application/vnd.observable.javascript">
+    example = ({
+      number: 42,
+      obj: {
+        str: "cool"
+      },
+      fn: highlight
+    })
+  </script>
+  <script id="2950" type="application/vnd.observable.javascript">
+    example_image = FileAttachment("sample.png").blob()
+  </script>
+  <script id="2956" type="application/vnd.observable.javascript">
+    highlight(example_image)
+  </script>
+  <script id="2827" type="application/vnd.observable.javascript" pinned="">
+    highlight = ({
+      prompt:
+        'I would like the existing highlight function to define multiple properties, on is "value" which is already done, and a new one "robocoop" which will return ({type: "highlight", value: <REF TO VALUE>}). Do it in a single call to defineProperties',
+      time: 1726209709876
+    } &&
+      (async (value, { max_length = 1000, title = "highlight" } = {}) => {
+        value = await value;
+        const type = guessType(value);
+        let image_url = undefined;
+        if (type === "image") {
+          image_url = await encodeImage(value);
+        }
+        return Object.defineProperties(
+          html`<details>
+    <summary><mark>${title}</mark></summary>
+    ${
+      type === "json"
+        ? md`~~~javascript
+    ${customJsonFormatter(value, { max_length })}
+    ~~~`
+        : html`<img src="${image_url}" />`
+    }
+    </details>`,
+          {
+            value: {
+              get: () => value
+            },
+            robocoop: {
+              get: () => ({
+                type: type,
+                value:
+                  type === "json"
+                    ? customJsonFormatter(value, { max_length })
+                    : image_url
+              })
+            }
+          }
+        );
+      }))
+  </script>
+  <script id="2965" type="application/vnd.observable.javascript" pinned="">
+    guessType = ({
+      prompt:
+        'write a better guessType that checks if the value is a blob and if so checks the mime type and if its a PNG (.png), JPEG (.jpeg and .jpg), WEBP (.webp), or non-animated GIF (.gif) returns "image"',
+      time: 1735419431197
+    } &&
+      ((value) => {
+        if (value instanceof Blob) {
+          const mime = value.type.toLowerCase();
+          const validImageTypes = [
+            "image/png",
+            "image/jpeg",
+            "image/jpg",
+            "image/webp",
+            "image/gif"
+          ];
+          if (validImageTypes.includes(mime)) {
+            return "image";
+          }
+        }
+        return "json";
+      }))
+  </script>
+  <script id="2761" type="application/vnd.observable.javascript" pinned="">
+    customJsonFormatter = ({
+      prompt: "Custom JSON formatter that serializes functions and Error objects",
+      time: 1726300000000
+    } &&
+      function customJsonFormatter(value, { max_length = 250, indent = 0 } = {}) {
+        const INDENT_SPACE = " ".repeat(indent);
+        const jsonString = JSON.stringify(
+          value,
+          (key, val) => {
+            if (typeof val === "function") {
+              return val.toString();
+            }
+            if (val instanceof Error) {
+              return `Error(\"${val.message}\")`;
+            }
+            return val;
+          },
+          2
+        );
+        // Truncate if too long
+        if (jsonString.length > max_length) {
+          return jsonString.slice(0, max_length) + "...";
+        }
+
+        return jsonString;
+      })
+  </script>
+  <script id="2763" type="application/vnd.observable.javascript" pinned="">
+    md`
+    ~~~javascript
+    ${customJsonFormatter({
+      name: "Example",
+      age: 30,
+      error: new Error("dam"),
+      greet: function () {
+        console.log("Hello!");
+      },
+      nested: {
+        arr: [1, "two", () => {}, { key: "value" }]
+      }
+    })}
+    ~~~`
+  </script>
+  <script id="2945" type="application/vnd.observable.javascript" pinned="">
+    encodeImage = ({
+      prompt:
+        'Can you write the equivelent of this but for javascript. An encode image that takes a blob, looks at the mime type and constructre a value that could be an image_url\n```\nimport base64\nfrom openai import OpenAI\n\nclient = OpenAI()\n\n# Function to encode the image\ndef encode_image(image_path):\n    with open(image_path, "rb") as image_file:\n        return base64.b64encode(image_file.read()).decode("utf-8")\n\n\n# Path to your image\nimage_path = "path_to_your_image.jpg"\n\n# Getting the base64 string\nbase64_image = encode_image(image_path)\n\nresponse = client.chat.completions.create(\n    model="gpt-4o-mini",\n    messages=[\n        {\n            "role": "user",\n            "content": [\n                {\n                    "type": "text",\n                    "text": "What is in this image?",\n                },\n                {\n                    "type": "image_url",\n                    "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"},\n                },\n            ],\n        }\n    ],\n)\n```',
+      time: 1735418567409
+    } &&
+      async function encodeImage(blob) {
+        if (!(blob instanceof Blob)) {
+          throw new TypeError("The provided value is not a Blob.");
+        }
+
+        const mimeType = blob.type;
+        if (!mimeType.startsWith("image/")) {
+          throw new Error("The provided Blob is not an image.");
+        }
+
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            resolve(reader.result); // This will be a data URL
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      })
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1470" type="text/markdown">
+    tick the cells to include in the next prompt
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      variables,
+      api_call_response,
+      background_tasks,
+      ndd,
+      _events,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+  <script id="2940" type="application/vnd.observable.javascript" pinned="">
+    //import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="2942" type="application/vnd.observable.javascript" pinned="">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,289 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Engaging Notebooks of Jan 2022</title>
+  <script id="367" type="text/markdown">
+    # Engaging Notebooks of Jan 2022
+  </script>
+  <script id="351" type="application/vnd.observable.javascript">
+    {
+      const notebooks = data
+        .map((value) => ({ value, sort: Math.random() }))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({ value }) => value);
+      return htl.html`<table width="100%">${Array.from({
+        length: 5
+      }).map(
+        (__, j) =>
+          htl.html.fragment`<tr style="border-bottom: none;">${Array.from({
+            length: 4
+          }).map((__, i) => {
+            const notebook = data[i + j * 4];
+            if (notebook === undefined) return;
+            return htl.html.fragment`<td style="padding: 0px">
+                <a href=${notebook.url} target="_blank" >
+                  <img width="100%" src=${notebook.thumbnail}>`;
+          })}</tr>`
+      )}</table>`;
+    }
+  </script>
+  <script id="0" type="text/markdown">
+    Welcome to the first edition of a monthly summary of what is hot on the [Observable](https://observablehq.com/) Dataviz platform. There is so much activity it is sometimes hard to stay up to date and not miss anything juicy. This newsletter is dedicated to finding the gems. Last month two notebooks tweeted by the [trending bot](https://twitter.com/trendingnotebo2) in particular found some resonance in the broader community.
+
+  </script>
+  <script id="15" type="text/markdown">
+    ### Engagement, Impressions, Likes and Retweets
+  </script>
+  <script id="12" type="application/vnd.observable.javascript">
+    Plot.plot({
+      x: {
+        domain: [0, 500]
+      },
+      y: {
+        domain: [0, 25]
+      },
+      marks: [
+        Plot.image(
+          [...data].sort((x) => x.impressions),
+          {
+            x: "impressions",
+            y: "engagements",
+            width: "importance",
+            title: "title",
+            src: "thumbnail"
+          }
+        ),
+        Plot.text(data, {
+          text: (d) =>
+            Array.from({ length: d.likes })
+              .map((_) => "❤️")
+              .join("") +
+            Array.from({ length: d.retweets })
+              .map((_) => "🔁")
+              .join(""),
+          x: "impressions",
+          y: "engagements"
+        })
+      ]
+    })
+  </script>
+  <script id="168" type="application/vnd.observable.javascript">
+    viewof scaling = Inputs.range([0, 1], { value: 0.21 })
+  </script>
+  <script id="172" type="application/vnd.observable.javascript">
+    viewof offset = Inputs.range([0, 100], { value: 39 })
+  </script>
+  <script id="304" type="application/vnd.observable.javascript">
+    viewof cutoff = Inputs.range([0, data.length], {
+      value: 5,
+      step: 1,
+      label: "cutoff"
+    })
+  </script>
+  <script id="378" type="text/markdown">
+
+    First, the prolific [@fil](https://observablehq.com/@fil) scored a hit with a technical dimension reduction technique for summarizing time-series data called [topological subsampling](https://observablehq.com/@fil/time-series-topological-subsampling). It's pleasing to see technical posts do so well, I think Fil did a fantastic job of explaining the technique very well, and my hypothesis why it did so well is that it ultimately solves a very practical problem of transmitting just the salient information very efficiently. You can use the technique to speed up various parts of Dataviz, including bandwidth minimization or speeding up rendering pipelines. 
+
+    The second big hit was [@neocartocnrs](https://observablehq.com/@neocartocnrs) introduction to his library [Bertin.js](https://github.com/neocarto/bertin). Bertin.js is a geo library to help render beautiful thematic maps. We are very excited because [@neocartocnrs](https://observablehq.com/@neocartocnrs) is a long-time Observablehq user and professional cartographer, and his library seems to be a manifestation of the move toward declarative style DataViz that the Observablehq community is moving towards. We wish you good luck Nicolas Lambert with Berin.js!  
+
+    Of course, there were many other great notebooks, check the rest of January's trending notebooks below! Also if you have not seen, there is a list of the [100 notebooks in 2021](https://observablehq.com/@tomlarkworthy/notebooks2021).
+
+  </script>
+  <script id="278" type="application/vnd.observable.javascript">
+    md`${content}`
+  </script>
+  <script id="275" type="application/vnd.observable.javascript">
+    content = {
+      let markdown = "";
+      for (let i = 0; i < cutoff; i++) {
+        const notebook = data[i];
+        const author = /(@[^)]+)/.exec(notebook.author)[1];
+        markdown += `### [${notebook.title}](${notebook.url}) by [${author}](https://observablehq.com/${author}) \n`;
+        markdown += `<i>\n`;
+        markdown += `\n[![](${notebook.thumbnail})](${notebook.url})\n`;
+        markdown += `\n${notebook?.description || "No description provided"}\n`;
+        markdown += `</i>\n`;
+        markdown += "\n---\n";
+      }
+
+      markdown += `</i>\n`;
+
+      markdown += `These other notebooks also trended in Jan\n`;
+      for (let i = cutoff; i < data.length; i++) {
+        const notebook = data[i];
+        const author = /(@[^)]+)/.exec(notebook.author)[1];
+        markdown += `#### [${notebook.title}](${notebook.url}) by [${author}](https://observablehq.com/${author}) \n`;
+      }
+
+      return markdown;
+    }
+  </script>
+  <script id="186" type="text/markdown">
+    ### Data wrangling
+  </script>
+  <script id="138" type="application/vnd.observable.javascript">
+    data = tweets
+      .map((tweet, i) => ({
+        ...tweet,
+        ...meta[i],
+        ...metadata[i],
+        ...tags[i],
+        thumbnail: thumbnailURL(i),
+        importance: tweet.impressions * scaling + offset
+      }))
+      .sort((a, b) => b.impressions - a.impressions)
+  </script>
+  <script id="6" type="application/vnd.observable.javascript">
+    tweets = (
+      await FileAttachment(
+        "tweet_activity_metrics_trendingnotebo2_20220101_20220201_en.csv"
+      ).csv()
+    ).map((x) => ({
+      ...x,
+      engagements: parseFloat(x.engagements),
+      impressions: parseFloat(x.impressions),
+      likes: parseFloat(x.likes),
+      retweets: parseFloat(x.retweets)
+    }))
+  </script>
+  <script id="82" type="application/vnd.observable.javascript">
+    viewof fetchNotebookURL = Inputs.toggle({
+      label: "fetch notebook URL? (network, slow)"
+    })
+  </script>
+  <script id="73" type="application/vnd.observable.javascript">
+    expandTwitterURL = async (shortURL) => {
+      const response = await fetch(shortURL);
+      if (response.status !== 200)
+        throw new Error(`fetch to ${shortURL} resulted in ${response.status}`);
+      const body = await response.text();
+      return /URL=([^"]*)"/.exec(body)[1];
+    }
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    fetchedNotebookURL = {
+      if (!fetchNotebookURL) return invalidation;
+      const notebooks = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        const shortcode = /(https:\/\/t.co\/[0-9a-zA-Z]*) https:\/\/t.co\/[0-9a-zA-Z]*/.exec(
+          tweets[i]["Tweet text"]
+        )[1];
+        notebooks[i] = expandTwitterURL(shortcode);
+      }
+      return Promise.all(notebooks);
+    }
+  </script>
+  <script id="104" type="application/vnd.observable.javascript">
+    notebookURL = FileAttachment("fetchedNotebookURL.json").json()
+  </script>
+  <script id="65" type="application/vnd.observable.javascript">
+    viewof fetchMetdata = Inputs.toggle({
+      label: "fetch metadata? (network, slow)"
+    })
+  </script>
+  <script id="67" type="application/vnd.observable.javascript">
+    fetchedMetadata = {
+      if (!fetchMetdata) return invalidation;
+
+      const metadata = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        metadata[i] = await getMetadata(
+          notebookURL[i].replace("https://observablehq.com/", "")
+        );
+      }
+      return metadata;
+    }
+  </script>
+  <script id="123" type="application/vnd.observable.javascript">
+    metadata = FileAttachment("fetchedMetadata (1).json").json()
+  </script>
+  <script id="57" type="application/vnd.observable.javascript">
+    viewof fetchMeta = Inputs.toggle({
+      label: "fetch doc meta? (network, slow)"
+    })
+  </script>
+  <script id="61" type="application/vnd.observable.javascript">
+    fetchedMeta = {
+      if (!fetchMeta) return invalidation;
+      const meta = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          meta[i] = (
+            await fetchp(
+              `https://api.observablehq.com/document/${metadata[i].id}/meta`
+            )
+          ).json();
+        }
+      }
+      return Promise.all(meta);
+    }
+  </script>
+  <script id="131" type="application/vnd.observable.javascript">
+    meta = FileAttachment("fetchedMeta (1).json").json()
+  </script>
+  <script id="55" type="application/vnd.observable.javascript">
+    thumbnailURL = (index) =>
+      meta[index]
+        ? `https://static.observableusercontent.com/thumbnail/${
+            meta[index].custom_thumbnail || meta[index].thumbnail
+          }.jpg`
+        : undefined
+  </script>
+  <script id="283" type="application/vnd.observable.javascript">
+    viewof fetchTags = Inputs.toggle({
+      label: "fetch page meta tags? (network, slow)"
+    })
+  </script>
+  <script id="286" type="application/vnd.observable.javascript">
+    fetchedTags = {
+      if (!fetchTags) return invalidation;
+      var el = document.createElement("tmp");
+      const tags = new Array(tweets.length);
+      for (let i = 0; i < tweets.length; i++) {
+        if (metadata[i]) {
+          el.innerHTML = await (await fetchp(metadata[i].url)).text();
+
+          try {
+            tags[i] = {
+              title: el.querySelector("meta[property='og:title']").content,
+              description: el.querySelector("meta[name=description]").content
+            };
+          } catch (err) {
+            console.error("Problem with tags for " + i);
+          }
+        }
+      }
+      return tags;
+    }
+  </script>
+  <script id="289" type="application/vnd.observable.javascript">
+    tags = (await FileAttachment("fetchedTags (2).json").json()).map((t) => {
+      let description = undefined;
+      if (t?.description) {
+        description = t.description;
+
+        if (description.lastIndexOf(".") !== -1)
+          description = description.substring(0, description.lastIndexOf(".") + 1);
+      }
+
+      return {
+        ...t,
+        description
+      };
+    })
+  </script>
+  <script id="27" type="application/vnd.observable.javascript">
+    import { Plot } from "@mkfreeman/plot-tooltip"
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    import { getMetadata } from "@mootari/notebook-data"
+  </script>
+  <script id="59" type="application/vnd.observable.javascript">
+    import { fetchp } from "@tomlarkworthy/fetchp"
+  </script>
+  <script id="344" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="347" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

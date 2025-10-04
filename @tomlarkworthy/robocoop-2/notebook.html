@@ -1,0 +1,1240 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Roboco-op 2.1: Notebook collaborator</title>
+  <script id="0" type="text/markdown">
+    # Roboco-op 2.1: Notebook collaborator
+  </script>
+  <script id="4078" type="application/vnd.observable.javascript">
+    robocoop = {
+      keepalive(robocoopModule, "background_tasks");
+      return tabbedPane({
+        Robocoop: html`<div>
+        ${reversibleAttach(ui_attached, viewof prompt)}
+        ${reversibleAttach(ui_attached, viewof includeModules)}
+        ${reversibleAttach(ui_attached, viewof includeNotebookScreenshot)}
+        ${reversibleAttach(ui_attached, viewof websearch)}
+        ${reversibleAttach(ui_attached, viewof copy_code)}
+        ${reversibleAttach(ui_attached, viewof suggestion)}
+        ${reversibleAttach(ui_attached, viewof context_viz)}
+      </div>`,
+        config: html`<div>
+        ${reversibleAttach(ui_attached, viewof OPENAI_API_KEY)}
+        ${reversibleAttach(ui_attached, viewof settings)}
+        ${reversibleAttach(ui_attached, viewof system_prompt)}
+      </div>`
+      });
+    }
+  </script>
+  <script id="4169" type="text/markdown">
+    ## Usage
+
+    Import cell `robocoop`:-
+    ~~~js
+    import {robocoop} from '@tomlarkworthy/robocoop-2'
+    ~~~
+
+    place the cell in your notebook:-
+
+    ~~~js
+    robocoop
+    ~~~
+
+    See [@tomlarkworthy/robocoop-2-example](https://observablehq.com/@tomlarkworthy/robocoop-2-example) for an example
+  </script>
+  <script id="4134" type="text/markdown">
+    ## Introduction
+  </script>
+  <script id="4132" type="text/markdown">
+    Roboco-op blends [Observablehq.com](https://observablehq.com/)'s reactive notebooks with an **open source** userspace AI coding assistant. Observable notebooks are a unique coding environment because the code development and runtime state are mixed together. This means Robocoop can write code and see the executed result.
+  </script>
+  <script id="2584" type="text/markdown">
+    ## Made by Roboco-op 2.0
+  </script>
+  <script id="3968" type="application/vnd.observable.javascript">
+    pong_game = {
+      const root = html`<div class="pong-root" style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; display: grid; gap: 10px; max-width: 860px; margin: 0 auto;">
+          <div class="hud" style="display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 8px;">
+            <div style="display:flex; gap:12px; align-items:center; flex-wrap: wrap;">
+              <strong aria-live="polite" aria-atomic="true" class="score" style="font-size: 20px;">0 — 0</strong>
+              <span class="status" style="color:#666; font-size: 12px;">W/S & ↑/↓ to move • P to pause</span>
+            </div>
+            <label style="display:flex; align-items:center; gap:6px;">
+              <span>Mode</span>
+              <select aria-label="Game mode" class="mode">
+                <option value="1">1 Player (AI)</option>
+                <option value="2">2 Players</option>
+              </select>
+            </label>
+            <label style="display:flex; align-items:center; gap:6px;" class="ai-wrap">
+              <span>AI</span>
+              <select aria-label="AI difficulty" class="ai">
+                <option value="easy">Easy</option>
+                <option value="normal" selected>Normal</option>
+                <option value="hard">Hard</option>
+                <option value="insane">Insane</option>
+              </select>
+            </label>
+            <div style="display:flex; gap:8px; justify-content:flex-end;">
+              <button type="button" class="pause" aria-label="Pause or resume game" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff;">Pause</button>
+              <button type="button" class="reset" aria-label="Reset scores" style="padding:6px 10px; border-radius:6px; border:1px solid #ccc; background:#fff;">Reset</button>
+            </div>
+          </div>
+          <div class="canvas-wrap" style="position:relative; background:#111; border-radius:10px; overflow:hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.2);">
+          </div>
+          <details style="font-size:12px; color:#666;">
+            <summary>Controls</summary>
+            <ul style="margin:6px 0 0 16px; line-height:1.5;">
+              <li>Left paddle: W/S or drag on left half</li>
+              <li>Right paddle: ↑/↓ or drag on right half (2P mode)</li>
+              <li>P: Pause/Resume • R: Quick Reset</li>
+            </ul>
+          </details>
+        </div>`;
+
+      const wrap = root.querySelector(".canvas-wrap");
+      const scoreEl = root.querySelector(".score");
+      const statusEl = root.querySelector(".status");
+      const btnPause = root.querySelector(".pause");
+      const btnReset = root.querySelector(".reset");
+      const modeSel = root.querySelector(".mode");
+      const aiSel = root.querySelector(".ai");
+      const aiWrap = root.querySelector(".ai-wrap");
+
+      // Canvas setup with HiDPI support
+      const canvas = document.createElement("canvas");
+      canvas.setAttribute("aria-label", "Pong game canvas");
+      canvas.setAttribute("role", "img");
+      canvas.style.display = "block";
+      canvas.style.width = "100%";
+      canvas.style.height = "auto";
+      wrap.appendChild(canvas);
+      const ctx = canvas.getContext("2d");
+
+      // Responsive sizing
+      const TARGET_ASPECT = 16 / 9;
+      const MAX_W = 840;
+      const MIN_W = 420;
+      const resizeCanvas = () => {
+        const DPR = Math.min(window.devicePixelRatio || 1, 2);
+        const w = Math.max(MIN_W, Math.min(MAX_W, wrap.clientWidth || MAX_W));
+        const h = Math.round(w / TARGET_ASPECT);
+        canvas.width = Math.round(w * DPR);
+        canvas.height = Math.round(h * DPR);
+        canvas.style.height = `${h}px`;
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        dim.W = w;
+        dim.H = h;
+      };
+      const ro = new ResizeObserver(resizeCanvas);
+      ro.observe(wrap);
+
+      // Game state
+      const dim = { W: 800, H: 450 };
+      const keys = new Set();
+      const rand = (a, b) => a + Math.random() * (b - a);
+      const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+      const sign = (x) => (x < 0 ? -1 : 1);
+      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+
+      const state = {
+        scores: [0, 0],
+        paused: false,
+        waitingServe: 0, // ms remaining before serve
+        singlePlayer: true,
+        ai: "normal", // easy, normal, hard, insane
+        particlePool: [],
+        particles: [],
+        ball: null,
+        paddles: null,
+        speedBase: 360, // px/s
+        speedMax: 900, // cap
+        spinFactor: 300, // how much vertical speed changes from hit offset
+        lastTime: 0,
+        raf: 0
+      };
+
+      const aiParams = {
+        easy: { react: 0.08, jitter: 0.35, maxSpeed: 260 },
+        normal: { react: 0.14, jitter: 0.22, maxSpeed: 340 },
+        hard: { react: 0.2, jitter: 0.12, maxSpeed: 440 },
+        insane: { react: 0.28, jitter: 0.06, maxSpeed: 600 }
+      };
+
+      const initEntities = () => {
+        const W = dim.W,
+          H = dim.H;
+        const padW = 12,
+          padH = Math.round(H * 0.22);
+        const margin = 20;
+        state.paddles = [
+          { x: margin, y: (H - padH) / 2, w: padW, h: padH, vy: 0, color: "#fff" },
+          {
+            x: W - margin - padW,
+            y: (H - padH) / 2,
+            w: padW,
+            h: padH,
+            vy: 0,
+            color: "#fff"
+          }
+        ];
+        state.ball = {
+          x: W / 2,
+          y: H / 2,
+          r: 7,
+          vx: 0,
+          vy: 0,
+          speed: state.speedBase
+        };
+        serve(rand(0, 1) < 0.5 ? -1 : 1, 1200); // initial delayed serve
+        state.particles.length = 0;
+      };
+
+      const serve = (dirX, delay = 800) => {
+        state.waitingServe = delay;
+        const angle = rand(-0.25, 0.25) * Math.PI; // +/-45°
+        const s = state.speedBase * (1 + rand(-0.05, 0.05));
+        state.ball.x = dim.W / 2;
+        state.ball.y = dim.H / 2;
+        state.ball.speed = s;
+        state.ball.vx = Math.cos(angle) * s * dirX;
+        state.ball.vy = Math.sin(angle) * s;
+      };
+
+      const spawnSparks = (x, y, nx, ny, count = 12, col = "#fff") => {
+        for (let i = 0; i < count; i++) {
+          const p = state.particlePool.pop() || {};
+          p.x = x;
+          p.y = y;
+          const ang = Math.atan2(ny, nx) + rand(-0.7, 0.7);
+          const spd = rand(80, 260);
+          p.vx = Math.cos(ang) * spd;
+          p.vy = Math.sin(ang) * spd;
+          p.life = rand(0.25, 0.6);
+          p.age = 0;
+          p.size = rand(1, 2.2);
+          p.color = col;
+          state.particles.push(p);
+        }
+      };
+
+      const updateParticles = (dt) => {
+        for (let i = state.particles.length - 1; i >= 0; i--) {
+          const p = state.particles[i];
+          p.age += dt;
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          // fade and gravity
+          p.vy += 300 * dt;
+          if (p.age >= p.life) {
+            state.particles.splice(i, 1);
+            state.particlePool.push(p);
+          }
+        }
+      };
+
+      const drawParticles = (ctx) => {
+        ctx.save();
+        for (const p of state.particles) {
+          const t = p.age / p.life;
+          ctx.globalAlpha = 1 - t;
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+        }
+        ctx.restore();
+      };
+
+      const draw = () => {
+        const W = dim.W,
+          H = dim.H;
+        ctx.clearRect(0, 0, W, H);
+
+        // Background
+        const grd = ctx.createLinearGradient(0, 0, 0, H);
+        grd.addColorStop(0, "#0f0f11");
+        grd.addColorStop(1, "#141416");
+        ctx.fillStyle = grd;
+        ctx.fillRect(0, 0, W, H);
+
+        // Midline with dash
+        ctx.save();
+        ctx.strokeStyle = "rgba(255,255,255,0.35)";
+        ctx.setLineDash([8, 12]);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(W / 2, 10);
+        ctx.lineTo(W / 2, H - 10);
+        ctx.stroke();
+        ctx.restore();
+
+        // Glow behind paddles and ball
+        ctx.save();
+        ctx.shadowColor = "rgba(255,255,255,0.35)";
+        ctx.shadowBlur = 12;
+
+        // Paddles
+        for (const p of state.paddles) {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, Math.round(p.y), p.w, Math.round(p.h));
+        }
+
+        // Ball
+        const b = state.ball;
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.restore();
+
+        // Particles on top
+        drawParticles(ctx);
+
+        // Score
+        ctx.save();
+        ctx.font = "bold 28px system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        ctx.fillText(`${state.scores[0]} — ${state.scores[1]}`, W / 2, 14);
+        ctx.restore();
+
+        // Serve countdown overlay
+        if (state.waitingServe > 0) {
+          const t = Math.ceil(state.waitingServe / 400);
+          ctx.save();
+          ctx.fillStyle = "rgba(0,0,0,0.35)";
+          ctx.fillRect(0, 0, W, H);
+          ctx.fillStyle = "#fff";
+          ctx.font =
+            "bold 64px system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(`${t}`, W / 2, H / 2);
+          ctx.restore();
+        }
+
+        // Update HUD
+        scoreEl.textContent = `${state.scores[0]} — ${state.scores[1]}`;
+        statusEl.textContent = `${
+          state.singlePlayer ? "W/S (Left) vs AI" : "W/S (Left) & ↑/↓ (Right)"
+        } • ${state.paused ? "Paused (P)" : "Running (P to pause)"}`;
+        btnPause.textContent = state.paused ? "Resume" : "Pause";
+      };
+
+      const rectsOverlap = (bx, by, br, rx, ry, rw, rh) => {
+        const cx = clamp(bx, rx, rx + rw);
+        const cy = clamp(by, ry, ry + rh);
+        const dx = bx - cx;
+        const dy = by - cy;
+        return dx * dx + dy * dy <= br * br;
+      };
+
+      const collidePaddle = (b, p, isLeft) => {
+        if (!rectsOverlap(b.x, b.y, b.r, p.x, p.y, p.w, p.h)) return false;
+        // Compute hit offset (-1 .. 1)
+        const pct = ((b.y - p.y) / p.h) * 2 - 1;
+        const offset = clamp(pct, -1, 1);
+        // Reflect X, add spin to Y
+        const dir = isLeft ? 1 : -1;
+        const cur = Math.hypot(b.vx, b.vy);
+        const nextSpeed = clamp(cur * 1.06, state.speedBase, state.speedMax);
+        const newVy = clamp(
+          b.vy + offset * state.spinFactor,
+          -state.speedMax,
+          state.speedMax
+        );
+        const newVx =
+          sign(-b.vx) *
+          Math.sqrt(Math.max(1, nextSpeed * nextSpeed - newVy * newVy));
+        b.vx = newVx;
+        b.vy = newVy;
+        // Nudge ball outside paddle to avoid sticking
+        b.x = isLeft ? p.x + p.w + b.r + 0.5 : p.x - b.r - 0.5;
+        b.speed = Math.hypot(b.vx, b.vy);
+        spawnSparks(b.x, clamp(b.y, p.y, p.y + p.h), dir, 0, 14, "#e6f3ff");
+        return true;
+      };
+
+      const update = (dt) => {
+        const W = dim.W,
+          H = dim.H;
+        const [L, R] = state.paddles;
+        const b = state.ball;
+
+        // Serve countdown
+        if (state.waitingServe > 0) {
+          state.waitingServe -= dt * 1000;
+          if (state.waitingServe <= 0) state.waitingServe = 0;
+          return;
+        }
+
+        // Controls - Left paddle
+        const speedPad = 520;
+        let leftMove = 0,
+          rightMove = 0;
+        if (keys.has("KeyW")) leftMove -= 1;
+        if (keys.has("KeyS")) leftMove += 1;
+        if (keys.has("ArrowUp")) rightMove -= 1;
+        if (keys.has("ArrowDown")) rightMove += 1;
+
+        L.vy = leftMove * speedPad;
+        if (!state.singlePlayer) R.vy = rightMove * speedPad;
+
+        // AI control for right paddle (single player)
+        if (state.singlePlayer) {
+          const ai = aiParams[state.ai] || aiParams.normal;
+          // Predict target with some jitter
+          const target = clamp(b.y + rand(-1, 1) * ai.jitter * 60, 0, H);
+          // Move toward target only if ball is moving towards AI or is near center
+          const towardAI = b.vx > 0 || b.x > W * 0.4;
+          const center = R.y + R.h / 2;
+          const diff = target - center;
+          const accel = ai.react * 2000;
+          R.vy += towardAI ? clamp(diff, -1, 1) * accel * dt : 0;
+          R.vy = clamp(R.vy, -ai.maxSpeed, ai.maxSpeed);
+        }
+
+        // Integrate paddles
+        L.y = clamp(L.y + L.vy * dt, 0, H - L.h);
+        R.y = clamp(R.y + R.vy * dt, 0, H - R.h);
+
+        // Move ball
+        b.x += b.vx * dt;
+        b.y += b.vy * dt;
+
+        // Collide top/bottom
+        if (b.y - b.r <= 0 && b.vy < 0) {
+          b.y = b.r + 0.5;
+          b.vy = -b.vy;
+          spawnSparks(b.x, b.y, 0, 1, 10, "#d7f7ff");
+        } else if (b.y + b.r >= H && b.vy > 0) {
+          b.y = H - b.r - 0.5;
+          b.vy = -b.vy;
+          spawnSparks(b.x, b.y, 0, -1, 10, "#d7f7ff");
+        }
+
+        // Collide paddles
+        collidePaddle(b, L, true);
+        collidePaddle(b, R, false);
+
+        // Scoring
+        if (b.x + b.r < 0) {
+          state.scores[1] += 1;
+          spawnSparks(0, b.y, 1, 0, 30, "#ffd6d6");
+          serve(1, 900);
+        } else if (b.x - b.r > W) {
+          state.scores[0] += 1;
+          spawnSparks(W, b.y, -1, 0, 30, "#ffd6d6");
+          serve(-1, 900);
+        }
+
+        // Particles
+        updateParticles(dt);
+      };
+
+      const frame = (t) => {
+        if (!state.lastTime) state.lastTime = t;
+        const dtRaw = Math.min(1 / 30, Math.max(0, (t - state.lastTime) / 1000)); // clamp delta
+        state.lastTime = t;
+        if (!state.paused) update(dtRaw);
+        draw();
+        state.raf = window.requestAnimationFrame(frame);
+      };
+
+      // Input handling
+      const onKeyDown = (e) => {
+        if (e.repeat) return;
+        if (e.code === "KeyP") {
+          togglePause();
+          return;
+        }
+        if (e.code === "KeyR") {
+          hardReset();
+          return;
+        }
+        keys.add(e.code);
+      };
+      const onKeyUp = (e) => {
+        keys.delete(e.code);
+      };
+
+      // Pointer control: drag each side to move paddles
+      let dragging = false;
+      const onPointerDown = (e) => {
+        dragging = true;
+        canvas.setPointerCapture(e.pointerId);
+        onPointerMove(e);
+      };
+      const onPointerUp = (e) => {
+        dragging = false;
+        try {
+          canvas.releasePointerCapture(e.pointerId);
+        } catch {}
+      };
+      const onPointerMove = (e) => {
+        if (!dragging) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const target = x < rect.width / 2 ? state.paddles[0] : state.paddles[1];
+        target.y = clamp(y - target.h / 2, 0, dim.H - target.h);
+      };
+
+      // Controls
+      const togglePause = () => {
+        state.paused = !state.paused;
+        draw();
+      };
+      const hardReset = () => {
+        state.scores = [0, 0];
+        initEntities();
+        draw();
+      };
+      btnPause.addEventListener("click", togglePause);
+      btnReset.addEventListener("click", hardReset);
+      modeSel.addEventListener("change", () => {
+        state.singlePlayer = modeSel.value === "1";
+        aiWrap.style.display = state.singlePlayer ? "flex" : "none";
+        initEntities();
+      });
+      aiSel.addEventListener("change", () => {
+        state.ai = aiSel.value;
+        initEntities();
+      });
+
+      window.addEventListener("keydown", onKeyDown);
+      window.addEventListener("keyup", onKeyUp);
+      canvas.addEventListener("pointerdown", onPointerDown);
+      canvas.addEventListener("pointerup", onPointerUp);
+      canvas.addEventListener("pointercancel", onPointerUp);
+      canvas.addEventListener("pointermove", onPointerMove);
+
+      // Init and start
+      resizeCanvas();
+      initEntities();
+      state.raf = window.requestAnimationFrame(frame);
+
+      // Cleanup when removed from DOM (best-effort)
+      root.addEventListener(
+        "DOMNodeRemoved",
+        (ev) => {
+          if (ev.target !== root) return;
+          try {
+            ro.disconnect();
+          } catch {}
+          try {
+            window.cancelAnimationFrame(state.raf);
+          } catch {}
+          window.removeEventListener("keydown", onKeyDown);
+          window.removeEventListener("keyup", onKeyUp);
+          canvas.removeEventListener("pointerdown", onPointerDown);
+          canvas.removeEventListener("pointerup", onPointerUp);
+          canvas.removeEventListener("pointercancel", onPointerUp);
+          canvas.removeEventListener("pointermove", onPointerMove);
+        },
+        { once: true }
+      );
+
+      return root;
+    }
+  </script>
+  <script id="4254" type="text/markdown">
+    ## Value aware
+
+    Robocoop receives the values of cells allowing test driven development. Pairs well with [inline unit tests](https://observablehq.com/@tomlarkworthy/tester). Uses [@tomlarkworthy/summarizejs](@tomlarkworthy/summarizejs#summarizeJS) to control context length and communicate typing.
+  </script>
+  <script id="4321" type="text/markdown">
+    ## Multi-modal
+
+    Robocoop receives a screenshot of the notebook using [@tomlarkworthy/modern-screenshot](https://observablehq.com/@tomlarkworthy/modern-screenshot)
+
+
+  </script>
+  <script id="4401" type="text/markdown">
+    ## Websearch
+
+    Optionally can do websearch before answering
+  </script>
+  <script id="4220" type="text/markdown">
+    ## Contributing
+
+    If Roboco-op cannot do something you expect it should, you could add to its [`evals`](https://observablehq.com/@tomlarkworthy/robocoop-eval). The evals are used to evolve a new prompt using [GEPA](https://observablehq.com/@tomlarkworthy/gepa).
+  </script>
+  <script id="1617" type="text/markdown">
+    ## Prompt Interface
+
+  </script>
+  <script id="4061" type="application/vnd.observable.javascript">
+    viewof ui_attached = Inputs.toggle({
+      label: "ui_attached",
+      value: true
+    })
+  </script>
+  <script id="4074" type="application/vnd.observable.javascript">
+    import { tabbedPane } from "@tomlarkworthy/tabbed-pane-view"
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt = {
+      const whisper = whisperInput({
+        API_KEY: OPENAI_API_KEY
+      });
+      const ui = view`<div>
+          ${cautious(() => whisper)}
+          ${[
+            "...",
+            Inputs.textarea({
+              width: "100%",
+              placeholder: "ask for a cell",
+              rows: 10,
+              minlength: 1,
+              submit: true
+            })
+          ]}
+        </div>`;
+      invalidation.then(
+        whisper.addEventListener("input", () => {
+          ui.value = whisper.value;
+        })
+      );
+
+      return ui;
+    }
+  </script>
+  <script id="3825" type="application/vnd.observable.javascript">
+    viewof includeModules = Inputs.toggle({
+      label: "include dependancies in context?"
+    })
+  </script>
+  <script id="4334" type="application/vnd.observable.javascript">
+    viewof includeNotebookScreenshot = Inputs.toggle({
+      label: "include notebook screenshot in context?",
+      value: true
+    })
+  </script>
+  <script id="4396" type="application/vnd.observable.javascript">
+    viewof websearch = Inputs.toggle({
+      label: "use websearch?",
+      value: true
+    })
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    viewof copy_code = Inputs.button("copy code to clipboard", {
+      reduce: () => cellsToClipboard([suggestion])
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion = Inputs.textarea({
+      label: "suggestion",
+      width: "100%",
+      rows: 50,
+      disabled: true,
+      value: "",
+      style: "height: 500px"
+    })
+  </script>
+  <script id="3375" type="application/vnd.observable.javascript">
+    mutable context = []
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz = Inputs.textarea({
+      label: "context",
+      rows: 20,
+      width: "100%",
+      disabled: true,
+      value: context
+        .map(
+          ({ role, content }) =>
+            `${role}:\n${typeof content == "string" ? content : content[0].text}\n`
+        )
+        .join("\n")
+    })
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="63" type="application/vnd.observable.javascript">
+    viewof system_prompt = Inputs.textarea({
+      label: "system prompt",
+      rows: 20,
+      width: "100%",
+      value: `Respond only with Observable JavaScript (Notebook 1.0) as XML <cell> blocks. Do not include any prose, Markdown, or JSON before, after, or between the XML cells.
+
+    Response format
+    - Each response may contain one or more <cell> blocks. Every block must contain exactly:
+      - <inputs>…</inputs>: a comma-separated list of every free variable the cell reads (standard libraries and other cells), or empty if none. Examples: <inputs></inputs>, <inputs>d3</inputs>, <inputs>expect,x</inputs>, <inputs>viewof ready</inputs>.
+        - Include all referenced globals such as Inputs, htl, d3, Plot, FileAttachment, width, etc., when used.
+        - Use exact names only; do not nest tags or add attributes inside <inputs>.
+      - <code><![CDATA[ …Observable JS code… ]]></code>
+
+    General rules
+    - Use Observable Notebook 1.0 semantics.
+    - Use the fewest cells required; prefer a single view (e.g., via Inputs.form). Split cells only when an import must be isolated or when a derived output should react to a view value.
+    - Do not log to the console or include comments; the cell’s value is the result.
+    - Use the exact variable names from the task. If the task requires a view, bind it with: viewof name = …
+      - Use name for the view’s current value and viewof name for the element. Do not use name.value unless an API explicitly requires it.
+    - Prefer zero-dependency or standard-library solutions; import third-party packages only when necessary.
+
+    Standard libraries and inputs listing
+    - UI: use Inputs.* (Inputs.button with reduce, Inputs.toggle, Inputs.select, Inputs.range/Inputs.number, Inputs.form). Any cell calling Inputs.* must list Inputs.
+    - DOM/SVG: use Hypertext Literal via htl.html and htl.svg. Any cell using htl.* must list htl.
+    - Data utilities/viz: if a task mentions d3 or Plot, assume they are provided and list them in <inputs> for cells that use them.
+    - If you use FileAttachment, width, or other provided globals, list them in <inputs>.
+
+    Imports
+    - Do not use require().
+    - Use ESM CDN imports with a pinned version:
+      - Single-assignment cell example: dateFns = await import("https://cdn.jsdelivr.net/npm/date-fns@4.1.0/+esm")
+    - If you must provide a fallback CDN, keep a single top-level assignment via an async IIFE expression with try/catch:
+      - dateFns = await (async () => { try { return await import("https://cdn.jsdelivr.net/npm/date-fns@4.1.0/+esm"); } catch { return await import("https://esm.sh/date-fns@4.1.0"); } })()
+    - Keep each import cell to a single top-level assignment (no extra top-level statements).
+
+    Reactivity
+    - Any cell that reads a variable x must list x in <inputs>.
+    - If a cell needs the view element, list viewof x; if it needs the view’s value, list x.
+
+    Testing and fixes
+    - If asked to fix a failing test, change the implementation to satisfy the test; do not modify the test unless explicitly requested.
+    - If you provide a minimal assertion helper (e.g., expect().toBe), implement only what’s needed and keep it in its own cell.
+
+    Error handling
+    - If a requested feature is unsupported without external deps and imports are disallowed or fail, either implement a minimal dependency-free solution or return a value that throws a clear Error describing the unsupported case.
+
+    UI patterns
+    - Counter button:
+      <cell>
+      <inputs>Inputs</inputs>
+      <code><![CDATA[
+      viewof count = Inputs.button("Increment", {value: 0, reduce: v => v + 1})
+      ]]></code>
+      </cell>
+    - Toggle:
+      <cell>
+      <inputs>Inputs</inputs>
+      <code><![CDATA[
+      viewof ready = Inputs.toggle({label: "Ready", value: false})
+      ]]></code>
+      </cell>
+    - Dropdown:
+      <cell>
+      <inputs>Inputs</inputs>
+      <code><![CDATA[
+      viewof rgb = Inputs.select(["red", "green", "blue"], {value: "red"})
+      ]]></code>
+      </cell>
+    - Form (single view returning an object):
+      <cell>
+      <inputs>Inputs</inputs>
+      <code><![CDATA[
+      viewof credentials = Inputs.form({username: Inputs.text({label: "Username"}), password: Inputs.password({label: "Password"})})
+      ]]></code>
+      </cell>
+
+    Examples (minimal)
+    - Literal:
+      <cell>
+      <inputs></inputs>
+      <code><![CDATA[
+      x = 42
+      ]]></code>
+      </cell>
+    - Using d3:
+      <cell>
+      <inputs>d3</inputs>
+      <code><![CDATA[
+      sum = d3.sum([1, 2, 3, 4, 5])
+      ]]></code>
+      </cell>
+    - Pinned import and usage (CDN ESM):
+      <cell>
+      <inputs></inputs>
+      <code><![CDATA[
+      dateFns = await import("https://cdn.jsdelivr.net/npm/date-fns@4.1.0/+esm")
+      ]]></code>
+      </cell>
+      <cell>
+      <inputs>dateFns</inputs>
+      <code><![CDATA[
+      formatted = dateFns.format(new Date(2020, 0, 1), "yyyy-MM-dd")
+      ]]></code>
+      </cell>
+    - Reactive SVG:
+      <cell>
+      <inputs>htl,rectangleSettings</inputs>
+      <code><![CDATA[
+      htl.svg\`<svg width="\${rectangleSettings.width + 20}" height="\${rectangleSettings.height + 20}" viewBox="0 0 \${rectangleSettings.width + 20} \${rectangleSettings.height + 20}">
+        <rect x="10" y="10" width="\${rectangleSettings.width}" height="\${rectangleSettings.height}" fill="\${rectangleSettings.fill ?? "#ccc"}" stroke="#000"/>
+      </svg>\`
+      ]]></code>
+      </cell>`
+    })
+  </script>
+  <script id="4056" type="application/vnd.observable.javascript">
+    import { reversibleAttach } from "@tomlarkworthy/reversible-attachment"
+  </script>
+  <script id="2683" type="application/vnd.observable.javascript">
+    models = [
+      "o3",
+      "o3-mini",
+      "o4-mini",
+      "o4-mini-high",
+      //"gpt-5-codex",
+      "gpt-5",
+      "gpt-5-mini",
+      "gpt-5-nano"
+    ]
+  </script>
+  <script id="2695" type="application/vnd.observable.javascript">
+    modelConfig = (model) => {
+      if (model.startsWith("dall-e")) {
+        return {
+          model: model,
+          type: "image",
+          api: "https://api.openai.com/v1/images/generations",
+          settings: {
+            n: 1,
+            size: "1024x1024",
+            quality: "standard"
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else if (
+        model == "o3-mini" ||
+        model == "o1-mini" ||
+        model == "o1-preview"
+      ) {
+        return {
+          type: "chat",
+          image_url: false,
+          api: "https://api.openai.com/v1/chat/completions",
+          roles: ["user", "assistant"],
+          settings: {
+            model: model,
+            temperature: 1,
+            max_completion_tokens: viewof settings.value.max_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+            // response_format: { type: "json_object" }
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else if (
+        model == "o1" ||
+        model == "o3" ||
+        model == "o4-mini" ||
+        model == "o4-mini-high" ||
+        model.startsWith("gpt-5")
+      ) {
+        return {
+          api: "https://api.openai.com/v1/chat/completions",
+          type: "chat",
+          image_url: true,
+          roles: ["user", "system", "assistant"],
+          settings: {
+            //functions: functions,
+            //function_call: { name: "upsert_cell" },
+            model: model,
+            temperature: 1,
+            max_completion_tokens: viewof settings.value.max_prompt_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      } else {
+        return {
+          api: "https://api.openai.com/v1/chat/completions",
+          type: "chat",
+          roles: ["user", "system", "assistant"],
+          settings: {
+            //functions: functions,
+            //function_call: { name: "upsert_cell" },
+            model: model,
+            temperature: viewof settings.value.temperature,
+            max_tokens: viewof settings.value.max_prompt_tokens,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          headers: () => ({
+            Authorization: `Bearer ${OPENAI_API_KEY}`
+          })
+        };
+      }
+    }
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY = Inputs.bind(
+      Inputs.password({
+        width: "100%",
+        label: "OPENAI_API_KEY",
+        placeholder: "paste openAI key here"
+      }),
+      localStorageView("OPENAI_API_KEY")
+    )
+  </script>
+  <script id="1779" type="application/vnd.observable.javascript">
+    viewof settings = ({
+      prompt:
+        '\nThe notebook contains:\n  - cell "form" is Object {a: "", b: ""}\nUsing the already imported view literal for configuring a ChatGPT session. Example response \n\n{\n  model: "gpt-3.5-turbo"\n  temperature: 0.7\n  max_tokens: 1000\n  top_p: 1\n  frequency_penalty: 0\n  presence_penalty: 0\n}\n\nUse Inputs.select for model, Inputs.range for max_tokens etc.',
+      time: 1699384189902,
+      comment:
+        "Creating a form to configure a ChatGPT session. The form includes a select input for model, and range inputs for temperature, max_tokens, top_p, frequency_penalty, and presence_penalty."
+    } &&
+      Inputs.bind(
+        view`
+        <div>${["model", Inputs.select(models.sort(), { label: "model" })]}</div>
+        <div>${[
+          "temperature",
+          Inputs.range([0, 1], { step: 0.1, value: 0.7, label: "temperature" })
+        ]}</div>
+        <div>${[
+          "max_prompt_tokens",
+          Inputs.range([1, 200000], {
+            value: 4000,
+            label: "max_tokens sent (oldest are truncated)"
+          })
+        ]}</div>
+        <div>${[
+          "max_tokens",
+          Inputs.range([1, 200000], {
+            value: 1000,
+            label: "max_tokens for response"
+          })
+        ]}</div>
+        <div>${[
+          "top_p",
+          Inputs.range([0, 1], { step: 0.1, value: 1, label: "top_p" })
+        ]}</div>
+        <div>${[
+          "frequency_penalty",
+          Inputs.range([0, 1], { step: 0.1, value: 0, label: "frequency_penalty" })
+        ]}</div>
+        <div>${[
+          "presence_penalty",
+          Inputs.range([0, 1], { step: 0.1, value: 0, label: "presence_penalty" })
+        ]}</div>
+      `,
+        localStorageView("NOTEBOOK_WRITER_2", {
+          defaultValue: {
+            model: "gpt-5-mini",
+            temperature: 1,
+            max_prompt_tokens: 10000,
+            max_tokens: 10000,
+            top_p: 1,
+            frequency_penalty: 0,
+            presence_penalty: 0
+          },
+          json: true
+        })
+      ))
+  </script>
+  <script id="1623" type="text/markdown">
+    ## Roboco-op Implementation below
+  </script>
+  <script id="4186" type="application/vnd.observable.javascript">
+    viewof robocoopModule = thisModule()
+  </script>
+  <script id="2448" type="application/vnd.observable.javascript">
+    background_tasks = {
+      submit_summary;
+      on_prompt;
+      formatted_instruction;
+    }
+  </script>
+  <script id="2222" type="application/vnd.observable.javascript">
+    viewof user_variable_filters = Inputs.bind(
+      Inputs.input({}),
+      localStorageView(
+        `${new URL(document.baseURI).pathname}|user_variable_filters`,
+        {
+          defaultValue: {},
+          json: true
+        }
+      )
+    )
+  </script>
+  <script id="431" type="application/vnd.observable.javascript">
+    formatted_instruction = {
+      let formatted_instruction = undefined;
+      if (response.action == "upsert_cells") {
+        formatted_instruction = response.cells.map((r) => r.code).join("\n\n");
+      } else {
+        formatted_instruction = response.content;
+      }
+      viewof suggestion.value = formatted_instruction;
+      viewof suggestion.dispatchEvent(new Event("input"));
+      return formatted_instruction;
+    }
+  </script>
+  <script id="720" type="application/vnd.observable.javascript" pinned="">
+    response = on_prompt
+  </script>
+  <script id="96" type="application/vnd.observable.javascript">
+    on_prompt = {
+      const payload = [
+        {
+          role: viewof settings.value.model.startsWith("o1") ? "user" : "system",
+          content: system_prompt
+        },
+        ...(await buildContext({
+          includeModules,
+          notebookImage: includeNotebookScreenshot
+        })),
+        {
+          role: "user",
+          content: prompt
+        }
+      ];
+      mutable context = payload;
+      viewof suggestion.value = "";
+      console.log("on_prompt", payload);
+      return runAsk({
+        settings: {
+          ...settings,
+          websearch: viewof websearch.value
+        },
+        messages: payload
+      });
+    }
+  </script>
+  <script id="2608" type="text/markdown">
+    #### `buildContext` context Construction
+  </script>
+  <script id="3944" type="application/vnd.observable.javascript">
+    default_runtime = runtime
+  </script>
+  <script id="3930" type="application/vnd.observable.javascript">
+    async function buildContext({
+      includeModules = false,
+      notebookImage = false,
+      runtime = default_runtime
+    } = {}) {
+      const modules = await moduleMap(runtime);
+      const cells = await Promise.all(
+        [...modules.entries()].map(async ([m, mInfo]) => ({
+          ...mInfo,
+          cells: await cellMap(m)
+        }))
+      );
+      let summary = undefined;
+      if (includeModules) {
+        summary = (await Promise.all(cells.map(module_summary))).join("\n");
+      } else {
+        // main only
+        summary = await module_summary(cells[0]);
+      }
+      return [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: summary
+            },
+            ...(notebookImage
+              ? [
+                  {
+                    type: "image_url",
+                    image_url: {
+                      url: await modern_screenshot.domToDataUrl(document.body, {
+                        scale: 0.1
+                      })
+                    }
+                  }
+                ]
+              : [])
+          ]
+        }
+      ];
+    }
+  </script>
+  <script id="3935" type="application/vnd.observable.javascript">
+    test_getContext = {
+      return buildContext({ notebookImage: true });
+    }
+  </script>
+  <script id="3583" type="application/vnd.observable.javascript">
+    module_summary = async (mInfo) => {
+      return `
+    module: ${mInfo.name}
+
+    ${(
+      await Promise.all(
+        [...mInfo.cells.entries()].map(
+          async ([name, vars]) => `<cell>
+    <inputs>${vars[0]._inputs.map((i) => i._name).join(", ")}</inputs>
+    <code><![CDATA[
+    ${await decompile(vars).catch((err) => {
+      console.error("Unable to decompile", vars);
+    })}
+    ]]></code>
+    <value>${summarizeJS(vars[0]._value, { max_size: 200 })}</value>
+    </cell>
+    `
+        )
+      )
+    ).join("\n")}
+    `;
+    }
+  </script>
+  <script id="3344" type="text/markdown">
+    ---
+  </script>
+  <script id="3538" type="text/markdown">
+    ## LLM API Call
+  </script>
+  <script id="3874" type="application/vnd.observable.javascript">
+    runAsk = async ({ settings, messages }) => {
+      messages = messages.map((m) => convert(m));
+      const [system_prompt, ...prompt] = messages;
+
+      const response = await responses({
+        model: settings.model,
+        reasoning: {
+          effort: "medium",
+          summary: "detailed"
+        },
+        instructions: system_prompt.content,
+        input: prompt,
+        tools: settings.websearch ? [{ type: "web_search_preview" }] : []
+      });
+
+      const message = response.output.at(-1).content.at(-1).text;
+      const instuctions = {
+        cells: process(message),
+        response: response.output,
+        prompt: system_prompt,
+        action: "upsert_cells",
+        time: Date.now()
+      };
+      return instuctions;
+    }
+  </script>
+  <script id="3883" type="application/vnd.observable.javascript">
+    test_runAsk = (
+      await runAsk({
+        settings: viewof settings.value,
+        messages: [
+          {
+            role: "system",
+            content: viewof system_prompt.value
+          },
+          {
+            role: "user",
+            content: "say hello"
+          }
+        ]
+      })
+    ).cells
+  </script>
+  <script id="3520" type="application/vnd.observable.javascript">
+    domParser = new DOMParser()
+  </script>
+  <script id="2726" type="application/vnd.observable.javascript">
+    function process(content) {
+      const doc = domParser.parseFromString(
+        "<response>" + content + "</response>",
+        "text/xml"
+      );
+      const cells = [...doc.querySelectorAll("cell")];
+      return cells.map((cell) => {
+        const inputsContent = cell.querySelector("inputs")?.textContent || "";
+        return {
+          inputs:
+            inputsContent.length > 0
+              ? inputsContent.split(",").map((s) => s.trim())
+              : [],
+          code: (cell.querySelector("code")?.textContent || "").trim()
+        };
+      });
+    }
+  </script>
+  <script id="4386" type="application/vnd.observable.javascript">
+    convert = (message) => {
+      return {
+        ...message,
+        content: convertContent(message.content)
+      };
+    }
+  </script>
+  <script id="4385" type="application/vnd.observable.javascript">
+    convertContent = (content) => {
+      if (typeof content == "string") return content;
+      if (Array.isArray(content)) return content.map(convertContentElement);
+      throw "unrecognized content element";
+    }
+  </script>
+  <script id="4384" type="application/vnd.observable.javascript">
+    convertContentElement = (element) => {
+      if (element.type == "text")
+        return {
+          type: "input_text",
+          text: element.text
+        };
+      else if (element.type == "image_url") {
+        return {
+          type: "input_image",
+          image_url: element.image_url.url
+        };
+      } else return element;
+    }
+  </script>
+  <script id="3342" type="text/markdown">
+    ---
+  </script>
+  <script id="4363" type="application/vnd.observable.javascript">
+    import { responses } from "@tomlarkworthy/openai-responses-api"
+  </script>
+  <script id="3415" type="application/vnd.observable.javascript">
+    import {
+      runtime,
+      variables,
+      descendants,
+      thisModule,
+      keepalive,
+      main
+    } from "@tomlarkworthy/runtime-sdk"
+  </script>
+  <script id="3263" type="application/vnd.observable.javascript">
+    import {
+      decompile,
+      compile,
+      cellMap,
+      parser
+    } from "@tomlarkworthy/observablejs-toolchain"
+  </script>
+  <script id="2508" type="application/vnd.observable.javascript">
+    import { cellsToClipboard } from "@tomlarkworthy/cells-to-clipboard"
+  </script>
+  <script id="31" type="application/vnd.observable.javascript">
+    import { localStorageView } from "@tomlarkworthy/local-storage-view"
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    import { flowQueue } from "@tomlarkworthy/flow-queue"
+  </script>
+  <script id="302" type="application/vnd.observable.javascript">
+    import { inspect } from "@observablehq/inspector"
+  </script>
+  <script id="4200" type="application/vnd.observable.javascript">
+    import { view, cautious } from "@tomlarkworthy/view"
+  </script>
+  <script id="2552" type="application/vnd.observable.javascript">
+    import { whisperInput } from "@tomlarkworthy/whisper-input"
+  </script>
+  <script id="3560" type="application/vnd.observable.javascript">
+    import { moduleMap, submit_summary } from "@tomlarkworthy/module-map"
+  </script>
+  <script id="4236" type="application/vnd.observable.javascript">
+    import { summarizeJS } from "@tomlarkworthy/summarizejs"
+  </script>
+  <script id="4260" type="application/vnd.observable.javascript">
+    import { modern_screenshot } from "@tomlarkworthy/modern-screenshot"
+  </script>
+</notebook>

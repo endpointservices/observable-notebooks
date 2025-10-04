@@ -1,0 +1,181 @@
+<!doctype html>
+<notebook theme="air">
+  <title>OpenAI Whisper Input</title>
+  <script id="0" type="text/markdown">
+    # OpenAI Whisper Input
+
+    ~~~js
+      import {whisperInput} from "@tomlarkworthy/whisper-input"
+
+      viewof myText = whisperInput({
+        API_KEY: <YOUR OPEN API KEY>,
+        content: <OPTIONAL BUTTON CONTENT, defaults to 🎙️>
+      })
+    ~~~
+
+    This is an input so it after transcripting it emits its value. This also means you can bind it to an ordinary text input.
+
+  </script>
+  <script id="2346" type="application/vnd.observable.javascript">
+    viewof example = whisperInput({
+      API_KEY: OPENAI_API_KEY
+    })
+  </script>
+  <script id="2434" type="application/vnd.observable.javascript" pinned="">
+    example
+  </script>
+  <script id="2350" type="application/vnd.observable.javascript" pinned="">
+    Inputs.bind(Inputs.text(), viewof example)
+  </script>
+  <script id="2339" type="application/vnd.observable.javascript">
+    whisperInput = {
+      ({
+        prompt:
+          "Create a builder that creates a single button in a view, while it is pushed it should transcribes audio, when released, it emits the text as a value. Follow the structure\n\nwhisperInput = (API_KEY) => {\n    let recording = undefined\n    return view`<button onmousedown=${()=> {...}} onmouseup=...>`\n}",
+        time: 1725302054331
+      });
+      return ({ API_KEY, content = "🎙️" } = {}) => {
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const ui = htl.html`<div><button onmousedown=${async () => {
+          console.log("starting");
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = (event) => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = async (evt) => {
+            const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
+            const audioFile = audioBlobToFile(audioBlob, "recording.wav");
+            stream.getTracks().forEach((track) => track.stop());
+            try {
+              const transcribedText = await transcribeAudio(audioFile);
+              console.log("transcribedText", transcribedText);
+              audioChunks = []; // Reset audio chunks for the next recording
+              ui.value = transcribedText;
+              ui.dispatchEvent(new Event("input", { bubbles: true }));
+            } catch (error) {
+              console.error("Transcription error:", error);
+            }
+          };
+
+          mediaRecorder.start();
+        }} onmouseup=${async () => {
+          console.log("stopping");
+          mediaRecorder.stop();
+        }}>${content}</button>`;
+        ui.value = undefined;
+        return ui;
+      };
+    }
+  </script>
+  <script id="2325" type="application/vnd.observable.javascript">
+    transcribeAudio = ({
+      prompt:
+        'The whisper API looks like this\n\n```\n\ncurl https://api.openai.com/v1/audio/transcriptions \\\n  -H "Authorization: Bearer $OPENAI_API_KEY" \\\n  -H "Content-Type: multipart/form-data" \\\n  -F model="whisper-1" \\\n  -F file="@/path/to/file/openai.mp3"\n```\n\n\nand returns\n\n```\n{\n  "text": "Imagine the wildest idea that you\'ve ever had, and you\'re curious about how it might scale to something that\'s a 100, a 1,000 times bigger..."\n}\n```\ncan you wrap that in a function using web api concepts',
+      time: 1725301616943
+    } &&
+      async function transcribeAudio(file) {
+        const apiKey = OPENAI_API_KEY;
+        const url = "https://api.openai.com/v1/audio/transcriptions";
+
+        const formData = new FormData();
+        formData.append("model", "whisper-1");
+        formData.append("file", file);
+
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${apiKey}`
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.text;
+      })
+  </script>
+  <script id="2328" type="application/vnd.observable.javascript">
+    audioBlobToFile = ({
+      prompt: "Convert audioBlob to a file for formData in a function",
+      time: 1725301694316
+    } &&
+      function audioBlobToFile(blob, filename) {
+        return new File([blob], filename, { type: blob.type });
+      })
+  </script>
+  <script id="2398" type="text/markdown">
+    ---
+  </script>
+  <script id="81" type="application/vnd.observable.javascript">
+    viewof prompt
+  </script>
+  <script id="1014" type="application/vnd.observable.javascript">
+    Inputs.button("copy code", {
+      reduce: () => {
+        navigator.clipboard.writeText(suggestion);
+      }
+    })
+  </script>
+  <script id="105" type="application/vnd.observable.javascript">
+    viewof suggestion
+  </script>
+  <script id="1463" type="text/markdown">
+    ## Current Chat context
+  </script>
+  <script id="1252" type="application/vnd.observable.javascript">
+    viewof context_viz
+  </script>
+  <script id="1470" type="text/markdown">
+    tick the cells to include in the next prompt
+  </script>
+  <script id="1692" type="text/markdown">
+    ### AI Settings
+  </script>
+  <script id="29" type="application/vnd.observable.javascript">
+    viewof OPENAI_API_KEY
+  </script>
+  <script id="2061" type="application/vnd.observable.javascript">
+    viewof api_endpoint
+  </script>
+  <script id="2163" type="application/vnd.observable.javascript">
+    viewof settings
+  </script>
+  <script id="2193" type="text/markdown">
+    ---
+  </script>
+  <script id="2114" type="application/vnd.observable.javascript">
+    import {
+      ask,
+      excludes,
+      cells,
+      update_context,
+      on_prompt,
+      api_call_response,
+      background_tasks,
+      mutable context,
+      viewof prompt,
+      viewof suggestion,
+      viewof settings,
+      viewof OPENAI_API_KEY,
+      viewof api_endpoint,
+      viewof context_viz
+    } from "@tomlarkworthy/robocoop"
+  </script>
+  <script id="2179" type="application/vnd.observable.javascript">
+    background_tasks
+  </script>
+  <script id="2442" type="application/vnd.observable.javascript">
+    import { footer } from "@tomlarkworthy/footer"
+  </script>
+  <script id="2444" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>

@@ -1,0 +1,356 @@
+<!doctype html>
+<notebook theme="air">
+  <title>Certify Subdomain Ownership</title>
+  <script id="0" type="application/vnd.observable.javascript">
+    md`
+    # Certify Subdomain Ownership 
+
+    ⚠️ DEPRECATED
+
+    <mark> We have simpler secure authentication mechnisms now, such as [Login with comment](/@endpointservices/login-with-comment). So this complex notebook is no required to use [secrets](/@endpointservices/secrets)!</mark>
+
+    Before you can set [serverside secrets](https://observablehq.com/@tomlarkworthy/secret-manager), access [logs](https://observablehq.com/@endpointservices/logs), or personalize your Open Cloud using [federated login](https://observablehq.com/@endpointservices/login), we need to figure out *securely* which _Observable_ domain you own, so we can grant you access to private data relating to that domain. 
+
+    We implement a challange based protocol inspired by [DNS-01 verification](https://letsencrypt.org/docs/challenge-types/#dns-01-challenge). You prove control of a subdomain by writing a unique code into it, thus tangibly demonstrating you have write access.
+    `
+  </script>
+  <script id="1372" type="application/vnd.observable.javascript">
+    certified_domains = JSON.stringify(subdomain_certificates.reduce(
+      (acc, cert) => {
+        if (!acc.includes(cert.subdomain)) acc.push(cert.subdomain)
+        return acc
+      },
+      []
+    ))
+  </script>
+  <script id="44" type="application/vnd.observable.javascript">
+    md`## Step 1: Login to Endpointservices
+    `
+  </script>
+  <script id="55" type="application/vnd.observable.javascript">
+    viewof user
+  </script>
+  <script id="125" type="application/vnd.observable.javascript">
+    md`After logging in you have a uid, we will generate a secret code for you`
+  </script>
+  <script id="121" type="application/vnd.observable.javascript">
+    endpoint_uid = user.uid
+  </script>
+  <script id="83" type="application/vnd.observable.javascript">
+    challenge_code = {
+      const response = await fetch(challenge_implementation.href, {
+        method: "POST",
+        body: JSON.stringify(relation)
+      });
+      if (response.status !== 200) throw new Error(response.status + ": " + await response.text())
+      return await response.text()
+    }
+  </script>
+  <script id="16" type="application/vnd.observable.javascript">
+    md`## Step 2: Create a new notebook
+
+    (very top right of page)
+    ![](${await FileAttachment("image.png").url()})
+    `
+  </script>
+  <script id="72" type="application/vnd.observable.javascript">
+    md`## Step 3: Copy this certificate and paste it into a new notebook
+
+    Run it and follow its instruction.
+    `
+  </script>
+  <script id="1496" type="application/vnd.observable.javascript">
+    certificateTemplate = (uid, code) => `
+    viewof endpoint_certificate = {
+        const value = {
+          uid: '${uid}',
+          code: '${code}'
+        };
+        let ui;
+
+        // If we are accessing this from another notebook we can return a value immediately
+        if (window["request_certificate"]) {
+          ui = html\`\`
+          ui.value = value;
+          yield ui;
+          return ui;
+        };
+
+        // If the user has jsut pasted this into a notebook we want to wait until the notebook is published
+        let author = null;
+        // Mootari's getPinnedSlug https://observablehq.com/@mootari
+        // https://observablehq.com/d/691ae3b95f02db79#getPinnedSlug
+        async function getPinnedSlug({name = null, parseVersion = 'v1'} = {}) {
+          const getLines = async (route, rtVersion, lines) => {
+            return fetch(\`https://api.observablehq.com/\${route}.js?v=\${rtVersion}\`)
+              .then(response => response.text())
+              .catch(e => null)
+              .then(t => t == null ? [] : t.split('\\n', lines + 1).slice(0, lines));
+          }
+          const parsers = {
+            v1: route => getLines(route, 1, 4).then(ln => {
+                  const name = ln[0].slice('// URL: https://observablehq.com/'.length).replace(/^d\\//, '');
+                  const version = ln[3].slice('// Version: '.length);
+                  author = /\\(@([^)]*)\\)/.exec(ln[2])[1];
+                  return \`\\${name}@\${version}\`;
+                }),
+            v3: route => getLines(route, 3, 1).then(ln => {
+                  return ln[0].slice('// https://observablehq.com/'.length).replace(/^d\\//, '');
+                }),
+          };
+
+          try {
+            const route = name != null
+              ? name.replace(/^(?!@)/, 'd/')
+              : html\`<a href>\`.pathname.match(/^\\/(d\\/[a-f0-9]{16}|@[^\\/]+\\/[^@].*?)(?:$|\\/)/)[1];
+            return parsers[parseVersion](route).catch(e => null);
+          }
+          catch(e) {
+            return null;
+          }  
+        }
+
+        const key = "published-e084898a9d18a9a2";
+        await getPinnedSlug();
+        // Wait loop
+        while (author === null) {
+          console.log("poll for published")
+          const ui = html\`<b>Publish/link share notebook</b>\`
+          yield ui;
+          await getPinnedSlug();
+          await new Promise(r => setTimeout(r, 5000)); // 5 second poll loop
+        }
+
+        // Once the notebook is published, offer a link to verify
+        ui = html\`<div>
+          <style>
+            .certify-btn {
+              display: inline-block;
+              border-radius: 4px;
+              background-color: hsl(171, 100%, 41%);
+              color: #FFFFFF;
+              text-align: center;
+              font-size: 28px;
+              padding: 20px;
+              cursor: pointer;
+              margin: 5px;
+            }
+            .certify-btn:hover {
+              background: hsl(171, 100%, 46%);
+            }
+            .certify-btn:active {
+              background: hsl(171, 100%, 41%);
+              color: #FFF;
+            }
+          </style>
+          <div id="cert-ui">
+            <button class="certify-btn">
+              Certify \${value.uid} owns \${author}
+            </button>
+          </div>
+        </div>\`;
+        ui.addEventListener("click", async () => {
+          const ui = document.getElementById("cert-ui")
+          ui.innerHTML = "Validating..."
+          const response = await fetch("https://endpointservice.web.app/notebooks/@endpointservices/certify-subdomain-ownership/deployments/validation_implementation/secrets/endpointservices_secretadmin_service_account_key/cells/validation_implementation", {
+            method: "POST",
+            body: html\`<a href>\`.href
+          });
+          if (response.status == 200) {
+            ui.innerHTML = "Thanks! " + await response.text()
+          } else {
+            ui.innerHTML = "Error: " + await response.text()
+          }
+
+        });
+        ui.value = value
+        yield ui;
+      }
+    `
+  </script>
+  <script id="1495" type="application/vnd.observable.javascript">
+    {
+      const click = () => {
+        copy(certificateTemplate(user.uid, challenge_code))
+        document.getElementById("copyCert").outerHTML = "Copied"
+      }
+      const ui = html`
+    <button id="copyCert" onclick=${click}> Copy certificate </button>
+    `
+      return ui;
+    }
+  </script>
+  <script id="772" type="application/vnd.observable.javascript">
+    md`## Step 4: Trigger validation
+
+    The certificate will serve a button in your new notebook. Pressing that button tells out validator to check for the secret challenge code. 
+
+    ---
+
+    `
+  </script>
+  <script id="1407" type="application/vnd.observable.javascript">
+    md`# Implementation
+    Certification is implementated using [serverside cells](https://observablehq.com/@tomlarkworthy/serverside-cells) containing a [secret](https://observablehq.com/@tomlarkworthy/secret-manager) Google Identity. It's plain Observable code you can inspect for transparency.
+
+    `
+  </script>
+  <script id="1493" type="application/vnd.observable.javascript">
+    md`#### The challenge generates and records a secret code for a UID `
+  </script>
+  <script id="102" type="application/vnd.observable.javascript">
+    challenge_implementation = deploy("challenge_implementation", async (req, res, context) => {
+      const access_token = await getAccessTokenFromServiceAccount(context.secrets["endpointservices_secretadmin_service_account_key"])
+
+      // Signin as a public user
+      await signinWithAccessToken(firebase, access_token);
+
+      // Generate an unguessable challenge key using Crypto 
+      const challenge = jsrsasign.KJUR.crypto.Util.getRandomHexOfNbytes(16); 
+      const challangeContext = JSON.parse(req.body);
+
+      // Record we made a challenge (the admin user is allowlisted to make the write, other users cannot)
+      await firebase.firestore().collection("/services/ownership/challenges").add({
+        uid: challangeContext.uid,
+        time: firebase.firebase_.firestore.FieldValue.serverTimestamp(),
+        challenge: challenge
+      })
+
+      // Tell the user the key
+      res.send(challenge);
+    }, {
+      secrets: ["endpointservices_secretadmin_service_account_key"],
+      cell: "challenge_implementation"
+    })
+  </script>
+  <script id="1530" type="application/vnd.observable.javascript" pinned="">
+    firestore = firebase.firestore()
+  </script>
+  <script id="737" type="application/vnd.observable.javascript">
+    function fetchCode(url) {
+      const match = url.match(regIdentifier)
+
+      const {id, user, slug, version} = match.groups,
+            path = id ? `d/${id}` : `@${user}/${slug}`,
+            suffix = version ? `@${version}` : '';
+
+      window["request_certificate"] = true;
+      return peekFirst({
+        notebook: path,
+        cell: "endpoint_certificate"
+      });
+    }
+  </script>
+  <script id="566" type="application/vnd.observable.javascript">
+    validation_implementation = deploy("validation_implementation", async (req, res, context) => {
+      // Use a secret Google Service Account Key (JSON)
+      const access_token = await getAccessTokenFromServiceAccount(context.secrets["endpointservices_secretadmin_service_account_key"])
+
+      // Mint a JWT from it, exchange for access_token and signin as a public user
+      await signinWithAccessToken(firebase, access_token);
+
+      // The caller supplies the challenge context
+      const url = req.body;
+
+      console.log("url", url);
+
+      const {
+        uid,
+        code
+      } = await fetchCode(url);
+
+      console.log("uid", uid, "code", code);
+
+      const metadataPromise = fetchMeta(url)
+
+      // Lookup a matching challenge record
+      try {
+        const matches = await firebase.firestore()
+          .collection("/services/ownership/challenges")
+          .where("challenge", '==', code)
+          .where("uid", '==', uid)
+          .orderBy("time", "desc").limit(1).get();
+
+        console.log("matches", matches);
+
+        if (matches.empty) {
+            res.status(404).send("No matching challenge code found")
+            return;
+        }
+        const match = matches.docs[0].data();
+
+        // Check challenge is recent
+        function timestamp2date(timestamp) {
+            const date = new Date(0)
+            date.setUTCSeconds(timestamp.seconds)
+            return date; 
+        }
+        const age_millis = new Date() - timestamp2date(match.time)
+        if (age_millis > 60 * 60 * 1000) { // > 1 hour
+          res.status(400).send("Challenge stale")
+          return;
+        }
+
+        const subdomain = (await metadataPromise).login;
+        console.log("subdomain", subdomain);
+        // OK ITS A FACT. Now we can record this in the ownership table
+        await firebase.firestore().collection("/services/ownership/owners").doc(`${subdomain}|${match.uid}`).set({
+          uid: match.uid,
+          time: firebase.firebase_.firestore.FieldValue.serverTimestamp(),
+          subdomain: subdomain
+        })
+
+        // Tell the user the key
+        res.send(`${match.uid} owns ${subdomain} proved in ${url}`);
+      } catch(err) {
+        console.log(err.message);
+        res.status(500).send(err.message);
+      }
+
+    }, {
+      secrets: ["endpointservices_secretadmin_service_account_key"],
+      cell: "validation_implementation"
+    })
+  </script>
+  <script id="1369" type="application/vnd.observable.javascript">
+    subdomain_certificates = listen(firebase.firestore().collection("/services/ownership/owners").where("uid", "==", user.uid))
+  </script>
+  <script id="84" type="application/vnd.observable.javascript">
+    relation = ({
+      "uid": user.uid
+    })
+  </script>
+  <script id="582" type="application/vnd.observable.javascript">
+    import {peekFirst} from '@tomlarkworthy/metaprogramming'
+  </script>
+  <script id="1518" type="application/vnd.observable.javascript">
+    import {signinWithAccessToken, getAccessTokenFromServiceAccount, jsrsasign} from '@tomlarkworthy/firebase-admin'
+  </script>
+  <script id="51" type="application/vnd.observable.javascript">
+    import {viewof user, firebase, listen, subdomain, isOwner} from '@endpointservices/utils'
+  </script>
+  <script id="1484" type="application/vnd.observable.javascript">
+    import {regIdentifier, fetchMeta} from '@mootari/notebook-input@223'
+  </script>
+  <script id="1362" type="application/vnd.observable.javascript">
+    import {deploy} from '@tomlarkworthy/serverside-cells'
+  </script>
+  <script id="475" type="application/vnd.observable.javascript">
+    import {html} from "@observablehq/htl"
+  </script>
+  <script id="860" type="application/vnd.observable.javascript">
+    import {viewof suite, expect} from '@tomlarkworthy/testing'
+  </script>
+  <script id="1109" type="application/vnd.observable.javascript">
+    import {encode, decode} from '@mbostock/base64'
+  </script>
+  <script id="1483" type="application/vnd.observable.javascript">
+    import {copy} from '@mbostock/copy-to-clipboard'
+  </script>
+  <script id="1585" type="application/vnd.observable.javascript">
+    import { footer } from "@endpointservices/footer-with-backups"
+  </script>
+  <script id="1589" type="application/vnd.observable.javascript">
+    footer
+  </script>
+</notebook>
