@@ -1,4 +1,4 @@
-import define1 from "./048a17a165be198d@271.js";
+import define1 from "./048a17a165be198d@273.js";
 import define2 from "./161b65299d9741a3@948.js";
 import define3 from "./0e0b35a92c819d94@474.js";
 
@@ -129,8 +129,11 @@ function _15(md){return(
 md`## Slurp newline deliminated list of trace-ids`
 )}
 
-function _trace_ids_list(Inputs){return(
-Inputs.textarea()
+function _trace_ids_list(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.textarea(),
+  localStorageView("trace_list")
+)
 )}
 
 function _17(Inputs,$0,trace_ids_list){return(
@@ -224,13 +227,21 @@ async function _loader_code(archive,db,importDuckDB,$0)
 }
 
 
+function _27(__query,db_refresh,invalidation){return(
+__query.sql(db_refresh,invalidation,"db_refresh")`SELECT distinct(TraceId) FROM segments`
+)}
+
 function _filename(region,start_time,end_time,filter){return(
 `traces_${region}_${start_time.toISOString()}_${end_time.toISOString()}_${encodeURIComponent(
   filter
 )}`
 )}
 
-function _28(md){return(
+function _29(selected_traces){return(
+selected_traces
+)}
+
+function _30(md){return(
 md`## Trace Selection Tool
 
 Using the filtering features will sub-select traces for the visualisations`
@@ -279,19 +290,19 @@ SELECT * FROM cte;
 `)
 )}
 
-function _34(md){return(
+function _36(md){return(
 md`## Visualizations`
 )}
 
-function _35(md){return(
+function _37(md){return(
 md`### trace latency by *name*`
 )}
 
-function _36(Plot,root_segments,width){return(
+function _38(Plot,root_segments,width){return(
 Plot.auto(root_segments, {x: "duration", y: "name", mark: "dot"}).plot({width, marginLeft: 500})
 )}
 
-function _37(md){return(
+function _39(md){return(
 md`### trace latency by grouped URL or pathId
 
 CloudWatch RUM add a URL, API Gateway adds a pathId. The visualisation attempts to rollup stats by detecting date and UUID formats`
@@ -304,39 +315,51 @@ Inputs.range([0, 60 * 60 * 1000], {
 })
 )}
 
-function _39(Plot,root_segments,width){return(
+function _41(Plot,root_segments,width){return(
 Plot.auto(root_segments, {x: "duration", y: "grouped_url"}).plot({width, marginLeft: 500})
 )}
 
-function _40(md){return(
+function _42(md){return(
 md`### Trace latency over time ( interactive and 👇 clickable)`
 )}
 
-function _selected(Plot,width,root_segments){return(
+function _segment_slice(Inputs,root_segments){return(
+Inputs.select(
+  new Set(["all", ...root_segments.map((s) => s.name)]),
+  { label: "slice by name" }
+)
+)}
+
+function _selected(Plot,width,root_segments,segment_slice){return(
 Plot.plot({
   width,
   color: { legend: true },
   marks: [
-    Plot.dot(root_segments, {
-      x: "start_time",
-      y: "duration",
-      fill: "name",
-      channels: {
-        name: (d) => d.name,
-        host: (d) => (d.url ? new URL(d.url).host : undefined),
-        url: (d) => (d.url ? new URL(d.url).pathname : undefined)
-      },
-      tip: true
-    })
+    Plot.dot(
+      root_segments.filter(
+        (r) => r.name == segment_slice || segment_slice == "all"
+      ),
+      {
+        x: "start_time",
+        y: "duration",
+        fill: "name",
+        channels: {
+          name: (d) => d.name,
+          host: (d) => (d.url ? new URL(d.url).host : undefined),
+          url: (d) => (d.url ? new URL(d.url).pathname : undefined)
+        },
+        tip: true
+      }
+    )
   ]
 })
 )}
 
-function _42(root_segments){return(
+function _45(root_segments){return(
 root_segments
 )}
 
-function _43(md){return(
+function _46(md){return(
 md`#### Selected root trace details`
 )}
 
@@ -344,11 +367,11 @@ function _selected_trace(segment_tree,selected){return(
 segment_tree.filter((r) => r.TraceId == selected.TraceId)
 )}
 
-function _45(__query,selected_trace,invalidation){return(
+function _48(__query,selected_trace,invalidation){return(
 __query(selected_trace,{from:{table:"selected_trace"},sort:[],slice:{to:null,from:null},filter:[],select:{columns:["name","TraceId","pageId","method","url","status","parent","depth","Id","start_time","end_time"]}},invalidation,"selected_trace")
 )}
 
-function _46(md){return(
+function _49(md){return(
 md`#### Selected trace flamegraph`
 )}
 
@@ -359,7 +382,7 @@ Inputs.bind(
 )
 )}
 
-function _48(d3,DOM,width,single_height,single_trace,d3FlameGraph)
+function _51(d3,DOM,width,single_height,single_trace,d3FlameGraph)
 {
   const svg = d3.select(DOM.svg(width, single_height));
   svg
@@ -427,19 +450,19 @@ function _to_tree(d3){return(
 }
 )}
 
-function _51(md){return(
+function _54(md){return(
 md`### Trace latency`
 )}
 
-function _52(Plot,root_segments){return(
+function _55(Plot,root_segments){return(
 Plot.auto(root_segments, {x: "duration"}).plot()
 )}
 
-function _53(d3,root_segments,md){return(
+function _56(d3,root_segments,md){return(
 md`median: ${d3.median(root_segments, (d) => d.duration)} mean ${d3.mean(root_segments, (d) => d.duration)} p90: ${d3.quantile(root_segments, 0.9, (d) => d.duration)}`
 )}
 
-function _54(md){return(
+function _57(md){return(
 md`### Selected Segment Latency`
 )}
 
@@ -450,27 +473,27 @@ selected_traces.map((d) => ({
 }))
 )}
 
-function _56(md){return(
+function _59(md){return(
 md`#### Total segment duration`
 )}
 
-function _57(Plot,perf,width){return(
+function _60(Plot,perf,width){return(
 Plot.auto(perf, {x: {value: "duration", reduce: "sum"}, y: "name", mark: "bar", color: "name"}).plot({color: {legend: true}, width, marginLeft: 500})
 )}
 
-function _58(md){return(
+function _61(md){return(
 md`#### Mean Segment Duration`
 )}
 
-function _59(Plot,perf,width){return(
+function _62(Plot,perf,width){return(
 Plot.auto(perf, {x: {value: "duration", reduce: "mean"}, y: "name", mark: "bar", color: "name"}).plot({color: {legend: true}, width, marginLeft: 500})
 )}
 
-function _60(md){return(
+function _63(md){return(
 md`#### Individual data points`
 )}
 
-function _61(Plot,width,perf){return(
+function _64(Plot,width,perf){return(
 Plot.plot({
   width,
   marginLeft: 500,
@@ -481,7 +504,7 @@ Plot.plot({
 })
 )}
 
-function _62(md){return(
+function _65(md){return(
 md`## Flamegraph including descendants`
 )}
 
@@ -492,7 +515,7 @@ Inputs.bind(
 )
 )}
 
-function _64(d3,DOM,width,height,flamegraph_chart_data,d3FlameGraph)
+function _67(d3,DOM,width,height,flamegraph_chart_data,d3FlameGraph)
 {
   const svg = d3.select(DOM.svg(width, height));
   svg
@@ -540,15 +563,15 @@ FROM cte
   : []
 )}
 
-function _66(md){return(
+function _69(md){return(
 md`### Trace and decendant's latency by name`
 )}
 
-function _67(Plot,flamegraph_data,width){return(
+function _70(Plot,flamegraph_data,width){return(
 Plot.auto(flamegraph_data, {x: "value", y: "name"}).plot({width, marginLeft: 400})
 )}
 
-function _68(Plot,flamegraph_data){return(
+function _71(Plot,flamegraph_data){return(
 Plot.auto(flamegraph_data, {x: {value: "value", reduce: "sum"}, y: {value: "name", reduce: null}}).plot({marginLeft: 400})
 )}
 
@@ -608,7 +631,7 @@ function _flamegraph_chart_data(to_tree,flamegraph_data)
 }
 
 
-function _70(md){return(
+function _73(md){return(
 md`## DuckDB Database Explorer`
 )}
 
@@ -616,28 +639,28 @@ function _db_refresh(refresh_db,db){return(
 refresh_db && db
 )}
 
-function _72(md){return(
+function _75(md){return(
 md`### traces`
 )}
 
-function _73(__query,db_refresh,invalidation){return(
+function _76(__query,db_refresh,invalidation){return(
 __query(db_refresh,{from:{table:{table:"traces"}},sort:[],slice:{to:null,from:null},filter:[],select:{columns:null}},invalidation,"db_refresh")
 )}
 
-function _74(md){return(
+function _77(md){return(
 md`### Segments`
 )}
 
-function _75(__query,db_refresh,invalidation){return(
+function _78(__query,db_refresh,invalidation){return(
 __query(db_refresh,{from:{table:{table:"segments"}},sort:[],slice:{to:null,from:null},filter:[],select:{columns:null}},invalidation,"db_refresh")
 )}
 
-function _76(md){return(
+function _79(md){return(
 md`---
 # Implementation`
 )}
 
-function _77(md){return(
+function _80(md){return(
 md`## Database Setup`
 )}
 
@@ -645,7 +668,7 @@ function _db(DuckDBClient){return(
 DuckDBClient.of({})
 )}
 
-function _79(__query,db,invalidation){return(
+function _82(__query,db,invalidation){return(
 __query.sql(db,invalidation,"db")`SELECT table_name, column_name, data_type FROM temp.information_schema.columns`
 )}
 
@@ -664,15 +687,15 @@ function _traces_table(dropTables,db)
 }
 
 
-function _82(traces){return(
+function _85(traces){return(
 new Date(JSON.parse(traces.Traces[0].Segments[0].Document).start_time * 1000)
 )}
 
-function _83(traces){return(
+function _86(traces){return(
 traces
 )}
 
-function _84(traces){return(
+function _87(traces){return(
 JSON.parse(traces.Traces[0].Segments[2].Document)
 )}
 
@@ -694,17 +717,18 @@ traces_table &&
 )`.then(() => $0.value++)
 )}
 
-function _86(md){return(
+function _89(md){return(
 md`### https://docs.aws.amazon.com/xray/latest/devguide/xray-api-segmentdocuments.html`
 )}
 
-function _87(insert_traces,db,traces){return(
+function _90(insert_traces,db,traces){return(
 insert_traces &&
   db.query(`SELECT * FROM segments WHERE TraceId = '${traces.Traces[0].Id}'`)
 )}
 
 function _insert_traces(segments_table,traces,db)
 {
+  debugger;
   segments_table;
   return Promise.all(
     traces.Traces.map(async (trace) =>
@@ -751,11 +775,11 @@ function _insert_traces(segments_table,traces,db)
 }
 
 
-function _89(insert_traces,$0){return(
+function _92(insert_traces,$0){return(
 insert_traces && $0.value++
 )}
 
-function _90(md){return(
+function _93(md){return(
 md`## Slurper`
 )}
 
@@ -806,7 +830,7 @@ async function _enqueue_batches(fetch_traces,trace_summaries,run,$0,xray,filter,
 function _batch(dropTables,flowQueue)
 {
   dropTables;
-  return flowQueue();
+  return flowQueue({ timeout_ms: 60000 });
 }
 
 
@@ -825,7 +849,8 @@ function _loadTracesInBatch(batch,$0,$1,minibatch,$2,$3)
     if ($0.value % $1.value == 0) {
       minibatch.push(ids[i]);
       if (minibatch.length == 5) {
-        $2.send(minibatch);
+        debugger;
+        $2.send([...minibatch]);
         minibatch.length = 0;
       }
     }
@@ -839,23 +864,26 @@ function _loadTracesInBatch(batch,$0,$1,minibatch,$2,$3)
 function _trace_ids(dropTables,flowQueue)
 {
   dropTables;
-  return flowQueue();
+  return flowQueue({ timeout_ms: 60000 });
 }
 
 
-function _traces(xray,trace_ids){return(
-xray
-  .batchGetTraces({
-    TraceIds: trace_ids
-  })
-  .promise()
-)}
+function _traces(xray,trace_ids)
+{
+  debugger;
+  return xray
+    .batchGetTraces({
+      TraceIds: trace_ids
+    })
+    .promise();
+}
 
-function _100(traces,$0){return(
+
+function _103(traces,$0){return(
 traces && $0.value++
 )}
 
-function _101($0,insert_traces){return(
+function _104($0,insert_traces){return(
 $0.resolve(insert_traces)
 )}
 
@@ -911,7 +939,7 @@ export default function define(runtime, observer) {
   main.variable(observer("mutable batches_fetched")).define("mutable batches_fetched", ["Mutable", "initial batches_fetched"], (M, _) => new M(_));
   main.variable(observer("batches_fetched")).define("batches_fetched", ["mutable batches_fetched"], _ => _.generator);
   main.variable(observer()).define(["md"], _15);
-  main.variable(observer("viewof trace_ids_list")).define("viewof trace_ids_list", ["Inputs"], _trace_ids_list);
+  main.variable(observer("viewof trace_ids_list")).define("viewof trace_ids_list", ["Inputs","localStorageView"], _trace_ids_list);
   main.variable(observer("trace_ids_list")).define("trace_ids_list", ["Generators", "viewof trace_ids_list"], (G, _) => G.input(_));
   main.variable(observer()).define(["Inputs","viewof batch","trace_ids_list"], _17);
   main.variable(observer()).define(["md"], _18);
@@ -926,76 +954,80 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof archive")).define("viewof archive", ["Inputs"], _archive);
   main.variable(observer("archive")).define("archive", ["Generators", "viewof archive"], (G, _) => G.input(_));
   main.variable(observer("loader_code")).define("loader_code", ["archive","db","importDuckDB","mutable refresh_db"], _loader_code);
+  main.variable(observer()).define(["__query","db_refresh","invalidation"], _27);
   main.variable(observer("filename")).define("filename", ["region","start_time","end_time","filter"], _filename);
-  main.variable(observer()).define(["md"], _28);
+  main.variable(observer()).define(["selected_traces"], _29);
+  main.variable(observer()).define(["md"], _30);
   main.variable(observer("selected_traces")).define("selected_traces", ["__query","segment_tree","invalidation"], _selected_traces);
   main.variable(observer("uuid_regex")).define("uuid_regex", _uuid_regex);
   main.variable(observer("date_regex")).define("date_regex", _date_regex);
   main.variable(observer("root_segments")).define("root_segments", ["selected_traces","uuid_regex","date_regex","max_duration"], _root_segments);
   main.variable(observer("segment_tree")).define("segment_tree", ["db_refresh"], _segment_tree);
-  main.variable(observer()).define(["md"], _34);
-  main.variable(observer()).define(["md"], _35);
-  main.variable(observer()).define(["Plot","root_segments","width"], _36);
+  main.variable(observer()).define(["md"], _36);
   main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["Plot","root_segments","width"], _38);
+  main.variable(observer()).define(["md"], _39);
   main.variable(observer("viewof max_duration")).define("viewof max_duration", ["Inputs"], _max_duration);
   main.variable(observer("max_duration")).define("max_duration", ["Generators", "viewof max_duration"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Plot","root_segments","width"], _39);
-  main.variable(observer()).define(["md"], _40);
-  main.variable(observer("viewof selected")).define("viewof selected", ["Plot","width","root_segments"], _selected);
+  main.variable(observer()).define(["Plot","root_segments","width"], _41);
+  main.variable(observer()).define(["md"], _42);
+  main.variable(observer("viewof segment_slice")).define("viewof segment_slice", ["Inputs","root_segments"], _segment_slice);
+  main.variable(observer("segment_slice")).define("segment_slice", ["Generators", "viewof segment_slice"], (G, _) => G.input(_));
+  main.variable(observer("viewof selected")).define("viewof selected", ["Plot","width","root_segments","segment_slice"], _selected);
   main.variable(observer("selected")).define("selected", ["Generators", "viewof selected"], (G, _) => G.input(_));
-  main.variable(observer()).define(["root_segments"], _42);
-  main.variable(observer()).define(["md"], _43);
-  main.variable(observer("selected_trace")).define("selected_trace", ["segment_tree","selected"], _selected_trace);
-  main.variable(observer()).define(["__query","selected_trace","invalidation"], _45);
+  main.variable(observer()).define(["root_segments"], _45);
   main.variable(observer()).define(["md"], _46);
+  main.variable(observer("selected_trace")).define("selected_trace", ["segment_tree","selected"], _selected_trace);
+  main.variable(observer()).define(["__query","selected_trace","invalidation"], _48);
+  main.variable(observer()).define(["md"], _49);
   main.variable(observer("viewof single_height")).define("viewof single_height", ["Inputs","localStorageView"], _single_height);
   main.variable(observer("single_height")).define("single_height", ["Generators", "viewof single_height"], (G, _) => G.input(_));
-  main.variable(observer()).define(["d3","DOM","width","single_height","single_trace","d3FlameGraph"], _48);
+  main.variable(observer()).define(["d3","DOM","width","single_height","single_trace","d3FlameGraph"], _51);
   main.variable(observer("single_trace")).define("single_trace", ["to_tree","selected_trace"], _single_trace);
   main.variable(observer("to_tree")).define("to_tree", ["d3"], _to_tree);
-  main.variable(observer()).define(["md"], _51);
-  main.variable(observer()).define(["Plot","root_segments"], _52);
-  main.variable(observer()).define(["d3","root_segments","md"], _53);
   main.variable(observer()).define(["md"], _54);
+  main.variable(observer()).define(["Plot","root_segments"], _55);
+  main.variable(observer()).define(["d3","root_segments","md"], _56);
+  main.variable(observer()).define(["md"], _57);
   main.variable(observer("perf")).define("perf", ["selected_traces"], _perf);
-  main.variable(observer()).define(["md"], _56);
-  main.variable(observer()).define(["Plot","perf","width"], _57);
-  main.variable(observer()).define(["md"], _58);
-  main.variable(observer()).define(["Plot","perf","width"], _59);
-  main.variable(observer()).define(["md"], _60);
-  main.variable(observer()).define(["Plot","width","perf"], _61);
-  main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["md"], _59);
+  main.variable(observer()).define(["Plot","perf","width"], _60);
+  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["Plot","perf","width"], _62);
+  main.variable(observer()).define(["md"], _63);
+  main.variable(observer()).define(["Plot","width","perf"], _64);
+  main.variable(observer()).define(["md"], _65);
   main.variable(observer("viewof height")).define("viewof height", ["Inputs","localStorageView"], _height);
   main.variable(observer("height")).define("height", ["Generators", "viewof height"], (G, _) => G.input(_));
-  main.variable(observer()).define(["d3","DOM","width","height","flamegraph_chart_data","d3FlameGraph"], _64);
+  main.variable(observer()).define(["d3","DOM","width","height","flamegraph_chart_data","d3FlameGraph"], _67);
   main.variable(observer("flamegraph_data")).define("flamegraph_data", ["selected_traces","db_refresh"], _flamegraph_data);
-  main.variable(observer()).define(["md"], _66);
-  main.variable(observer()).define(["Plot","flamegraph_data","width"], _67);
-  main.variable(observer()).define(["Plot","flamegraph_data"], _68);
+  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["Plot","flamegraph_data","width"], _70);
+  main.variable(observer()).define(["Plot","flamegraph_data"], _71);
   main.variable(observer("flamegraph_chart_data")).define("flamegraph_chart_data", ["to_tree","flamegraph_data"], _flamegraph_chart_data);
-  main.variable(observer()).define(["md"], _70);
+  main.variable(observer()).define(["md"], _73);
   main.variable(observer("db_refresh")).define("db_refresh", ["refresh_db","db"], _db_refresh);
-  main.variable(observer()).define(["md"], _72);
-  main.variable(observer()).define(["__query","db_refresh","invalidation"], _73);
-  main.variable(observer()).define(["md"], _74);
-  main.variable(observer()).define(["__query","db_refresh","invalidation"], _75);
-  main.variable(observer()).define(["md"], _76);
+  main.variable(observer()).define(["md"], _75);
+  main.variable(observer()).define(["__query","db_refresh","invalidation"], _76);
   main.variable(observer()).define(["md"], _77);
+  main.variable(observer()).define(["__query","db_refresh","invalidation"], _78);
+  main.variable(observer()).define(["md"], _79);
+  main.variable(observer()).define(["md"], _80);
   main.variable(observer("db")).define("db", ["DuckDBClient"], _db);
-  main.variable(observer()).define(["__query","db","invalidation"], _79);
+  main.variable(observer()).define(["__query","db","invalidation"], _82);
   main.define("initial refresh_db", _refresh_db);
   main.variable(observer("mutable refresh_db")).define("mutable refresh_db", ["Mutable", "initial refresh_db"], (M, _) => new M(_));
   main.variable(observer("refresh_db")).define("refresh_db", ["mutable refresh_db"], _ => _.generator);
   main.variable(observer("traces_table")).define("traces_table", ["dropTables","db"], _traces_table);
-  main.variable(observer()).define(["traces"], _82);
-  main.variable(observer()).define(["traces"], _83);
-  main.variable(observer()).define(["traces"], _84);
+  main.variable(observer()).define(["traces"], _85);
+  main.variable(observer()).define(["traces"], _86);
+  main.variable(observer()).define(["traces"], _87);
   main.variable(observer("segments_table")).define("segments_table", ["traces_table","db","mutable refresh_db"], _segments_table);
-  main.variable(observer()).define(["md"], _86);
-  main.variable(observer()).define(["insert_traces","db","traces"], _87);
+  main.variable(observer()).define(["md"], _89);
+  main.variable(observer()).define(["insert_traces","db","traces"], _90);
   main.variable(observer("insert_traces")).define("insert_traces", ["segments_table","traces","db"], _insert_traces);
-  main.variable(observer()).define(["insert_traces","mutable refresh_db"], _89);
-  main.variable(observer()).define(["md"], _90);
+  main.variable(observer()).define(["insert_traces","mutable refresh_db"], _92);
+  main.variable(observer()).define(["md"], _93);
   main.variable(observer("xray")).define("xray", ["AWS","access_key","access_secret_key","region"], _xray);
   main.variable(observer("trace_summaries")).define("trace_summaries", ["xray","filter","start_time","end_time"], _trace_summaries);
   main.variable(observer("enqueue_batches")).define("enqueue_batches", ["fetch_traces","trace_summaries","run","viewof batch","xray","filter","start_time","end_time"], _enqueue_batches);
@@ -1009,8 +1041,8 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof trace_ids")).define("viewof trace_ids", ["dropTables","flowQueue"], _trace_ids);
   main.variable(observer("trace_ids")).define("trace_ids", ["Generators", "viewof trace_ids"], (G, _) => G.input(_));
   main.variable(observer("traces")).define("traces", ["xray","trace_ids"], _traces);
-  main.variable(observer()).define(["traces","mutable batches_fetched"], _100);
-  main.variable(observer()).define(["viewof trace_ids","insert_traces"], _101);
+  main.variable(observer()).define(["traces","mutable batches_fetched"], _103);
+  main.variable(observer()).define(["viewof trace_ids","insert_traces"], _104);
   main.variable(observer("search_params")).define("search_params", ["URLSearchParams","location"], _search_params);
   main.variable(observer("AWS")).define("AWS", ["require","FileAttachment"], _AWS);
   main.variable(observer("aws")).define("aws", _aws);
