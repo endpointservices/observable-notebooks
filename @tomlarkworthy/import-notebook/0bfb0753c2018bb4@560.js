@@ -1,6 +1,5 @@
 import define1 from "./e1c39d41e8e944b0@939.js";
-import define2 from "./98f34e974bb2e4bc@650.js";
-import define3 from "./927be33e0f16f1cd@109.js";
+import define2 from "./98f34e974bb2e4bc@699.js";
 
 function _1(md){return(
 md`# Programmatic \`importNotebook\`
@@ -226,8 +225,6 @@ export default function define(runtime, observer) {
   main.import("thisModule", child2);
   main.import("isOnObservableCom", child2);
   main.variable(observer()).define(["md"], _10);
-  const child3 = runtime.module(define3);
-  main.import("esModuleShims", child3);
   main.variable(observer("getImportMap")).define("getImportMap", _getImportMap);
   main.variable(observer("test_getModuleName")).define("test_getModuleName", ["getModuleName"], _test_getModuleName);
   main.variable(observer("getModuleName")).define("getModuleName", _getModuleName);

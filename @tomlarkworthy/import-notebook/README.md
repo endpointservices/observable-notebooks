@@ -1,6 +1,6 @@
 # Programmatic importNotebook
 
-https://observablehq.com/@tomlarkworthy/import-notebook@559
+https://observablehq.com/@tomlarkworthy/import-notebook@560
 
 View this notebook in your browser by running a web server in this folder. For
 example:
