@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/vr-hackerspace",
+  "main": "94e12192922996a7@347.js",
+  "version": "347.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/vr-hackerspace",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
