@@ -1,6 +1,6 @@
 # es-module-shims@2.6.0
 
-https://observablehq.com/@tomlarkworthy/es-module-shims@109
+https://observablehq.com/@tomlarkworthy/es-module-shims@112
 
 View this notebook in your browser by running a web server in this folder. For
 example:

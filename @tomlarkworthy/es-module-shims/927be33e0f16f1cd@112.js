@@ -1,7 +1,7 @@
 function _1(md){return(
 md`# [es-module-shims@2.6.0](https://github.com/guybedford/es-module-shims)
 
-With esModuleShims you need to setup the options in the window before loading, hence this library is a function you call with the options.
+With esModuleShims you need to setup the options in the window before loading, so this distribution is a function you call with the options.
 
 \`\`\`js
 import {esModuleShims} from "@tomlarkworthy/es-module-shims"
