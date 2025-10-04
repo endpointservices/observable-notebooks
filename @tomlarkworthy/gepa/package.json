@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/gepa",
+  "main": "50e53b27a28761aa@783.js",
+  "version": "783.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/gepa",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
