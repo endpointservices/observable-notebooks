@@ -1,6 +1,6 @@
 # Reactive Unit Testing and Reporting Framework
 
-https://observablehq.com/@tomlarkworthy/testing@730
+https://observablehq.com/@tomlarkworthy/testing@732
 
 View this notebook in your browser by running a web server in this folder. For
 example:
