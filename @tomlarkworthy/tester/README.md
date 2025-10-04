@@ -1,6 +1,6 @@
 # Tests
 
-https://observablehq.com/@tomlarkworthy/tester@563
+https://observablehq.com/@tomlarkworthy/tester@565
 
 View this notebook in your browser by running a web server in this folder. For
 example:
