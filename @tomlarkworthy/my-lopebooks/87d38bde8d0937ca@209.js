@@ -28,12 +28,25 @@ ${await lopebook({
   }
 })}
 ${await lopebook({
+  url: "https://observablehq.com/@tomlarkworthy/robocoop-2",
+  repo: "https://github.com/tomlarkworthy/lopebooks",
+  color: "aaFFFF",
+  export_state: {
+    hash: "#view=R100%28S67%28%40tomlarkworthy%2Frobocoop-2%29%2CS33%28%40tomlarkworthy%2Fmodule-selection%29%29"
+  }
+})}
+${await lopebook({
   url: "https://observablehq.com/@tomlarkworthy/agentic-planner-prototype",
   repo: "https://github.com/tomlarkworthy/lopebooks",
   color: "FFaaFF",
   export_state: {
     hash: "#view=R100%28S67%28%40tomlarkworthy%2Fagentic-planner-prototype%29%2CS33%28%40tomlarkworthy%2Fmodule-selection%29%29"
   }
+})}
+${await lopebook({
+  color: "AF05FF",
+  url: "https://observablehq.com/@tomlarkworthy/robocoop-2",
+  repo: "https://github.com/tomlarkworthy/lopebooks"
 })}
 ${await lopebook({
   url: "https://observablehq.com/@tomlarkworthy/reactive-reflective-testing",
@@ -67,6 +80,17 @@ ${await lopebook({
   url: "https://observablehq.com/@tomlarkworthy/cell-map",
   repo: "https://github.com/tomlarkworthy/lopebooks"
 })}
+${await lopebook({
+  color: "BC0A7F",
+  url: "https://observablehq.com/@tomlarkworthy/circular-barcode-simulator",
+  repo: "https://github.com/tomlarkworthy/lopebooks"
+})}
+${await lopebook({
+  color: "FF0AFF",
+  url: "https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching",
+  repo: "https://github.com/tomlarkworthy/lopebooks"
+})}
+
 
 `
 )}
@@ -116,7 +140,7 @@ async ({ url, repo, export_state, color, description }) => {
 `
     };
   }
-  const deploy = `[commit](https://observablehq.com/@tomlarkworthy/jumpgate?source=${url}${
+  const deploy = `[jumpgate](https://observablehq.com/@tomlarkworthy/jumpgate?source=${url}${
     export_state
       ? `&export_state=${encodeURIComponent(JSON.stringify(export_state))}`
       : ``
