@@ -1,6 +1,6 @@
 import define1 from "./a6a56ee61aba9799@406.js";
-import define2 from "./db42ae70222a8b08@995.js";
-import define3 from "./98f34e974bb2e4bc@650.js";
+import define2 from "./db42ae70222a8b08@1033.js";
+import define3 from "./98f34e974bb2e4bc@699.js";
 import define4 from "./4c5c2771c502fedd@598.js";
 import define5 from "./a2a7845a5e2a5aec@139.js";
 
@@ -136,7 +136,8 @@ testing_variables
     name: testing_variable.name,
     state: "paused",
     ...latest_state.get(testing_variable.name),
-    computed: testing_variable.running
+    computed: testing_variable.running,
+    variable: testing_variable.variable
   }))
   .sort((b, a) => {
     // 1) errors first
