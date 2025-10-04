@@ -1,6 +1,6 @@
 # 1 Million Row Parquet Challenge
 
-https://observablehq.com/@tomlarkworthy/1-million-row-parquet-challenge@298
+https://observablehq.com/@tomlarkworthy/1-million-row-parquet-challenge@319
 
 View this notebook in your browser by running a web server in this folder. For
 example:

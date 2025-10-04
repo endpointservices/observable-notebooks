@@ -74,7 +74,7 @@ md`## Draw a 1M scatter plot`
 
 async function _average_time(duckdb,db,PARQUET_URL,parseCustomDate)
 {
-  if (!duckdb) return [];
+  if (!duckdb) throw "Enable Duck DB";
   const startTime = performance.now();
   const result = (
     await db.query(
@@ -203,11 +203,13 @@ Hyparquet is much faster than DuckDB at reading and converting, but it will do a
 )}
 
 function _hyparquet(){return(
-import("https://cdn.jsdelivr.net/npm/hyparquet/+esm")
+import("https://cdn.jsdelivr.net/npm/hyparquet@1.17.8/+esm")
 )}
 
 function _compressors(){return(
-import("https://cdn.jsdelivr.net/npm/hyparquet-compressors/+esm")
+import(
+  "https://cdn.jsdelivr.net/npm/hyparquet-compressors@1.1.1/+esm"
+)
 )}
 
 function _hypa_read_objects(Inputs){return(
@@ -220,7 +222,7 @@ hypa_read_objects && performance.now()
 
 async function _hypa_data_date(hypa_read_objects,hyparquet,PARQUET_URL,compressors,parseCustomDate)
 {
-  if (!hypa_read_objects) return [];
+  if (!hypa_read_objects) throw "enable hyparquet";
   const file = await hyparquet.asyncBufferFromUrl({ url: PARQUET_URL }); // wrap url for async fetching
   const startTime = performance.now();
   const data = await hyparquet.parquetReadObjects({
@@ -238,6 +240,10 @@ async function _hypa_data_date(hypa_read_objects,hyparquet,PARQUET_URL,compresso
   return munged;
 }
 
+
+function _34(PARQUET_URL){return(
+PARQUET_URL
+)}
 
 async function _hypa_data_average(hypa_read_objects,hyparquet,PARQUET_URL,compressors)
 {
@@ -257,15 +263,15 @@ async function _hypa_data_average(hypa_read_objects,hyparquet,PARQUET_URL,compre
 }
 
 
-function _35(hypa_data_date){return(
+function _36(hypa_data_date){return(
 hypa_data_date.fetchTime
 )}
 
-function _36(hypa_data_average){return(
+function _37(hypa_data_average){return(
 hypa_data_average.fetchTime
 )}
 
-function _37(hypa_data_date){return(
+function _38(hypa_data_date){return(
 hypa_data_date.mungeTime
 )}
 
@@ -320,10 +326,11 @@ export default function define(runtime, observer) {
   main.variable(observer("hypa_read_objects")).define("hypa_read_objects", ["Generators", "viewof hypa_read_objects"], (G, _) => G.input(_));
   main.variable(observer("start_time")).define("start_time", ["hypa_read_objects"], _start_time);
   main.variable(observer("hypa_data_date")).define("hypa_data_date", ["hypa_read_objects","hyparquet","PARQUET_URL","compressors","parseCustomDate"], _hypa_data_date);
+  main.variable(observer()).define(["PARQUET_URL"], _34);
   main.variable(observer("hypa_data_average")).define("hypa_data_average", ["hypa_read_objects","hyparquet","PARQUET_URL","compressors"], _hypa_data_average);
-  main.variable(observer()).define(["hypa_data_date"], _35);
-  main.variable(observer()).define(["hypa_data_average"], _36);
-  main.variable(observer()).define(["hypa_data_date"], _37);
+  main.variable(observer()).define(["hypa_data_date"], _36);
+  main.variable(observer()).define(["hypa_data_average"], _37);
+  main.variable(observer()).define(["hypa_data_date"], _38);
   main.variable(observer("total_time")).define("total_time", ["hypa_data_average","hypa_data_date","start_time"], _total_time);
   return main;
 }
