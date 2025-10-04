@@ -1,6 +1,6 @@
 # Editor: Reactive Userspace Cell Mutator (v4)
 
-https://observablehq.com/@tomlarkworthy/editor-4@3211
+https://observablehq.com/@tomlarkworthy/editor-4@3283
 
 View this notebook in your browser by running a web server in this folder. For
 example:

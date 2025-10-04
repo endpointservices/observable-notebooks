@@ -10,8 +10,14 @@ build script
 \`\`\`bash
 npm install --save codemirror
 npm install --save @codemirror/lang-javascript
+npm install --save @codemirror/autocomplete
+npm install --save @codemirror/language
+npm install --save @codemirror/lint
 echo 'export * from "./node_modules/codemirror/dist/index.js";
       export * from "./node_modules/@codemirror/lang-javascript/dist/index.js";
+      export * from "./node_modules/@codemirror/autocomplete/dist/index.js";
+      export * from "./node_modules/@codemirror/language/dist/index.js";
+      export * from "./node_modules/@codemirror/lint/dist/index.js";
       export {indentWithTab} from "@codemirror/commands";
       export * from "./node_modules/@codemirror/view/dist/index.js";
       export * from "./node_modules/@codemirror/state/dist/index.js";' \\
@@ -68,7 +74,7 @@ md`---`
 
 async function _codemirror(unzip,FileAttachment)
 {
-  const blob = await unzip(FileAttachment("codemirror_javascript.js.gz"));
+  const blob = await unzip(FileAttachment("codemirror_javascript@5.js.gz"));
 
   const objectURL = URL.createObjectURL(
     new Blob([blob], { type: "application/javascript" })
@@ -96,7 +102,7 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["codemirror_javascript.js.gz", {url: new URL("./files/ea0968231e202b960d51337e6c36b14c65d03e3647063de55ad072afef92e7b93c41446fe8010bb11f1df34090dfb87eec5b32993ef816202f05436454aafbd8.gz", import.meta.url), mimeType: "application/gzip", toString}]
+    ["codemirror_javascript@5.js.gz", {url: new URL("./files/706a688668bab04680f537d784eac3f52955d13ec0bc8dd1d7594fe60c8d9ca37d644b40387cc227024400c390e8d47dd4982ece9586667125f7828d050969b7.gz", import.meta.url), mimeType: "application/gzip", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);

@@ -1,4 +1,4 @@
-import define1 from "./e1c39d41e8e944b0@939.js";
+import define1 from "./c70da66b5b540791@974.js";
 
 function _1(md){return(
 md`# Runtime SDK
@@ -60,10 +60,10 @@ function (...variables) {
 }
 )}
 
-function _decendants_example(descendants,lookupVariable,main,toObject){return(
-[...descendants(lookupVariable("runtime", main))].map(
-  toObject
-)
+async function _decendants_example(descendants,lookupVariable,main,toObject){return(
+[
+  ...descendants(await lookupVariable("runtime", main))
+].map(toObject)
 )}
 
 function _9(md){return(
@@ -86,8 +86,8 @@ function (...variables) {
 }
 )}
 
-function _ascendants_example(ascendants,lookupVariable,main,toObject){return(
-[...ascendants(lookupVariable("runtime", main))].map(
+async function _ascendants_example(ascendants,lookupVariable,main,toObject){return(
+[...ascendants(await lookupVariable("runtime", main))].map(
   toObject
 )
 )}
@@ -98,7 +98,13 @@ lookup a variable by module`
 )}
 
 function _lookupVariable(){return(
-(name, module) => module._scope.get(name)
+async (name, module) => {
+  let v, retries;
+  while (!module._scope.get(name) && retries++ < 1000) {
+    await new Promise((r) => requestAnimationFrame(r));
+  }
+  return module._scope.get(name);
+}
 )}
 
 function _14(md){return(
