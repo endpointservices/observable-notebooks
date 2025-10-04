@@ -1,6 +1,6 @@
 # Vendored CodeMirror 6 + Javascript
 
-https://observablehq.com/@tomlarkworthy/codemirror-6-v2@990
+https://observablehq.com/@tomlarkworthy/codemirror-6-v2@1001
 
 View this notebook in your browser by running a web server in this folder. For
 example:
