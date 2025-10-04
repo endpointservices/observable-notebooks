@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/notebook-kit-examples",
+  "main": "a1ede81c3712a905@362.js",
+  "version": "362.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/notebook-kit-examples",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
