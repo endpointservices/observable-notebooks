@@ -147,6 +147,8 @@ new Set()
 
 function _manual_notebooks(){return(
 new Set([
+  "https://observablehq.com/@tomlarkworthy/notebook-semantics",
+  "https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching",
   "https://observablehq.com/@tomlarkworthy/manual-backup-all",
   "https://observablehq.com/@tomlarkworthy/notebook-kit-examples",
   "https://observablehq.com/@tomlarkworthy/robocoop-2",
@@ -196,7 +198,6 @@ new Set([
   "https://observablehq.com/@tomlarkworthy/editor-3",
   "https://observablehq.com/d/6db728d43d53a89f",
   "https://observablehq.com/d/a331aaaba2ed2ede",
-  "https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching",
   "https://observablehq.com/@tomlarkworthy/robocoop-eval",
   "https://observablehq.com/@tomlarkworthy/circular-barcode-simulator",
   "https://observablehq.com/@tomlarkworthy/summarizejs",
@@ -205,7 +206,6 @@ new Set([
   "https://observablehq.com/@tomlarkworthy/escodegen",
   "https://observablehq.com/d/94e870f8044ad01a",
   "https://observablehq.com/@tomlarkworthy/tabbed-pane-view",
-  "https://observablehq.com/@tomlarkworthy/notebook-semantics",
   "https://observablehq.com/@tomlarkworthy/robocoop-2-example",
   "https://observablehq.com/@tomlarkworthy/fast-barcode-scanner",
   "https://observablehq.com/@tomlarkworthy/simple-prompt",
