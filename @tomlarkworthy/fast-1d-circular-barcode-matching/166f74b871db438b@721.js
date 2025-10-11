@@ -12,7 +12,7 @@ Part II of a long quest to create a cheap high speed optical localization system
 )}
 
 function _3(md){return(
-md`### Final Matched Barchode projection
+md`### Final Matched Barcode projection
 It works! If the scanline passed through the centre of a circular barcode, this matches the pattern.`
 )}
 
@@ -37,7 +37,7 @@ $0
 )}
 
 function _6(canvas,htl){return(
-htl.html`<div style="scale: 0.955">
+htl.html`<div style="scale: 0.96">
   ${canvas}
 </div>`
 )}
