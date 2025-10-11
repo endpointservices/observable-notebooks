@@ -1,6 +1,6 @@
 # Notebook Kit@1.4.1 in the browser
 
-https://observablehq.com/@tomlarkworthy/notebook-kit@107
+https://observablehq.com/@tomlarkworthy/notebook-kit@110
 
 View this notebook in your browser by running a web server in this folder. For
 example:
