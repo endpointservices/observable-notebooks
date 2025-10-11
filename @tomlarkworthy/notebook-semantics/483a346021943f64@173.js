@@ -134,6 +134,10 @@ function _28(dep){return(
 dep
 )}
 
+function _event(Event){return(
+new Event("input")
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -172,6 +176,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewofdep_inline")).define("viewofdep_inline", ["viewof view"], _viewofdep_inline);
   main.variable(observer("viewofdatadep")).define("viewofdatadep", ["view"], _viewofdatadep);
   main.variable(observer()).define(["dep"], _28);
+  main.variable(observer("event")).define("event", ["Event"], _event);
   const child1 = runtime.module(define1);
   main.import("dep", child1);
   main.import("mutable mutabledep", child1);
