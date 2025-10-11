@@ -1,6 +1,6 @@
 # Browser build for Notebook Kit
 
-https://observablehq.com/@tomlarkworthy/notebook-kit-examples@362
+https://observablehq.com/@tomlarkworthy/notebook-kit-examples@366
 
 View this notebook in your browser by running a web server in this folder. For
 example:

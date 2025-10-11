@@ -1,4 +1,4 @@
-import define1 from "./e9c03d81ed565cce@107.js";
+import define1 from "./e9c03d81ed565cce@110.js";
 import define2 from "./893cd17fd1ceac98@21.js";
 import define3 from "./ef672b935bd480fc@623.js";
 
@@ -227,22 +227,30 @@ kit.define(
 )}
 
 function _35(md){return(
+md`## module resolution`
+)}
+
+function _36(kit){return(
+kit.resolveImport("npm:htl")
+)}
+
+function _37(md){return(
 md`## Converting Notebook 1.0 to Notebook 2.0 files
 
 Notebook kit has a converter for 2.0 to 1.0 but it won't run in the browser (CORS)`
 )}
 
-function _36(md){return(
+function _38(md){return(
 md`it can be done from command line`
 )}
 
-function _37(md){return(
+function _39(md){return(
 md`\`\`\`shell
 npx @observablehq/notebook-kit download @tomlarkworthy/notebook-kit-examples
 \`\`\``
 )}
 
-function _38(md){return(
+function _40(md){return(
 md`or we can work around with \`fetchp\`, the CORS proxy`
 )}
 
@@ -262,7 +270,7 @@ async function _notebook1(fetchp,url){return(
 ).json()
 )}
 
-function _42(Inputs,convert,notebook1){return(
+function _44(Inputs,convert,notebook1){return(
 Inputs.textarea({
   rows: 20,
   disabled: true,
@@ -322,15 +330,17 @@ export default function define(runtime, observer) {
   main.variable(observer("node")).define("node", ["htl"], _node);
   main.variable(observer()).define(["kit","module2","node","ticker_cell","definition"], _34);
   main.variable(observer()).define(["md"], _35);
-  main.variable(observer()).define(["md"], _36);
+  main.variable(observer()).define(["kit"], _36);
   main.variable(observer()).define(["md"], _37);
   main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["md"], _40);
   const child3 = runtime.module(define3);
   main.import("fetchp", child3);
   main.variable(observer("viewof url")).define("viewof url", ["Inputs"], _url);
   main.variable(observer("url")).define("url", ["Generators", "viewof url"], (G, _) => G.input(_));
   main.variable(observer("notebook1")).define("notebook1", ["fetchp","url"], _notebook1);
-  main.variable(observer()).define(["Inputs","convert","notebook1"], _42);
+  main.variable(observer()).define(["Inputs","convert","notebook1"], _44);
   main.variable(observer("convert")).define("convert", ["kit"], _convert);
   return main;
 }
