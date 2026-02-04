@@ -105,24 +105,23 @@ function _11(md){return(
 md`### Internals`
 )}
 
-function _captureRuntime($0,Event){return(
-new Promise((resolve) => {
+function _captureRuntime($0){return(
+new Promise(resolve => {
   const forEach = Set.prototype.forEach;
-  Set.prototype.forEach = function (...args) {
+  Set.prototype.forEach = function(...args) {
     const thisArg = args[1];
     forEach.apply(this, args);
-    if (thisArg && thisArg._modules) {
+    if(thisArg && thisArg._modules) {
       Set.prototype.forEach = forEach;
       resolve(thisArg);
     }
   };
-  $0.value = true;
-  $0.dispatchEvent(new Event("input"));
+  $0.value = $0.value + 1;
 })
 )}
 
-function _recomputeTrigger(Inputs){return(
-Inputs.input()
+function _recomputeTrigger(){return(
+0
 )}
 
 function _14(md){return(
@@ -245,7 +244,6 @@ function _23(md){return(
 md`---
 ## Updates
 
-- 2025-07-31: Notebook 2.0 compatibility fix (@tomlarkworthy)
 - 2022-08-28: Rewrite and simplification, documentation updates.
 - 2022-08-27: Added \`main\`, \`no_observer\`, \`observed\`. Added example for \`observed\`.`
 )}
@@ -269,9 +267,10 @@ export default function define(runtime, observer) {
   main.variable(observer("observed")).define("observed", ["no_observer","runtime"], _observed);
   main.variable(observer("no_observer")).define("no_observer", ["main"], _no_observer);
   main.variable(observer()).define(["md"], _11);
-  main.variable(observer("captureRuntime")).define("captureRuntime", ["viewof recomputeTrigger","Event"], _captureRuntime);
-  main.variable(observer("viewof recomputeTrigger")).define("viewof recomputeTrigger", ["Inputs"], _recomputeTrigger);
-  main.variable(observer("recomputeTrigger")).define("recomputeTrigger", ["Generators", "viewof recomputeTrigger"], (G, _) => G.input(_));
+  main.variable(observer("captureRuntime")).define("captureRuntime", ["mutable recomputeTrigger"], _captureRuntime);
+  main.define("initial recomputeTrigger", _recomputeTrigger);
+  main.variable(observer("mutable recomputeTrigger")).define("mutable recomputeTrigger", ["Mutable", "initial recomputeTrigger"], (M, _) => new M(_));
+  main.variable(observer("recomputeTrigger")).define("recomputeTrigger", ["mutable recomputeTrigger"], _ => _.generator);
   main.variable(observer()).define(["md"], _14);
   main.variable(observer("viewof ex_refresh")).define("viewof ex_refresh", ["Inputs"], _ex_refresh);
   main.variable(observer("ex_refresh")).define("ex_refresh", ["Generators", "viewof ex_refresh"], (G, _) => G.input(_));
