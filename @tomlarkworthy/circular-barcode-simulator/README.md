@@ -1,6 +1,6 @@
 # Simplifying Pose Estimation with Circular Barcodes
 
-https://observablehq.com/@tomlarkworthy/circular-barcode-simulator@3094
+https://observablehq.com/@tomlarkworthy/circular-barcode-simulator@3101
 
 View this notebook in your browser by running a web server in this folder. For
 example:

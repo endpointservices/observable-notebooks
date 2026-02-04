@@ -1,5 +1,4 @@
 import define1 from "./b2bbebd2f186ed03@1803.js";
-import define2 from "./293899bef371e135@293.js";
 
 function _1(md){return(
 md`# Simplifying Pose Estimation with Circular Barcodes`
@@ -128,7 +127,8 @@ We expect to be able to recognize a barcode from a single scan that passes throu
 function _scanY(Inputs,height){return(
 Inputs.range([0, height], {
   label: "scanY",
-  step: 1
+  step: 1,
+  value: 198
 })
 )}
 
@@ -159,9 +159,9 @@ function _template()
 {
   const half = [
     1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1,
-    1, 1
+    1, 1, 1
   ];
-  return [...half, 1, 1, ...[...half].reverse()];
+  return [...half, ...[...half].reverse()];
 }
 
 
@@ -628,10 +628,6 @@ function _renders(){return(
 0
 )}
 
-function _74(footer){return(
-footer
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -736,8 +732,5 @@ export default function define(runtime, observer) {
   main.define("initial renders", _renders);
   main.variable(observer("mutable renders")).define("mutable renders", ["Mutable", "initial renders"], (M, _) => new M(_));
   main.variable(observer("renders")).define("renders", ["mutable renders"], _ => _.generator);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _74);
   return main;
 }
