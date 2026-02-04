@@ -1,6 +1,6 @@
 # Roboco-op 2.1: Notebook collaborator
 
-https://observablehq.com/@tomlarkworthy/robocoop-2@4417
+https://observablehq.com/@tomlarkworthy/robocoop-2@4551
 
 View this notebook in your browser by running a web server in this folder. For
 example:
