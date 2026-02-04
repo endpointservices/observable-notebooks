@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/memo",
+  "main": "f13b580e3cd6ded5@84.js",
+  "version": "84.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/memo",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
