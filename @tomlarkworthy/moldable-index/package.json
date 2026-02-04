@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/moldable-index",
+  "main": "2e7397eace0a6bdd@1748.js",
+  "version": "1748.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/moldable-index",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
