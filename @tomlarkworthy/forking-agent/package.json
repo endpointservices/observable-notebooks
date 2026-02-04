@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/forking-agent",
+  "main": "712ae51fe35f480e@3639.js",
+  "version": "3639.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/forking-agent",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
