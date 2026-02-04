@@ -1,6 +1,6 @@
 # SummarizeJS
 
-https://observablehq.com/@tomlarkworthy/summarizejs@149
+https://observablehq.com/@tomlarkworthy/summarizejs@158
 
 View this notebook in your browser by running a web server in this folder. For
 example:
