@@ -1,6 +1,6 @@
 # cellMap
 
-https://observablehq.com/@tomlarkworthy/cell-map@1299
+https://observablehq.com/@tomlarkworthy/cell-map@1486
 
 View this notebook in your browser by running a web server in this folder. For
 example:
