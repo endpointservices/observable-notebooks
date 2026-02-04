@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/spectral-layout",
+  "main": "b316487cf25bf2ee@290.js",
+  "version": "290.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/spectral-layout",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
