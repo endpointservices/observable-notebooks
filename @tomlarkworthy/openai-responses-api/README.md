@@ -1,6 +1,6 @@
 # 👋 Hello, OpenAI Responses API
 
-https://observablehq.com/@tomlarkworthy/openai-responses-api@374
+https://observablehq.com/@tomlarkworthy/openai-responses-api@377
 
 View this notebook in your browser by running a web server in this folder. For
 example:
