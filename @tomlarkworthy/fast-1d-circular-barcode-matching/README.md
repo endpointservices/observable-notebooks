@@ -1,6 +1,6 @@
 # Fast 1D Circular Barcode Matching
 
-https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching@721
+https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching@728
 
 View this notebook in your browser by running a web server in this folder. For
 example:

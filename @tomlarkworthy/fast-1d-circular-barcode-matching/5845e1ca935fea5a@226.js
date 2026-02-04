@@ -50,6 +50,7 @@ function _copyCellButton(Inputs,cellsToClipboard){return(
 function _makeCell($0,defaultJS,defaultOther){return(
 (value) => {
   const id = $0.value++;
+  debugger;
   if (typeof value === "string") {
     return { ...defaultJS, id, value };
   } else if (typeof value === "object") {

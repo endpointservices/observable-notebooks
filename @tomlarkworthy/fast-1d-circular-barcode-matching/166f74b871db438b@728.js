@@ -1,5 +1,5 @@
 import define1 from "./4fe413fb2e36d2a3@3101.js";
-import define2 from "./f109935193c0deba@4417.js";
+import define2 from "./f109935193c0deba@4551.js";
 
 function _1(md){return(
 md`# Fast 1D Circular Barcode Matching
@@ -69,8 +69,13 @@ function _12(md){return(
 md`#### (manual) Find three known edges`
 )}
 
-function _13(md){return(
-md`Click the leftmost side of the circular pattern, the rightmost side and then the right of the middle as the three rings to fit mobius to`
+async function _13(FileAttachment,md){return(
+md`In the three charts below, click the leftmost side of the a barcode's circular pattern, the rightmost side and then the right of the middle as the three rings to fit mobius to. The larger point of this notebook is to figure out an efficient way to initialize the algorithm *without* manual initialization, but to get there it is useful to first concentrate on the easier problem of an already initialized fit.
+
+<details>
+  <summary>example</summary>
+  ![image.png](${await FileAttachment("image.png").url()})
+</details>`
 )}
 
 function _leftmost(Plot,width,scanEdges){return(
@@ -1269,6 +1274,11 @@ robocoop
 
 export default function define(runtime, observer) {
   const main = runtime.module();
+  function toString() { return this.url; }
+  const fileAttachments = new Map([
+    ["image.png", {url: new URL("./files/761b4331b51bb160fe71de3b320d5fd4b3afab5f04b079862051dc2a60264ad23e154d0e2deb3a18f9c7e982b5e2a8bc0837599de53e888fe7744a23a842b0d7.png", import.meta.url), mimeType: "image/png", toString}]
+  ]);
+  main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
   const child1 = runtime.module(define1);
   main.import("viewof scanY", child1);
@@ -1290,7 +1300,7 @@ export default function define(runtime, observer) {
   main.variable(observer("scanLineBuffer")).define("scanLineBuffer", ["scanline"], _scanLineBuffer);
   main.variable(observer("scanEdges")).define("scanEdges", ["edges1D","scanLineBuffer"], _scanEdges);
   main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["md"], _13);
+  main.variable(observer()).define(["FileAttachment","md"], _13);
   main.variable(observer("viewof leftmost")).define("viewof leftmost", ["Plot","width","scanEdges"], _leftmost);
   main.variable(observer("leftmost")).define("leftmost", ["Generators", "viewof leftmost"], (G, _) => G.input(_));
   main.variable(observer("viewof rightmost")).define("viewof rightmost", ["Plot","width","scanEdges"], _rightmost);

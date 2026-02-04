@@ -6,18 +6,18 @@ import { acorn } from "@tomlarkworthy/acorn-8-11-3"
 \`\`\``
 )}
 
-async function _acorn(unzip,FileAttachment)
+function _acorn(acorn_url){return(
+import(acorn_url)
+)}
+
+async function _acorn_url(unzip,FileAttachment)
 {
   const blob = await unzip(FileAttachment("acorn-8.11.3.js.gz"));
 
   const objectURL = URL.createObjectURL(
     new Blob([blob], { type: "application/javascript" })
   );
-  try {
-    return await import(objectURL);
-  } finally {
-    URL.revokeObjectURL(objectURL);
-  }
+  return objectURL;
 }
 
 
@@ -36,7 +36,8 @@ export default function define(runtime, observer) {
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
-  main.variable(observer("acorn")).define("acorn", ["unzip","FileAttachment"], _acorn);
+  main.variable(observer("acorn")).define("acorn", ["acorn_url"], _acorn);
+  main.variable(observer("acorn_url")).define("acorn_url", ["unzip","FileAttachment"], _acorn_url);
   main.variable(observer("unzip")).define("unzip", ["Response","DecompressionStream"], _unzip);
   return main;
 }
