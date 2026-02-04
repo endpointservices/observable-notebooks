@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/robocoop-eval",
+  "main": "b964abe9346c2831@1125.js",
+  "version": "1125.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/robocoop-eval",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
