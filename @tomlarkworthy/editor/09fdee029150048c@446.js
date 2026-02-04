@@ -1,7 +1,7 @@
-import define1 from "./98f34e974bb2e4bc@699.js";
+import define1 from "./98f34e974bb2e4bc@958.js";
 
 function _1(md){return(
-md`# Local FileAttachments
+md`# Writable FileAttachments
 
 Attach files to notebooks without uploading them anywhere. Massive files, no problem! Offers programmatic access to the FileAttachments too.
 
@@ -181,5 +181,6 @@ export default function define(runtime, observer) {
   const child1 = runtime.module(define1);
   main.import("runtime", child1);
   main.import("main", child1);
+  main.import("thisModule", child1);
   return main;
 }
