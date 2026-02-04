@@ -1,4 +1,4 @@
-import define1 from "./03dda470c56b93ff@8246.js";
+import define1 from "./03dda470c56b93ff@8395.js";
 
 function _1(md){return(
 md`# File System Access API
