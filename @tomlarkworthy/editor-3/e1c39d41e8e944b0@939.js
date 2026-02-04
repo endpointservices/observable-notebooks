@@ -1,4 +1,3 @@
-// https://observablehq.com/@mootari/access-runtime@939
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
 
