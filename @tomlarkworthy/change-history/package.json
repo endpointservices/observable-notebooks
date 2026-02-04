@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/change-history",
+  "main": "cf93635398c5c302@451.js",
+  "version": "451.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/change-history",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
