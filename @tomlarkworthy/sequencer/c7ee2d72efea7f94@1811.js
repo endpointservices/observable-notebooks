@@ -1,10 +1,10 @@
-import define1 from "./09fdee029150048c@436.js";
-import define2 from "./98f34e974bb2e4bc@650.js";
+import define1 from "./09fdee029150048c@446.js";
+import define2 from "./98f34e974bb2e4bc@958.js";
 import define3 from "./e7c3854dfc5e08c3@1352.js";
-import define4 from "./f92778131fd76559@1208.js";
+import define4 from "./f92778131fd76559@1212.js";
 import define5 from "./bd9d083ddbe7ce90@1105.js";
-import define6 from "./653c46ed55693b1f@683.js";
-import define7 from "./03dda470c56b93ff@8246.js";
+import define6 from "./653c46ed55693b1f@685.js";
+import define7 from "./10c7899865f8a76e@8998.js";
 
 function _1(md){return(
 md`# Sequencer
@@ -668,7 +668,7 @@ md`### Colors`
 )}
 
 function _offColor(Inputs){return(
-Inputs.color({ label: "off", value: "#FFFFFF" })
+Inputs.color({ label: "off", value: "#000" })
 )}
 
 function _downColor(Inputs){return(
