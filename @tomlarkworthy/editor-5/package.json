@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/editor-5",
+  "main": "3fae8ed7111b5d13@3901.js",
+  "version": "3901.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/editor-5",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
