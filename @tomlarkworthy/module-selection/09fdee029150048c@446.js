@@ -1,7 +1,7 @@
-import define1 from "./e1c39d41e8e944b0@939.js";
+import define1 from "./98f34e974bb2e4bc@958.js";
 
 function _1(md){return(
-md`# Local FileAttachments
+md`# Writable FileAttachments
 
 Attach files to notebooks without uploading them anywhere. Massive files, no problem! Offers programmatic access to the FileAttachments too.
 
@@ -41,8 +41,8 @@ async function _size_bytes(selected){return(
 selected && (await selected.arrayBuffer()).byteLength
 )}
 
-function _attachments(getFileAttachments){return(
-getFileAttachments()
+function _attachments(Inputs,getFileAttachments){return(
+Inputs.input(getFileAttachments())
 )}
 
 function _jsonFileAttachment(createFileAttachment){return(
@@ -65,7 +65,7 @@ function _createFileAttachment(FileAttachmentClass){return(
 }
 )}
 
-function _setFileAttachment(main,getFileAttachmentsMap,$0,getFileAttachments){return(
+function _setFileAttachment(main,getFileAttachmentsMap,$0,getFileAttachments,Event){return(
 async function setFileAttachment(file, module = main) {
   file = await file;
   if (!file) return;
@@ -83,6 +83,7 @@ async function setFileAttachment(file, module = main) {
   const map = getFileAttachmentsMap(FileAttachment);
   map.set(file.name, await file.url());
   $0.value = getFileAttachments();
+  $0.dispatchEvent(new Event("input"));
 }
 )}
 
@@ -91,10 +92,11 @@ function _getFileAttachment(main,getFileAttachments){return(
   getFileAttachments(module).get(name)
 )}
 
-function _removeFileAttachment(main,getFileAttachmentsMap,$0,getFileAttachments){return(
+function _removeFileAttachment(main,getFileAttachmentsMap,$0,getFileAttachments,Event){return(
 function (name, module = main) {
   getFileAttachmentsMap(module._builtins.get("FileAttachment")).delete(name);
   $0.value = getFileAttachments();
+  $0.dispatchEvent(new Event("input"));
 }
 )}
 
@@ -162,23 +164,23 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _6);
   main.variable(observer("download_selected")).define("download_selected", ["selected","DOM"], _download_selected);
   main.variable(observer("size_bytes")).define("size_bytes", ["selected"], _size_bytes);
-  main.define("initial attachments", ["getFileAttachments"], _attachments);
-  main.variable(observer("mutable attachments")).define("mutable attachments", ["Mutable", "initial attachments"], (M, _) => new M(_));
-  main.variable(observer("attachments")).define("attachments", ["mutable attachments"], _ => _.generator);
+  main.variable(observer("viewof attachments")).define("viewof attachments", ["Inputs","getFileAttachments"], _attachments);
+  main.variable(observer("attachments")).define("attachments", ["Generators", "viewof attachments"], (G, _) => G.input(_));
   main.variable(observer("jsonFileAttachment")).define("jsonFileAttachment", ["createFileAttachment"], _jsonFileAttachment);
   main.variable(observer("createFileAttachment")).define("createFileAttachment", ["FileAttachmentClass"], _createFileAttachment);
-  main.variable(observer("setFileAttachment")).define("setFileAttachment", ["main","getFileAttachmentsMap","mutable attachments","getFileAttachments"], _setFileAttachment);
+  main.variable(observer("setFileAttachment")).define("setFileAttachment", ["main","getFileAttachmentsMap","viewof attachments","getFileAttachments","Event"], _setFileAttachment);
   main.variable(observer("getFileAttachment")).define("getFileAttachment", ["main","getFileAttachments"], _getFileAttachment);
-  main.variable(observer("removeFileAttachment")).define("removeFileAttachment", ["main","getFileAttachmentsMap","mutable attachments","getFileAttachments"], _removeFileAttachment);
+  main.variable(observer("removeFileAttachment")).define("removeFileAttachment", ["main","getFileAttachmentsMap","viewof attachments","getFileAttachments","Event"], _removeFileAttachment);
   main.variable(observer("getFileAttachments")).define("getFileAttachments", ["main","getFileAttachmentsMap"], _getFileAttachments);
   main.variable(observer("getFileAttachmentsMap")).define("getFileAttachmentsMap", _getFileAttachmentsMap);
   main.variable(observer("FileAttachmentClass")).define("FileAttachmentClass", ["sampleFileAttachment"], _FileAttachmentClass);
-  const child1 = runtime.module(define1);
-  main.import("runtime", child1);
-  main.import("main", child1);
   main.variable(observer("viewof fileInput")).define("viewof fileInput", ["Inputs"], _fileInput);
   main.variable(observer("fileInput")).define("fileInput", ["Generators", "viewof fileInput"], (G, _) => G.input(_));
   main.variable(observer("plainFile")).define("plainFile", _plainFile);
   main.variable(observer("sampleFileAttachment")).define("sampleFileAttachment", ["DataTransfer","plainFile","viewof fileInput","Event"], _sampleFileAttachment);
+  const child1 = runtime.module(define1);
+  main.import("runtime", child1);
+  main.import("main", child1);
+  main.import("thisModule", child1);
   return main;
 }

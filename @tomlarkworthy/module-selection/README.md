@@ -1,6 +1,6 @@
 # Explorer: Module Selector
 
-https://observablehq.com/@tomlarkworthy/module-selection@526
+https://observablehq.com/@tomlarkworthy/module-selection@765
 
 View this notebook in your browser by running a web server in this folder. For
 example:
