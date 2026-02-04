@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/unaggregating-cloudwatch-metrics",
+  "main": "e24a01d86b590220@781.js",
+  "version": "781.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/unaggregating-cloudwatch-metrics",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
