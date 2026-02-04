@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/context-menu",
+  "main": "641f20faf5e539e8@109.js",
+  "version": "109.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/context-menu",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
