@@ -1,6 +1,6 @@
 # Designing Immortal Software: A Vision for Lopecode
 
-https://observablehq.com/@tomlarkworthy/lopecode-vision@612
+https://observablehq.com/@tomlarkworthy/lopecode-vision@617
 
 View this notebook in your browser by running a web server in this folder. For
 example:

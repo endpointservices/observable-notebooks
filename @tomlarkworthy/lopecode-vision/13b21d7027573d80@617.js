@@ -1,8 +1,9 @@
-import define1 from "./03dda470c56b93ff@8246.js";
-import define2 from "./a6a56ee61aba9799@406.js";
-import define3 from "./98f34e974bb2e4bc@650.js";
+import define1 from "./10c7899865f8a76e@8998.js";
+import define2 from "./a6a56ee61aba9799@409.js";
+import define3 from "./98f34e974bb2e4bc@958.js";
 import define4 from "./2ff342bf285f0043@458.js";
-import define5 from "./0b75dbddd18995dc@1761.js";
+import define5 from "./0b75dbddd18995dc@1765.js";
+import define6 from "./010725e8849f52d0@816.js";
 
 function _1(md){return(
 md`# Designing Immortal Software: [A Vision for Lopecode](https://tomlarkworthy.github.io/lopecode/notebooks/@tomlarkworthy_lopecode-vision.html)
@@ -10,7 +11,11 @@ md`# Designing Immortal Software: [A Vision for Lopecode](https://tomlarkworthy.
 )}
 
 function _2(md){return(
-md`<div style="border-left:4px solid #0077cc;background:#f5faff;padding:12px;margin:16px 0;font-family:sans-serif;">
+md`<div style="border-left:4px solid var(--theme-foreground-focus);
+  background:var(--theme-background);
+  padding:12px;
+  margin:16px 0;
+  font-family:sans-serif;">
   <i>Lopecode tips</i> 
   <p>
   Browse the internal modules on the explorer tab.
@@ -312,5 +317,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["uid"], _26);
   const child5 = runtime.module(define5);
   main.import("uid", child5);
+  const child6 = runtime.module(define6);
+  main.import("md", child6);
   return main;
 }
