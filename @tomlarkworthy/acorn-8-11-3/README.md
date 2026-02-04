@@ -1,6 +1,6 @@
 # Acorn@8.11.3
 
-https://observablehq.com/@tomlarkworthy/acorn-8-11-3@18
+https://observablehq.com/@tomlarkworthy/acorn-8-11-3@22
 
 View this notebook in your browser by running a web server in this folder. For
 example:
