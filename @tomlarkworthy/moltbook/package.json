@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/moltbook",
+  "main": "a64a92212b7dba32@21.js",
+  "version": "21.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/moltbook",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
