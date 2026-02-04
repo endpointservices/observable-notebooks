@@ -1,6 +1,6 @@
 # Visualizer: Own Cell Renderer
 
-https://observablehq.com/@tomlarkworthy/visualizer@2236
+https://observablehq.com/@tomlarkworthy/visualizer@2418
 
 View this notebook in your browser by running a web server in this folder. For
 example:
