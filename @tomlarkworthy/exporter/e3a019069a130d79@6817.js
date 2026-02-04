@@ -1,8 +1,10 @@
 import define1 from "./f096db8fcbc444bf@565.js";
-import define2 from "./a89ea9f0ad8c6226@1403.js";
+import define2 from "./a89ea9f0ad8c6226@1486.js";
 import define3 from "./f550ddbdb36998cb@132.js";
-import define4 from "./ba7429882b352b5b@18.js";
+import define4 from "./ba7429882b352b5b@22.js";
 import define5 from "./db80e603859226c1@23.js";
+import define6 from "./f6794ed0523241c3@1824.js";
+import define7 from "./f109935193c0deba@4551.js";
 
 function _1(md){return(
 md`# Bidirectional Observable JS <=> Runtime Toolchain
@@ -1834,120 +1836,224 @@ function _107(md){return(
 md`### \`decompile\``
 )}
 
-function _decompile(findModuleName,findImportedName,acorn,escodegen){return(
-{ prompt: "fix tests", time: 1726546383668 } &&
-  async function decompile(variables) {
-    // Non-import cases
-    if (!variables || variables.length == 0)
-      throw new Error("no variables to decompile");
+function _decompile(decompileImport,formatImportDeclaration,acorn,escodegen){return(
+async function decompile(variables) {
+  if (!variables || variables.length === 0)
+    throw new Error("no variables to decompile");
 
-    try {
-      // Import cases
-      if (
-        variables[0]._inputs.length == 1 &&
-        variables[0]._module !== variables[0]._inputs[0]._module
-      ) {
-        const module_name = findModuleName(
-          variables[0]._module._scope,
-          variables[0]._inputs[0]._module
-        );
-        const import_aliasses = await Promise.all(
-          variables.map(async (v) => {
-            const importedName = await findImportedName(v);
-            return importedName == v._name
-              ? v._name
-              : `${importedName} as ${v._name}`;
-          })
-        );
-        return `import {${import_aliasses.join(", ")}} from "${module_name}"`;
-      }
+  const importInfo = await decompileImport(variables);
+  if (importInfo) return formatImportDeclaration(importInfo);
 
-      const variable = variables[0];
+  const variable = variables[0];
+  const name = variable._name;
+  const compiled =
+    typeof variable._definition === "string"
+      ? variable._definition
+      : variable._definition.toString();
 
-      const name = variable._name;
-      const compiled =
-        typeof variable._definition == "string"
-          ? variable._definition
-          : variable._definition.toString();
-      const inputs = variable._inputs.map((i) =>
-        typeof i == "string" ? i : i._name
-      );
-      const wrappedCode = "(" + compiled + ")";
-      const comments = [],
-        tokens = [];
-      let parsed = acorn.parse(wrappedCode, {
-        ecmaVersion: 2022,
-        sourceType: "module",
-        ranges: true,
-        onComment: comments,
-        onToken: tokens
-      });
-      parsed = escodegen.attachComments(parsed, comments, tokens);
+  const inputs = (variable._inputs || []).map((i) =>
+    typeof i === "string" ? i : i._name
+  );
 
-      const functionExpression = parsed.body[0].expression;
-      const body = functionExpression.body;
+  const wrappedCode = "(" + compiled + ")";
+  const comments = [],
+    tokens = [];
+  let parsed = acorn.parse(wrappedCode, {
+    ecmaVersion: 2022,
+    sourceType: "module",
+    ranges: true,
+    onComment: comments,
+    onToken: tokens
+  });
+  parsed = escodegen.attachComments(parsed, comments, tokens);
+  const functionExpression = parsed.body[0].expression;
+  const body = functionExpression.body;
 
-      let varName = name;
-      let prefix = "";
-
-      // Handle special variables
-      if (name) {
-        if (name.startsWith("initial ")) {
-          prefix = "mutable ";
-          varName = name.replace(/^initial /, "");
-        } else if (name.startsWith("mutable ")) {
-          prefix = "mutable ";
-          varName = name.replace(/^mutable /, "");
-        } else if (name.startsWith("viewof ")) {
-          prefix = "viewof ";
-          varName = name.replace(/^viewof /, "");
-        }
-      }
-
-      let expression = "";
-      if (
-        body.type === "BlockStatement" &&
-        body.body.length === 1 &&
-        body.body[0].type === "ReturnStatement" &&
-        comments.length == 0
-      ) {
-        // If the body is a single ReturnStatement, decompile its argument
-        if (wrappedCode[body.body[0].argument.start] == "{") {
-          // bugfix if the body is an object literal we need to escape it
-          expression = `(${escodegen.generate(body.body[0].argument, {
-            comment: true
-          })})`;
-        } else {
-          expression = escodegen.generate(body.body[0].argument, {
-            comment: true
-          });
-        }
-      } else {
-        // For other types, decompile the whole body
-        expression = escodegen.generate(body, { comment: true });
-      }
-      let source = `${varName ? `${prefix}${varName} = ` : ""}${expression}`;
-
-      // replace mutable and viewofs
-      let id = 0;
-      inputs.forEach((input, idx) => {
-        if (input.startsWith("mutable ")) {
-          source = source.replaceAll(`$${id++}.value`, input);
-        } else if (input.startsWith("viewof ")) {
-          source = source.replaceAll(`$${id++}`, input);
-        } else if (input == "@variable") {
-          source = source.replaceAll(`$${id++}`, input);
-        }
-      });
-      return source;
-    } catch (e) {
-      debugger;
-      throw e;
+  let varName = name;
+  let prefix = "";
+  if (name) {
+    if (name.startsWith("initial ")) {
+      prefix = "mutable ";
+      varName = name.replace(/^initial /, "");
+    } else if (name.startsWith("mutable ")) {
+      prefix = "mutable ";
+      varName = name.replace(/^mutable /, "");
+    } else if (name.startsWith("viewof ")) {
+      prefix = "viewof ";
+      varName = name.replace(/^viewof /, "");
     }
   }
+
+  let expression = "";
+  if (
+    body.type === "BlockStatement" &&
+    body.body.length === 1 &&
+    body.body[0].type === "ReturnStatement" &&
+    comments.length === 0
+  ) {
+    if (wrappedCode[body.body[0].argument.start] === "{") {
+      expression = `(${escodegen.generate(body.body[0].argument, {
+        comment: true
+      })})`;
+    } else {
+      expression = escodegen.generate(body.body[0].argument, { comment: true });
+    }
+  } else {
+    expression = escodegen.generate(body, { comment: true });
+  }
+
+  let source = `${varName ? `${prefix}${varName} = ` : ""}${expression}`;
+
+  let id = 0;
+  inputs.forEach((input) => {
+    if (input && input.startsWith("mutable ")) {
+      source = source.replaceAll(`$${id++}.value`, input);
+    } else if (input && input.startsWith("viewof ")) {
+      source = source.replaceAll(`$${id++}`, input);
+    } else if (input === "@variable") {
+      source = source.replaceAll(`$${id++}`, input);
+    }
+  });
+
+  return source;
+}
 )}
 
 function _109(md){return(
+md`### \`decompileImport\``
+)}
+
+function _decompileImport(findModuleName,findImportedName){return(
+async function decompileImport(variables, options = {}) {
+  if (!variables || variables.length === 0) throw new Error("no variables");
+
+  const v0 = variables[0];
+  const input0 = v0?._inputs?.[0];
+
+  const inputsLength = Array.isArray(v0?._inputs) ? v0._inputs.length : 0;
+  const crossesModuleBoundary =
+    inputsLength === 1 &&
+    input0 &&
+    typeof input0 === "object" &&
+    v0._module &&
+    input0._module &&
+    v0._module !== input0._module;
+
+  if (!(inputsLength === 1 && crossesModuleBoundary)) return null;
+
+  const module_name = findModuleName(v0._module._scope, input0._module);
+  if (module_name == null) throw new Error("module name could not be resolved");
+
+  const specifiers = await Promise.all(
+    variables.map(async (v, index) => {
+      const imported = await findImportedName(v);
+      const local = v._name;
+      return {
+        imported,
+        local,
+        alias: imported !== local,
+        meta: { index }
+      };
+    })
+  );
+
+  return {
+    type: "import",
+    from: module_name,
+    specifiers,
+    meta: {
+      detection: {
+        inputsLength,
+        crossesModuleBoundary
+      },
+      variables: variables.map((v) => v?._name ?? null)
+    }
+  };
+}
+)}
+
+function _formatImportDeclaration(){return(
+function formatImportDeclaration(importInfo) {
+  if (!importInfo || importInfo.type !== "import")
+    throw new Error("not an importInfo object");
+  const specifiers = (importInfo.specifiers || []).map((s) =>
+    s.imported === s.local ? s.local : `${s.imported} as ${s.local}`
+  );
+  return `import {${specifiers.join(", ")}} from "${importInfo.from}"`;
+}
+)}
+
+async function _test_decompileImport_basic(importFake,decompileImport,expect)
+{
+  const v = await importFake(
+    { _name: "dep", _definition: "function Yn(e){return e}", _inputs: ["dep"] },
+    "@tomlarkworthy/dependancy"
+  );
+  const info = await decompileImport([v]);
+
+  const simplified = {
+    type: info.type,
+    from: info.from,
+    specifiers: info.specifiers.map((s) => ({
+      imported: s.imported,
+      local: s.local,
+      alias: s.alias,
+      meta: { index: s.meta.index }
+    }))
+  };
+
+  expect(simplified).toEqual({
+    type: "import",
+    from: "@tomlarkworthy/dependancy",
+    specifiers: [
+      { imported: "dep", local: "dep", alias: false, meta: { index: 0 } }
+    ]
+  });
+
+  return "ok";
+}
+
+
+async function _test_formatImportDeclaration_roundtrip(importFake,decompileImport,expect,formatImportDeclaration,decompile)
+{
+  const vars = [
+    await importFake(
+      {
+        _name: "dep",
+        _definition: "function Yn(e){return e}",
+        _inputs: ["dep"]
+      },
+      "@tomlarkworthy/dependancy"
+    )
+  ];
+  const info = await decompileImport(vars);
+  expect(formatImportDeclaration(info)).toEqual(await decompile(vars));
+  return "ok";
+}
+
+
+async function _test_decompileImport_alias(importFake,decompileImport,expect,formatImportDeclaration)
+{
+  const v = await importFake(
+    {
+      _name: "alias",
+      _definition: "function Yn(e){return e}",
+      _inputs: ["dep"]
+    },
+    "@tomlarkworthy/dependancy"
+  );
+  const info = await decompileImport([v]);
+
+  expect(info.specifiers[0].alias).toEqual(true);
+  expect(formatImportDeclaration(info)).toEqual(
+    `import {dep as alias} from "@tomlarkworthy/dependancy"`
+  );
+
+  return "ok";
+}
+
+
+function _115(md){return(
 md`## Javascript Source Normalization`
 )}
 
@@ -1979,7 +2085,7 @@ function _normalizeJavascriptSource(acorn,escodegen){return(
 }
 )}
 
-function _112(normalizeJavascriptSource,normalizeJavascriptSourceSelector)
+function _118(normalizeJavascriptSource,normalizeJavascriptSourceSelector)
 {
   return normalizeJavascriptSource(normalizeJavascriptSourceSelector);
 }
@@ -2001,7 +2107,7 @@ function _variableToObject(){return(
 })
 )}
 
-function _115(md){return(
+function _121(md){return(
 md`## Observable Source Normalization`
 )}
 
@@ -2012,7 +2118,7 @@ Inputs.select(
 )
 )}
 
-function _117(normalizeObservableSource,normalizeObservableSourceSelector){return(
+function _123(normalizeObservableSource,normalizeObservableSourceSelector){return(
 normalizeObservableSource(normalizeObservableSourceSelector)
 )}
 
@@ -2103,7 +2209,7 @@ function _normalizeObservableSource(parser,generate){return(
   }
 )}
 
-function _121(md){return(
+function _127(md){return(
 md`## The Compiler
 
 `
@@ -2115,13 +2221,6 @@ eval(
     compile("md`${await FileAttachment('image@1.png').url() }`")[0]._definition
 )
 )}
-
-function _123(compile)
-{
-  debugger;
-  compile("md`${await FileAttachment('image@1.png').url() }`")[0];
-}
-
 
 async function _test_compile_integer(compile,expect)
 {
@@ -2537,19 +2636,11 @@ Inputs.textarea({
 })
 )}
 
-async function _test_compile_import(compile,expect)
+async function _test_compile_import_plain_single(compile,expect)
 {
-  const compiled = await compile(`import {
-  dep,
-  mutable mutabledep,
-  viewof viewdep,
-  dep as dep_alias,
-  mutable mutabledep as aslias_mutabledep,
-  viewof viewdep as aslias_viewdep,
-  mutabledep as aslias_mutabledep_data,
-  viewdep as aslias_viewdep_data
-} from "@tomlarkworthy/dependancy";`);
-  debugger;
+  const compiled = await compile(
+    `import {dep} from "@tomlarkworthy/dependancy";`
+  );
   expect(compiled).toEqual([
     {
       _name: "module @tomlarkworthy/dependancy",
@@ -2560,66 +2651,111 @@ async function _test_compile_import(compile,expect)
       _name: "dep",
       _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
       _definition: `(_, v) => v.import("dep", _)`
-    },
+    }
+  ]);
+  return "ok";
+}
+
+
+async function _test_compile_import_view_data_alias_single(compile,expect)
+{
+  const compiled = await compile(
+    `import {viewdep as aslias_viewdep_data} from "@tomlarkworthy/dependancy";`
+  );
+  expect(compiled).toEqual([
     {
-      _name: "mutabledep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("mutabledep", _)`
-    },
-    {
-      _name: "viewdep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("viewdep", _)`
-    },
-    {
-      _name: "viewof viewdep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("viewof viewdep", _)`
-    },
-    {
-      _name: "dep_alias",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("dep_alias", _)`
-    },
-    {
-      _name: "mutable aslias_mutabledep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("mutable aslias_mutabledep", _)`
-    },
-    {
-      _name: "aslias_mutabledep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("aslias_mutabledep", _)`
-    },
-    {
-      _name: "viewof aslias_viewdep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("viewof aslias_viewdep", _)`
-    },
-    {
-      _name: "aslias_viewdep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("aslias_viewdep", _)`
-    },
-    {
-      _name: "aslias_viewdep",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("aslias_viewdep", _)`
-    },
-    {
-      _name: "aslias_mutabledep_data",
-      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("aslias_mutabledep_data", _)`
+      _name: "module @tomlarkworthy/dependancy",
+      _inputs: [],
+      _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
     },
     {
       _name: "aslias_viewdep_data",
       _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
-      _definition: `(_, v) => v.import("aslias_viewdep_data", _)`
+      _definition: `(_, v) => v.import("viewdep", "aslias_viewdep_data", _)`
+    }
+  ]);
+  return "ok";
+}
+
+
+async function _test_compile_import_mutable_data_alias_single(compile,expect)
+{
+  const compiled = await compile(
+    `import {mutabledep as aslias_mutabledep_data} from "@tomlarkworthy/dependancy";`
+  );
+  expect(compiled).toEqual([
+    {
+      _name: "module @tomlarkworthy/dependancy",
+      _inputs: [],
+      _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
+    },
+    {
+      _name: "aslias_mutabledep_data",
+      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+      _definition: `(_, v) => v.import("mutabledep", "aslias_mutabledep_data", _)`
+    }
+  ]);
+  return "ok";
+}
+
+
+async function _test_compile_import_mutable_single(compile,expect)
+{
+  const compiled = await compile(
+    `import {mutable mutabledep} from "@tomlarkworthy/dependancy";`
+  );
+  expect(compiled).toEqual([
+    {
+      _name: "module @tomlarkworthy/dependancy",
+      _inputs: [],
+      _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
     },
     {
       _name: "mutable mutabledep",
       _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
       _definition: `(_, v) => v.import("mutable mutabledep", _)`
+    }
+  ]);
+  return "ok";
+}
+
+
+async function _test_compile_import_viewof_single(compile,expect)
+{
+  const compiled = await compile(
+    `import {viewof viewdep} from "@tomlarkworthy/dependancy";`
+  );
+  expect(compiled).toEqual([
+    {
+      _name: "module @tomlarkworthy/dependancy",
+      _inputs: [],
+      _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
+    },
+    {
+      _name: "viewof viewdep",
+      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+      _definition: `(_, v) => v.import("viewof viewdep", _)`
+    }
+  ]);
+  return "ok";
+}
+
+
+async function _test_compile_import_alias_single(compile,expect)
+{
+  const compiled = await compile(
+    `import {dep as dep_alias} from "@tomlarkworthy/dependancy";`
+  );
+  expect(compiled).toEqual([
+    {
+      _name: "module @tomlarkworthy/dependancy",
+      _inputs: [],
+      _definition: `async () => runtime.module((await import("@tomlarkworthy/dependancy")).default)`
+    },
+    {
+      _name: "dep_alias",
+      _inputs: ["module @tomlarkworthy/dependancy", "@variable"],
+      _definition: `(_, v) => v.import("dep", "dep_alias", _)`
     }
   ]);
   return "ok";
@@ -2658,7 +2794,7 @@ Inputs.select(
 )
 )}
 
-function _154(test_case){return(
+function _164(test_case){return(
 test_case.value
 )}
 
@@ -2666,7 +2802,7 @@ async function _compiled(compile,test_case){return(
 await compile(test_case.value)
 )}
 
-function _156(parser,test_case)
+function _166(parser,test_case)
 {
   const comments = [];
   const tokens = [];
@@ -2691,7 +2827,7 @@ Inputs.radio(compiled, {
 })
 )}
 
-function _158(compiled_selector,normalizeJavascriptSource){return(
+function _168(compiled_selector,normalizeJavascriptSource){return(
 JSON.stringify(
   {
     ...compiled_selector,
@@ -2702,11 +2838,11 @@ JSON.stringify(
 )
 )}
 
-function _159(compile,test_case){return(
+function _169(compile,test_case){return(
 compile(test_case.value)
 )}
 
-function _160(normalizeVariables,test_case){return(
+function _170(normalizeVariables,test_case){return(
 normalizeVariables(test_case.variables)[0]._definition
 )}
 
@@ -2723,167 +2859,214 @@ async function _singleCompileTest(compile,test_case,expect,normalizeVariables)
 }
 
 
-function _compile(parser,observableToJs){return(
-{ prompt: "fix the singleCompileTest", time: 1729232320503 } &&
-  function compile(source, { anonymousName = "_anonymous" } = {}) {
-    // Parse the cell using the Observable parser
-    const comments = [],
-      tokens = [];
-    const cell = parser.parseCell(source, {
-      ranges: true,
-      onComment: comments,
-      onToken: tokens
-    });
-    let dollarIdx = 0;
-    const inputToArgMap = {};
-    const dollarToMacro = {};
-    // references contain all source references, so expect duplication
-    const inputs = Array.from(cell.references || []).flatMap((i) => {
-      if (i.name) {
-        if (inputToArgMap[i.name]) return [];
-        inputToArgMap[i.name] = i.name;
-        return i.name;
-      } else {
-        if (inputToArgMap[i.id.name]) return [];
-        const dollarName = "$" + dollarIdx;
-        inputToArgMap[i.id.name] = dollarName;
-        dollarToMacro[dollarName] =
-          i.type == "ViewExpression"
-            ? "viewof " + i.id.name
-            : "mutable " + i.id.name;
-        dollarIdx++;
-        return dollarName;
-      }
-    });
+function _compile(parser,globalThis,observableToJs){return(
+function compile(source, { anonymousName = "_anonymous" } = {}) {
+  const comments = [],
+    tokens = [];
+  const cell = parser.parseCell(source, {
+    ranges: true,
+    onComment: comments,
+    onToken: tokens
+  });
 
-    // Determine the function name
-    let variables;
-    if (cell.id) {
-      if (cell.id.type === "Identifier") {
-        variables = [
-          {
-            functionName: "_" + cell.id.name,
-            name: cell.id.name,
-            inputs,
-            params: inputs.join(",")
-          }
-        ];
-      } else if (cell.id.type === "ViewExpression") {
-        variables = [
-          {
-            functionName: "_" + cell.id.id.name,
-            name: "viewof " + cell.id.id.name,
-            inputs,
-            params: inputs.join(",")
-          },
-          {
-            functionName: "_" + cell.id.id.name,
-            name: cell.id.id.name,
-            _definition: "(G, _) => G.input(_);",
-            inputs: ["Generators", "viewof " + cell.id.id.name],
-            params: inputs.join(",")
-          }
-        ];
-      } else if (cell.id.type === "MutableExpression") {
-        variables = [
-          {
-            functionName: "_" + cell.id.id.name,
-            name: "initial " + cell.id.id.name,
-            inputs,
-            params: inputs.join(",")
-          },
-          {
-            functionName: "_" + cell.id.id.name,
-            name: "mutable " + cell.id.id.name,
-            _definition: "(M, _) => new M(_);",
-            inputs: ["Mutable", "initial " + cell.id.id.name],
-            params: inputs.join(",")
-          },
-          {
-            functionName: "_" + cell.id.id.name,
-            name: cell.id.id.name,
-            _definition: "_ => _.generator;",
-            inputs: ["mutable " + cell.id.id.name],
-            params: inputs.join(",")
-          }
-        ];
+  if (!cell) throw new Error("Unable to parse cell");
+
+  const parseImportSpecifierText = (text) => {
+    const t = String(text ?? "")
+      .trim()
+      .replace(/,$/, "")
+      .trim();
+    if (!t) throw new Error("Empty import specifier");
+
+    const parts = t.split(/\s+as\s+/);
+    const left = parts[0].trim();
+    const right = parts[1]?.trim();
+
+    const parseSide = (side, { defaultPrefix = "" } = {}) => {
+      const s = String(side ?? "").trim();
+      const m = s.match(/^(viewof|mutable)\s+(.+)$/);
+      if (m) return { prefix: `${m[1]} `, name: m[2].trim() };
+      return { prefix: defaultPrefix, name: s };
+    };
+
+    const L = parseSide(left);
+    const R = right ? parseSide(right, { defaultPrefix: L.prefix }) : L;
+
+    const importedName = `${L.prefix}${L.name}`.trim();
+    const localName = `${R.prefix}${R.name}`.trim();
+
+    if (!importedName)
+      throw new Error(`Could not parse imported name from: ${t}`);
+    if (!localName) throw new Error(`Could not parse local name from: ${t}`);
+
+    return { importedName, localName };
+  };
+
+  if (!cell.id && cell.body?.type === "ImportDeclaration") {
+    const module_name = cell.body.source.value;
+
+    const importKeyword = globalThis?.importShim ? "importShim" : "import";
+    const cell_variables = [
+      {
+        _name: `module ${module_name}`,
+        _inputs: [],
+        _definition: `async () => runtime.module((await ${importKeyword}("${module_name}")).default)`
       }
-    } else {
-      // Imports are pure body
-      if (cell.body.type == "ImportDeclaration") {
-        const module_name = cell.body.source.value;
-        const cell_variables = [
-          {
-            _name: `module ${module_name}`,
-            _inputs: [],
-            _definition: `async () => runtime.module((await import("${module_name}")).default)`
-          }
-        ];
-        for (let specifier of cell.body.specifiers) {
-          const imported = specifier.imported.name;
-          const alias = specifier.local.name;
-          cell_variables.push({
-            _name: alias,
-            _inputs: [`module ${module_name}`, "@variable"],
-            _definition: `(_, v) => v.import("${imported}", _)`
-          });
-        }
-        return cell_variables;
-      } else {
-        // For anonymous cells
-        variables = [
-          {
-            functionName: anonymousName,
-            name: null,
-            inputs,
-            params: inputs.join(",")
-          }
-        ];
-      }
+    ];
+
+    for (const specifier of cell.body.specifiers ?? []) {
+      const specText =
+        typeof specifier?.start === "number" &&
+        typeof specifier?.end === "number"
+          ? source.slice(specifier.start, specifier.end)
+          : (() => {
+              if (specifier?.imported?.name && specifier?.local?.name) {
+                return specifier.imported.name === specifier.local.name
+                  ? specifier.local.name
+                  : `${specifier.imported.name} as ${specifier.local.name}`;
+              }
+              throw new Error("Import specifier missing range information");
+            })();
+
+      const { importedName, localName } = parseImportSpecifierText(specText);
+
+      cell_variables.push({
+        _name: localName,
+        _inputs: [`module ${module_name}`, "@variable"],
+        _definition:
+          importedName === localName
+            ? `(_, v) => v.import("${importedName}", _)`
+            : `(_, v) => v.import("${importedName}", "${localName}", _)`
+      });
     }
 
-    // Generate code for the function body
-    return variables.map((v) => {
-      let _definition = v._definition;
+    return cell_variables;
+  }
 
-      if (!_definition) {
-        let functionBody;
-        if (cell.body.type === "BlockStatement") {
-          // For BlockStatement, use the block directly
-          functionBody = observableToJs(
-            cell.body,
-            inputToArgMap,
-            comments,
-            tokens
-          );
-        } else {
-          // For other expressions, wrap in return ()
-          const bodyCode = observableToJs(
-            cell.body,
-            inputToArgMap,
-            comments,
-            tokens
-          );
-          functionBody = `{return (${bodyCode});}`;
+  let dollarIdx = 0;
+  const inputToArgMap = {};
+  const dollarToMacro = {};
+
+  const inputs = Array.from(cell.references || []).flatMap((i) => {
+    if (i.name) {
+      if (inputToArgMap[i.name]) return [];
+      inputToArgMap[i.name] = i.name;
+      return i.name;
+    } else {
+      if (inputToArgMap[i.id.name]) return [];
+      const dollarName = "$" + dollarIdx;
+      inputToArgMap[i.id.name] = dollarName;
+      dollarToMacro[dollarName] =
+        i.type == "ViewExpression"
+          ? "viewof " + i.id.name
+          : "mutable " + i.id.name;
+      dollarIdx++;
+      return dollarName;
+    }
+  });
+
+  let variables;
+  if (cell.id) {
+    if (cell.id.type === "Identifier") {
+      variables = [
+        {
+          functionName: "_" + cell.id.name,
+          name: cell.id.name,
+          inputs,
+          params: inputs.join(",")
         }
+      ];
+    } else if (cell.id.type === "ViewExpression") {
+      variables = [
+        {
+          functionName: "_" + cell.id.id.name,
+          name: "viewof " + cell.id.id.name,
+          inputs,
+          params: inputs.join(",")
+        },
+        {
+          functionName: "_" + cell.id.id.name,
+          name: cell.id.id.name,
+          _definition: "(G, _) => G.input(_);",
+          inputs: ["Generators", "viewof " + cell.id.id.name],
+          params: inputs.join(",")
+        }
+      ];
+    } else if (cell.id.type === "MutableExpression") {
+      variables = [
+        {
+          functionName: "_" + cell.id.id.name,
+          name: "initial " + cell.id.id.name,
+          inputs,
+          params: inputs.join(",")
+        },
+        {
+          functionName: "_" + cell.id.id.name,
+          name: "mutable " + cell.id.id.name,
+          _definition: "(M, _) => new M(_);",
+          inputs: ["Mutable", "initial " + cell.id.id.name],
+          params: inputs.join(",")
+        },
+        {
+          functionName: "_" + cell.id.id.name,
+          name: cell.id.id.name,
+          _definition: "_ => _.generator;",
+          inputs: ["mutable " + cell.id.id.name],
+          params: inputs.join(",")
+        }
+      ];
+    } else {
+      throw new Error(`Unsupported cell id type: ${cell.id.type}`);
+    }
+  } else {
+    variables = [
+      {
+        functionName: anonymousName,
+        name: null,
+        inputs,
+        params: inputs.join(",")
+      }
+    ];
+  }
 
-        // Construct the function definition
-        _definition = `${cell.async ? "async " : ""}function${
-          cell.generator ? "*" : ""
-        } ${v.functionName}(${v.inputs.map(
-          (i) => inputToArgMap[i] || i
-        )}) ${functionBody}`;
+  return variables.map((v) => {
+    let _definition = v._definition;
+
+    if (!_definition) {
+      let functionBody;
+      if (cell.body.type === "BlockStatement") {
+        functionBody = observableToJs(
+          cell.body,
+          inputToArgMap,
+          comments,
+          tokens
+        );
+      } else {
+        const bodyCode = observableToJs(
+          cell.body,
+          inputToArgMap,
+          comments,
+          tokens
+        );
+        functionBody = `{return (${bodyCode});}`;
       }
 
-      return {
-        _name: v.name,
-        _inputs: v.inputs.map(
-          (i) => dollarToMacro[i] || (i == "$variable" ? "@variable" : i)
-        ),
-        _definition: _definition
-      };
-    });
-  }
+      _definition = `${cell.async ? "async " : ""}function${
+        cell.generator ? "*" : ""
+      } ${v.functionName}(${v.inputs
+        .map((i) => inputToArgMap[i] || i)
+        .join(",")}) ${functionBody}`;
+    }
+
+    return {
+      _name: v.name,
+      _inputs: v.inputs.map(
+        (i) => dollarToMacro[i] || (i === "$variable" ? "@variable" : i)
+      ),
+      _definition
+    };
+  });
+}
 )}
 
 function _observableToJs(acorn_walk,parser,escodegen){return(
@@ -2914,7 +3097,7 @@ function _observableToJs(acorn_walk,parser,escodegen){return(
 }
 )}
 
-function _164(md){return(
+function _174(md){return(
 md`### Bundled deps`
 )}
 
@@ -2970,8 +3153,12 @@ function _acorn_walk_url(decompress_url,FileAttachment){return(
 decompress_url(FileAttachment("acorn-walk-8.3.2.js.gz"))
 )}
 
-function _acorn_url(decompress_url,FileAttachment){return(
-decompress_url(FileAttachment("acorn-8.11.3.js.gz"))
+function _183(robocoop3){return(
+robocoop3()
+)}
+
+function _184(robocoop2){return(
+robocoop2()
 )}
 
 export default function define(runtime, observer) {
@@ -2979,7 +3166,6 @@ export default function define(runtime, observer) {
   function toString() { return this.url; }
   const fileAttachments = new Map([
     ["acorn-walk-8.3.2.js.gz", {url: new URL("./files/c2f0e91f1dd2b6f54808b2ba0ce16404a46278d3925ac7c9b8241c057c99c536f7b7434052464a2041d2df284f0217a5f5e857d88f423fcf6153a9cd6befa099.gz", import.meta.url), mimeType: "application/gzip", toString}],
-    ["acorn-8.11.3.js.gz", {url: new URL("./files/ef3eafe327e862f191a35f6501c2c3467f9ccf3996a62bbddb02349c8154f92287caac5ba6cdd7b41dfc21857e366b4c2342a2a9d8e2fbaed102125ce54ee1d3.gz", import.meta.url), mimeType: "application/gzip", toString}],
     ["parser-6.1.0.js.gz", {url: new URL("./files/36c11e4bac3ebe9047f79a4b9f2ed1554e7d684bbb421e5e466a888e8cb074e5e466e67930075ad8887e2281609649c21f7f7ce7484771268670298c77bd6dbc.gz", import.meta.url), mimeType: "application/gzip", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
@@ -3099,24 +3285,29 @@ export default function define(runtime, observer) {
   main.variable(observer("findModuleName")).define("findModuleName", ["extractModuleInfo"], _findModuleName);
   main.variable(observer("findImportedName")).define("findImportedName", _findImportedName);
   main.variable(observer()).define(["md"], _107);
-  main.variable(observer("decompile")).define("decompile", ["findModuleName","findImportedName","acorn","escodegen"], _decompile);
+  main.variable(observer("decompile")).define("decompile", ["decompileImport","formatImportDeclaration","acorn","escodegen"], _decompile);
   main.variable(observer()).define(["md"], _109);
+  main.variable(observer("decompileImport")).define("decompileImport", ["findModuleName","findImportedName"], _decompileImport);
+  main.variable(observer("formatImportDeclaration")).define("formatImportDeclaration", _formatImportDeclaration);
+  main.variable(observer("test_decompileImport_basic")).define("test_decompileImport_basic", ["importFake","decompileImport","expect"], _test_decompileImport_basic);
+  main.variable(observer("test_formatImportDeclaration_roundtrip")).define("test_formatImportDeclaration_roundtrip", ["importFake","decompileImport","expect","formatImportDeclaration","decompile"], _test_formatImportDeclaration_roundtrip);
+  main.variable(observer("test_decompileImport_alias")).define("test_decompileImport_alias", ["importFake","decompileImport","expect","formatImportDeclaration"], _test_decompileImport_alias);
+  main.variable(observer()).define(["md"], _115);
   main.variable(observer("viewof normalizeJavascriptSourceSelector")).define("viewof normalizeJavascriptSourceSelector", ["Inputs","notebook_semantics_variables"], _normalizeJavascriptSourceSelector);
   main.variable(observer("normalizeJavascriptSourceSelector")).define("normalizeJavascriptSourceSelector", ["Generators", "viewof normalizeJavascriptSourceSelector"], (G, _) => G.input(_));
   main.variable(observer("normalizeJavascriptSource")).define("normalizeJavascriptSource", ["acorn","escodegen"], _normalizeJavascriptSource);
-  main.variable(observer()).define(["normalizeJavascriptSource","normalizeJavascriptSourceSelector"], _112);
+  main.variable(observer()).define(["normalizeJavascriptSource","normalizeJavascriptSourceSelector"], _118);
   main.variable(observer("normalizeVariables")).define("normalizeVariables", ["variableToObject","normalizeJavascriptSource"], _normalizeVariables);
   main.variable(observer("variableToObject")).define("variableToObject", _variableToObject);
-  main.variable(observer()).define(["md"], _115);
+  main.variable(observer()).define(["md"], _121);
   main.variable(observer("viewof normalizeObservableSourceSelector")).define("viewof normalizeObservableSourceSelector", ["Inputs","notebook_semantics_source"], _normalizeObservableSourceSelector);
   main.variable(observer("normalizeObservableSourceSelector")).define("normalizeObservableSourceSelector", ["Generators", "viewof normalizeObservableSourceSelector"], (G, _) => G.input(_));
-  main.variable(observer()).define(["normalizeObservableSource","normalizeObservableSourceSelector"], _117);
+  main.variable(observer()).define(["normalizeObservableSource","normalizeObservableSourceSelector"], _123);
   main.variable(observer("parsed")).define("parsed", ["parser","normalizeObservableSourceSelector"], _parsed);
   main.variable(observer("generate")).define("generate", ["escodegen"], _generate);
   main.variable(observer("normalizeObservableSource")).define("normalizeObservableSource", ["parser","generate"], _normalizeObservableSource);
-  main.variable(observer()).define(["md"], _121);
+  main.variable(observer()).define(["md"], _127);
   main.variable(observer("test_async_interpolation")).define("test_async_interpolation", ["compile"], _test_async_interpolation);
-  main.variable(observer()).define(["compile"], _123);
   main.variable(observer("test_compile_integer")).define("test_compile_integer", ["compile","expect"], _test_compile_integer);
   main.variable(observer("test_compile_string")).define("test_compile_string", ["compile","expect"], _test_compile_string);
   main.variable(observer("test_compile_obj_literal")).define("test_compile_obj_literal", ["compile","expect"], _test_compile_obj_literal);
@@ -3144,30 +3335,41 @@ export default function define(runtime, observer) {
   main.variable(observer("test_compile_event")).define("test_compile_event", ["compile","expect"], _test_compile_event);
   main.variable(observer("test_compile_tagged_literal")).define("test_compile_tagged_literal", ["compile","expect"], _test_compile_tagged_literal);
   main.variable(observer("compile_unit_test_template")).define("compile_unit_test_template", ["Inputs","test_case","compiled"], _compile_unit_test_template);
-  main.variable(observer("test_compile_import")).define("test_compile_import", ["compile","expect"], _test_compile_import);
+  main.variable(observer("test_compile_import_plain_single")).define("test_compile_import_plain_single", ["compile","expect"], _test_compile_import_plain_single);
+  main.variable(observer("test_compile_import_view_data_alias_single")).define("test_compile_import_view_data_alias_single", ["compile","expect"], _test_compile_import_view_data_alias_single);
+  main.variable(observer("test_compile_import_mutable_data_alias_single")).define("test_compile_import_mutable_data_alias_single", ["compile","expect"], _test_compile_import_mutable_data_alias_single);
+  main.variable(observer("test_compile_import_mutable_single")).define("test_compile_import_mutable_single", ["compile","expect"], _test_compile_import_mutable_single);
+  main.variable(observer("test_compile_import_viewof_single")).define("test_compile_import_viewof_single", ["compile","expect"], _test_compile_import_viewof_single);
+  main.variable(observer("test_compile_import_alias_single")).define("test_compile_import_alias_single", ["compile","expect"], _test_compile_import_alias_single);
   main.variable(observer("test_compile_import_notebook")).define("test_compile_import_notebook", ["compile","expect"], _test_compile_import_notebook);
   main.variable(observer("viewof test_case")).define("viewof test_case", ["Inputs","notebook_semantics_source"], _test_case);
   main.variable(observer("test_case")).define("test_case", ["Generators", "viewof test_case"], (G, _) => G.input(_));
-  main.variable(observer()).define(["test_case"], _154);
+  main.variable(observer()).define(["test_case"], _164);
   main.variable(observer("compiled")).define("compiled", ["compile","test_case"], _compiled);
-  main.variable(observer()).define(["parser","test_case"], _156);
+  main.variable(observer()).define(["parser","test_case"], _166);
   main.variable(observer("viewof compiled_selector")).define("viewof compiled_selector", ["Inputs","compiled"], _compiled_selector);
   main.variable(observer("compiled_selector")).define("compiled_selector", ["Generators", "viewof compiled_selector"], (G, _) => G.input(_));
-  main.variable(observer()).define(["compiled_selector","normalizeJavascriptSource"], _158);
-  main.variable(observer()).define(["compile","test_case"], _159);
-  main.variable(observer()).define(["normalizeVariables","test_case"], _160);
+  main.variable(observer()).define(["compiled_selector","normalizeJavascriptSource"], _168);
+  main.variable(observer()).define(["compile","test_case"], _169);
+  main.variable(observer()).define(["normalizeVariables","test_case"], _170);
   main.variable(observer("singleCompileTest")).define("singleCompileTest", ["compile","test_case","expect","normalizeVariables"], _singleCompileTest);
-  main.variable(observer("compile")).define("compile", ["parser","observableToJs"], _compile);
+  main.variable(observer("compile")).define("compile", ["parser","globalThis","observableToJs"], _compile);
   main.variable(observer("observableToJs")).define("observableToJs", ["acorn_walk","parser","escodegen"], _observableToJs);
-  main.variable(observer()).define(["md"], _164);
+  main.variable(observer()).define(["md"], _174);
   main.variable(observer("decompress_url")).define("decompress_url", ["DecompressionStream","TextDecoderStream","TransformStream","TextEncoderStream","Response"], _decompress_url);
   main.variable(observer("parser")).define("parser", ["decompress_url","FileAttachment","acorn_url","acorn_walk_url"], _parser);
   main.variable(observer("acorn_walk")).define("acorn_walk", ["acorn_walk_url"], _acorn_walk);
   const child4 = runtime.module(define4);
   main.import("acorn", child4);
+  main.import("acorn_url", child4);
   main.variable(observer("acorn_walk_url")).define("acorn_walk_url", ["decompress_url","FileAttachment"], _acorn_walk_url);
-  main.variable(observer("acorn_url")).define("acorn_url", ["decompress_url","FileAttachment"], _acorn_url);
   const child5 = runtime.module(define5);
   main.import("expect", child5);
+  const child6 = runtime.module(define6);
+  main.import("robocoop3", child6);
+  const child7 = runtime.module(define7);
+  main.import("robocoop2", child7);
+  main.variable(observer()).define(["robocoop3"], _183);
+  main.variable(observer()).define(["robocoop2"], _184);
   return main;
 }

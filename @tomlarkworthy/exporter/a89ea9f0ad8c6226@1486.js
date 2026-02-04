@@ -1,9 +1,12 @@
-import define1 from "./a6a56ee61aba9799@406.js";
-import define2 from "./db42ae70222a8b08@1033.js";
-import define3 from "./98f34e974bb2e4bc@699.js";
+import define1 from "./a6a56ee61aba9799@409.js";
+import define2 from "./db42ae70222a8b08@1170.js";
+import define3 from "./98f34e974bb2e4bc@958.js";
 import define4 from "./db80e603859226c1@23.js";
 import define5 from "./f096db8fcbc444bf@565.js";
 import define6 from "./57d79353bac56631@44.js";
+import define7 from "./e3a019069a130d79@6817.js";
+import define8 from "./f6794ed0523241c3@1824.js";
+import define9 from "./f109935193c0deba@4551.js";
 
 function _1(md){return(
 md`# \`cellMap\`
@@ -217,174 +220,252 @@ import {viewof cellMapViz, viewof detailViz, detailVizTitle} from "@tomlarkworth
 and then call them in your notebooks`
 )}
 
-function _cellMap(runtime,moduleMap,importedModule,findModuleName){return(
+function _cellMap(runtime,moduleMap,moduleVarInfo,importedModule,findModuleName,decompileImport){return(
 async (variables, _moduleMap) => {
   const map = new Map();
   if (!variables) variables = runtime._variables;
   variables = [...variables];
-  if (variables.length == 0) return map;
+  if (variables.length === 0) return map;
   if (!_moduleMap) _moduleMap = await moduleMap(variables[0]._module._runtime);
 
-  // do one module at a time
-  const modules = new Map();
-  variables.forEach((v) => {
+  const byNotebookModule = new Map();
+  for (const v of variables) {
     const info = _moduleMap.get(v._module);
-    if (!info) {
-      console.warn("Cannot find module for ", v);
-      return;
-    }
-    if (!modules.has(info.module)) {
-      modules.set(info.module, []);
-    }
-    modules.get(info.module).push(v);
-  });
+    if (!info) continue;
+    if (!byNotebookModule.has(info.module))
+      byNotebookModule.set(info.module, []);
+    byNotebookModule.get(info.module).push(v);
+  }
 
-  let c = 0;
+  const isModuleVar = (v) =>
+    typeof v?._name === "string" && v._name.startsWith("module ");
 
   await Promise.all(
-    [...modules.keys()].map(async (m) => {
-      const variables = modules.get(m);
+    [...byNotebookModule.keys()].map(async (m) => {
+      const variables = byNotebookModule.get(m);
       const cells = new Map();
-      try {
-        const viewofs = new Set();
-        const mutables = new Set();
-        const imports = new Map();
 
-        const sources = new Map(
-          await Promise.all(
-            variables
-              .filter((v) => v._name)
-              .map(async (v) => [v._name, await importedModule(v)])
-          )
-        );
+      const moduleVars = variables.filter(isModuleVar);
+      const moduleVarInfos = new Map(
+        await Promise.all(
+          moduleVars.map(async (v) => [v, await moduleVarInfo(v, _moduleMap)])
+        )
+      );
 
-        const moduleNamesPromises = new Map();
-
-        const groups = variables.reduce((groups, v) => {
-          if (v._name) {
-            const source = sources.get(v._name);
-            if (source) {
-              if (!imports.has(source)) {
-                imports.set(source, []);
-                moduleNamesPromises.set(
-                  source,
-                  findModuleName(source, _moduleMap, {
-                    unknown_id: v._name
-                  })
-                );
-              }
-              imports.get(source).push(v);
-            } else if (v._name.startsWith("viewof ")) {
-              cells.set(v, {
-                type: "viewof",
-                lang: ["ojs"]
-              });
-              viewofs.add(v);
-              groups.set(v._name, []);
-            } else if (v._name.startsWith("mutable ")) {
-              const vars = [];
-              cells.set(v, {
-                type: "mutable",
-                lang: ["ojs"]
-              });
-              mutables.add(v);
-              groups.set(v._name, vars);
-            } else if (v._name.startsWith("module ")) {
-              // skip these
-            } else if (v._name.startsWith("dynamic ")) {
-              // skip these
-            } else {
-              cells.set(v, {
-                type: "simple",
-                lang: ["ojs"]
-              });
-              groups.set(v._name, [v]);
-            }
-          } else {
-            cells.set(v, {
-              type: "simple",
-              lang: ["ojs"]
-            });
-            groups.set(c++, [v]);
-          }
-          return groups;
-        }, new Map());
-
-        const moduleNames = new Map(
-          await Promise.all(
-            [...moduleNamesPromises.entries()].map(async ([k, v]) => [
-              k,
-              await v
-            ])
-          )
-        );
-        for (const v of viewofs) {
-          const name = v._name.substring(7);
-          if (groups.has(name)) {
-            groups.get(v._name).push(...[v, groups.get(name)[0]]);
-            groups.delete(name);
-          } else {
-            groups.delete(v._name);
-          }
-        }
-
-        for (const v of mutables) {
-          const name = v._name.substring(8);
-          const intital = "initial " + name;
-          if (groups.has(name) && groups.has(intital)) {
-            groups
-              .get(v._name)
-              .push(...[groups.get(intital)?.[0], v, groups.get(name)[0]]);
-
-            cells.delete(groups.get(intital)[0]);
-            cells.delete(groups.get(name)[0]);
-            groups.delete(intital);
-            groups.delete(name);
-          } else {
-            cells.delete(groups.get(v._name)[0]);
-            cells.delete(groups.get(intital)[0]);
-            cells.delete(groups.get(name)[0]);
-            groups.delete(v._name);
-            groups.delete(intital);
-            groups.delete(name);
-          }
-        }
-
-        for (const [module, variables] of imports.entries()) {
-          const module_name = moduleNames.get(module);
-          cells.set(variables[0], {
-            type: "import",
-            lang: ["ojs"],
-            module_name: module_name
-          });
-          const name = `module ${module_name}`;
-          groups.set(name, variables);
-        }
-
-        map.set(
-          m,
-          [...groups.entries()].map(([name, variables]) => ({
-            name,
-            module: _moduleMap.get(variables[0]._module).name,
-            ...cells.get(
-              typeof name == "string" && name.startsWith("mutable")
-                ? variables[1]
-                : variables[0]
-            ),
-            variables: variables
-          }))
-        );
-      } catch (e) {
-        debugger;
-        throw e;
+      const moduleVarsByKey = new Map();
+      for (const v of moduleVars) {
+        const info = moduleVarInfos.get(v);
+        const key = info?.module ?? info?.name ?? null;
+        if (!key) continue;
+        if (!moduleVarsByKey.has(key)) moduleVarsByKey.set(key, []);
+        moduleVarsByKey.get(key).push(v);
       }
+
+      const viewofs = new Set();
+      const mutables = new Set();
+
+      const namedNonModuleVars = variables.filter(
+        (v) => v?._name && !isModuleVar(v)
+      );
+      const sources = new Map(
+        await Promise.all(
+          namedNonModuleVars.map(async (v) => [
+            v._name,
+            await importedModule(v)
+          ])
+        )
+      );
+
+      const imports = new Map();
+      const moduleNamesPromises = new Map();
+      const groups = new Map();
+      let anonCounter = 0;
+
+      for (const v of variables) {
+        if (v?._name) {
+          if (isModuleVar(v)) {
+            continue;
+          }
+          const source = sources.get(v._name);
+          if (source) {
+            const key = source;
+            if (!imports.has(key)) {
+              imports.set(key, []);
+              moduleNamesPromises.set(
+                key,
+                Promise.resolve(
+                  findModuleName(key, _moduleMap, { unknown_id: v._name })
+                )
+              );
+            }
+            imports.get(key).push(v);
+          } else if (v._name.startsWith("viewof ")) {
+            cells.set(v, { type: "viewof", lang: ["ojs"] });
+            viewofs.add(v);
+            groups.set(v._name, []);
+          } else if (v._name.startsWith("mutable ")) {
+            cells.set(v, { type: "mutable", lang: ["ojs"] });
+            mutables.add(v);
+            groups.set(v._name, []);
+          } else if (v._name.startsWith("dynamic ")) {
+            continue;
+          } else {
+            cells.set(v, { type: "simple", lang: ["ojs"] });
+            groups.set(v._name, [v]);
+          }
+        } else {
+          cells.set(v, { type: "simple", lang: ["ojs"] });
+          groups.set(anonCounter++, [v]);
+        }
+      }
+
+      for (const [key] of moduleVarsByKey.entries()) {
+        if (imports.has(key)) continue;
+        if (!moduleNamesPromises.has(key)) {
+          if (typeof key === "string")
+            moduleNamesPromises.set(key, Promise.resolve(key));
+          else
+            moduleNamesPromises.set(
+              key,
+              Promise.resolve(
+                findModuleName(key, _moduleMap, { unknown_id: Math.random() })
+              )
+            );
+        }
+      }
+
+      const moduleNames = new Map(
+        await Promise.all(
+          [...moduleNamesPromises.entries()].map(async ([k, p]) => [k, await p])
+        )
+      );
+
+      for (const v of viewofs) {
+        const name = v._name.substring(7);
+        if (groups.has(name)) {
+          groups.get(v._name).push(v, groups.get(name)[0]);
+          groups.delete(name);
+        } else {
+          groups.delete(v._name);
+        }
+      }
+
+      for (const v of mutables) {
+        const name = v._name.substring(8);
+        const initial = "initial " + name;
+        if (groups.has(name) && groups.has(initial)) {
+          groups
+            .get(v._name)
+            .push(groups.get(initial)?.[0], v, groups.get(name)[0]);
+          cells.delete(groups.get(initial)[0]);
+          cells.delete(groups.get(name)[0]);
+          groups.delete(initial);
+          groups.delete(name);
+        } else {
+          const vars = groups.get(v._name);
+          if (vars?.[0]) cells.delete(vars[0]);
+          groups.delete(v._name);
+          groups.delete(initial);
+          groups.delete(name);
+        }
+      }
+
+      for (const [key, importVars] of imports.entries()) {
+        const module_name =
+          moduleNames.get(key) ?? `<unknown ${Math.random()}>`;
+
+        let importInfo = null;
+        try {
+          importInfo = (await decompileImport(importVars)) ?? null;
+        } catch {
+          importInfo = null;
+        }
+
+        cells.set(importVars[0], {
+          type: "import",
+          lang: ["ojs"],
+          module_name,
+          importInfo
+        });
+
+        const groupName = `module ${module_name}`;
+        const moduleVarsForKey = moduleVarsByKey.get(key) ?? [];
+        groups.set(groupName, [...importVars, ...moduleVarsForKey]);
+        moduleVarsByKey.delete(key);
+      }
+
+      for (const [key, moduleVarsOnly] of moduleVarsByKey.entries()) {
+        if (!moduleVarsOnly.length) continue;
+
+        const module_name =
+          moduleNames.get(key) ??
+          (typeof key === "string" ? key : `<unknown ${Math.random()}>`);
+
+        let importInfo = null;
+        try {
+          importInfo = (await decompileImport(moduleVarsOnly)) ?? null;
+        } catch {
+          importInfo = null;
+        }
+
+        cells.set(moduleVarsOnly[0], {
+          type: "import",
+          lang: ["ojs"],
+          module_name,
+          importInfo
+        });
+
+        const groupName = `module ${module_name}`;
+        groups.set(groupName, [...moduleVarsOnly]);
+      }
+
+      const moduleName =
+        _moduleMap.get(variables[0]._module)?.name ?? "<unknown module>";
+      map.set(
+        m,
+        [...groups.entries()].map(([name, variables]) => {
+          const head =
+            typeof name === "string" && name.startsWith("mutable")
+              ? variables[1]
+              : variables[0];
+          return {
+            name,
+            module: moduleName,
+            ...(cells.get(head) ?? { type: "simple", lang: ["ojs"] }),
+            variables
+          };
+        })
+      );
     })
   );
+
   return map;
 }
 )}
 
-function _14(md){return(
+async function _test_cellmap_importInfo_on_real_import(cellMap,expect)
+{
+  const mapped = await cellMap();
+  const allCells = [...mapped.values()].flat();
+  const cell = allCells.find(
+    (c) => c?.type === "import" && typeof c?.module_name === "string"
+  );
+  expect(Boolean(cell)).toBe(true);
+
+  expect(cell.type).toBe("import");
+  expect(cell.importInfo != null).toBe(true);
+  expect(cell.importInfo.type).toBe("import");
+  expect((cell.importInfo.specifiers?.length ?? 0) >= 1).toBe(true);
+
+  const vars = cell.importInfo?.meta?.variables ?? [];
+  expect(Array.isArray(vars)).toBe(true);
+  expect(vars.length >= 1).toBe(true);
+
+  return cell.importInfo;
+}
+
+
+function _15(md){return(
 md`### \`cellMapCompat\`
 
 Migration helper from old cellMap`
@@ -402,7 +483,7 @@ async (module, { excludeInbuilt = true } = {}) => {
 }
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`## Visualizations`
 )}
 
@@ -481,7 +562,7 @@ function _nodes(clustered){return(
 clustered.descendants().map((n) => ({ name: n.data._name, ...n }))
 )}
 
-function _25(md){return(
+function _26(md){return(
 md`### visualize the cell ordering`
 )}
 
@@ -522,11 +603,11 @@ function _cellMapModule(thisModule){return(
 thisModule()
 )}
 
-function _37(md){return(
+function _38(md){return(
 md`## testing`
 )}
 
-function _38(tests){return(
+function _39(tests){return(
 tests({
   filter: (t) =>
     t.name.includes("@tomlarkworthy/cell-map") || t.name.includes("main")
@@ -541,11 +622,11 @@ function _moduleLookup(modules){return(
 new Map([...modules.values()].map((info) => [info.name, info]))
 )}
 
-function _41(md){return(
+function _42(md){return(
 md`low-level variables in this module`
 )}
 
-function _42(Inputs,runtime_variables,cellMapModule,toObject,modules){return(
+function _43(Inputs,runtime_variables,cellMapModule,toObject,modules){return(
 Inputs.table(
   [...runtime_variables]
     .filter((v) => v._module == cellMapModule)
@@ -634,7 +715,7 @@ async function _test_cellmap_mutable(main_mutable,lookupVariable,cellMapModule,c
 }
 
 
-function _49(md){return(
+function _50(md){return(
 md`### Ntoebook 2.0 Compatability`
 )}
 
@@ -642,11 +723,91 @@ function _cellMapVizView($0){return(
 $0
 )}
 
-function _51(md){return(
+function _52(md){return(
 md`detailVizView = viewof detailViz`
 )}
 
-function _52(md){return(
+function _coverage_failures(runtime_variables,liveCellMap,modules)
+{
+  const byModule = new Map();
+  for (const v of runtime_variables) {
+    const m = v._module;
+    let arr = byModule.get(m);
+    if (!arr) byModule.set(m, (arr = []));
+    arr.push(v);
+  }
+
+  const isDynamic = (v) =>
+    typeof v?._name === "string" && v._name.startsWith("dynamic");
+
+  const failures = [];
+  for (const [m, vars] of byModule.entries()) {
+    const cells = liveCellMap.get(m) || [];
+    const covered = new Set(cells.flatMap((c) => c.variables || []));
+    const missing = vars.filter(
+      (v) => v._type == 1 && !isDynamic(v) && !covered.has(v)
+    );
+    if (missing.length) {
+      const moduleName = modules?.get(m)?.name ?? "<unknown module>";
+      failures.push({
+        module: moduleName,
+        missing: missing.map((v, i) => v._name ?? `<anonymous ${i}>`)
+      });
+    }
+  }
+  return failures;
+}
+
+
+function _test_cell_map_covers_all_runtime_variables(coverage_failures)
+{
+  if (coverage_failures.length) {
+    debugger;
+    throw JSON.stringify(coverage_failures);
+  }
+  return "pass";
+}
+
+
+function _test_cell_map_no_variable_in_more_than_one_cell(runtime_variables,liveCellMap,modules)
+{
+  runtime_variables;
+
+  const where = new Map(); // variable -> Set(cellId)
+  const add = (v, cellId) => {
+    let s = where.get(v);
+    if (!s) where.set(v, (s = new Set()));
+    s.add(cellId);
+  };
+
+  for (const [m, cells] of liveCellMap.entries()) {
+    const moduleName = modules?.get(m)?.name ?? "<unknown module>";
+    for (const c of cells ?? []) {
+      const cellId = `${moduleName}#${String(c?.name ?? "<unknown cell>")}`;
+      const vars = c?.variables ?? [];
+      const uniq = new Set(vars);
+      for (const v of uniq) add(v, cellId);
+    }
+  }
+
+  const failures = [];
+  for (const [v, cellIds] of where.entries()) {
+    if (cellIds.size > 1) {
+      const vModuleName = modules?.get(v?._module)?.name ?? "<unknown module>";
+      failures.push({
+        variable_module: vModuleName,
+        variable_name: v?._name ?? "<anonymous>",
+        cells: [...cellIds]
+      });
+    }
+  }
+
+  if (failures.length) throw JSON.stringify(failures);
+  return "pass";
+}
+
+
+function _56(md){return(
 md`### Utilities`
 )}
 
@@ -727,6 +888,55 @@ function _findModuleName(){return(
 }
 )}
 
+function _extractObservableNotebookNameFromSpecifier(){return(
+(specifier) => {
+  if (specifier == null) return null;
+  const s = String(specifier);
+  try {
+    const u = new URL(s, "https://api.observablehq.com/");
+    const p = u.pathname;
+    let m = p.match(/\/(@[^/]+\/[^/]+)\.js$/);
+    if (m) return m[1];
+    m = p.match(/\/(d\/[0-9a-f]+@\d+)\.js$/);
+    if (m) return m[1];
+    m = p.match(/\/(d\/[0-9a-f]+)\.js$/);
+    if (m) return m[1];
+    return null;
+  } catch {
+    return null;
+  }
+}
+)}
+
+function _moduleVarInfo(extractObservableNotebookNameFromSpecifier){return(
+async (v, moduleMapLike) => {
+  const mod = v?._value ?? null;
+  const nameFromMap =
+    mod && moduleMapLike?.get?.(mod)?.name ? moduleMapLike.get(mod).name : null;
+
+  const def = v?._definition;
+  const defSrc = typeof def?.toString === "function" ? def.toString() : "";
+  const m = defSrc.match(/\bimport\(\s*(['"])(.*?)\1\s*\)/);
+  const specifier = m?.[2] ?? null;
+  const nameFromSpecifier =
+    extractObservableNotebookNameFromSpecifier(specifier);
+
+  return {
+    module: mod,
+    name: nameFromMap ?? nameFromSpecifier ?? null,
+    specifier
+  };
+}
+)}
+
+function _65(robocoop3){return(
+robocoop3()
+)}
+
+function _66(robocoop2){return(
+robocoop2()
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -746,10 +956,11 @@ export default function define(runtime, observer) {
   main.variable(observer("liveCellMap")).define("liveCellMap", ["Generators", "viewof liveCellMap"], (G, _) => G.input(_));
   main.variable(observer("maintain_live_cell_map")).define("maintain_live_cell_map", ["runtime_variables","viewof liveCellMap","cellMap","Event"], _maintain_live_cell_map);
   main.variable(observer("usage")).define("usage", ["md"], _usage);
-  main.variable(observer("cellMap")).define("cellMap", ["runtime","moduleMap","importedModule","findModuleName"], _cellMap);
-  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("cellMap")).define("cellMap", ["runtime","moduleMap","moduleVarInfo","importedModule","findModuleName","decompileImport"], _cellMap);
+  main.variable(observer("test_cellmap_importInfo_on_real_import")).define("test_cellmap_importInfo_on_real_import", ["cellMap","expect"], _test_cellmap_importInfo_on_real_import);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer("cellMapCompat")).define("cellMapCompat", ["cellMap"], _cellMapCompat);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("nodeToSymbol")).define("nodeToSymbol", ["variableToCell"], _nodeToSymbol);
   main.variable(observer("focus_variables")).define("focus_variables", ["cellMapViz","descendants","ascendants"], _focus_variables);
   main.variable(observer("focus_cells")).define("focus_cells", ["focus_variables","variableToCell"], _focus_cells);
@@ -758,7 +969,7 @@ export default function define(runtime, observer) {
   main.variable(observer("layout")).define("layout", ["d3","descendents"], _layout);
   main.variable(observer("clustered")).define("clustered", ["dedupeHierarchy","layout"], _clustered);
   main.variable(observer("nodes")).define("nodes", ["clustered"], _nodes);
-  main.variable(observer()).define(["md"], _25);
+  main.variable(observer()).define(["md"], _26);
   main.variable(observer("runtimeMap")).define("runtimeMap", ["runtime_variables","liveCellMap"], _runtimeMap);
   main.variable(observer("variableToCell")).define("variableToCell", ["runtimeMap"], _variableToCell);
   main.variable(observer("filteredMap")).define("filteredMap", ["runtimeMap","filter"], _filteredMap);
@@ -785,12 +996,12 @@ export default function define(runtime, observer) {
   main.variable(observer("cellMapModule")).define("cellMapModule", ["Generators", "viewof cellMapModule"], (G, _) => G.input(_));
   const child5 = runtime.module(define5);
   main.import("tests", child5);
-  main.variable(observer()).define(["md"], _37);
-  main.variable(observer()).define(["tests"], _38);
+  main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["tests"], _39);
   main.variable(observer("modules")).define("modules", ["moduleMap","runtime"], _modules);
   main.variable(observer("moduleLookup")).define("moduleLookup", ["modules"], _moduleLookup);
-  main.variable(observer()).define(["md"], _41);
-  main.variable(observer()).define(["Inputs","runtime_variables","cellMapModule","toObject","modules"], _42);
+  main.variable(observer()).define(["md"], _42);
+  main.variable(observer()).define(["Inputs","runtime_variables","cellMapModule","toObject","modules"], _43);
   main.variable(observer("unreached_main_import")).define("unreached_main_import", ["toObject","lookupVariable","cellMapModule"], _unreached_main_import);
   main.variable(observer("reached_main_import")).define("reached_main_import", ["runtime","lookupVariable","cellMapModule"], _reached_main_import);
   main.define("initial main_mutable", _main_mutable);
@@ -799,13 +1010,26 @@ export default function define(runtime, observer) {
   main.variable(observer("test_importedModule")).define("test_importedModule", ["expect","modules","importedModule","reached_main_import","unreached_main_import"], _test_importedModule);
   main.variable(observer("test_findModuleName")).define("test_findModuleName", ["expect","findModuleName","importedModule","reached_main_import","modules","unreached_main_import"], _test_findModuleName);
   main.variable(observer("test_cellmap_mutable")).define("test_cellmap_mutable", ["main_mutable","lookupVariable","cellMapModule","cellMap","modules","expect"], _test_cellmap_mutable);
-  main.variable(observer()).define(["md"], _49);
+  main.variable(observer()).define(["md"], _50);
   main.variable(observer("cellMapVizView")).define("cellMapVizView", ["viewof cellMapViz"], _cellMapVizView);
-  main.variable(observer()).define(["md"], _51);
   main.variable(observer()).define(["md"], _52);
+  main.variable(observer("coverage_failures")).define("coverage_failures", ["runtime_variables","liveCellMap","modules"], _coverage_failures);
+  main.variable(observer("test_cell_map_covers_all_runtime_variables")).define("test_cell_map_covers_all_runtime_variables", ["coverage_failures"], _test_cell_map_covers_all_runtime_variables);
+  main.variable(observer("test_cell_map_no_variable_in_more_than_one_cell")).define("test_cell_map_no_variable_in_more_than_one_cell", ["runtime_variables","liveCellMap","modules"], _test_cell_map_no_variable_in_more_than_one_cell);
+  main.variable(observer()).define(["md"], _56);
   main.variable(observer("importedModule")).define("importedModule", _importedModule);
   main.variable(observer("findModuleName")).define("findModuleName", _findModuleName);
+  main.variable(observer("extractObservableNotebookNameFromSpecifier")).define("extractObservableNotebookNameFromSpecifier", _extractObservableNotebookNameFromSpecifier);
+  main.variable(observer("moduleVarInfo")).define("moduleVarInfo", ["extractObservableNotebookNameFromSpecifier"], _moduleVarInfo);
   const child6 = runtime.module(define6);
   main.import("hash", child6);
+  const child7 = runtime.module(define7);
+  main.import("decompileImport", child7);
+  const child8 = runtime.module(define8);
+  main.import("robocoop3", child8);
+  const child9 = runtime.module(define9);
+  main.import("robocoop2", child9);
+  main.variable(observer()).define(["robocoop3"], _65);
+  main.variable(observer()).define(["robocoop2"], _66);
   return main;
 }
