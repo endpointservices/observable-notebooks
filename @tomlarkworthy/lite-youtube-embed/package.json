@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lite-youtube-embed",
+  "main": "8381f40adb144e29@52.js",
+  "version": "52.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lite-youtube-embed",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
