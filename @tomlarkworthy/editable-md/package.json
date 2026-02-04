@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/editable-md",
+  "main": "010725e8849f52d0@816.js",
+  "version": "816.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/editable-md",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
