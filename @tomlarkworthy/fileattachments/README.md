@@ -1,6 +1,6 @@
-# Local FileAttachments
+# Writable FileAttachments
 
-https://observablehq.com/@tomlarkworthy/fileattachments@436
+https://observablehq.com/@tomlarkworthy/fileattachments@446
 
 View this notebook in your browser by running a web server in this folder. For
 example:
