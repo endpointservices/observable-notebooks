@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/atlas",
+  "main": "cbec9ad21e321fad@414.js",
+  "version": "414.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/atlas",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
