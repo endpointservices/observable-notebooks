@@ -1,6 +1,6 @@
 # Lopepage
 
-https://observablehq.com/@tomlarkworthy/lopepage@2961
+https://observablehq.com/@tomlarkworthy/lopepage@3027
 
 View this notebook in your browser by running a web server in this folder. For
 example:
