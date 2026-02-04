@@ -1,4 +1,4 @@
-import define1 from "./048a17a165be198d@271.js";
+import define1 from "./048a17a165be198d@273.js";
 import define2 from "./293899bef371e135@290.js";
 
 function _1(md){return(
@@ -53,7 +53,8 @@ Inputs.select(
     "gpt-4-turbo-2024-04-09",
     "gpt-4-turbo-preview",
     "gpt-4-vision-preview",
-    "gpt-4o"
+    "gpt-4o",
+    "gpt-5-mini"
   ].sort(),
   {
     label: "model"
@@ -63,8 +64,8 @@ Inputs.select(
 
 function _settings(){return(
 {
-  temperature: 0.7,
-  max_tokens: 500,
+  temperature: 1,
+  max_completion_tokens: 500,
   top_p: 1,
   frequency_penalty: 0,
   presence_penalty: 0
