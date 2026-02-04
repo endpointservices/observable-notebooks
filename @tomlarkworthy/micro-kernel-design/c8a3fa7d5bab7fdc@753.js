@@ -1,7 +1,7 @@
 import define1 from "./5c408e8ef210709e@472.js";
-import define2 from "./98f34e974bb2e4bc@650.js";
-import define3 from "./0b75dbddd18995dc@1761.js";
-import define4 from "./e3a019069a130d79@6074.js";
+import define2 from "./98f34e974bb2e4bc@958.js";
+import define3 from "./0b75dbddd18995dc@1765.js";
+import define4 from "./e3a019069a130d79@6817.js";
 
 function _1(md){return(
 md`# The μ-kernel architecture for extensible live and mallable programming substrates`
@@ -264,13 +264,13 @@ function _value(Inputs){return(
 Inputs.range()
 )}
 
-function _34($0,htl,observe,lookupVariable,module,invalidation)
+async function _34($0,htl,observe,lookupVariable,module,invalidation)
 {
   $0; // ensure this cell executes after the variable is setup
   const ui = htl.html`<div>`;
   // meta-programming
   observe(
-    lookupVariable("value", module),
+    await lookupVariable("value", module),
     {
       fulfilled: (val) => (ui.innerHTML = `the value is ${val}`)
     },
@@ -374,7 +374,16 @@ md`### References
 - FLOSS move, targetted intervension to make something usable, postmodern
 
 - https://en.wikipedia.org/wiki/Linda_(coordination_language)
-- Coordination Language`
+- Coordination Language
+
+The Philosophy of Copy and Paste
+
+https://alarmingdevelopment.org/?p=1653
+
+
+Variolite: Supporting Exploratory Programming by Data Scientists
+https://dl.acm.org/doi/10.1145/3025453.3025626
+`
 )}
 
 function _49(md){return(

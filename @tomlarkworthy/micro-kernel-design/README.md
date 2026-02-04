@@ -1,6 +1,6 @@
 # The μ-kernel architecture for extensible live and mallable programming substrates
 
-https://observablehq.com/@tomlarkworthy/micro-kernel-design@751
+https://observablehq.com/@tomlarkworthy/micro-kernel-design@753
 
 View this notebook in your browser by running a web server in this folder. For
 example:
