@@ -1,6 +1,6 @@
 # Simple ChatGPT/Claude Prompt
 
-https://observablehq.com/@tomlarkworthy/simple-prompt@809
+https://observablehq.com/@tomlarkworthy/simple-prompt@815
 
 View this notebook in your browser by running a web server in this folder. For
 example:

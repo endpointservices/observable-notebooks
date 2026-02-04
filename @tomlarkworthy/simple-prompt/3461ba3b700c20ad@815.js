@@ -1,4 +1,4 @@
-import define1 from "./048a17a165be198d@271.js";
+import define1 from "./048a17a165be198d@273.js";
 import define2 from "./293899bef371e135@290.js";
 
 function _1(md){return(
@@ -59,7 +59,9 @@ Inputs.bind(
       "claude-3-opus-20240229",
       "claude-3-sonnet-20240229",
       "claude-3-haiku-20240307",
-      "dall-e-3"
+      "dall-e-3",
+      "gpt-5",
+      "gpt-5-mini"
     ].sort(),
     {
       label: "model"
@@ -70,9 +72,9 @@ Inputs.bind(
 )}
 
 function _max_tokens(Inputs){return(
-Inputs.range([0, 4096], {
+Inputs.range([0, 20000], {
   label: "max_tokens",
-  value: 4096
+  value: 20000
 })
 )}
 
@@ -106,7 +108,7 @@ function _modelConfig(max_tokens,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
       api: "https://api.anthropic.com/v1/messages",
       roles: ["user", "assistant"],
       settings: {
-        temperature: 0.7,
+        temperature: 1,
         max_tokens,
         top_p: 1
       },
@@ -135,8 +137,10 @@ function _modelConfig(max_tokens,ANTHROPIC_API_KEY,OPENAI_API_KEY){return(
       type: "chat",
       roles: ["user", "system", "assistant"],
       settings: {
-        temperature: 0.7,
-        max_tokens,
+        temperature: 1,
+        ...(model.startsWith("gpt-5")
+          ? { max_completion_tokens: max_tokens }
+          : { max_tokens: max_tokens }),
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0
