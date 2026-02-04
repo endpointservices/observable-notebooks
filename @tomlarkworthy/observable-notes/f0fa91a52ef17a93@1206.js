@@ -1,7 +1,7 @@
 import define1 from "./e1c39d41e8e944b0@939.js";
-import define2 from "./e3a019069a130d79@6074.js";
-import define3 from "./03dda470c56b93ff@8246.js";
-import define4 from "./98f34e974bb2e4bc@650.js";
+import define2 from "./e3a019069a130d79@6817.js";
+import define3 from "./03dda470c56b93ff@8395.js";
+import define4 from "./98f34e974bb2e4bc@958.js";
 
 function _title_cell(md){return(
 md`# How the Observable Runtime works
@@ -281,6 +281,7 @@ Inputs.button("n-multi trigger DAG", {
     $0.value = 0;
     $1.value = 0;
     for (let i = 0; i < n; i++) {
+      debugger;
       $0.dispatchEvent(new Event("input"));
       $1.dispatchEvent(new Event("input"));
     }
@@ -633,6 +634,28 @@ main._scope.get("title_cell")._observer._node.innerHTML
 )}
 
 function _104(md){return(
+md`## Views
+
+\`viewof\` macro expands to two variables. The 1st is a EventSource (typically a HTML element), this is the UI control, and the events it emits are the "data". The 2nd variable source is a \`Generators.input(<viewof value>)\` which registers to the event source and pipes the data as the value to the reactive variable.
+
+You don't really *need* views. You can create the equivalent manually:-`
+)}
+
+function _control(html){return(
+html`<select><option>1</option><option>2</option>`
+)}
+
+function _data(Generators,control){return(
+Generators.input(control)
+)}
+
+function _107(md){return(
+md`A viewof is a shorthand for that 👆
+
+The Generators functionality is part of the stdlib:- https://github.com/observablehq/stdlib/tree/main/src/generators`
+)}
+
+function _108(md){return(
 md`## File Attachments
 
 FileAttachments are stored in a Map. The key is the name, the value is either 
@@ -642,7 +665,7 @@ FileAttachments are stored in a Map. The key is the name, the value is either
 A FileAttachment builtin is registered with a module with \`runtime.fileAttachments\`, this wraps the Map.`
 )}
 
-function _105(md){return(
+function _109(md){return(
 md`## URLs
 
 Observablehq.com extensively uses native web features like links.
@@ -659,11 +682,11 @@ Its worth keeping in mind several links might resolve to the same notebook. If t
 `
 )}
 
-function _106(md){return(
+function _110(md){return(
 md`---`
 )}
 
-function _107(exporter){return(
+function _111(exporter){return(
 exporter()
 )}
 
@@ -803,9 +826,13 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _102);
   main.variable(observer()).define(["main"], _103);
   main.variable(observer()).define(["md"], _104);
-  main.variable(observer()).define(["md"], _105);
-  main.variable(observer()).define(["md"], _106);
-  main.variable(observer()).define(["exporter"], _107);
+  main.variable(observer("control")).define("control", ["html"], _control);
+  main.variable(observer("data")).define("data", ["Generators","control"], _data);
+  main.variable(observer()).define(["md"], _107);
+  main.variable(observer()).define(["md"], _108);
+  main.variable(observer()).define(["md"], _109);
+  main.variable(observer()).define(["md"], _110);
+  main.variable(observer()).define(["exporter"], _111);
   main.variable(observer("toMap")).define("toMap", _toMap);
   main.variable(observer("toObject")).define("toObject", _toObject);
   const child3 = runtime.module(define3);

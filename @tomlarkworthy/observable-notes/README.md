@@ -1,6 +1,6 @@
 # How the Observable Runtime works
 
-https://observablehq.com/@tomlarkworthy/observable-notes@1186
+https://observablehq.com/@tomlarkworthy/observable-notes@1206
 
 View this notebook in your browser by running a web server in this folder. For
 example:
