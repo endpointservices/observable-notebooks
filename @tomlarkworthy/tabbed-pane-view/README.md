@@ -1,6 +1,6 @@
 # Tabbed Pane View
 
-https://observablehq.com/@tomlarkworthy/tabbed-pane-view@2357
+https://observablehq.com/@tomlarkworthy/tabbed-pane-view@2376
 
 View this notebook in your browser by running a web server in this folder. For
 example:
