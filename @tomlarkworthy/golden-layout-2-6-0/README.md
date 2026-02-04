@@ -1,6 +1,6 @@
 # golden-layout@2.6.0
 
-https://observablehq.com/@tomlarkworthy/golden-layout-2-6-0@83
+https://observablehq.com/@tomlarkworthy/golden-layout-2-6-0@86
 
 View this notebook in your browser by running a web server in this folder. For
 example:

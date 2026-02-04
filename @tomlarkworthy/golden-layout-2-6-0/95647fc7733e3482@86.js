@@ -362,8 +362,8 @@ htl.html`<style>
 .lm_header .lm_tab {
   font-family: Arial, sans-serif;
   font-size: 12px;
-  color: #888888;
-  background: #fafafa;
+  color: var(--theme-foreground);
+  background: var(--theme-background-alt);
   margin-right: 2px;
   padding-bottom: 4px;
   border: 1px solid #cccccc;
@@ -402,12 +402,12 @@ htl.html`<style>
   box-shadow: 2px 2px 2px -2px rgba(0, 0, 0, 0.2);
 }
 .lm_selected .lm_header {
-  background-color: #452500;
+  background: var(--theme-background);
 }
 .lm_tab:hover,
 .lm_tab.lm_active {
-  background: #e1e1e1;
-  color: #777777;
+  color: var(--theme-foreground-focus);
+  background: var(--theme-background);
 }
 .lm_header .lm_controls .lm_tabdropdown:before {
   color: #000000;
@@ -432,13 +432,13 @@ htl.html`<style>
   background-image: url(${lm_close_black});
 }
 .lm_maximised .lm_header {
-  background-color: #ffffff;
+  background-color: var(--theme-background);
 }
 .lm_maximised .lm_controls .lm_maximise {
   background-image: url(${lm_minimize_black.png});
 }
 .lm_transition_indicator {
-  background-color: #000000;
+  background-color: var(--theme-background);
   border: 1px dashed #555555;
 }
 .lm_popin {
