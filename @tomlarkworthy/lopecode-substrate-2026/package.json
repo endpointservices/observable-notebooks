@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/lopecode-substrate-2026",
+  "main": "aec6a9b84ae17c82@64.js",
+  "version": "64.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/lopecode-substrate-2026",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
