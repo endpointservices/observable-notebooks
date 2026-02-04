@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/modern-screenshot",
+  "main": "e3659730ba3df002@40.js",
+  "version": "40.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/modern-screenshot",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
