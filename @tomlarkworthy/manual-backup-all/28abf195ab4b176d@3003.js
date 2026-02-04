@@ -1,5 +1,5 @@
 import define1 from "./ef672b935bd480fc@623.js";
-import define2 from "./03dda470c56b93ff@8385.js";
+import define2 from "./03dda470c56b93ff@8395.js";
 import define3 from "./1d309dbd9697e042@705.js";
 
 function _1(md){return(
@@ -141,12 +141,99 @@ const notebooks = new Set();
 and the "copy value" the notebook variable`
 )}
 
-function _13(){return(
-new Set()
-)}
-
 function _manual_notebooks(){return(
 new Set([
+  "https://observablehq.com/@tomlarkworthy/manual-backup-all",
+  "https://observablehq.com/@tomlarkworthy/tiny-notebook",
+  "https://observablehq.com/@tomlarkworthy/jumpgate",
+  "https://observablehq.com/@tomlarkworthy/exporter-2",
+  "https://observablehq.com/d/3a51f9bfe59fc076",
+  "https://observablehq.com/@tomlarkworthy/my-lopebooks",
+  "https://observablehq.com/@tomlarkworthy/exporter",
+  "https://observablehq.com/@tomlarkworthy/lopecode-substrate-2026",
+  "https://observablehq.com/@tomlarkworthy/lopecode-tour",
+  "https://observablehq.com/@tomlarkworthy/editor-5",
+  "https://observablehq.com/d/6fa113121904872d",
+  "https://observablehq.com/@tomlarkworthy/robocoop-3",
+  "https://observablehq.com/@tomlarkworthy/lopecode-vision",
+  "https://observablehq.com/@tomlarkworthy/micro-kernel-design",
+  "https://observablehq.com/@tomlarkworthy/module-map",
+  "https://observablehq.com/@tomlarkworthy/bootloader",
+  "https://observablehq.com/@tomlarkworthy/visualizer",
+  "https://observablehq.com/d/b56836af972c2269",
+  "https://observablehq.com/@tomlarkworthy/cell-map",
+  "https://observablehq.com/@tomlarkworthy/observablejs-toolchain",
+  "https://observablehq.com/@tomlarkworthy/robocoop-2",
+  "https://observablehq.com/@tomlarkworthy/jest-expect-standalone",
+  "https://observablehq.com/@tomlarkworthy/robocoop",
+  "https://observablehq.com/@tomlarkworthy/tester",
+  "https://observablehq.com/@tomlarkworthy/runtime-sdk",
+  "https://observablehq.com/@tomlarkworthy/lopepage",
+  "https://observablehq.com/@tomlarkworthy/module-selection",
+  "https://observablehq.com/@tomlarkworthy/view",
+  "https://observablehq.com/@tomlarkworthy/escodegen",
+  "https://observablehq.com/@tomlarkworthy/moltbook",
+  "https://observablehq.com/@tomlarkworthy?tab=recents",
+  "https://observablehq.com/@tomlarkworthy/minecraft-servers-be",
+  "https://observablehq.com/d/8ba1ce5daa61cc5b",
+  "https://observablehq.com/d/5708a390bbc55a9b",
+  "https://observablehq.com/d/1dc97de1c43bc493",
+  "https://observablehq.com/@tomlarkworthy/csv-column-chooser",
+  "https://observablehq.com/@tomlarkworthy/dataflow-templating",
+  "https://observablehq.com/@tomlarkworthy/forking-agent",
+  "https://observablehq.com/@tomlarkworthy/agentic-planner",
+  "https://observablehq.com/@tomlarkworthy/modern-screenshot",
+  "https://observablehq.com/@tomlarkworthy/local-storage-view",
+  "https://observablehq.com/@tomlarkworthy/local-state",
+  "https://observablehq.com/@tomlarkworthy/reversible-attachment",
+  "https://observablehq.com/d/9c57a944d864b69f",
+  "https://observablehq.com/@tomlarkworthy/atlas",
+  "https://observablehq.com/@tomlarkworthy/summarizejs",
+  "https://observablehq.com/@tomlarkworthy/spectral-layout",
+  "https://observablehq.com/d/aab2684a3fca560c",
+  "https://observablehq.com/d/f4a50786b4c2c24b",
+  "https://observablehq.com/d/50857b98f55745c3",
+  "https://observablehq.com/@tomlarkworthy/change-history",
+  "https://observablehq.com/d/1576b93c61531a19",
+  "https://observablehq.com/@tomlarkworthy/codemirror-6",
+  "https://observablehq.com/@tomlarkworthy/community-help",
+  "https://observablehq.com/@tomlarkworthy/cells-to-clipboard",
+  "https://observablehq.com/d/16261f0485b10b07",
+  "https://observablehq.com/d/9a5d3e1fbcf9a987",
+  "https://observablehq.com/d/390b21f34f0c2882",
+  "https://observablehq.com/d/0d712d32819eee4c",
+  "https://observablehq.com/d/5479500f47317e52",
+  "https://observablehq.com/@tomlarkworthy/import-notebook",
+  "https://observablehq.com/@tomlarkworthy/unaggregating-cloudwatch-metrics",
+  "https://observablehq.com/@tomlarkworthy/context-menu",
+  "https://observablehq.com/@tomlarkworthy/editable-md",
+  "https://observablehq.com/@tomlarkworthy/golden-layout-2-6-0",
+  "https://observablehq.com/d/3ffe2033b861c06d",
+  "https://observablehq.com/d/0fe2010ae356e6a0",
+  "https://observablehq.com/@tomlarkworthy/lopepage-urls",
+  "https://observablehq.com/d/c5e2bf64adecdf46",
+  "https://observablehq.com/d/e2a1c3587fee7aa9",
+  "https://observablehq.com/d/728ea253b00abcda",
+  "https://observablehq.com/@tomlarkworthy/observable-notes",
+  "https://observablehq.com/@tomlarkworthy/whisper-input",
+  "https://observablehq.com/@tomlarkworthy/highlight",
+  "https://observablehq.com/@tomlarkworthy/lightning-fs-4-6-0",
+  "https://observablehq.com/d/de70dc2d050f5418",
+  "https://observablehq.com/@tomlarkworthy/generator-bug",
+  "https://observablehq.com/@tomlarkworthy/memo",
+  "https://observablehq.com/@tomlarkworthy/manipulate",
+  "https://observablehq.com/@tomlarkworthy/notes",
+  "https://observablehq.com/@tomlarkworthy/copy-code",
+  "https://observablehq.com/@tomlarkworthy/serialize-javascript-7-0-2",
+  "https://observablehq.com/@tomlarkworthy/openai-responses-api",
+  "https://observablehq.com/@tomlarkworthy/editor-4",
+  "https://observablehq.com/@tomlarkworthy/fileattachments",
+  "https://observablehq.com/@tomlarkworthy/matrix-background",
+  "https://observablehq.com/@tomlarkworthy/ink",
+  "https://observablehq.com/@tomlarkworthy/lopecode-webpage-template",
+  "https://observablehq.com/@tomlarkworthy/moldable-webpage",
+  "https://observablehq.com/@tomlarkworthy/moldable-index",
+  "https://observablehq.com/@tomlarkworthy/inspector",
   "https://observablehq.com/@tomlarkworthy/notebook-semantics",
   "https://observablehq.com/@tomlarkworthy/fast-1d-circular-barcode-matching",
   "https://observablehq.com/@tomlarkworthy/manual-backup-all",
@@ -777,7 +864,7 @@ function _backup_slice(manual_notebooks,manualStartAt)
 }
 
 
-function _17(Inputs,backupAllNotebooks,backup_slice){return(
+function _16(Inputs,backupAllNotebooks,backup_slice){return(
 Inputs.button("backup manual notebook list", {
   reduce: () =>
     backupAllNotebooks(
@@ -788,19 +875,19 @@ Inputs.button("backup manual notebook list", {
 })
 )}
 
-function _18(md){return(
+function _17(md){return(
 md`---`
 )}
 
-function _19(md){return(
+function _18(md){return(
 md`### Backup to [tomlarkworthy.moldable.app](https://tomlarkworthy.moldable.app)`
 )}
 
-function _20($0){return(
+function _19($0){return(
 $0.s3.querySelector("button").click()
 )}
 
-function _21($0){return(
+function _20($0){return(
 $0.handler
 )}
 
@@ -808,7 +895,7 @@ function _moldable_exporter(exporter){return(
 exporter()
 )}
 
-function _25(backupNowButton){return(
+function _24(backupNowButton){return(
 backupNowButton()
 )}
 
@@ -827,23 +914,22 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _10);
   main.variable(observer()).define(["md"], _11);
   main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(_13);
   main.variable(observer("manual_notebooks")).define("manual_notebooks", _manual_notebooks);
   main.variable(observer("viewof manualStartAt")).define("viewof manualStartAt", ["Inputs"], _manualStartAt);
   main.variable(observer("manualStartAt")).define("manualStartAt", ["Generators", "viewof manualStartAt"], (G, _) => G.input(_));
   main.variable(observer("backup_slice")).define("backup_slice", ["manual_notebooks","manualStartAt"], _backup_slice);
-  main.variable(observer()).define(["Inputs","backupAllNotebooks","backup_slice"], _17);
+  main.variable(observer()).define(["Inputs","backupAllNotebooks","backup_slice"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer()).define(["md"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["viewof moldable_exporter"], _19);
   main.variable(observer()).define(["viewof moldable_exporter"], _20);
-  main.variable(observer()).define(["viewof moldable_exporter"], _21);
   main.variable(observer("viewof moldable_exporter")).define("viewof moldable_exporter", ["exporter"], _moldable_exporter);
   main.variable(observer("moldable_exporter")).define("moldable_exporter", ["Generators", "viewof moldable_exporter"], (G, _) => G.input(_));
   const child1 = runtime.module(define1);
   main.import("fetchp", child1);
   const child2 = runtime.module(define2);
   main.import("exporter", child2);
-  main.variable(observer()).define(["backupNowButton"], _25);
+  main.variable(observer()).define(["backupNowButton"], _24);
   const child3 = runtime.module(define3);
   main.import("enableGithubBackups", child3);
   main.import("backupNowButton", child3);
