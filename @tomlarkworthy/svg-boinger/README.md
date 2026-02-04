@@ -1,6 +1,6 @@
 # SVG Boinger
 
-https://observablehq.com/@tomlarkworthy/svg-boinger@815
+https://observablehq.com/@tomlarkworthy/svg-boinger@821
 
 View this notebook in your browser by running a web server in this folder. For
 example:

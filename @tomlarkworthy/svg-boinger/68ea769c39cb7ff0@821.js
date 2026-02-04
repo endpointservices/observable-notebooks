@@ -30,8 +30,11 @@ function _timeseries(svg,range,colors){return(
         stroke-width:0.001;
       }
     </style>
-    ${range(18, 0, -0.2).map((w, i) => 
-      svg`<g transform = "rotate(${w*360 - (0.1* frame * 360) % 360} 0 0) scale(${w + (frame * 10 % 1)})">
+    ${range(18, 0, -0.2).map(
+      (w, i) =>
+        svg`<g transform = "rotate(${
+          w * 360 - ((0.1 * frame * 360) % 360)
+        } 0 0) scale(${w + ((frame * 10) % 1)})">
             <rect x = "-0.1"
                   y = "-0.1"
                   height = "0.2"
@@ -42,18 +45,26 @@ function _timeseries(svg,range,colors){return(
 
       </g>`
     )}
-    ${range(-Math.PI, Math.PI, 2 * Math.PI / segments).map((theta, i) => 
-      svg`<circle cx="${Math.cos(theta) * 0.5 * (1 + Math.cos(1 + 2 * Math.PI * frame))}"
-                  cy="${Math.sin(theta) * 0.5 * (1 + Math.sin(1 * 2 * Math.PI * frame))}"
+    ${range(-Math.PI, Math.PI, (2 * Math.PI) / segments).map(
+      (theta, i) =>
+        svg`<circle cx="${
+          Math.cos(theta) * 0.5 * (1 + Math.cos(1 + 2 * Math.PI * frame))
+        }"
+                  cy="${
+                    Math.sin(theta) *
+                    0.5 *
+                    (1 + Math.sin(1 * 2 * Math.PI * frame))
+                  }"
                   r="${0.25 * (1 + Math.sin(frame * 2))}"  class="line"
-                  stroke="${colors[Math.floor((frame * segments * 1 + i) % segments)]}"/>`
-    )}</svg>`
+                  stroke="${
+                    colors[Math.floor((frame * segments * 1 + i) % segments)]
+                  }"/>`
+    )}</svg>`;
 }
 )}
 
 function _range()
 {
-  debugger;
   return (min, max, step) =>
     [...Array(Math.floor((max - min) / step)).keys()].map(
       (i) => min + i * step
