@@ -1,0 +1,14 @@
+{
+  "name": "9c57a944d864b69f",
+  "main": "9c57a944d864b69f@276.js",
+  "version": "276.0.0",
+  "homepage": "https://observablehq.com/d/9c57a944d864b69f",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
