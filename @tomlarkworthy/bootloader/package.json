@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/bootloader",
+  "main": "2e02d530f9499367@360.js",
+  "version": "360.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/bootloader",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
