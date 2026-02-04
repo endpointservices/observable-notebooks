@@ -317,12 +317,16 @@ async function runTools(response) {
     (
       await Promise.all(
         response.output.flatMap(async (call, index) => {
-          if (call.type !== "function_call") return [];
+          if (call.type !== "function_call" && call.type !== "custom_tool_call")
+            return [];
           const tool = response.tools.find((t) => t.name == call.name);
-          const result = await tool.execute(call.arguments);
+          const result = await tool.execute(call.arguments || call.input);
           return [
             {
-              type: "function_call_output",
+              type:
+                call.type == "function_call"
+                  ? "function_call_output"
+                  : "custom_tool_call_output",
               call_id: call.call_id,
               output:
                 (typeof result == "string" ? result : JSON.stringify(result)) ||
@@ -332,9 +336,14 @@ async function runTools(response) {
         })
       )
     ).flat();
+  const instructions = response.instructions;
   if (toolCalls?.length > 0) {
     // auto-follow up
     return await responses({
+      model: response.model,
+      instructions: await (typeof instructions == "function"
+        ? instructions()
+        : instructions),
       url: response.url,
       output: undefined,
       input: toolCalls,

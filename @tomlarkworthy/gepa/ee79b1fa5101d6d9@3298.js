@@ -1,14 +1,14 @@
 import define1 from "./57d79353bac56631@44.js";
-import define2 from "./a6a56ee61aba9799@406.js";
-import define3 from "./98f34e974bb2e4bc@699.js";
+import define2 from "./a6a56ee61aba9799@409.js";
+import define3 from "./98f34e974bb2e4bc@958.js";
 import define4 from "./e4cdd35ce867f8af@1001.js";
-import define5 from "./e3a019069a130d79@6742.js";
-import define6 from "./f92778131fd76559@1208.js";
+import define5 from "./e3a019069a130d79@6817.js";
+import define6 from "./f92778131fd76559@1212.js";
 import define7 from "./cdc303fcc82a630f@262.js";
-import define8 from "./03dda470c56b93ff@8385.js";
-import define9 from "./db42ae70222a8b08@1033.js";
+import define8 from "./10c7899865f8a76e@8998.js";
+import define9 from "./db42ae70222a8b08@1170.js";
 import define10 from "./0e0b35a92c819d94@474.js";
-import define11 from "./a89ea9f0ad8c6226@1403.js";
+import define11 from "./a89ea9f0ad8c6226@1486.js";
 
 function _title(md){return(
 md`# Editor: Reactive Userspace Cell Mutator (v4)
@@ -51,6 +51,7 @@ md`## Select Cell`
 
 function _selectVariable($0,modules,_,$1,Event){return(
 async function selectVariable(variable, dom = undefined) {
+  console.log("selectVariable", variable);
   let cell = undefined;
   if (variable) {
     const cells = $0.value.get(variable._module) || [];
@@ -106,6 +107,7 @@ Generators.observe((notify) => {
     ) {
       return;
     }
+
     if ($0.value?.variables[0] === variable) {
       //selectVariable(undefined);
       //notify(undefined);
@@ -157,13 +159,15 @@ function _context_menu(keepalive,editorModule,htl,$0,invalidation,isOnObservable
   const menu = htl.html`<div class="editor-menu" style="
       position: absolute;
       z-index: 999;
-      background: white;
+      background: var(--theme-background);
       border: 1px gray solid;
       padding: 0px 1rem;
       margin: 0px 1rem 0px;
       box-shadow: 1px 2px 2px gray;
     "
-    onclick=${(e) => e.stopPropagation()}>
+    onclick=${(e) => e.stopPropagation()}
+    onmousemove=${(e) => e.stopPropagation()}
+  >
       ${$0}
 </div>`;
   invalidation.then(() => menu.remove());
@@ -184,7 +188,7 @@ function _context_menu(keepalive,editorModule,htl,$0,invalidation,isOnObservable
       const left = tr.left - pr.left + p.scrollLeft;
 
       menu.style.position = "absolute";
-      menu.style.top = `${top}px`;
+      menu.style.top = `${top - 1}px`;
       menu.style.left = `${left}px`;
     }
     menu.style.left = `${rect.left - frame.left}px`;
@@ -364,7 +368,7 @@ Inputs.toggle({ label: "edit" })
 )}
 
 function _toolbar(view,reversibleAttach,combine,$0,$1,$2,$3,$4){return(
-view`<div style="display: flex;">
+view`<div style="display: flex;gap: 1px;">
     ${["up", reversibleAttach(combine, $0)]}
     ${["down", reversibleAttach(combine, $1)]}
     ${["remove_variables", reversibleAttach(combine, $2)]}

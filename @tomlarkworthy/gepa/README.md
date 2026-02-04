@@ -1,6 +1,6 @@
 # Trying out "GEPA: Reflective Prompt Evolution Can Outperform Reinforcement Learning"
 
-https://observablehq.com/@tomlarkworthy/gepa@783
+https://observablehq.com/@tomlarkworthy/gepa@784
 
 View this notebook in your browser by running a web server in this folder. For
 example:
