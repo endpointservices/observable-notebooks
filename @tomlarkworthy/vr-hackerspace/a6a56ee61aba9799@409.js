@@ -1,4 +1,4 @@
-import define1 from "./98f34e974bb2e4bc@699.js";
+import define1 from "./98f34e974bb2e4bc@958.js";
 import define2 from "./f096db8fcbc444bf@565.js";
 
 function _1(md){return(
@@ -343,8 +343,11 @@ function linkTo(
     ast.children.push({ nodeType: "module", weight: null, slug: module });
     const layout = convertToGoldenLayout(ast);
     normalizeWeights(layout);
-    baseHash.set("view", serializeGoldenDSL(layout));
-    base.hash = "#" + baseHash.toString();
+    baseHash.delete("view");
+    const viewString = serializeGoldenDSL(layout);
+    const priorParams = baseHash.toString();
+    base.hash =
+      "#" + priorParams + (priorParams ? "&" : "") + `view=${viewString}`;
     return base.toString();
   } catch (err) {
     console.error(err);
