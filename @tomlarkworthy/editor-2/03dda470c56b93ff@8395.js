@@ -1,15 +1,15 @@
-import define1 from "./09fdee029150048c@443.js";
+import define1 from "./09fdee029150048c@446.js";
 import define2 from "./57d79353bac56631@44.js";
 import define3 from "./0e0b35a92c819d94@474.js";
-import define4 from "./a89ea9f0ad8c6226@1403.js";
-import define5 from "./e3a019069a130d79@6742.js";
-import define6 from "./f92778131fd76559@1208.js";
+import define4 from "./a89ea9f0ad8c6226@1486.js";
+import define5 from "./e3a019069a130d79@6817.js";
+import define6 from "./f92778131fd76559@1212.js";
 import define7 from "./cdc303fcc82a630f@262.js";
 import define8 from "./048a17a165be198d@273.js";
 import define9 from "./54df2436d8585ee6@24.js";
 import define10 from "./56b204c6d7cdb801@35.js";
-import define11 from "./db42ae70222a8b08@1033.js";
-import define12 from "./98f34e974bb2e4bc@699.js";
+import define11 from "./db42ae70222a8b08@1170.js";
+import define12 from "./98f34e974bb2e4bc@958.js";
 import define13 from "./db80e603859226c1@23.js";
 
 function _1(md){return(
@@ -28,6 +28,10 @@ Serialize literate computational notebooks with their dependancies into single f
 `
 )}
 
+function _2(md){return(
+md`⚠️ A new version of exporter with vastly better themed CSS is available [here](https://observablehq.com/@tomlarkworthy/exporter-2)`
+)}
+
 function _parameters(Inputs,exporter,default_style,$0,Event,localStorageView){return(
 Inputs.bind(
   exporter({
@@ -44,7 +48,7 @@ Inputs.bind(
 )
 )}
 
-function _3(md){return(
+function _4(md){return(
 md`## Usage Guide
 
 You can use the UI here to export any Observable notebook to a single file. But that's not the coolest thing.
@@ -88,7 +92,7 @@ import {exportToHTML } from '@tomlarkworthy/exporter'
 \`\`\``
 )}
 
-function _4(md){return(
+function _5(md){return(
 md`## Lope Format Specification
 
 The HTML file is split into several \`<script>\` blocks that have different purposes.
@@ -134,7 +138,7 @@ The ordering and types of javascript are important. By putting notebook source u
 Two style sheets define the look, one is the [inspector css](https://github.com/observablehq/inspector/blob/main/src/style.css) and the other is one I made up as I don't think the original Observable stylesheet is open-source.`
 )}
 
-function _5(md){return(
+function _6(md){return(
 md`## Debugging
 
 To help understand the information flow, the bundling processes is implemented as reactive dataflow, so you can inspect the steps after you serialize. To help composability, that dataflow is encapsulated into a promise using [@tomlarkworthy/flow-queue](https://observablehq.com/@tomlarkworthy/flow-queue).
@@ -144,13 +148,13 @@ While helpful, the dataflow is not enough to debug problems! The Javascript \`de
 Furthermore, when debugging difficult cases I add additional \`debugger\` statements conditioned on the execution context. As Observable is executing Javascript, the browser's developer tool features like \`debugger\` and REPL are invaluable tools to track down bugs and gather more information at problem sites.`
 )}
 
-function _6(md){return(
+function _7(md){return(
 md`## Persisted Hash URL
 
 To help carry state across an export, the URL hash parameter is remembered and set automatically when opening the file. If you need to move large amount of data, use a [local FileAttachment](https://observablehq.com/@tomlarkworthy/fileattachments) instead.`
 )}
 
-function _7(md){return(
+function _8(md){return(
 md`### TODO
 - Bug: Every recursive cycle more imports cells are created
 - Improve: Set S3 URL in arg
@@ -929,19 +933,19 @@ document.querySelector("title")?.innerHTML ||
   new URL(document.baseURI).pathname.replace("/", "")
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`### Single File Notebook Generator Flow`
 )}
 
 function _TRACE_MODULE(){return(
-"@tomlarkworthy/lopecode-tour"
+"-"
 )}
 
 function _task(flowQueue){return(
 flowQueue({ timeout_ms: 10000 })
 )}
 
-function _22(task){return(
+function _23(task){return(
 task
 )}
 
@@ -1184,7 +1188,7 @@ async function _book(lopebook,task,module_specs)
 }
 
 
-function _37(Inputs,module_specs){return(
+function _38(Inputs,module_specs){return(
 Inputs.table(
   [
     ...module_specs.entries().map(([name, spec]) => ({
@@ -1214,7 +1218,7 @@ Inputs.table(
 )
 )}
 
-function _38(md){return(
+function _39(md){return(
 md`##### Generate a report on the sizes of components`
 )}
 
@@ -1257,7 +1261,7 @@ function _tomlarkworthy_exporter_task(book,report,futureExportedState,exporter_m
 }
 
 
-function _41(md){return(
+function _42(md){return(
 md`### Module Source Generator`
 )}
 
@@ -1532,7 +1536,7 @@ async (scope, name, variables, { extraModuleLookup } = {}) => {
 }
 )}
 
-function _50(md){return(
+function _51(md){return(
 md`## Assemble `
 )}
 
@@ -1667,7 +1671,7 @@ async function arrayBufferToBase64(buffer) {
 }
 )}
 
-function _56(md){return(
+function _57(md){return(
 md`### Bundled Deps`
 )}
 
@@ -1737,7 +1741,7 @@ function _fileAttachmentKeepAlive(FileAttachment)
 }
 
 
-function _61(md){return(
+function _62(md){return(
 md`### URL Hash Handling
 
 We use a FileAttachment to carry the hash state to an exported notebook, and it is restored on first page load`
@@ -1793,7 +1797,7 @@ async function save_exporter_state(state) {
 }
 )}
 
-function _67(md){return(
+function _68(md){return(
 md`### Global Output`
 )}
 
@@ -1801,7 +1805,7 @@ function _output(Inputs){return(
 Inputs.input(undefined)
 )}
 
-function _69(md){return(
+function _70(md){return(
 md`## Utils`
 )}
 
@@ -1839,18 +1843,19 @@ export default function define(runtime, observer) {
     ["disk-floppy-memory-svgrepo-com@2.svg", {url: new URL("./files/10aa6cd8431a9f6f37b802d743e52b63fee1435d20eefd8eb46bdb88844572231522c632f2a21e33d242d95292d54097dd4f0207828087a101e45f1e3bb5d049.svg", import.meta.url), mimeType: "image/svg+xml", toString}],
     ["lodash-4.17.21.min.js.gz", {url: new URL("./files/0a5ad0fdb81f6488ff02d6425b61c9051e55fddf43964b6835150ae1c1c51ec11e6bd085e71545759be99c8d4f0a2f2f0ed41db84a14a3ec5f3e99def2247993.gz", import.meta.url), mimeType: "application/gzip", toString}],
     ["highlight.js-2.0.0.min.js.gz", {url: new URL("./files/4d2241c76436d0407df3339a922f819bebb5477681a0e3b11e46007b65b76adda67807209d9ba414d6826f73df7d108542f45b5f186998c61b82dd7614202c2e.gz", import.meta.url), mimeType: "application/gzip", toString}],
-    ["plot.umd.min.js.gz", {url: new URL("./files/373466aede61ed5462c26d8553b428d84f3b257a34ee7df13051b3e5113017598d66082575f6b5f2e304157cdc243cb5bfabce8c9263d3e17c7f51b28b2004c6.gz", import.meta.url), mimeType: "application/gzip", toString}],
-    ["d3.v7.min.js.gz", {url: new URL("./files/9d154f8fe30deb729ad929181696f76264282798fe8129d0506d143504071413c20443b11afe2486499f33504f6762c50c1e5a29b45ae6e460ed5707babee2cc.gz", import.meta.url), mimeType: "application/gzip", toString}]
+    ["d3.v7.min.js.gz", {url: new URL("./files/9d154f8fe30deb729ad929181696f76264282798fe8129d0506d143504071413c20443b11afe2486499f33504f6762c50c1e5a29b45ae6e460ed5707babee2cc.gz", import.meta.url), mimeType: "application/gzip", toString}],
+    ["plot.umd.min.js.gz", {url: new URL("./files/373466aede61ed5462c26d8553b428d84f3b257a34ee7df13051b3e5113017598d66082575f6b5f2e304157cdc243cb5bfabce8c9263d3e17c7f51b28b2004c6.gz", import.meta.url), mimeType: "application/gzip", toString}]
   ]);
   main.builtin("FileAttachment", runtime.fileAttachments(name => fileAttachments.get(name)));
   main.variable(observer()).define(["md"], _1);
+  main.variable(observer()).define(["md"], _2);
   main.variable(observer("viewof parameters")).define("viewof parameters", ["Inputs","exporter","default_style","viewof output","Event","localStorageView"], _parameters);
   main.variable(observer("parameters")).define("parameters", ["Generators", "viewof parameters"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _3);
   main.variable(observer()).define(["md"], _4);
   main.variable(observer()).define(["md"], _5);
   main.variable(observer()).define(["md"], _6);
   main.variable(observer()).define(["md"], _7);
+  main.variable(observer()).define(["md"], _8);
   main.variable(observer("viewof example")).define("viewof example", ["exporter"], _example);
   main.variable(observer("example")).define("example", ["Generators", "viewof example"], (G, _) => G.input(_));
   main.variable(observer("exporter")).define("exporter", ["actionHandler","default_style","keepalive","exporter_module","variable","domView","exportState","view","diskImgUrl","Inputs","createShowable","top120List","reportValidity","invalidation","bindOneWay"], _exporter);
@@ -1863,11 +1868,11 @@ export default function define(runtime, observer) {
   main.variable(observer("default_style")).define("default_style", ["htl"], _default_style);
   main.variable(observer("inspector_css")).define("inspector_css", ["htl"], _inspector_css);
   main.variable(observer("notebook_name")).define("notebook_name", _notebook_name);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("TRACE_MODULE")).define("TRACE_MODULE", _TRACE_MODULE);
   main.variable(observer("viewof task")).define("viewof task", ["flowQueue"], _task);
   main.variable(observer("task")).define("task", ["Generators", "viewof task"], (G, _) => G.input(_));
-  main.variable(observer()).define(["task"], _22);
+  main.variable(observer()).define(["task"], _23);
   main.variable(observer("main_module")).define("main_module", ["task"], _main_module);
   main.variable(observer("task_runtime")).define("task_runtime", ["main_module"], _task_runtime);
   main.variable(observer("runtime_variables")).define("runtime_variables", ["task_runtime","variableToObject"], _runtime_variables);
@@ -1882,11 +1887,11 @@ export default function define(runtime, observer) {
   main.variable(observer("findImports")).define("findImports", _findImports);
   main.variable(observer("getFileAttachments")).define("getFileAttachments", _getFileAttachments);
   main.variable(observer("book")).define("book", ["lopebook","task","module_specs"], _book);
-  main.variable(observer()).define(["Inputs","module_specs"], _37);
-  main.variable(observer()).define(["md"], _38);
+  main.variable(observer()).define(["Inputs","module_specs"], _38);
+  main.variable(observer()).define(["md"], _39);
   main.variable(observer("report")).define("report", ["DOMParser","book"], _report);
   main.variable(observer("tomlarkworthy_exporter_task")).define("tomlarkworthy_exporter_task", ["book","report","futureExportedState","exporter_module","viewof task"], _tomlarkworthy_exporter_task);
-  main.variable(observer()).define(["md"], _41);
+  main.variable(observer()).define(["md"], _42);
   main.variable(observer("generate_module_source")).define("generate_module_source", ["generate_definitions","generate_define"], _generate_module_source);
   main.variable(observer("generate_definitions")).define("generate_definitions", ["cellToDefinition","importCell"], _generate_definitions);
   main.variable(observer("generate_define")).define("generate_define", ["cellToDefines"], _generate_define);
@@ -1895,18 +1900,18 @@ export default function define(runtime, observer) {
   main.variable(observer("cellToDefinition")).define("cellToDefinition", ["isLiveImport","contentHash"], _cellToDefinition);
   main.variable(observer("importCell")).define("importCell", _importCell);
   main.variable(observer("cellToDefines")).define("cellToDefines", ["sourceModule","findModuleName","findImportedName","isLiveImport","contentHash"], _cellToDefines);
-  main.variable(observer()).define(["md"], _50);
+  main.variable(observer()).define(["md"], _51);
   main.variable(observer("lopebook")).define("lopebook", ["inspector_css","lopemodule","decompress_sledfile","builtin_def"], _lopebook);
   main.variable(observer("lopemodule")).define("lopemodule", ["TRACE_MODULE","CSS","arrayBufferToBase64","escapeScriptTags","rewriteImports"], _lopemodule);
   main.variable(observer("escapeScriptTags")).define("escapeScriptTags", _escapeScriptTags);
   main.variable(observer("rewriteImports")).define("rewriteImports", _rewriteImports);
   main.variable(observer("arrayBufferToBase64")).define("arrayBufferToBase64", _arrayBufferToBase64);
-  main.variable(observer()).define(["md"], _56);
+  main.variable(observer()).define(["md"], _57);
   main.variable(observer("decompress_sledfile")).define("decompress_sledfile", ["DecompressionStream","Response"], _decompress_sledfile);
   main.variable(observer("builtin_def")).define("builtin_def", _builtin_def);
   main.variable(observer("builtins")).define("builtins", ["builtin_def"], _builtins);
   main.variable(observer("fileAttachmentKeepAlive")).define("fileAttachmentKeepAlive", ["FileAttachment"], _fileAttachmentKeepAlive);
-  main.variable(observer()).define(["md"], _61);
+  main.variable(observer()).define(["md"], _62);
   const child1 = runtime.module(define1);
   main.import("jsonFileAttachment", child1);
   main.import("setFileAttachment", child1);
@@ -1916,10 +1921,10 @@ export default function define(runtime, observer) {
   main.variable(observer("exportState")).define("exportState", ["getFileAttachment","exporter_module","location","history"], _exportState);
   main.variable(observer("futureExportedState")).define("futureExportedState", ["hash","exportState","location","save_exporter_state"], _futureExportedState);
   main.variable(observer("save_exporter_state")).define("save_exporter_state", ["getFileAttachments","exporter_module","setFileAttachment","jsonFileAttachment"], _save_exporter_state);
-  main.variable(observer()).define(["md"], _67);
+  main.variable(observer()).define(["md"], _68);
   main.variable(observer("viewof output")).define("viewof output", ["Inputs"], _output);
   main.variable(observer("output")).define("output", ["Generators", "viewof output"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _69);
+  main.variable(observer()).define(["md"], _70);
   main.variable(observer("getCompactISODate")).define("getCompactISODate", _getCompactISODate);
   main.variable(observer("viewof exporter_module")).define("viewof exporter_module", ["thisModule"], _exporter_module);
   main.variable(observer("exporter_module")).define("exporter_module", ["Generators", "viewof exporter_module"], (G, _) => G.input(_));
