@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/access-runtime-2",
+  "main": "c70da66b5b540791@974.js",
+  "version": "974.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/access-runtime-2",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
