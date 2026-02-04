@@ -1,7 +1,7 @@
 import define1 from "./e4cdd35ce867f8af@1001.js";
-import define2 from "./98f34e974bb2e4bc@699.js";
-import define3 from "./db42ae70222a8b08@1033.js";
-import define4 from "./f109935193c0deba@4417.js";
+import define2 from "./98f34e974bb2e4bc@958.js";
+import define3 from "./db42ae70222a8b08@1170.js";
+import define4 from "./f109935193c0deba@4551.js";
 
 function _title(md){return(
 md`# Runtime variable editor with Codemirror autocomplete and syntax highlighting`

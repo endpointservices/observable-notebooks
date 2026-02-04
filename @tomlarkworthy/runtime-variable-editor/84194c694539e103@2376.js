@@ -1,4 +1,4 @@
-import define1 from "./f92778131fd76559@1208.js";
+import define1 from "./f92778131fd76559@1212.js";
 
 function _1(md){return(
 md`# Tabbed Pane View
