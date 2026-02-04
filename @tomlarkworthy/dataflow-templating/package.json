@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/dataflow-templating",
+  "main": "c49519b3eb941810@1436.js",
+  "version": "1436.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/dataflow-templating",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
