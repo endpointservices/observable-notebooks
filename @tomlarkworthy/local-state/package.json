@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/local-state",
+  "main": "026de93afaebcb35@456.js",
+  "version": "456.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/local-state",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
