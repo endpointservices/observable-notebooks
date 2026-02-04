@@ -1,0 +1,14 @@
+{
+  "name": "@tomlarkworthy/moldable-webpage",
+  "main": "bd391ad68daf4bce@1205.js",
+  "version": "1205.0.0",
+  "homepage": "https://observablehq.com/@tomlarkworthy/moldable-webpage",
+  "author": {
+    "name": "Tom Larkworthy",
+    "url": "https://observablehq.com/@tomlarkworthy"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
