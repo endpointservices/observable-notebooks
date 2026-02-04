@@ -1,14 +1,14 @@
 import define1 from "./57d79353bac56631@44.js";
-import define2 from "./a6a56ee61aba9799@406.js";
-import define3 from "./98f34e974bb2e4bc@650.js";
-import define4 from "./e1c39d41e8e944b0@939.js";
-import define5 from "./e4cdd35ce867f8af@990.js";
-import define6 from "./e3a019069a130d79@6074.js";
-import define7 from "./f92778131fd76559@1208.js";
-import define8 from "./cdc303fcc82a630f@262.js";
-import define9 from "./03dda470c56b93ff@8246.js";
-import define10 from "./db42ae70222a8b08@995.js";
-import define11 from "./0e0b35a92c819d94@474.js";
+import define2 from "./a6a56ee61aba9799@409.js";
+import define3 from "./98f34e974bb2e4bc@958.js";
+import define4 from "./e4cdd35ce867f8af@1001.js";
+import define5 from "./e3a019069a130d79@6817.js";
+import define6 from "./f92778131fd76559@1212.js";
+import define7 from "./cdc303fcc82a630f@262.js";
+import define8 from "./10c7899865f8a76e@8998.js";
+import define9 from "./db42ae70222a8b08@1170.js";
+import define10 from "./0e0b35a92c819d94@474.js";
+import define11 from "./a89ea9f0ad8c6226@1486.js";
 
 function _title(md){return(
 md`# Editor: Reactive Userspace Cell Mutator (v4)
@@ -49,30 +49,29 @@ function _3(md){return(
 md`## Select Cell`
 )}
 
-function _selectVariable(cellMap,modules,_,$0,Event){return(
+function _selectVariable($0,modules,_,$1,Event){return(
 async function selectVariable(variable, dom = undefined) {
+  console.log("selectVariable", variable);
   let cell = undefined;
   if (variable) {
-    const cells = await cellMap(variable._module);
-    const [name, variables] = [...cells.entries()].find(
-      ([name, vars]) => vars[0] == variable
-    );
+    const cells = $0.value.get(variable._module) || [];
+    cell = cells.find((cell) => cell.variables[0] == variable);
 
     cell = {
       dom,
-      name,
+      name: cell.name,
       module: {
-        cells,
+        cells: cells,
         ...modules.get(variable._module)
       },
-      variables
+      variables: cell.variables
     };
   }
-  if (!_.isEqual($0.value, cell)) {
-    $0.value = cell;
-    $0.dispatchEvent(new Event("input"));
+  if (!_.isEqual($1.value, cell)) {
+    $1.value = cell;
+    $1.dispatchEvent(new Event("input"));
   } else {
-    $0.value = cell;
+    $1.value = cell;
   }
 }
 )}
@@ -108,6 +107,7 @@ Generators.observe((notify) => {
     ) {
       return;
     }
+
     if ($0.value?.variables[0] === variable) {
       //selectVariable(undefined);
       //notify(undefined);
@@ -153,28 +153,44 @@ function _12(md){return(
 md`## Context Menu`
 )}
 
-function _context_menu(keepalive,editorModule,htl,$0,invalidation,selectedCell,ResizeObserver)
+function _context_menu(keepalive,editorModule,htl,$0,invalidation,isOnObservableCom,selectedCell,ResizeObserver)
 {
   keepalive(editorModule, "editor");
-  const menu = htl.html`<div style="
+  const menu = htl.html`<div class="editor-menu" style="
       position: absolute;
       z-index: 999;
-      background: white;
+      background: var(--theme-background);
       border: 1px gray solid;
       padding: 0px 1rem;
       margin: 0px 1rem 0px;
       box-shadow: 1px 2px 2px gray;
     "
-    onclick=${(e) => e.stopPropagation()}>
+    onclick=${(e) => e.stopPropagation()}
+    onmousemove=${(e) => e.stopPropagation()}
+  >
       ${$0}
 </div>`;
   invalidation.then(() => menu.remove());
 
   function positionMenu(target, menu) {
     if (!menu.parentElement) return;
-    const frame = menu.parentElement.getBoundingClientRect();
+    let frame = menu.parentElement.getBoundingClientRect();
     const rect = target.getBoundingClientRect();
-    menu.style.top = `${rect.bottom - frame.top + 17}px`;
+    if (isOnObservableCom()) {
+      menu.style.top = `${rect.bottom - frame.top + 17}px`;
+    } else {
+      const p = menu.offsetParent || document.body;
+      const tr = target.getBoundingClientRect(); // viewport
+      const pr = p.getBoundingClientRect(); // viewport
+
+      // convert viewport -> parent coords
+      const top = tr.bottom - pr.top + p.scrollTop;
+      const left = tr.left - pr.left + p.scrollLeft;
+
+      menu.style.position = "absolute";
+      menu.style.top = `${top - 1}px`;
+      menu.style.left = `${left}px`;
+    }
     menu.style.left = `${rect.left - frame.left}px`;
   }
 
@@ -213,6 +229,10 @@ function _editor(keepalive,editorModule,view,$0,toolbar,nav,$1,reversibleAttach,
     .cell-editor form {
       width: auto
     }
+    .editor-menu summary::marker {
+      content: '✍️';
+      font-size: 1rem;
+    }
     .cm-editor {
       height: fit-content
     }
@@ -220,7 +240,7 @@ function _editor(keepalive,editorModule,view,$0,toolbar,nav,$1,reversibleAttach,
   <details open=${$0.value} ontoggle=${(evt) => {
     $0.value = evt.newState == "open";
   }}>
-    <summary>✍️</summary>
+    <summary></summary>
     ${toolbar}
     ${nav($1.value)}
     <div style="display: flex;">
@@ -228,8 +248,6 @@ function _editor(keepalive,editorModule,view,$0,toolbar,nav,$1,reversibleAttach,
       <span style="flex-grow: 1;"></span>
       ${["cell", reversibleAttach(combine, $3)]}
     </div>
-    
-      
     <div style="flex-grow: 1; padding-bottom: 1rem;">
       ${["editor", reversibleAttach(combine, $4)]}
     </div>
@@ -326,11 +344,15 @@ selectedCell &&
   })
 )}
 
+function _27(selectedCell){return(
+selectedCell.module.cells
+)}
+
 function _cellSelection(selectedCell,Inputs){return(
 selectedCell &&
   Inputs.select(selectedCell.module.cells, {
     disabled: true,
-    value: selectedCell.module.cells.get(selectedCell.name)
+    value: selectedCell.module.cells.find((c) => c.name == selectedCell.name)
   })
 )}
 
@@ -346,7 +368,7 @@ Inputs.toggle({ label: "edit" })
 )}
 
 function _toolbar(view,reversibleAttach,combine,$0,$1,$2,$3,$4){return(
-view`<div style="display: flex;">
+view`<div style="display: flex;gap: 1px;">
     ${["up", reversibleAttach(combine, $0)]}
     ${["down", reversibleAttach(combine, $1)]}
     ${["remove_variables", reversibleAttach(combine, $2)]}
@@ -435,7 +457,7 @@ function _code_editor(code_editor_view)
 }
 
 
-function _39(md){return(
+function _40(md){return(
 md`## API`
 )}
 
@@ -474,7 +496,7 @@ async ({} = {}) =>
   })
 )}
 
-function _44(md){return(
+function _45(md){return(
 md`## API handler`
 )}
 
@@ -482,7 +504,7 @@ function _command(flowQueue){return(
 flowQueue()
 )}
 
-function _46(command){return(
+function _47(command){return(
 command
 )}
 
@@ -575,7 +597,7 @@ async function _command_processor(command,$0,compile_and_update,code_editor_view
 }
 
 
-function _52(md){return(
+function _53(md){return(
 md`### UI Action`
 )}
 
@@ -628,10 +650,6 @@ function _editor_manager(selectedCell,states,EditorState,decompiled,cellIdFacet,
   states.set(key, state);
 }
 
-
-function _56(selectedCell){return(
-selectedCell
-)}
 
 function _enable_picking(invalidation)
 {
@@ -804,7 +822,7 @@ function _javascriptPlugin(codemirror){return(
 codemirror
 )}
 
-function _81(md){return(
+function _80(md){return(
 md`### Libraries`
 )}
 
@@ -823,7 +841,7 @@ export default function define(runtime, observer) {
   main.variable(observer("title")).define("title", ["md"], _title);
   main.variable(observer()).define(["md"], _2);
   main.variable(observer()).define(["md"], _3);
-  main.variable(observer("selectVariable")).define("selectVariable", ["cellMap","modules","_","viewof selectedCell","Event"], _selectVariable);
+  main.variable(observer("selectVariable")).define("selectVariable", ["viewof liveCellMap","modules","_","viewof selectedCell","Event"], _selectVariable);
   main.variable(observer("hashCell")).define("hashCell", ["location","extractNotebookAndCell","URLSearchParams"], _hashCell);
   main.variable(observer("cellListener")).define("cellListener", ["Generators","hash","selectVariable","divToVar","runtime","viewof selectedCell","invalidation"], _cellListener);
   main.variable(observer("viewof selectedCell")).define("viewof selectedCell", ["Inputs"], _selectedCell);
@@ -835,7 +853,7 @@ export default function define(runtime, observer) {
   const child2 = runtime.module(define2);
   main.import("extractNotebookAndCell", child2);
   main.variable(observer()).define(["md"], _12);
-  main.variable(observer("context_menu")).define("context_menu", ["keepalive","editorModule","htl","viewof editor","invalidation","selectedCell","ResizeObserver"], _context_menu);
+  main.variable(observer("context_menu")).define("context_menu", ["keepalive","editorModule","htl","viewof editor","invalidation","isOnObservableCom","selectedCell","ResizeObserver"], _context_menu);
   main.variable(observer("viewof editor")).define("viewof editor", ["keepalive","editorModule","view","viewof edit","toolbar","nav","viewof selectedCell","reversibleAttach","combine","viewof moduleSelection","viewof cellSelection","viewof code_editor","code_editor_view"], _editor);
   main.variable(observer("editor")).define("editor", ["Generators", "viewof editor"], (G, _) => G.input(_));
   main.variable(observer()).define(["viewof selectedCell"], _15);
@@ -852,6 +870,7 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _25);
   main.variable(observer("viewof moduleSelection")).define("viewof moduleSelection", ["selectedCell","Inputs","modules"], _moduleSelection);
   main.variable(observer("moduleSelection")).define("moduleSelection", ["Generators", "viewof moduleSelection"], (G, _) => G.input(_));
+  main.variable(observer()).define(["selectedCell"], _27);
   main.variable(observer("viewof cellSelection")).define("viewof cellSelection", ["selectedCell","Inputs"], _cellSelection);
   main.variable(observer("cellSelection")).define("cellSelection", ["Generators", "viewof cellSelection"], (G, _) => G.input(_));
   main.variable(observer("viewof combine")).define("viewof combine", ["Inputs"], _combine);
@@ -873,25 +892,24 @@ export default function define(runtime, observer) {
   main.variable(observer("code_editor_view")).define("code_editor_view", ["EditorView"], _code_editor_view);
   main.variable(observer("viewof code_editor")).define("viewof code_editor", ["code_editor_view"], _code_editor);
   main.variable(observer("code_editor")).define("code_editor", ["Generators", "viewof code_editor"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _39);
+  main.variable(observer()).define(["md"], _40);
   main.variable(observer("moveCell")).define("moveCell", ["viewof command"], _moveCell);
   main.variable(observer("createCell")).define("createCell", ["viewof command"], _createCell);
   main.variable(observer("deleteCell")).define("deleteCell", ["viewof command"], _deleteCell);
   main.variable(observer("focusEditor")).define("focusEditor", ["viewof command"], _focusEditor);
-  main.variable(observer()).define(["md"], _44);
+  main.variable(observer()).define(["md"], _45);
   main.variable(observer("viewof command")).define("viewof command", ["flowQueue"], _command);
   main.variable(observer("command")).define("command", ["Generators", "viewof command"], (G, _) => G.input(_));
-  main.variable(observer()).define(["command"], _46);
+  main.variable(observer()).define(["command"], _47);
   main.variable(observer("findCellByVariable")).define("findCellByVariable", _findCellByVariable);
   main.variable(observer("findCellIndex")).define("findCellIndex", _findCellIndex);
   main.variable(observer("lookupCellByIndex")).define("lookupCellByIndex", _lookupCellByIndex);
   main.variable(observer("findVariableIndex")).define("findVariableIndex", ["runtime"], _findVariableIndex);
   main.variable(observer("command_processor")).define("command_processor", ["command","viewof edit","compile_and_update","code_editor_view","remove_variables","selectedCell","findCellIndex","lookupCellByIndex","findVariableIndex","repositionSetElement","runtime","selectVariable","viewof command"], _command_processor);
-  main.variable(observer()).define(["md"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("states")).define("states", _states);
   main.variable(observer("cellIdFacet")).define("cellIdFacet", ["codemirror"], _cellIdFacet);
   main.variable(observer("editor_manager")).define("editor_manager", ["selectedCell","states","EditorState","decompiled","cellIdFacet","EditorView","codemirror","compile_and_update","code_editor_view","javascriptPlugin","myDefaultTheme"], _editor_manager);
-  main.variable(observer()).define(["selectedCell"], _56);
   main.variable(observer("enable_picking")).define("enable_picking", ["invalidation"], _enable_picking);
   main.variable(observer("highlight_picked")).define("highlight_picked", ["selectedCell","isnode","invalidation"], _highlight_picked);
   main.variable(observer("divToCell")).define("divToCell", _divToCell);
@@ -915,41 +933,44 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["Inputs","definition","variable","inputs"], _74);
   main.variable(observer()).define(["md"], _75);
   const child4 = runtime.module(define3);
+  main.import("runtime", child4);
+  main.import("main", child4);
+  main.import("isOnObservableCom", child4);
   main.import("thisModule", child4);
   main.import("keepalive", child4);
   main.import("toObject", child4);
   main.import("isnode", child4);
   main.import("repositionSetElement", child4);
   const child5 = runtime.module(define4);
-  main.import("runtime", child5);
-  main.import("main", child5);
+  main.import("EditorState", child5);
+  main.import("EditorView", child5);
+  main.import("codemirror", child5);
+  main.import("myDefaultTheme", child5);
   const child6 = runtime.module(define5);
-  main.import("EditorState", child6);
-  main.import("EditorView", child6);
-  main.import("codemirror", child6);
-  main.import("myDefaultTheme", child6);
-  const child7 = runtime.module(define6);
-  main.import("decompile", child7);
-  main.import("compile", child7);
-  main.import("cellMap", child7);
-  main.import("sourceModule", child7);
-  main.import("findModuleName", child7);
-  main.import("parser", child7);
+  main.import("decompile", child6);
+  main.import("compile", child6);
+  main.import("cellMap", child6);
+  main.import("sourceModule", child6);
+  main.import("findModuleName", child6);
+  main.import("parser", child6);
   main.variable(observer("javascriptPlugin")).define("javascriptPlugin", ["codemirror"], _javascriptPlugin);
-  main.variable(observer()).define(["md"], _81);
+  main.variable(observer()).define(["md"], _80);
   main.variable(observer("unzip")).define("unzip", ["Response","DecompressionStream"], _unzip);
+  const child7 = runtime.module(define6);
+  main.import("view", child7);
   const child8 = runtime.module(define7);
-  main.import("view", child8);
+  main.import("reversibleAttach", child8);
   const child9 = runtime.module(define8);
-  main.import("reversibleAttach", child9);
+  main.import("exporter", child9);
   const child10 = runtime.module(define9);
-  main.import("exporter", child10);
+  main.import("moduleMap", child10);
+  main.import("submit_summary", child10);
+  main.import("forcePeek", child10);
+  main.import("observe", child10);
   const child11 = runtime.module(define10);
-  main.import("moduleMap", child11);
-  main.import("submit_summary", child11);
-  main.import("forcePeek", child11);
-  main.import("observe", child11);
+  main.import("flowQueue", child11);
   const child12 = runtime.module(define11);
-  main.import("flowQueue", child12);
+  main.import("viewof liveCellMap", child12);
+  main.import("liveCellMap", child12);
   return main;
 }
