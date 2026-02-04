@@ -1,5 +1,5 @@
 import define1 from "./2320fab09283ad21@626.js";
-import define2 from "./dfdb38d5580b5c35@347.js";
+import define2 from "./dfdb38d5580b5c35@351.js";
 
 function _1(md){return(
 md`# Lazer Cut Plant Pot`
