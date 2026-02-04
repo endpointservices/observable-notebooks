@@ -1,5 +1,5 @@
 import define1 from "./e1c39d41e8e944b0@939.js";
-import define2 from "./98f34e974bb2e4bc@699.js";
+import define2 from "./98f34e974bb2e4bc@958.js";
 
 function _1(md){return(
 md`# Debugger: Notebook Dataflow Debugger (ndd)
