@@ -1,5 +1,5 @@
 import define1 from "./03218555ea68a856@467.js";
-import define2 from "./f92778131fd76559@1208.js";
+import define2 from "./f92778131fd76559@1212.js";
 
 function _1(md){return(
 md`# Draggable Sticky view
