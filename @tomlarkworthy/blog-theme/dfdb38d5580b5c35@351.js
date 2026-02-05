@@ -1,4 +1,4 @@
-import define1 from "./03dda470c56b93ff@8246.js";
+import define1 from "./10c7899865f8a76e@8998.js";
 
 function _1(md){return(
 md`# Tom Services Footer
