@@ -1,6 +1,5 @@
-import define1 from "./e1c39d41e8e944b0@939.js";
-import define2 from "./98f34e974bb2e4bc@650.js";
-import define3 from "./dfdb38d5580b5c35@347.js";
+import define1 from "./e1c39d41e8e944b0@950.js";
+import define2 from "./98f34e974bb2e4bc@958.js";
 
 function _1(md){return(
 md`# Debugger: Notebook Dataflow Debugger (ndd)
@@ -50,7 +49,8 @@ Thanks to [\`@mootari/access-runtime\`](https://observablehq.com/@mootari/access
 function _6(md){return(
 md`## TODO
 - Reduce volume of signals (filters? Search)
-- Vertical zoom?`
+- Vertical zoom?
+- brush zoom horzintal`
 )}
 
 function _slider2(Inputs){return(
@@ -80,12 +80,12 @@ function _extra_excludes(){return(
 new Set()
 )}
 
-function _excludes(descendants,lookupVariable,module,extra_excludes){return(
+async function _excludes(descendants,lookupVariable,module,extra_excludes){return(
 descendants(
-  lookupVariable("range", module),
-  lookupVariable("events", module),
-  lookupVariable("dedupe_range", module),
-  lookupVariable("trackedVariables", module),
+  await lookupVariable("range", module),
+  await lookupVariable("events", module),
+  await lookupVariable("dedupe_range", module),
+  await lookupVariable("trackedVariables", module),
   ...extra_excludes
 )
 )}
@@ -373,10 +373,6 @@ function interceptVariable(v, invalidation, excludes, firstSeen = false) {
 }
 )}
 
-function _49(footer){return(
-footer
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -451,8 +447,5 @@ export default function define(runtime, observer) {
   main.variable(observer("notify")).define("notify", ["viewof pause","mutable events","viewof breakpoint"], _notify);
   main.variable(observer("names")).define("names", _names);
   main.variable(observer("interceptVariable")).define("interceptVariable", ["observe","notify"], _interceptVariable);
-  const child3 = runtime.module(define3);
-  main.import("footer", child3);
-  main.variable(observer()).define(["footer"], _49);
   return main;
 }
