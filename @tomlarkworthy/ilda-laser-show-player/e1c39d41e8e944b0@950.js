@@ -1,4 +1,3 @@
-// https://observablehq.com/@mootari/access-runtime@939
 function _1(md){return(
 md`# Accessing a Notebook's Runtime
 
@@ -106,7 +105,7 @@ function _11(md){return(
 md`### Internals`
 )}
 
-function _captureRuntime($0){return(
+function _captureRuntime(mutable_recomputeTrigger){return(
 new Promise(resolve => {
   const forEach = Set.prototype.forEach;
   Set.prototype.forEach = function(...args) {
@@ -117,15 +116,23 @@ new Promise(resolve => {
       resolve(thisArg);
     }
   };
-  $0.value = $0.value + 1;
+  mutable_recomputeTrigger.value = mutable_recomputeTrigger.value + 1;
 })
 )}
 
-function _recomputeTrigger(){return(
-0
+function _mutable_recomputeTrigger(Mutable){return(
+(m => m.generator ? m : Object.defineProperties({}, {
+  [Symbol.toStringTag]: {value: "Mutable"},
+  generator: {value: m},
+  value: Object.getOwnPropertyDescriptor(m, "value"),
+}))(new Mutable(0))
 )}
 
-function _14(md){return(
+function _recomputeTrigger(mutable_recomputeTrigger){return(
+mutable_recomputeTrigger.generator
+)}
+
+function _15(md){return(
 md`---
 ## Examples
 
@@ -136,7 +143,7 @@ function _ex_refresh(Inputs){return(
 Inputs.button('Refresh')
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`### Defined variables`
 )}
 
@@ -194,7 +201,7 @@ function _ex_vars_table(ex_vars_filters,ex_vars,Inputs)
 }
 
 
-function _20(md){return(
+function _21(md){return(
 md`### Dependency matrix`
 )}
 
@@ -225,7 +232,7 @@ function _ex_deps(ex_refresh,observed,Inputs,htl)
 }
 
 
-function _22(md){return(
+function _23(md){return(
 md`---
 ## Explainer
 
@@ -241,15 +248,17 @@ Presumably, our best shot at fetching the runtime is to receive the instance as 
 `
 )}
 
-function _23(md){return(
+function _24(md){return(
 md`---
 ## Updates
 
+- 2025-09-28 Added a FOSS license, per request.
+- 2025-08-01: Replace \`mutable\` with a notebook-kit compatible solution, per request (though you probably want \`__ojs_runtime\` instead).
 - 2022-08-28: Rewrite and simplification, documentation updates.
 - 2022-08-27: Added \`main\`, \`no_observer\`, \`observed\`. Added example for \`observed\`.`
 )}
 
-function _24(md){return(
+function _25(md){return(
 md`---
 *Thumbnail image: [Austrian National Library](https://unsplash.com/photos/ciMJn3mD5u8)*
 `
@@ -268,22 +277,21 @@ export default function define(runtime, observer) {
   main.variable(observer("observed")).define("observed", ["no_observer","runtime"], _observed);
   main.variable(observer("no_observer")).define("no_observer", ["main"], _no_observer);
   main.variable(observer()).define(["md"], _11);
-  main.variable(observer("captureRuntime")).define("captureRuntime", ["mutable recomputeTrigger"], _captureRuntime);
-  main.define("initial recomputeTrigger", _recomputeTrigger);
-  main.variable(observer("mutable recomputeTrigger")).define("mutable recomputeTrigger", ["Mutable", "initial recomputeTrigger"], (M, _) => new M(_));
-  main.variable(observer("recomputeTrigger")).define("recomputeTrigger", ["mutable recomputeTrigger"], _ => _.generator);
-  main.variable(observer()).define(["md"], _14);
+  main.variable(observer("captureRuntime")).define("captureRuntime", ["mutable_recomputeTrigger"], _captureRuntime);
+  main.variable(observer("mutable_recomputeTrigger")).define("mutable_recomputeTrigger", ["Mutable"], _mutable_recomputeTrigger);
+  main.variable(observer("recomputeTrigger")).define("recomputeTrigger", ["mutable_recomputeTrigger"], _recomputeTrigger);
+  main.variable(observer()).define(["md"], _15);
   main.variable(observer("viewof ex_refresh")).define("viewof ex_refresh", ["Inputs"], _ex_refresh);
   main.variable(observer("ex_refresh")).define("ex_refresh", ["Generators", "viewof ex_refresh"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("ex_vars")).define("ex_vars", ["ex_refresh","runtime","modules","no_observer"], _ex_vars);
   main.variable(observer("viewof ex_vars_filters")).define("viewof ex_vars_filters", ["ex_vars","Inputs"], _ex_vars_filters);
   main.variable(observer("ex_vars_filters")).define("ex_vars_filters", ["Generators", "viewof ex_vars_filters"], (G, _) => G.input(_));
   main.variable(observer("ex_vars_table")).define("ex_vars_table", ["ex_vars_filters","ex_vars","Inputs"], _ex_vars_table);
-  main.variable(observer()).define(["md"], _20);
+  main.variable(observer()).define(["md"], _21);
   main.variable(observer("ex_deps")).define("ex_deps", ["ex_refresh","observed","Inputs","htl"], _ex_deps);
-  main.variable(observer()).define(["md"], _22);
   main.variable(observer()).define(["md"], _23);
   main.variable(observer()).define(["md"], _24);
+  main.variable(observer()).define(["md"], _25);
   return main;
 }
