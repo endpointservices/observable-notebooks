@@ -1,4 +1,3 @@
-// https://observablehq.com/@tomlarkworthy/randomid@69
 function _1(md){return(
 md`# Secure random ID
 
