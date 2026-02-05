@@ -1,4 +1,4 @@
-import define1 from "./048a17a165be198d@271.js";
+import define1 from "./048a17a165be198d@273.js";
 
 function _1(htl){return(
 htl.html`<h1 style="display: none;">single stroke font</h1>
