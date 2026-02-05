@@ -1,7 +1,7 @@
 import define1 from "./9e9b514f3656a16e@1255.js";
 import define2 from "./bebff78c79e75160@549.js";
 import define3 from "./0db772951ed2f762@153.js";
-import define4 from "./dfdb38d5580b5c35@347.js";
+import define4 from "./dfdb38d5580b5c35@351.js";
 
 function _title(html,md){return(
 html`<div id="blogtitle" class=content>${md`# BLOG: How to Harness Agency - Wisdom from Monty Hall
