@@ -1,5 +1,5 @@
 import define1 from "./e93997d5089d7165@2303.js";
-import define2 from "./dfdb38d5580b5c35@347.js";
+import define2 from "./dfdb38d5580b5c35@351.js";
 
 function _1(md){return(
 md`# Animated Wormhole with frame capture`
