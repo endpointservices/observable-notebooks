@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/mip@720
-import define1 from "./c7a3b20cec5d4dd9@730.js";
-import define2 from "./316f0885d15ab671@69.js";
+import define1 from "./c7a3b20cec5d4dd9@732.js";
+import define2 from "./316f0885d15ab671@71.js";
 import define3 from "./50309473a164e648@2525.js";
 import define4 from "./bb2055d580bbbab2@106.js";
 import define5 from "./58f3eb7334551ae6@215.js";
