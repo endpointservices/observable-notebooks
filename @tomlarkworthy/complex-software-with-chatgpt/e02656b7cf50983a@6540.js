@@ -1,6 +1,6 @@
-import define1 from "./f92778131fd76559@1208.js";
+import define1 from "./f92778131fd76559@1212.js";
 import define2 from "./e7c3854dfc5e08c3@1352.js";
-import define3 from "./17c8ce433e1df58e@3584.js";
+import define3 from "./17c8ce433e1df58e@3595.js";
 
 function _1(md){return(
 md`# Experiments in Complex Software development with ChatGPT
@@ -3221,10 +3221,10 @@ export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
   const fileAttachments = new Map([
-    ["image (5).png", {url: new URL("./files/229cffb07deab777743d4b38b937ee73baca239b0f0d22819ed4bace122759a6f5a47cafe4e0e2f7585bf1fe041059135036b93ae8c7a23a8722d23c10db9f01.png", import.meta.url), mimeType: "image/png", toString}],
+    ["sci-fi-alarm-106436.mp3", {url: new URL("./files/6c4c33cd157e57010a47ca9954d9169387322950e848723b28a0bd6d320ff361f76bee6d8e57a7a7a27a44eb945486a99cb65ffc78820f9c2a787451bcf9c577.mpga", import.meta.url), mimeType: "audio/mpeg", toString}],
     ["laser-gun-shot-sound-future-sci-fi-lazer-wobble-chakongaudio-174883.mp3", {url: new URL("./files/3deee3298908c25207b462aefdebdc5e669251cffebced115095f31f6ced1c4ed077eaf2c5abe991f3390a3cdf81022f839774428f711e222b9d6c9a011a92eb.mpga", import.meta.url), mimeType: "audio/mpeg", toString}],
     ["pop2-84862.mp3", {url: new URL("./files/277b184c0e4f3ef330533be8e108ad5b28ee8f4cd9f286aa904849c42cc4eb651ab2c35bc687e9cb87205e8ea56b77957a96488d2379981e7c62b4f20a34bec8.mpga", import.meta.url), mimeType: "audio/mpeg", toString}],
-    ["sci-fi-alarm-106436.mp3", {url: new URL("./files/6c4c33cd157e57010a47ca9954d9169387322950e848723b28a0bd6d320ff361f76bee6d8e57a7a7a27a44eb945486a99cb65ffc78820f9c2a787451bcf9c577.mpga", import.meta.url), mimeType: "audio/mpeg", toString}],
+    ["image (5).png", {url: new URL("./files/229cffb07deab777743d4b38b937ee73baca239b0f0d22819ed4bace122759a6f5a47cafe4e0e2f7585bf1fe041059135036b93ae8c7a23a8722d23c10db9f01.png", import.meta.url), mimeType: "image/png", toString}],
     ["partVIII.json", {url: new URL("./files/d224499098154c075b602b66832714a2bbef8d6d21a34aacc4fc0902dbed7872cfa3114e4cb4fcffbe754e1e012abae7d896df8310af05339cbd8377f7738da8.json", import.meta.url), mimeType: "application/json", toString}],
     ["partV.json", {url: new URL("./files/1e061e98490e854a20a43bb8f4be05b94c996a4b59e2ddc9e9ca1ee1aa4515b1ff98075a14e171a576ac802c946fb2028ad30cecf0ce867b7564c1d751a9bfbf.json", import.meta.url), mimeType: "application/json", toString}],
     ["partVI.json", {url: new URL("./files/1db8ac8012ab59265170ad7fd8a112f80ab636adaac2bb11deec8bd058e6772d49224a41d9558b4688b56b26887f7a8702715b30846cb98d40a7d5a1c419efb9.json", import.meta.url), mimeType: "application/json", toString}],
