@@ -3,7 +3,7 @@ import define1 from "./92ff66b718c1972f@141.js";
 import define2 from "./993a0c51ef1175ea@1396.js";
 import define3 from "./9c498948145037d2@140.js";
 import define4 from "./55bed46f68a80641@366.js";
-import define5 from "./3d9d1394d858ca97@553.js";
+import define5 from "./3d9d1394d858ca97@556.js";
 
 async function _1(md,FileAttachment,getCurrentPinnedName){return(
 md`# Globally Synchronized Views
