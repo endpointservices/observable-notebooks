@@ -1,5 +1,5 @@
 // https://observablehq.com/@tomlarkworthy/tiktok@164
-import define1 from "./c7a3b20cec5d4dd9@730.js";
+import define1 from "./c7a3b20cec5d4dd9@732.js";
 
 function _1(md){return(
 md`# TikTok
