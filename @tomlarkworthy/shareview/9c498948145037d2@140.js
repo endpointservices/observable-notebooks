@@ -1,5 +1,5 @@
 // https://observablehq.com/@endpointservices/resize@140
-import define1 from "./3d9d1394d858ca97@553.js";
+import define1 from "./3d9d1394d858ca97@556.js";
 import define2 from "./dff1e917c89f5e76@1965.js";
 import define3 from "./58f3eb7334551ae6@215.js";
 
