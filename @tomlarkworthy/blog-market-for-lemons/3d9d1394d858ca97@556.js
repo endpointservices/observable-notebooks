@@ -1,4 +1,3 @@
-// https://observablehq.com/@mootari/signature@553
 function _1(md){return(
 md`# Signature - A Documentation Toolkit
 <!-- keywords: javadoc docgen docblock -->
@@ -611,7 +610,7 @@ function _37(md){return(
 md`---
 ## Contributions
 
-- Thanks to [Fati Chen](https://observablehq.com/@stardisblue) for discovering badly handled cases in the signature parsing, and for suggesting improvements regarding name overrides.
+- Thanks to [Fati Chen](https://observablehq.com/@stardisblue) for [discovering badly handled cases](https://observablehq.com/d/fb14062a42891acc) in the signature parsing, and for suggesting improvements regarding name overrides.
 `
 )}
 
