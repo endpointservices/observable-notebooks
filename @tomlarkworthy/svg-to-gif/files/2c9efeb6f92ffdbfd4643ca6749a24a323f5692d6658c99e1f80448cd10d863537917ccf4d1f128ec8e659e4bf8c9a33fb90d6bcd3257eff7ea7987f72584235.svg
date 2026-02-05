@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="577px"
+   height="480px"
+   viewBox="0 0 577 480"
+   version="1.1"
+   id="svg47"
+   sodipodi:docname="dataflow_templating.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview47"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.98923689"
+     inkscape:cx="310.34022"
+     inkscape:cy="275.46486"
+     inkscape:window-width="1616"
+     inkscape:window-height="798"
+     inkscape:window-x="0"
+     inkscape:window-y="38"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="g12" />
+  <!-- Generator: Sketch 62 (91390) - https://sketch.com -->
+  <title
+     id="title1">Artboard</title>
+  <desc
+     id="desc1">Created with Sketch.</desc>
+  <defs
+     id="defs2">
+    <rect
+       id="path-1"
+       x="260"
+       y="18"
+       width="299"
+       height="210"
+       rx="21" />
+    <mask
+       id="mask-2"
+       maskContentUnits="userSpaceOnUse"
+       maskUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       width="299"
+       height="210"
+       fill="white">
+      <use
+         xlink:href="#path-1"
+         id="use1" />
+    </mask>
+    <rect
+       id="path-3"
+       x="260"
+       y="258"
+       width="299"
+       height="210"
+       rx="21" />
+    <mask
+       id="mask-4"
+       maskContentUnits="userSpaceOnUse"
+       maskUnits="objectBoundingBox"
+       x="0"
+       y="0"
+       width="299"
+       height="210"
+       fill="white">
+      <use
+         xlink:href="#path-3"
+         id="use2" />
+    </mask>
+  </defs>
+  <g
+     id="Templating"
+     stroke="none"
+     stroke-width="1"
+     fill="none"
+     fill-rule="evenodd">
+    <g
+       id="Artboard">
+      <g
+         id="Group"
+         transform="translate(272.000000, 31.000000)">
+        <rect
+           id="Rectangle"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="viewof-pizzaChoices"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan2">viewof</tspan><tspan
+             x="10.695312"
+             y="29.800001"
+             id="tspan3">pizzaChoices</tspan></text>
+      </g>
+      <g
+         id="g4"
+         transform="translate(272.000000, 96.000000)">
+        <rect
+           id="rect3"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="pizzaChoices"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="10.695312"
+             y="19.799999"
+             id="tspan4">pizzaChoices</tspan></text>
+      </g>
+      <g
+         id="g6"
+         transform="translate(23.000000, 31.000000)">
+        <rect
+           id="rect4"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="viewof-startDay"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan5">viewof</tspan><tspan
+             x="20.296875"
+             y="29.800001"
+             id="tspan6">startDay</tspan></text>
+      </g>
+      <g
+         id="g7"
+         transform="translate(23.000000, 96.000000)">
+        <rect
+           id="rect6"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="startDay"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="20.296875"
+             y="19.799999"
+             id="tspan7">startDay</tspan></text>
+      </g>
+      <g
+         id="g9"
+         transform="translate(112.000000, 31.000000)">
+        <rect
+           id="rect7"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="viewof-endDay"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan8">viewof</tspan><tspan
+             x="25.097656"
+             y="29.800001"
+             id="tspan9">endDay</tspan></text>
+      </g>
+      <g
+         id="g10"
+         transform="translate(112.000000, 96.000000)">
+        <rect
+           id="rect9"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="endDay"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan10">endDay</tspan></text>
+      </g>
+      <g
+         id="g12"
+         transform="translate(363.000000, 31.000000)">
+        <rect
+           id="rect10"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="viewof-orders"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan11">viewof</tspan><tspan
+             x="25.097656"
+             y="29.800001"
+             id="tspan12">orders</tspan></text>
+      </g>
+      <g
+         id="g13"
+         transform="translate(363.000000, 96.000000)">
+        <rect
+           id="rect12"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="orders"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan13">orders</tspan></text>
+      </g>
+      <g
+         id="g14"
+         transform="translate(363.000000, 175.000000)">
+        <rect
+           id="rect13"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="chart"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="27.498047"
+             y="19.799999"
+             id="tspan14">chart</tspan></text>
+      </g>
+      <g
+         id="g15"
+         transform="translate(467.000000, 96.000000)">
+        <rect
+           id="rect14"
+           stroke="#F7AD45"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="widget"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan15">widget</tspan></text>
+      </g>
+      <path
+         id="Line"
+         d="M313.108497,135.188993 L322.954615,137.263593 L320.466,140.395 L367.311007,177.608497 L367.70251,177.919504 L367.080496,178.70251 L366.688993,178.391503 L319.844,141.178 L317.356488,144.310647 L313.108497,135.188993 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path15"
+         d="M402,134.5 L406.5,143.5 L402.5,143.5 L402.5,178.5 L401.5,178.5 L401.5,143.5 L397.5,143.5 L402,134.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path16"
+         d="M470.914402,131.298093 L471.701907,131.914402 L471.393753,132.308154 L440.632,171.614 L443.782393,174.079595 L434.691846,178.393753 L436.694848,168.53282 L439.844,170.997 L470.606247,131.691846 L470.914402,131.298093 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path17"
+         d="M354.384521,66.8950608 L353.332,70.754 L466.131559,101.517618 L466.613941,101.649177 L466.350823,102.613941 L465.868441,102.482382 L353.068,71.719 L352.016464,75.5779351 L344.517618,68.8684413 L354.384521,66.8950608 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path18"
+         d="M434.562921,69.7571785 L444.61573,70.1942572 L442.672,73.691 L480.242821,94.5629214 L480.6799,94.8057428 L480.194257,95.6799001 L479.757179,95.4370786 L442.187,74.564 L440.244944,78.0616727 L434.562921,69.7571785 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path19"
+         d="M101.254852,132.383185 L100.415,136.294 L367.104886,193.511125 L367.593761,193.616011 L367.383989,194.593761 L366.895114,194.488875 L100.205,137.272 L99.3669045,141.182938 L91.5111248,134.895114 L101.254852,132.383185 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path20"
+         d="M191.3943,132.939142 L190.323,136.792 L362.133822,184.518241 L362.615581,184.652063 L362.347937,185.615581 L361.866178,185.481759 L190.056,137.756 L188.985505,141.610803 L181.518241,134.866178 L191.3943,132.939142 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path21"
+         d="M313,69.5 L317.5,78.5 L313.5,78.5 L313.5,95.5 L312.5,95.5 L312.5,78.5 L308.5,78.5 L313,69.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path22"
+         d="M151,69.5 L155.5,78.5 L151.5,78.5 L151.5,95.5 L150.5,95.5 L150.5,78.5 L146.5,78.5 L151,69.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path23"
+         d="M62,69.5 L66.5,78.5 L62.5,78.5 L62.5,95.5 L61.5,95.5 L61.5,78.5 L57.5,78.5 L62,69.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path24"
+         d="M402,70.5 L406.5,79.5 L402.5,79.5 L402.5,96.5 L401.5,96.5 L401.5,79.5 L397.5,79.5 L402,70.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <use
+         id="use24"
+         stroke="#F7AD45"
+         mask="url(#mask-2)"
+         stroke-width="2"
+         stroke-dasharray="7"
+         xlink:href="#path-1" />
+      <g
+         id="Group-2"
+         transform="translate(272.000000, 271.000000)">
+        <rect
+           id="rect24"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="1.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <rect
+           id="rect25"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="196.5"
+           y="66.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <rect
+           id="rect26"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="92.5"
+           y="145.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <rect
+           id="rect27"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="92.5"
+           y="66.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <rect
+           id="rect28"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="1.5"
+           y="66.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <rect
+           id="rect29"
+           stroke="#A2B9A7"
+           stroke-width="3"
+           x="92.5"
+           y="1.5"
+           width="76"
+           height="37"
+           rx="13" />
+        <text
+           id="text30"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="25.097656"
+             y="19.799999"
+             id="tspan29">viewof</tspan><tspan
+             x="10.695312"
+             y="29.800001"
+             id="tspan30">pizzaChoices</tspan></text>
+        <text
+           id="text31"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="10.695312"
+             y="84.799965"
+             id="tspan31">pizzaChoices</tspan></text>
+        <text
+           id="text33"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="116.09766"
+             y="19.799999"
+             id="tspan32">viewof</tspan><tspan
+             x="116.09766"
+             y="29.800001"
+             id="tspan33">orders</tspan></text>
+        <text
+           id="text34"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="116.09766"
+             y="84.799965"
+             id="tspan34">orders</tspan></text>
+        <text
+           id="text35"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="118.49805"
+             y="163.80009"
+             id="tspan35">chart</tspan></text>
+        <text
+           id="text36"
+           font-family="RobotoMono-Regular, 'Roboto Mono'"
+           font-size="8px"
+           font-weight="normal"
+           fill="#ff0000"
+           y="11.799999"><tspan
+             x="220.09766"
+             y="84.799965"
+             id="tspan36">widget</tspan></text>
+      </g>
+      <path
+         id="path36"
+         d="M313.108497,375.188993 L322.954615,377.263593 L320.466,380.395 L367.311007,417.608497 L367.70251,417.919504 L367.080496,418.70251 L366.688993,418.391503 L319.844,381.178 L317.356488,384.310647 L313.108497,375.188993 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path37"
+         d="M402,374.5 L406.5,383.5 L402.5,383.5 L402.5,418.5 L401.5,418.5 L401.5,383.5 L397.5,383.5 L402,374.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path38"
+         d="M470.914402,371.298093 L471.701907,371.914402 L471.393753,372.308154 L440.632,411.614 L443.782393,414.079595 L434.691846,418.393753 L436.694848,408.53282 L439.844,410.997 L470.606247,371.691846 L470.914402,371.298093 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path39"
+         d="M354.384521,306.895061 L353.332,310.754 L466.131559,341.517618 L466.613941,341.649177 L466.350823,342.613941 L465.868441,342.482382 L353.068,311.719 L352.016464,315.577935 L344.517618,308.868441 L354.384521,306.895061 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path40"
+         d="M434.562921,309.757179 L444.61573,310.194257 L442.672,313.691 L480.242821,334.562921 L480.6799,334.805743 L480.194257,335.6799 L479.757179,335.437079 L442.187,314.564 L440.244944,318.061673 L434.562921,309.757179 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path41"
+         d="M61.8585418,134.520428 L68.7209405,141.879605 L64.884,143.01 L112.650471,304.948127 C121.820532,336.036504 145.550328,360.689189 176.21704,371.056432 L177.14845,371.36621 L367.155462,433.524783 L367.630679,433.680244 L367.319756,434.630679 L366.844538,434.475217 L176.837526,372.316645 C145.721843,362.137513 121.535022,337.449279 111.976493,306.180585 L111.691327,305.231043 L63.925,143.293 L60.0886395,144.425853 L61.8585418,134.520428 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path42"
+         d="M150.973636,135.500696 L155.941923,144.250903 L151.947,144.461 L159.100325,279.929967 C161.099579,317.793991 184.438482,351.194481 219.22218,366.11936 L220.279724,366.565959 L362.19187,425.53828 L362.653591,425.73015 L362.26985,426.653591 L361.80813,426.46172 L219.895984,367.4894 C184.530189,352.792963 160.62326,319.29227 158.169496,281.140226 L158.101717,279.982694 L150.949,144.514 L146.954443,144.725449 L150.973636,135.500696 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path43"
+         d="M313,309.5 L317.5,318.5 L313.5,318.5 L313.5,335.5 L312.5,335.5 L312.5,318.5 L308.5,318.5 L313,309.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <path
+         id="path44"
+         d="M402,310.5 L406.5,319.5 L402.5,319.5 L402.5,336.5 L401.5,336.5 L401.5,319.5 L397.5,319.5 L402,310.5 Z"
+         fill="#BB3E01"
+         fill-rule="nonzero" />
+      <use
+         id="use44"
+         stroke="#A2B9A7"
+         mask="url(#mask-4)"
+         stroke-width="2"
+         stroke-dasharray="7"
+         xlink:href="#path-3" />
+      <text
+         id="shared-variables"
+         font-family="RobotoMono-Regular, 'Roboto Mono'"
+         font-size="8px"
+         font-weight="normal"
+         fill="#ff0000"
+         y="3.7999992"><tspan
+           x="24.09375"
+           y="24.799999"
+           id="tspan44">shared variables</tspan></text>
+      <text
+         id="template-prototype"
+         font-family="RobotoMono-Regular, 'Roboto Mono'"
+         font-size="8px"
+         font-weight="normal"
+         fill="#f7ad45"
+         y="1.7999992"><tspan
+           x="459.29297"
+           y="40.79998"
+           id="tspan45">template prototype</tspan></text>
+      <text
+         id="clone"
+         font-family="RobotoMono-Regular, 'Roboto Mono'"
+         font-size="8px"
+         font-weight="normal"
+         fill="#a2b9a7"
+         y="1.7999992"><tspan
+           x="521.49805"
+           y="280.80014"
+           id="tspan46">clone</tspan></text>
+      <text
+         id="Dataflow-Templating"
+         font-family="RobotoMono-Regular, 'Roboto Mono'"
+         font-size="14px"
+         font-weight="normal"
+         fill="#ff0000"
+         y="11.799999"><tspan
+           x="27.187012"
+           y="452.80014"
+           id="tspan47">Dataflow Templating</tspan></text>
+    </g>
+  </g>
+</svg>

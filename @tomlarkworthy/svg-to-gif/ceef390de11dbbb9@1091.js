@@ -2,7 +2,7 @@ import define1 from "./65d33fe44849cfde@588.js";
 import define2 from "./3fd0d90f06cd444e@89.js";
 import define3 from "./0ef5ae783a5f1d31@121.js";
 import define4 from "./e93997d5089d7165@2303.js";
-import define5 from "./dfdb38d5580b5c35@347.js";
+import define5 from "./dfdb38d5580b5c35@351.js";
 
 function _1(md){return(
 md`# SVG Timeseries to GIF
