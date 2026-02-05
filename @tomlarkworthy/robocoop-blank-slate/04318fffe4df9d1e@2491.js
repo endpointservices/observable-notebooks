@@ -1,5 +1,4 @@
-import define1 from "./17c8ce433e1df58e@3584.js";
-import define2 from "./dfdb38d5580b5c35@347.js";
+import define1 from "./048a17a165be198d@273.js";
 
 function _1(md){return(
 md`# OpenAI Whisper Input
@@ -118,64 +117,19 @@ function _audioBlobToFile(){return(
   }
 )}
 
-function _8(md){return(
+function _OPENAI_API_KEY(Inputs,localStorageView){return(
+Inputs.bind(
+  Inputs.password({
+    width: "100%",
+    label: "OPENAI_API_KEY",
+    placeholder: "paste openAI key here"
+  }),
+  localStorageView("OPENAI_API_KEY")
+)
+)}
+
+function _10(md){return(
 md`---`
-)}
-
-function _9($0){return(
-$0
-)}
-
-function _10(Inputs,suggestion){return(
-Inputs.button("copy code", {
-  reduce: () => {
-    navigator.clipboard.writeText(suggestion);
-  }
-})
-)}
-
-function _11($0){return(
-$0
-)}
-
-function _12(md){return(
-md`## Current Chat context`
-)}
-
-function _13($0){return(
-$0
-)}
-
-function _14(md){return(
-md`tick the cells to include in the next prompt`
-)}
-
-function _15(md){return(
-md`### AI Settings`
-)}
-
-function _16($0){return(
-$0
-)}
-
-function _17($0){return(
-$0
-)}
-
-function _18($0){return(
-$0
-)}
-
-function _19(md){return(
-md`---`
-)}
-
-function _21(background_tasks){return(
-background_tasks
-)}
-
-function _23(footer){return(
-footer
 )}
 
 export default function define(runtime, observer) {
@@ -188,43 +142,10 @@ export default function define(runtime, observer) {
   main.variable(observer("whisperInput")).define("whisperInput", ["htl","MediaRecorder","audioBlobToFile","transcribeAudio","Event"], _whisperInput);
   main.variable(observer("transcribeAudio")).define("transcribeAudio", ["OPENAI_API_KEY","FormData"], _transcribeAudio);
   main.variable(observer("audioBlobToFile")).define("audioBlobToFile", _audioBlobToFile);
-  main.variable(observer()).define(["md"], _8);
-  main.variable(observer()).define(["viewof prompt"], _9);
-  main.variable(observer()).define(["Inputs","suggestion"], _10);
-  main.variable(observer()).define(["viewof suggestion"], _11);
-  main.variable(observer()).define(["md"], _12);
-  main.variable(observer()).define(["viewof context_viz"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["md"], _15);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _16);
-  main.variable(observer()).define(["viewof api_endpoint"], _17);
-  main.variable(observer()).define(["viewof settings"], _18);
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
+  main.variable(observer("OPENAI_API_KEY")).define("OPENAI_API_KEY", ["Generators", "viewof OPENAI_API_KEY"], (G, _) => G.input(_));
   const child1 = runtime.module(define1);
-  main.import("ask", child1);
-  main.import("excludes", child1);
-  main.import("cells", child1);
-  main.import("update_context", child1);
-  main.import("on_prompt", child1);
-  main.import("api_call_response", child1);
-  main.import("background_tasks", child1);
-  main.import("mutable context", child1);
-  main.import("context", child1);
-  main.import("viewof prompt", child1);
-  main.import("prompt", child1);
-  main.import("viewof suggestion", child1);
-  main.import("suggestion", child1);
-  main.import("viewof settings", child1);
-  main.import("settings", child1);
-  main.import("viewof OPENAI_API_KEY", child1);
-  main.import("OPENAI_API_KEY", child1);
-  main.import("viewof api_endpoint", child1);
-  main.import("api_endpoint", child1);
-  main.import("viewof context_viz", child1);
-  main.import("context_viz", child1);
-  main.variable(observer()).define(["background_tasks"], _21);
-  const child2 = runtime.module(define2);
-  main.import("footer", child2);
-  main.variable(observer()).define(["footer"], _23);
+  main.import("localStorageView", child1);
+  main.variable(observer()).define(["md"], _10);
   return main;
 }

@@ -1,6 +1,6 @@
 import define1 from "./c087cd984171e13b@2881.js";
 import define2 from "./e93eab08140b49b2@2875.js";
-import define3 from "./17c8ce433e1df58e@3584.js";
+import define3 from "./17c8ce433e1df58e@3595.js";
 
 function _1(md){return(
 md`# Roboco-op: Blank Slate <!-- REWRITE THIS LINT TO GIVE YOUR NOTEBOOK A TITLE -->
