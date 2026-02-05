@@ -1,4 +1,4 @@
-import define1 from "./dfdb38d5580b5c35@347.js";
+import define1 from "./dfdb38d5580b5c35@351.js";
 
 async function _1(FileAttachment,md){return(
 md`# QR code scanning with [jsqrcode](https://github.com/LazarSoft/jsqrcode) and [webqr](http://www.webqr.com)
