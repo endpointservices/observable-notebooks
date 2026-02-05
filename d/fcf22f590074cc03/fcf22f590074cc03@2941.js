@@ -1,5 +1,5 @@
-import define1 from "./17c8ce433e1df58e@3584.js";
-import define2 from "./c7a3b20cec5d4dd9@730.js";
+import define1 from "./17c8ce433e1df58e@3595.js";
+import define2 from "./c7a3b20cec5d4dd9@732.js";
 
 function _1(md){return(
 md`# Test Driven Development Demo: SQL Parser
