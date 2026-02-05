@@ -1,5 +1,4 @@
-// https://observablehq.com/@tomlarkworthy/catch-all@408
-import define1 from "./e1c39d41e8e944b0@939.js";
+import define1 from "./e1c39d41e8e944b0@950.js";
 import define2 from "./58f3eb7334551ae6@215.js";
 
 function _1(md){return(
