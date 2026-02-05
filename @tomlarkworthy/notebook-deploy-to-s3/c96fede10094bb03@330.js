@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/notebook-deploy-to-s3@330
 import define1 from "./e2cca0a7645d62fa@764.js";
-import define2 from "./048a17a165be198d@271.js";
+import define2 from "./048a17a165be198d@273.js";
 import define3 from "./55bed46f68a80641@366.js";
 
 function _1(md){return(
