@@ -1,6 +1,6 @@
 // https://observablehq.com/@tomlarkworthy/metaprogramming@588
-import define1 from "./c7a3b20cec5d4dd9@730.js";
-import define2 from "./3d9d1394d858ca97@553.js";
+import define1 from "./c7a3b20cec5d4dd9@732.js";
+import define2 from "./3d9d1394d858ca97@556.js";
 
 function _1(md){return(
 md`# Metaprogramming with _Peek_ [Not recommended for production user]
