@@ -1,8 +1,8 @@
-import define1 from "./0b75dbddd18995dc@1761.js";
-import define2 from "./048a17a165be198d@271.js";
+import define1 from "./0b75dbddd18995dc@1765.js";
+import define2 from "./048a17a165be198d@273.js";
 import define3 from "./0e0b35a92c819d94@474.js";
 import define4 from "./1f41fef8b019cf4e@94.js";
-import define5 from "./f92778131fd76559@1208.js";
+import define5 from "./f92778131fd76559@1212.js";
 
 async function _1(FileAttachment,md){return(
 md`${await FileAttachment("DALL·E 2023-11-07 22@2.30.52 - A photo-realistic image of a cyborg with a sleek, metallic frame, detailed with a striking red visor, working alongside an engineer in a cluttered hig.png").image({style: "float: right; padding: 10px"})}
