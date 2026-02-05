@@ -1,6 +1,6 @@
 import define1 from "./67d1b2c32f1883c4@669.js";
-import define2 from "./f92778131fd76559@1208.js";
-import define3 from "./048a17a165be198d@271.js";
+import define2 from "./f92778131fd76559@1212.js";
+import define3 from "./048a17a165be198d@273.js";
 
 function _1(md){return(
 md`# [CloudEvents](https://github.com/cloudevents/spec/blob/v1.0.1/spec.md) Explorer
