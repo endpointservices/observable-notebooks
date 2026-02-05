@@ -1,8 +1,8 @@
 import define1 from "./993a0c51ef1175ea@1396.js";
 import define2 from "./11a5ab8b1b3a51db@1161.js";
 import define3 from "./84e66f78139ac354@830.js";
-import define4 from "./316f0885d15ab671@69.js";
-import define5 from "./dfdb38d5580b5c35@347.js";
+import define4 from "./316f0885d15ab671@71.js";
+import define5 from "./dfdb38d5580b5c35@351.js";
 
 function _1(md){return(
 md`# Chat application with Firebase on Observable (Twitch)
