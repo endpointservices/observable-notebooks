@@ -1,9 +1,9 @@
 // https://observablehq.com/@tomlarkworthy/aws@764
-import define1 from "./c7a3b20cec5d4dd9@730.js";
-import define2 from "./316f0885d15ab671@69.js";
+import define1 from "./c7a3b20cec5d4dd9@732.js";
+import define2 from "./316f0885d15ab671@71.js";
 import define3 from "./9c498948145037d2@140.js";
 import define4 from "./c2dae147641e012a@46.js";
-import define5 from "./3d9d1394d858ca97@553.js";
+import define5 from "./3d9d1394d858ca97@556.js";
 
 function _1(md){return(
 md`# AWS Helpers
