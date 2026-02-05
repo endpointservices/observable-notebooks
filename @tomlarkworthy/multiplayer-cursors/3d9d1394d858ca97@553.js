@@ -1,4 +1,3 @@
-// https://observablehq.com/@mootari/signature@553
 function _1(md){return(
 md`# Signature - A Documentation Toolkit
 <!-- keywords: javadoc docgen docblock -->
