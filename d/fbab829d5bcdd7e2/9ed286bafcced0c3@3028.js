@@ -1,5 +1,3 @@
-import define1 from "./17c8ce433e1df58e@3584.js";
-
 function _1(md){return(
 md`# \`highlight()\` values to [roboco-op](https://observablehq.com/d/9ed286bafcced0c3?collection=@tomlarkworthy/robocoop)
 
@@ -171,62 +169,6 @@ function _encodeImage(){return(
   }
 )}
 
-function _11($0){return(
-$0
-)}
-
-function _12(Inputs,suggestion){return(
-Inputs.button("copy code", {
-  reduce: () => {
-    navigator.clipboard.writeText(suggestion);
-  }
-})
-)}
-
-function _13($0){return(
-$0
-)}
-
-function _14(md){return(
-md`## Current Chat context`
-)}
-
-function _15($0){return(
-$0
-)}
-
-function _16(md){return(
-md`tick the cells to include in the next prompt`
-)}
-
-function _17(md){return(
-md`### AI Settings`
-)}
-
-function _18($0){return(
-$0
-)}
-
-function _19($0){return(
-$0
-)}
-
-function _20($0){return(
-$0
-)}
-
-function _21(md){return(
-md`---`
-)}
-
-function _23(background_tasks){return(
-background_tasks
-)}
-
-function _25(footer){return(
-footer
-)}
-
 export default function define(runtime, observer) {
   const main = runtime.module();
   function toString() { return this.url; }
@@ -244,41 +186,5 @@ export default function define(runtime, observer) {
   main.variable(observer("customJsonFormatter")).define("customJsonFormatter", _customJsonFormatter);
   main.variable(observer()).define(["md","customJsonFormatter"], _9);
   main.variable(observer("encodeImage")).define("encodeImage", _encodeImage);
-  main.variable(observer()).define(["viewof prompt"], _11);
-  main.variable(observer()).define(["Inputs","suggestion"], _12);
-  main.variable(observer()).define(["viewof suggestion"], _13);
-  main.variable(observer()).define(["md"], _14);
-  main.variable(observer()).define(["viewof context_viz"], _15);
-  main.variable(observer()).define(["md"], _16);
-  main.variable(observer()).define(["md"], _17);
-  main.variable(observer()).define(["viewof OPENAI_API_KEY"], _18);
-  main.variable(observer()).define(["viewof api_endpoint"], _19);
-  main.variable(observer()).define(["viewof settings"], _20);
-  main.variable(observer()).define(["md"], _21);
-  const child1 = runtime.module(define1);
-  main.import("ask", child1);
-  main.import("excludes", child1);
-  main.import("cells", child1);
-  main.import("update_context", child1);
-  main.import("on_prompt", child1);
-  main.import("variables", child1);
-  main.import("api_call_response", child1);
-  main.import("background_tasks", child1);
-  main.import("ndd", child1);
-  main.import("_events", child1);
-  main.import("viewof prompt", child1);
-  main.import("prompt", child1);
-  main.import("viewof suggestion", child1);
-  main.import("suggestion", child1);
-  main.import("viewof settings", child1);
-  main.import("settings", child1);
-  main.import("viewof OPENAI_API_KEY", child1);
-  main.import("OPENAI_API_KEY", child1);
-  main.import("viewof api_endpoint", child1);
-  main.import("api_endpoint", child1);
-  main.import("viewof context_viz", child1);
-  main.import("context_viz", child1);
-  main.variable(observer()).define(["background_tasks"], _23);
-  main.variable(observer()).define(["footer"], _25);
   return main;
 }
