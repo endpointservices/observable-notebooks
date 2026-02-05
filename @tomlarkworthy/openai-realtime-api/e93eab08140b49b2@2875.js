@@ -1,5 +1,5 @@
 import define1 from "./d76c2180ae7b30c9@4435.js";
-import define2 from "./17c8ce433e1df58e@3584.js";
+import define2 from "./17c8ce433e1df58e@3595.js";
 
 function _1(md){return(
 md`# RAG Extension for Roboco-op
