@@ -1,4 +1,4 @@
-import define1 from "./db42ae70222a8b08@1170.js";
+import define1 from "./db42ae70222a8b08@1215.js";
 
 function _introduction(md){return(
 md`# Minimize Crossings: Spectral Circular Graph for Layout

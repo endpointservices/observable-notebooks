@@ -3,7 +3,7 @@ import define2 from "./a89ea9f0ad8c6226@1486.js";
 import define3 from "./98f34e974bb2e4bc@958.js";
 import define4 from "./f109935193c0deba@4551.js";
 import define5 from "./b69d20b9e3533ef8@158.js";
-import define6 from "./db42ae70222a8b08@1170.js";
+import define6 from "./db42ae70222a8b08@1215.js";
 import define7 from "./cdc303fcc82a630f@262.js";
 import define8 from "./048a17a165be198d@273.js";
 import define9 from "./e3659730ba3df002@40.js";
@@ -20,7 +20,7 @@ import {robocoop3} from "@tomlarkworthy/robocoop-3"
 )}
 
 function _agent1(robocoop3){return(
-robocoop3()
+robocoop3({ prompt: "Are you working?" })
 )}
 
 function _3(md){return(
@@ -45,13 +45,19 @@ md`## Features
 )}
 
 function _6(md){return(
+md`## TODO
+- Struggles a bit with imports, I think we should support defining variables that reference other modules and lazily auto-import
+- Include a screenshot of the DOM if its a DOM node or image?`
+)}
+
+function _7(md){return(
 md`## Builder Function`
 )}
 
 function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_template,Node,Event)
 {
   keepalive(robocoopPrototypeModule, "toolRegistry_sync");
-  return ({ autoDispose = true } = {}) => {
+  return ({ prompt = undefined } = {}) => {
     const root = document.createElement("div");
     root.value = null;
     root.records = [];
@@ -63,12 +69,7 @@ function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_tem
 
     let lastFinishedSteps = 0;
 
-    const noopObserver = () => ({
-      fulfilled: () => {},
-      pending: () => {},
-      rejected: () => {},
-      error: () => {}
-    });
+    const noopObserver = () => ({});
 
     const countFinishedSteps = (convo) => {
       const steps = Array.isArray(convo?.steps) ? convo.steps : [];
@@ -88,10 +89,7 @@ function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_tem
               if (!(el instanceof Node)) return;
               inner = el;
               root.replaceChildren(el);
-            },
-            pending: () => {},
-            rejected: () => {},
-            error: () => {}
+            }
           };
         }
 
@@ -110,10 +108,15 @@ function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_tem
                 lastFinishedSteps = finished;
                 root.dispatchEvent(new Event("input", { bubbles: true }));
               }
-            },
-            pending: () => {},
-            rejected: () => {},
-            error: () => {}
+            }
+          };
+        }
+
+        if (name === "viewof agent_prompt") {
+          return {
+            fulfilled: (prompt_ui) => {
+              prompt_ui.value = prompt;
+            }
           };
         }
 
@@ -132,10 +135,7 @@ function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_tem
                 );
               }
               lastRecordsLen = arr.length;
-            },
-            pending: () => {},
-            rejected: () => {},
-            error: () => {}
+            }
           };
         }
 
@@ -160,7 +160,7 @@ function _robocoop3(keepalive,robocoopPrototypeModule,cloneDataflow,robocoop_tem
 }
 
 
-function _8(md){return(
+function _9(md){return(
 md`## Prompt`
 )}
 
@@ -177,11 +177,14 @@ You may *modify the live notebook* by calling tools like upsert_variables/delete
 
 Environment model (Observable semantics)
 - A “variable” is a named reactive value in the runtime graph. Each variable is defined as a function of its declared inputs.
-- When you redefine a variable, downstream variables reactively re-evaluate.
+- When you redefine a variable, downstream variables reactively re-evaluate (pending).
+   - Variables transition through "pending" and ("error" or "fulfilled") states.
+   - Variable are resolved in topological order with glitch-free operation
+   - "error" variable halt reactive propogation (variables that throw).
 - UI variables are typically named "viewof x" and return a DOM element; the value variable "x" is streamed from the "value" property of the "viewof x" value.
+- Implicit variables reference external Javascript in a closure (() => x).
 - Avoid hidden global state. Prefer deterministic variable definitions.
 - Only "reachable" variables are computed, where reachable means they are either visible on the page or are dependants of something visible on the page.
-- Variables transition through "fulfilled", "pending" and "error" states.
 - The Runtime is rendered into a webpage, so your execution environment is hosted a browser
    - you have Javascript at your disposal. You can execute fetch calls with eval to gather information from the interner (CORS permittting).
    - You can check the value of DOM nodes on the page.
@@ -253,7 +256,7 @@ Never guess why something is happening, or jumping to generic advice. The *whole
 `
 )}
 
-function _10(md){return(
+function _11(md){return(
 md`## TDD`
 )}
 
@@ -264,7 +267,7 @@ function _test_cell_map_coverage(expect,coverage_failures)
 }
 
 
-function _12(md){return(
+function _13(md){return(
 md`## Templating
 
 The template extracts a prototype into a reusable component`
@@ -360,16 +363,16 @@ async function _robocoop_template(lookupVariable,robocoopPrototypeModule)
 }
 
 
-function _15(currentModules){return(
+function _16(currentModules){return(
 currentModules
 )}
 
-function _16(md){return(
+function _17(md){return(
 md`## UI`
 )}
 
-function _robocoopPrototype(reversibleAttach,agent_ui_attached,$0,$1,$2,agent_conversation_view_holder,provider_choice,$3,$4,$5,$6,$7,$8,$9,tabbedPane){return(
-(() => {
+function _robocoopPrototype(reversibleAttach,agent_ui_attached,$0,$1,$2,agent_conversation_view_holder,provider_choice,$3,$4,$5,$6,$7,$8,$9,tabbedPane)
+{
   const root = document.createElement("div");
   root.value = null;
   root.records = [];
@@ -386,10 +389,12 @@ function _robocoopPrototype(reversibleAttach,agent_ui_attached,$0,$1,$2,agent_co
     wrap.style.display = "grid";
     wrap.style.gap = "8px";
     const head = document.createElement("div");
-    head.textContent = label;
-    head.style.fontWeight = "600";
-    head.style.color = "#333";
-    wrap.appendChild(head);
+    if (head) {
+      head.textContent = label;
+      head.style.fontWeight = "600";
+      head.style.color = "#333";
+      wrap.appendChild(head);
+    }
     for (const n of nodes) if (n) wrap.appendChild(n);
     return wrap;
   };
@@ -408,7 +413,7 @@ function _robocoopPrototype(reversibleAttach,agent_ui_attached,$0,$1,$2,agent_co
   runPanel.style.display = "grid";
   runPanel.style.gap = "12px";
   runPanel.appendChild(
-    panel("Run", [
+    panel(undefined, [
       reversibleAttach(!agent_ui_attached, $0),
       buttonRow([
         reversibleAttach(!agent_ui_attached, $1),
@@ -470,8 +475,8 @@ function _robocoopPrototype(reversibleAttach,agent_ui_attached,$0,$1,$2,agent_co
   );
 
   return root;
-})()
-)}
+}
+
 
 function _agent_ui_attached(Inputs){return(
 Inputs.toggle({
@@ -480,7 +485,7 @@ Inputs.toggle({
 })
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`### agent`
 )}
 
@@ -530,7 +535,7 @@ agent_clear &&
   })()
 )}
 
-function _26(md){return(
+function _27(md){return(
 md`### execution state`
 )}
 
@@ -1055,7 +1060,7 @@ function _agent_conversation_view(agent_conversation,htl,css){return(
 })()
 )}
 
-function _37(md){return(
+function _38(md){return(
 md`### models`
 )}
 
@@ -1067,7 +1072,7 @@ function _anthropic_models(){return(
 ["claude-opus-4-5", "claude-haiku-4-5", "claude-sonnet-4-5"]
 )}
 
-function _40(md){return(
+function _41(md){return(
 md`### providers`
 )}
 
@@ -1840,7 +1845,7 @@ Inputs.bind(
 )
 )}
 
-function _52(md){return(
+function _53(md){return(
 md`#### Ollama
 
 On macOS with the Ollama app:  
@@ -2128,7 +2133,7 @@ function _createOllamaOpencodeLoop(ollamaProvider,AbortController,globalRuntime,
 }
 )}
 
-function _55(md){return(
+function _56(md){return(
 md`### Agent config`
 )}
 
@@ -2317,11 +2322,11 @@ function _test_normalizeUsage_openai_chat_completions_usage(normalizeUsage)
 }
 
 
-function _60(md){return(
+function _61(md){return(
 md`## Example Provider Data`
 )}
 
-function _61(md){return(
+function _62(md){return(
 md`<details><summary>Open AI completion event</summary>
 ${md`~~~json
 {
@@ -2440,7 +2445,7 @@ retry-after: 11
 `
 )}
 
-function _62(md){return(
+function _63(md){return(
 md`## Code`
 )}
 
@@ -3591,7 +3596,7 @@ function _createLoop(anthropicProvider,createConversation,AbortController,create
 }
 )}
 
-function _101(md){return(
+function _102(md){return(
 md`### Context`
 )}
 
@@ -3712,7 +3717,7 @@ function _importVariable(lookupVariable,robocoopPrototypeModule){return(
 lookupVariable("moduleMap", robocoopPrototypeModule)
 )}
 
-function _110(currentModules,importVariable){return(
+function _111(currentModules,importVariable){return(
 currentModules.get(importVariable._inputs[0]._module)
 )}
 
@@ -3779,7 +3784,7 @@ function _test_parseVariablesXML_smoke(parseVariablesXML,test_variablesXML_smoke
 }
 
 
-function _116(md){return(
+function _117(md){return(
 md`## Tools
 
 Note OpenAI: 'required' is required to be supplied and to be an array including every key in properties.`
@@ -4463,7 +4468,7 @@ function _createToolRegistry(toolRegistry_recording,$0,toolRegistry_history_limi
 }
 )}
 
-function _123(md){return(
+function _124(md){return(
 md`## Tool history`
 )}
 
@@ -4650,7 +4655,7 @@ function _toolRegistry_stats(toolRegistry_history){return(
 })()
 )}
 
-function _133(md){return(
+function _134(md){return(
 md`## Tool Implementation`
 )}
 
@@ -4658,7 +4663,7 @@ function _allTools(variableTools,runtimeTools){return(
 [...variableTools, ...runtimeTools]
 )}
 
-function _135(md){return(
+function _136(md){return(
 md`### variable tools`
 )}
 
@@ -5053,11 +5058,11 @@ defineTool({
 })
 )}
 
-function _140(test_upsert_module_prefixed_inputs_var){return(
+function _141(test_upsert_module_prefixed_inputs_var){return(
 test_upsert_module_prefixed_inputs_var
 )}
 
-function _141(md){return(
+function _142(md){return(
 md`## scrap`
 )}
 
@@ -5244,7 +5249,7 @@ function _test_deleteVariableTool_deletes_anonymous_by_id(test_tools_createModul
 })()
 )}
 
-function _149(md){return(
+function _150(md){return(
 md`#### runtime tools`
 )}
 
@@ -6127,11 +6132,11 @@ function _test_search_variables_includes_module(createToolContext,globalRuntime,
 })()
 )}
 
-function _162(md){return(
+function _163(md){return(
 md`## Dependancies`
 )}
 
-function _174(robocoop2){return(
+function _175(robocoop2){return(
 robocoop2()
 )}
 
@@ -6144,22 +6149,23 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["agent1"], _4);
   main.variable(observer()).define(["md"], _5);
   main.variable(observer()).define(["md"], _6);
+  main.variable(observer()).define(["md"], _7);
   main.variable(observer("robocoop3")).define("robocoop3", ["keepalive","robocoopPrototypeModule","cloneDataflow","robocoop_template","Node","Event"], _robocoop3);
-  main.variable(observer()).define(["md"], _8);
+  main.variable(observer()).define(["md"], _9);
   main.variable(observer("system_prompt")).define("system_prompt", _system_prompt);
-  main.variable(observer()).define(["md"], _10);
+  main.variable(observer()).define(["md"], _11);
   main.variable(observer("test_cell_map_coverage")).define("test_cell_map_coverage", ["expect","coverage_failures"], _test_cell_map_coverage);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
   const child1 = runtime.module(define1);
   main.import("cloneDataflow", child1);
   main.variable(observer("robocoop_template")).define("robocoop_template", ["lookupVariable","robocoopPrototypeModule"], _robocoop_template);
-  main.variable(observer()).define(["currentModules"], _15);
-  main.variable(observer()).define(["md"], _16);
+  main.variable(observer()).define(["currentModules"], _16);
+  main.variable(observer()).define(["md"], _17);
   main.variable(observer("viewof robocoopPrototype")).define("viewof robocoopPrototype", ["reversibleAttach","agent_ui_attached","viewof agent_prompt","viewof agent_clear","viewof agent_cancel","agent_conversation_view_holder","provider_choice","viewof provider_choice","viewof OPENAI_API_KEY","viewof provider_openai_config","viewof ANTHROPIC_API_KEY","viewof provider_anthropic_config","viewof provider_ollama_config","viewof agent_config","tabbedPane"], _robocoopPrototype);
   main.variable(observer("robocoopPrototype")).define("robocoopPrototype", ["Generators", "viewof robocoopPrototype"], (G, _) => G.input(_));
   main.variable(observer("viewof agent_ui_attached")).define("viewof agent_ui_attached", ["Inputs"], _agent_ui_attached);
   main.variable(observer("agent_ui_attached")).define("agent_ui_attached", ["Generators", "viewof agent_ui_attached"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("viewof agent_prompt")).define("viewof agent_prompt", ["Inputs"], _agent_prompt);
   main.variable(observer("agent_prompt")).define("agent_prompt", ["Generators", "viewof agent_prompt"], (G, _) => G.input(_));
   main.variable(observer("agent_run_effect")).define("agent_run_effect", ["agent_prompt","agent_run"], _agent_run_effect);
@@ -6169,7 +6175,7 @@ export default function define(runtime, observer) {
   main.variable(observer("viewof agent_clear")).define("viewof agent_clear", ["Inputs"], _agent_clear);
   main.variable(observer("agent_clear")).define("agent_clear", ["Generators", "viewof agent_clear"], (G, _) => G.input(_));
   main.variable(observer("agent_clear_effect")).define("agent_clear_effect", ["agent_clear","agent_loop","mutable agent_records","mutable agent_run_history"], _agent_clear_effect);
-  main.variable(observer()).define(["md"], _26);
+  main.variable(observer()).define(["md"], _27);
   main.variable(observer("robocoopPrototype_record_stream")).define("robocoopPrototype_record_stream", ["agent_records"], _robocoopPrototype_record_stream);
   main.define("initial agent_records", _agent_records);
   main.variable(observer("mutable agent_records")).define("mutable agent_records", ["Mutable", "initial agent_records"], (M, _) => new M(_));
@@ -6184,10 +6190,10 @@ export default function define(runtime, observer) {
   main.variable(observer("agent_conversation_dom_sync")).define("agent_conversation_dom_sync", ["agent_conversation_view_holder","agent_conversation_view"], _agent_conversation_dom_sync);
   main.variable(observer("agent_conversation_view_holder")).define("agent_conversation_view_holder", ["html"], _agent_conversation_view_holder);
   main.variable(observer("agent_conversation_view")).define("agent_conversation_view", ["agent_conversation","htl","css"], _agent_conversation_view);
-  main.variable(observer()).define(["md"], _37);
+  main.variable(observer()).define(["md"], _38);
   main.variable(observer("open_ai_models")).define("open_ai_models", _open_ai_models);
   main.variable(observer("anthropic_models")).define("anthropic_models", _anthropic_models);
-  main.variable(observer()).define(["md"], _40);
+  main.variable(observer()).define(["md"], _41);
   main.variable(observer("viewof provider_choice")).define("viewof provider_choice", ["Inputs","localStorageView"], _provider_choice);
   main.variable(observer("provider_choice")).define("provider_choice", ["Generators", "viewof provider_choice"], (G, _) => G.input(_));
   main.variable(observer("viewof OPENAI_API_KEY")).define("viewof OPENAI_API_KEY", ["Inputs","localStorageView"], _OPENAI_API_KEY);
@@ -6205,18 +6211,18 @@ export default function define(runtime, observer) {
   main.variable(observer("createAnthropicOpencodeLoop")).define("createAnthropicOpencodeLoop", ["anthropicProvider","AbortController","globalRuntime","createToolContext","streamAnthropicBlocks"], _createAnthropicOpencodeLoop);
   main.variable(observer("viewof provider_ollama_config")).define("viewof provider_ollama_config", ["Inputs","localStorageView"], _provider_ollama_config);
   main.variable(observer("provider_ollama_config")).define("provider_ollama_config", ["Generators", "viewof provider_ollama_config"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _52);
+  main.variable(observer()).define(["md"], _53);
   main.variable(observer("ollamaProvider")).define("ollamaProvider", _ollamaProvider);
   main.variable(observer("createOllamaOpencodeLoop")).define("createOllamaOpencodeLoop", ["ollamaProvider","AbortController","globalRuntime","streamOpenAIChatCompletionsBlocks","createToolContext"], _createOllamaOpencodeLoop);
-  main.variable(observer()).define(["md"], _55);
+  main.variable(observer()).define(["md"], _56);
   main.variable(observer("viewof agent_config")).define("viewof agent_config", ["Inputs","system_prompt"], _agent_config);
   main.variable(observer("agent_config")).define("agent_config", ["Generators", "viewof agent_config"], (G, _) => G.input(_));
   main.variable(observer("agent_loop")).define("agent_loop", ["provider_choice","createOpenAIOpencodeLoop","agent_system_prompt","toolRegistry","provider_openai_config","agent_config","OPENAI_API_KEY","createAnthropicOpencodeLoop","ANTHROPIC_API_KEY","provider_anthropic_config","createOllamaOpencodeLoop","provider_ollama_config"], _agent_loop);
   main.variable(observer("normalizeUsage")).define("normalizeUsage", _normalizeUsage);
   main.variable(observer("test_normalizeUsage_openai_chat_completions_usage")).define("test_normalizeUsage_openai_chat_completions_usage", ["normalizeUsage"], _test_normalizeUsage_openai_chat_completions_usage);
-  main.variable(observer()).define(["md"], _60);
   main.variable(observer()).define(["md"], _61);
   main.variable(observer()).define(["md"], _62);
+  main.variable(observer()).define(["md"], _63);
   main.variable(observer("agent_target_module")).define("agent_target_module", _agent_target_module);
   main.variable(observer("agent_system_prompt")).define("agent_system_prompt", ["agent_config","agent_target_module","provider_choice"], _agent_system_prompt);
   main.variable(observer("agent_run")).define("agent_run", ["generateId","mutable agent_records","provider_choice","mutable agent_run_history","appendAgentRecord","agent_loop","normalizeUsage"], _agent_run);
@@ -6255,7 +6261,7 @@ export default function define(runtime, observer) {
   main.variable(observer("updateToolPart")).define("updateToolPart", ["isToolPart"], _updateToolPart);
   main.variable(observer("conversationToMessages")).define("conversationToMessages", _conversationToMessages);
   main.variable(observer("createLoop")).define("createLoop", ["anthropicProvider","createConversation","AbortController","createUserMessage","createMessageWithParts","createTextPart","addMessage","createAssistantMessage","createStepStartPart","streamAnthropic","conversationToMessages","addPart","updatePart","createToolPart","toolStatePending","updateToolPart","toolStateRunning","createToolContext","globalRuntime","toolStateError","toolStateCompleted","normalizeUsage","createStepFinishPart","completeAssistantMessage"], _createLoop);
-  main.variable(observer()).define(["md"], _101);
+  main.variable(observer()).define(["md"], _102);
   main.variable(observer("resolveRuntimeModules")).define("resolveRuntimeModules", ["globalRuntime","viewof currentModules","moduleMap"], _resolveRuntimeModules);
   main.variable(observer("id")).define("id", _id);
   main.variable(observer("cdata")).define("cdata", _cdata);
@@ -6265,13 +6271,13 @@ export default function define(runtime, observer) {
   main.variable(observer("robocoopPrototypeModule")).define("robocoopPrototypeModule", ["Generators", "viewof robocoopPrototypeModule"], (G, _) => G.input(_));
   main.variable(observer("idVariable")).define("idVariable", ["id","lookupVariable","robocoopPrototypeModule"], _idVariable);
   main.variable(observer("importVariable")).define("importVariable", ["lookupVariable","robocoopPrototypeModule"], _importVariable);
-  main.variable(observer()).define(["currentModules","importVariable"], _110);
+  main.variable(observer()).define(["currentModules","importVariable"], _111);
   main.variable(observer("test_variablesXML_smoke")).define("test_variablesXML_smoke", ["createToolContext","globalRuntime","variablesXML","idVariable"], _test_variablesXML_smoke);
   main.variable(observer("test_variablesXML_importVariable")).define("test_variablesXML_importVariable", ["createToolContext","globalRuntime","variablesXML","importVariable"], _test_variablesXML_importVariable);
   main.variable(observer("expected_error")).define("expected_error", _expected_error);
   main.variable(observer("test_variablesXML_erroredVariable")).define("test_variablesXML_erroredVariable", ["createToolContext","globalRuntime","lookupVariable","robocoopPrototypeModule","variablesXML"], _test_variablesXML_erroredVariable);
   main.variable(observer("test_parseVariablesXML_smoke")).define("test_parseVariablesXML_smoke", ["parseVariablesXML","test_variablesXML_smoke"], _test_parseVariablesXML_smoke);
-  main.variable(observer()).define(["md"], _116);
+  main.variable(observer()).define(["md"], _117);
   main.variable(observer("viewof toolRegistry_ui")).define("viewof toolRegistry_ui", ["toolRegistry_recording","toolRegistry_history_limit","toolRegistry_stats","htl","toolRegistry_history_filtered","viewof toolRegistry_recording","viewof toolRegistry_history_limit","viewof toolRegistry_clear_history","viewof toolRegistry_inspector_controls"], _toolRegistry_ui);
   main.variable(observer("toolRegistry_ui")).define("toolRegistry_ui", ["Generators", "viewof toolRegistry_ui"], (G, _) => G.input(_));
   main.variable(observer("TOOL_SUMMARY_MAX_SIZE")).define("TOOL_SUMMARY_MAX_SIZE", _TOOL_SUMMARY_MAX_SIZE);
@@ -6279,7 +6285,7 @@ export default function define(runtime, observer) {
   main.variable(observer("createToolContext")).define("createToolContext", ["globalRuntime","generateId","AbortController","resolveRuntimeModules"], _createToolContext);
   main.variable(observer("validateParameters")).define("validateParameters", _validateParameters);
   main.variable(observer("createToolRegistry")).define("createToolRegistry", ["toolRegistry_recording","mutable toolRegistry_history","toolRegistry_history_limit","validateParameters"], _createToolRegistry);
-  main.variable(observer()).define(["md"], _123);
+  main.variable(observer()).define(["md"], _124);
   main.define("initial toolRegistry_history", _toolRegistry_history);
   main.variable(observer("mutable toolRegistry_history")).define("mutable toolRegistry_history", ["Mutable", "initial toolRegistry_history"], (M, _) => new M(_));
   main.variable(observer("toolRegistry_history")).define("toolRegistry_history", ["mutable toolRegistry_history"], _ => _.generator);
@@ -6295,15 +6301,15 @@ export default function define(runtime, observer) {
   main.variable(observer("toolRegistry_clear_history_effect")).define("toolRegistry_clear_history_effect", ["toolRegistry_clear_history","mutable toolRegistry_history"], _toolRegistry_clear_history_effect);
   main.variable(observer("toolRegistry_history_filtered")).define("toolRegistry_history_filtered", ["toolRegistry_inspector_controls","toolRegistry_history"], _toolRegistry_history_filtered);
   main.variable(observer("toolRegistry_stats")).define("toolRegistry_stats", ["toolRegistry_history"], _toolRegistry_stats);
-  main.variable(observer()).define(["md"], _133);
+  main.variable(observer()).define(["md"], _134);
   main.variable(observer("allTools")).define("allTools", ["variableTools","runtimeTools"], _allTools);
-  main.variable(observer()).define(["md"], _135);
+  main.variable(observer()).define(["md"], _136);
   main.variable(observer("variableTools")).define("variableTools", ["listVariablesTool","upsertVariablesTool","deleteVariableTool"], _variableTools);
   main.variable(observer("listVariablesTool")).define("listVariablesTool", ["defineTool","variablesXML"], _listVariablesTool);
   main.variable(observer("test_listVariablesTool")).define("test_listVariablesTool", ["globalRuntime","createToolContext","resolveRuntimeModules","listVariablesTool","summarizeJS"], _test_listVariablesTool);
   main.variable(observer("upsertVariablesTool")).define("upsertVariablesTool", ["defineTool","parseVariablesXML","resolveRuntimeModules"], _upsertVariablesTool);
-  main.variable(observer()).define(["test_upsert_module_prefixed_inputs_var"], _140);
-  main.variable(observer()).define(["md"], _141);
+  main.variable(observer()).define(["test_upsert_module_prefixed_inputs_var"], _141);
+  main.variable(observer()).define(["md"], _142);
   main.variable(observer("viewof m")).define("viewof m", ["thisModule"], _m);
   main.variable(observer("m")).define("m", ["Generators", "viewof m"], (G, _) => G.input(_));
   main.variable(observer("v")).define("v", ["m"], _v);
@@ -6312,7 +6318,7 @@ export default function define(runtime, observer) {
   main.variable(observer("test_upsertVariablesTool_imports")).define("test_upsertVariablesTool_imports", ["test_tools_createModuleTool_registers_in_list_modules","globalRuntime","createToolContext","upsertVariablesTool"], _test_upsertVariablesTool_imports);
   main.variable(observer("deleteVariableTool")).define("deleteVariableTool", ["defineTool"], _deleteVariableTool);
   main.variable(observer("test_deleteVariableTool_deletes_anonymous_by_id")).define("test_deleteVariableTool_deletes_anonymous_by_id", ["test_tools_createModuleTool_registers_in_list_modules","createToolContext","globalRuntime","id","deleteVariableTool"], _test_deleteVariableTool_deletes_anonymous_by_id);
-  main.variable(observer()).define(["md"], _149);
+  main.variable(observer()).define(["md"], _150);
   main.variable(observer("runtimeTools")).define("runtimeTools", ["listModulesTool","createModuleTool","runTestsTool","evalTool","searchVariablesTool"], _runtimeTools);
   main.variable(observer("listModulesTool")).define("listModulesTool", ["defineTool","resolveRuntimeModules"], _listModulesTool);
   main.variable(observer("test_listModulesTool_smoke")).define("test_listModulesTool_smoke", ["createToolContext","globalRuntime","listModulesTool"], _test_listModulesTool_smoke);
@@ -6325,7 +6331,7 @@ export default function define(runtime, observer) {
   main.variable(observer("test_tools_evalTool_apply_function_to_variable_value")).define("test_tools_evalTool_apply_function_to_variable_value", ["createToolContext","globalRuntime","test_search_variables_includes_module","evalTool"], _test_tools_evalTool_apply_function_to_variable_value);
   main.variable(observer("searchVariablesTool")).define("searchVariablesTool", ["defineTool","resolveRuntimeModules","variablesXML"], _searchVariablesTool);
   main.variable(observer("test_search_variables_includes_module")).define("test_search_variables_includes_module", ["createToolContext","globalRuntime","searchVariablesTool"], _test_search_variables_includes_module);
-  main.variable(observer()).define(["md"], _162);
+  main.variable(observer()).define(["md"], _163);
   const child2 = runtime.module(define2);
   main.import("coverage_failures", child2);
   const child3 = runtime.module(define3);
@@ -6354,6 +6360,6 @@ export default function define(runtime, observer) {
   main.import("cellsToClipboard", child11);
   const child12 = runtime.module(define12);
   main.import("expect", child12);
-  main.variable(observer()).define(["robocoop2"], _174);
+  main.variable(observer()).define(["robocoop2"], _175);
   return main;
 }

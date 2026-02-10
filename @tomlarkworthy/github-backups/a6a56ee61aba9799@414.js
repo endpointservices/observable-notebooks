@@ -1,5 +1,6 @@
 import define1 from "./98f34e974bb2e4bc@958.js";
 import define2 from "./f096db8fcbc444bf@565.js";
+import define3 from "./f109935193c0deba@4551.js";
 
 function _1(md){return(
 md`# lopepage urls`
@@ -326,33 +327,63 @@ function _targets(){return(
 ["@tom/bar", "d/1f41fef8b019cf4e@94", "@tom/bar#cell"]
 )}
 
-function _linkTo(isOnObservableCom,URLSearchParams,parseViewDSL,convertToGoldenLayout,normalizeWeights,serializeGoldenDSL){return(
+function _linkTo(isOnObservableCom,URLSearchParams){return(
 function linkTo(
-  module,
-  { baseURI = document.baseURI, onObservable = isOnObservableCom() } = {}
+  target,
+  {
+    baseURI = document.baseURI,
+    onObservable = isOnObservableCom(),
+    source = null,
+    op = "open" // "open" | "close" | "focus"
+  } = {}
 ) {
   if (onObservable) {
-    return module.startsWith("#") ? module : "/" + module;
+    const t =
+      typeof target === "string"
+        ? target
+        : target?.module || target?.open || target?.close || "";
+    return t.startsWith("#") ? t : "/" + t;
   }
-  try {
-    const base = new URL(baseURI);
-    const hash = base.hash || "#";
-    const baseHash = new URLSearchParams(hash.substring(1));
-    const view = baseHash.get("view");
-    const ast = parseViewDSL(view);
-    ast.children.push({ nodeType: "module", weight: null, slug: module });
-    const layout = convertToGoldenLayout(ast);
-    normalizeWeights(layout);
-    baseHash.delete("view");
-    const viewString = serializeGoldenDSL(layout);
-    const priorParams = baseHash.toString();
-    base.hash =
-      "#" + priorParams + (priorParams ? "&" : "") + `view=${viewString}`;
-    return base.toString();
-  } catch (err) {
-    console.error(err);
-    debugger;
+
+  const base = new URL(baseURI);
+  const baseHash = new URLSearchParams((base.hash || "#").slice(1));
+
+  if (typeof target === "string" && target.startsWith("#")) return target;
+
+  const isIntent =
+    typeof target === "object" &&
+    target !== null &&
+    ("module" in target ||
+      "open" in target ||
+      "close" in target ||
+      "focus" in target ||
+      "op" in target);
+
+  let module = null;
+  let cell = null;
+
+  if (!isIntent) {
+    module = String(target ?? "");
+    const parts = module.split("#");
+    module = parts[0] || null;
+    cell = parts[1] || null;
+    op = "open";
+  } else {
+    module =
+      target.module || target.open || target.close || target.focus || null;
+    cell = target.cell || null;
+    source = target.source ?? source;
+    op =
+      target.op || (target.close ? "close" : target.focus ? "focus" : "open");
   }
+
+  if (!module) return base.toString();
+
+  baseHash.set(op, cell ? `${module}#${cell}` : module);
+  if (source) baseHash.set("from", source);
+
+  base.hash = "#" + baseHash.toString();
+  return base.toString();
 }
 )}
 
@@ -437,6 +468,10 @@ function _updateNotebookImports(vars,extractNotebookAndCell,linkTo)
 }
 
 
+function _38(robocoop2){return(
+robocoop2()
+)}
+
 export default function define(runtime, observer) {
   const main = runtime.module();
   main.variable(observer()).define(["md"], _1);
@@ -465,7 +500,7 @@ export default function define(runtime, observer) {
   main.variable(observer("isOnObservableCom")).define("isOnObservableCom", ["location"], _isOnObservableCom);
   main.variable(observer("links")).define("links", _links);
   main.variable(observer("targets")).define("targets", _targets);
-  main.variable(observer("linkTo")).define("linkTo", ["isOnObservableCom","URLSearchParams","parseViewDSL","convertToGoldenLayout","normalizeWeights","serializeGoldenDSL"], _linkTo);
+  main.variable(observer("linkTo")).define("linkTo", ["isOnObservableCom","URLSearchParams"], _linkTo);
   main.variable(observer("viewof vars")).define("viewof vars", ["variables","runtime"], _vars);
   main.variable(observer("vars")).define("vars", ["Generators", "viewof vars"], (G, _) => G.input(_));
   main.variable(observer("test_linkTo")).define("test_linkTo", ["links","targets","linkTo"], _test_linkTo);
@@ -479,5 +514,8 @@ export default function define(runtime, observer) {
   main.variable(observer("updateNotebookImports")).define("updateNotebookImports", ["vars","extractNotebookAndCell","linkTo"], _updateNotebookImports);
   const child2 = runtime.module(define2);
   main.import("tests", child2);
+  const child3 = runtime.module(define3);
+  main.import("robocoop2", child3);
+  main.variable(observer()).define(["robocoop2"], _38);
   return main;
 }

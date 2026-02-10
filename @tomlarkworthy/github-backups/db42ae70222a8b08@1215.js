@@ -1,4 +1,4 @@
-import define1 from "./a6a56ee61aba9799@409.js";
+import define1 from "./a6a56ee61aba9799@414.js";
 import define2 from "./0e0b35a92c819d94@474.js";
 import define3 from "./e3a019069a130d79@6817.js";
 import define4 from "./98f34e974bb2e4bc@958.js";
@@ -14,6 +14,12 @@ visualizeModules()
 )}
 
 function _3(md){return(
+md`## TODO
+
+If module-map has an invalid URL it breaks. Perf was greatly increased by bypassing lookupVariable, but then lopepage broke`
+)}
+
+function _4(md){return(
 md`Figures out the import structure of a runtime, just pass a runtime to the function \`moduleMap\` to get a summary of the modules. Returns a map indexed by a Module object to a record.
 
 \`\`\`
@@ -46,7 +52,7 @@ async (
 }
 )}
 
-function _5(md){return(
+function _6(md){return(
 md`### \`currentModules\``
 )}
 
@@ -67,7 +73,7 @@ async function _currentModules(Inputs,moduleMap){return(
 Inputs.input(await moduleMap())
 )}
 
-function _8(Inputs,currentModules){return(
+function _9(Inputs,currentModules){return(
 Inputs.table([...currentModules.values()], {
   format: {
     dom: (d) => d.innerHTML,
@@ -77,7 +83,7 @@ Inputs.table([...currentModules.values()], {
 })
 )}
 
-function _9(md){return(
+function _10(md){return(
 md`### Visualization`
 )}
 
@@ -327,7 +333,7 @@ function _visualizeModules(currentModules,htl,d3,spectralCircleOrder,improveOrde
 }
 
 
-function _12(md){return(
+function _13(md){return(
 md`### Random helpers`
 )}
 
@@ -365,7 +371,7 @@ function _observe(){return(
 }
 )}
 
-function _17(md){return(
+function _18(md){return(
 md`### Implementation`
 )}
 
@@ -373,7 +379,7 @@ function _queue(flowQueue){return(
 flowQueue({ timeout_ms: 15000 })
 )}
 
-function _19(md){return(
+function _20(md){return(
 md`We resolve what we can using variables named with prefix \`module\` that hold module values. We \`forcePeek\` the variables to make them resolve, which forces loading of the modules.`
 )}
 
@@ -448,7 +454,7 @@ function _resolve_modules(modules,module_definition_variables,findModuleName)
 }
 
 
-function _27(md){return(
+function _28(md){return(
 md`modules imported via notebook imports do not have module variables, so they are trickier to figure out. We can sniff the page DOM to find the import expressions, and try to map them to the modules we could to resolve earlier`
 )}
 
@@ -700,13 +706,11 @@ async function moduleTitle(
       if (v.tagName == "H1") return v.textContent;
       const h1 = v.querySelector?.("h1");
       if (h1) return (h1.textContent ?? "").trim() || null;
-      debugger;
       return null;
     }
     if (v instanceof Text) return (v.textContent ?? "").trim() || null;
     const maybeNode = v?.nodeType ? v : null;
     if (maybeNode instanceof Element) return extract(maybeNode);
-    debugger;
     return null;
   };
 
@@ -738,7 +742,7 @@ function _submit_summary(resolve_modules,queue,notebookImports,$0,summary)
 }
 
 
-function _36(robocoop2){return(
+function _37(robocoop2){return(
 robocoop2()
 )}
 
@@ -747,25 +751,26 @@ export default function define(runtime, observer) {
   main.variable(observer()).define(["md"], _1);
   main.variable(observer()).define(["visualizeModules"], _2);
   main.variable(observer()).define(["md"], _3);
+  main.variable(observer()).define(["md"], _4);
   main.variable(observer("moduleMap")).define("moduleMap", ["runtime","keepalive","myModule","viewof queue"], _moduleMap);
-  main.variable(observer()).define(["md"], _5);
+  main.variable(observer()).define(["md"], _6);
   main.variable(observer("sync_modules")).define("sync_modules", ["runtime_variables","moduleMap","_","viewof currentModules","Event"], _sync_modules);
   main.variable(observer("viewof currentModules")).define("viewof currentModules", ["Inputs","moduleMap"], _currentModules);
   main.variable(observer("currentModules")).define("currentModules", ["Generators", "viewof currentModules"], (G, _) => G.input(_));
-  main.variable(observer()).define(["Inputs","currentModules"], _8);
-  main.variable(observer()).define(["md"], _9);
+  main.variable(observer()).define(["Inputs","currentModules"], _9);
+  main.variable(observer()).define(["md"], _10);
   main.variable(observer("tipTitle")).define("tipTitle", _tipTitle);
   main.variable(observer("visualizeModules")).define("visualizeModules", ["currentModules","htl","d3","spectralCircleOrder","improveOrderSifting","bestOfRandomOrders","Plot","tipTitle","linkTo","isOnObservableCom"], _visualizeModules);
-  main.variable(observer()).define(["md"], _12);
+  main.variable(observer()).define(["md"], _13);
   main.variable(observer("viewof myModule")).define("viewof myModule", ["thisModule"], _myModule);
   main.variable(observer("myModule")).define("myModule", ["Generators", "viewof myModule"], (G, _) => G.input(_));
   main.variable(observer("tag")).define("tag", _tag);
   main.variable(observer("forcePeek")).define("forcePeek", _forcePeek);
   main.variable(observer("observe")).define("observe", _observe);
-  main.variable(observer()).define(["md"], _17);
+  main.variable(observer()).define(["md"], _18);
   main.variable(observer("viewof queue")).define("viewof queue", ["flowQueue"], _queue);
   main.variable(observer("queue")).define("queue", ["Generators", "viewof queue"], (G, _) => G.input(_));
-  main.variable(observer()).define(["md"], _19);
+  main.variable(observer()).define(["md"], _20);
   main.variable(observer("module_definition_variables")).define("module_definition_variables", ["notebookImports","queue","forcePeek"], _module_definition_variables);
   main.variable(observer("modules")).define("modules", ["module_definition_variables","queue"], _modules);
   main.variable(observer("builtin")).define("builtin", ["queue"], _builtin);
@@ -773,7 +778,7 @@ export default function define(runtime, observer) {
   main.variable(observer("bootloaded_mains")).define("bootloaded_mains", ["queue"], _bootloaded_mains);
   main.variable(observer("bootloader")).define("bootloader", ["queue"], _bootloader);
   main.variable(observer("resolve_modules")).define("resolve_modules", ["modules","module_definition_variables","findModuleName"], _resolve_modules);
-  main.variable(observer()).define(["md"], _27);
+  main.variable(observer()).define(["md"], _28);
   main.variable(observer("notebookImports")).define("notebookImports", ["main","parser"], _notebookImports);
   main.variable(observer("notebookImportVariables")).define("notebookImportVariables", ["runtime","notebookImports"], _notebookImportVariables);
   main.variable(observer("pageImportMatch")).define("pageImportMatch", _pageImportMatch);
@@ -782,7 +787,7 @@ export default function define(runtime, observer) {
   main.variable(observer("summary")).define("summary", ["main_modules","titles","bootloader","builtin","queue","notebookImportMatches","bootloaded_mains","resolve_modules","module_definition_variables"], _summary);
   main.variable(observer("moduleTitle")).define("moduleTitle", ["runtime","Element","Text","observeVariable"], _moduleTitle);
   main.variable(observer("submit_summary")).define("submit_summary", ["resolve_modules","queue","notebookImports","viewof queue","summary"], _submit_summary);
-  main.variable(observer()).define(["robocoop2"], _36);
+  main.variable(observer()).define(["robocoop2"], _37);
   const child1 = runtime.module(define1);
   main.import("linkTo", child1);
   const child2 = runtime.module(define2);
