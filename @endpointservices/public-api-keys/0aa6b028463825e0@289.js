@@ -1,6 +1,6 @@
 // https://observablehq.com/@endpointservices/public-api-keys@289
 import define1 from "./6eda90668ae03044@836.js";
-import define2 from "./f92778131fd76559@1174.js";
+import define2 from "./f92778131fd76559@1212.js";
 import define3 from "./293899bef371e135@293.js";
 
 function _1(md){return(
